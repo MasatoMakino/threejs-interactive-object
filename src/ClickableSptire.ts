@@ -1,7 +1,7 @@
 import { IClickable3DObject, ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { Sprite, SpriteMaterial } from "three";
-import { MeshStateMaterialSet } from "MeshStateMaterial";
+import { StateMaterialSet } from "./StateMaterial";
 
 /**
  * Created by makinomasato on 2016/05/02.
@@ -14,13 +14,12 @@ export class ClickableSprite extends Sprite implements IClickable3DObject {
   protected _enableMouse: boolean = true;
 
   public state: ClickableState = ClickableState.NORMAL;
-  public materialSet!: MeshStateMaterialSet;
+  public materialSet!: StateMaterialSet;
   private _alpha: number = 1.0;
 
-  constructor(material: MeshStateMaterialSet) {
+  constructor(material: StateMaterialSet) {
     super();
-
-    this.materialSet = MeshStateMaterialSet.init(material);
+    this.materialSet = material;
     this.updateMaterial();
   }
 
@@ -88,9 +87,8 @@ export class ClickableSprite extends Sprite implements IClickable3DObject {
   }
 
   protected updateMaterial(): void {
-    MeshStateMaterialSet.setOpacity(this.materialSet, this._alpha);
-    const stateMat = MeshStateMaterialSet.get(
-      this.materialSet,
+    this.materialSet.setOpacity(this._alpha);
+    const stateMat = this.materialSet.getMaterial(
       this.state,
       this._enableMouse
     );

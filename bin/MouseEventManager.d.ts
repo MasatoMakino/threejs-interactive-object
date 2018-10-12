@@ -8,6 +8,7 @@ export declare class MouseEventManager {
     protected static raycaster: Raycaster;
     protected static mouse: Vector2;
     protected static currentOver: IClickable3DObject | null;
+    static isInit: boolean;
     static init(scene: Scene, camera: Camera, renderer: Renderer): void;
     protected static onDocumentMouseMove: (event: any) => void;
     protected static onDocumentMouseDown: (event: MouseEvent) => void;

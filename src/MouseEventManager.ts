@@ -21,7 +21,10 @@ export class MouseEventManager {
 
   protected static currentOver: IClickable3DObject | null;
 
+  public static isInit: boolean = false;
+
   public static init(scene: Scene, camera: Camera, renderer: Renderer): void {
+    MouseEventManager.isInit = true;
     MouseEventManager.camera = camera;
     MouseEventManager.renderer = renderer;
     MouseEventManager.scene = scene;

@@ -1,7 +1,7 @@
 import { IClickable3DObject, ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent } from "./ThreeMouseEvent";
 import { Sprite } from "three";
-import { MeshStateMaterialSet } from "MeshStateMaterial";
+import { StateMaterialSet } from "./StateMaterial";
 /**
  * Created by makinomasato on 2016/05/02.
  * クリック可能なSpriteです。
@@ -11,9 +11,9 @@ export declare class ClickableSprite extends Sprite implements IClickable3DObjec
     isPress: boolean;
     protected _enableMouse: boolean;
     state: ClickableState;
-    materialSet: MeshStateMaterialSet;
+    materialSet: StateMaterialSet;
     private _alpha;
-    constructor(material: MeshStateMaterialSet);
+    constructor(material: StateMaterialSet);
     onMouseDownHandler(event: ThreeMouseEvent): void;
     onMouseUpHandler(event: ThreeMouseEvent): void;
     onMouseOverHandler(event: ThreeMouseEvent): void;

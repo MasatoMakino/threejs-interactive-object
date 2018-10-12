@@ -1,7 +1,6 @@
 import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { ClickableMesh } from "./ClickableMesh";
-import { MeshStateMaterialSet } from "MeshStateMaterial";
 /**
  * Created by makinomasato on 2016/10/12.
  */
@@ -31,8 +30,8 @@ export class CheckBoxMesh extends ClickableMesh {
         this.updateState(ClickableState.NORMAL);
     }
     updateMaterial() {
-        MeshStateMaterialSet.setOpacity(this.materialSet, this._alpha);
-        const stateMat = MeshStateMaterialSet.get(this.materialSet, this.state, this._enableMouse, this._isSelect);
+        this.materialSet.setOpacity(this._alpha);
+        const stateMat = this.materialSet.getMaterial(this.state, this._enableMouse, this._isSelect);
         this.material = stateMat.material;
     }
 }

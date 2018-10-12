@@ -1,7 +1,6 @@
 import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { Sprite } from "three";
-import { MeshStateMaterialSet } from "MeshStateMaterial";
 /**
  * Created by makinomasato on 2016/05/02.
  * クリック可能なSpriteです。
@@ -14,7 +13,7 @@ export class ClickableSprite extends Sprite {
         this._enableMouse = true;
         this.state = ClickableState.NORMAL;
         this._alpha = 1.0;
-        this.materialSet = MeshStateMaterialSet.init(material);
+        this.materialSet = material;
         this.updateMaterial();
     }
     onMouseDownHandler(event) {
@@ -74,8 +73,8 @@ export class ClickableSprite extends Sprite {
         this.updateMaterial();
     }
     updateMaterial() {
-        MeshStateMaterialSet.setOpacity(this.materialSet, this._alpha);
-        const stateMat = MeshStateMaterialSet.get(this.materialSet, this.state, this._enableMouse);
+        this.materialSet.setOpacity(this._alpha);
+        const stateMat = this.materialSet.getMaterial(this.state, this._enableMouse);
         this.material = stateMat.material;
     }
     switchEnable(bool) {

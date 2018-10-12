@@ -1,7 +1,11 @@
-import { IClickable3DObject, ClickableState } from "MouseEventManager";
-import { ThreeMouseEvent, ThreeMouseEventType } from "ThreeMouseEvent";
+import {
+  IClickable3DObject,
+  ClickableState,
+  MouseEventManager
+} from "./MouseEventManager";
+import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { MeshMaterialType, BufferGeometry, Geometry, Mesh } from "three";
-import { MeshStateMaterial, MeshStateMaterialSet } from "MeshStateMaterial";
+import { StateMaterialSet } from "./StateMaterial";
 
 export class ClickableMesh extends Mesh implements IClickable3DObject {
   public isPress: boolean = false;
@@ -9,7 +13,7 @@ export class ClickableMesh extends Mesh implements IClickable3DObject {
   protected _enableMouse: boolean = true;
 
   public state: ClickableState = ClickableState.NORMAL;
-  public materialSet!: MeshStateMaterialSet;
+  public materialSet!: StateMaterialSet;
   protected _alpha: number = 1.0;
 
   /**
@@ -17,11 +21,17 @@ export class ClickableMesh extends Mesh implements IClickable3DObject {
    */
   constructor(parameters: {
     geo?: Geometry | BufferGeometry;
-    material: MeshStateMaterialSet;
+    material: StateMaterialSet;
   }) {
     super(parameters.geo);
 
-    this.materialSet = MeshStateMaterialSet.init(parameters.material);
+    if (!MouseEventManager.isInit) {
+      throw new Error(
+        "MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。"
+      );
+    }
+
+    this.materialSet = parameters.material;
     this.updateMaterial();
   }
 
@@ -102,9 +112,8 @@ export class ClickableMesh extends Mesh implements IClickable3DObject {
   }
 
   protected updateMaterial(): void {
-    MeshStateMaterialSet.setOpacity(this.materialSet, this._alpha);
-    const stateMat = MeshStateMaterialSet.get(
-      this.materialSet,
+    this.materialSet.setOpacity(this._alpha);
+    const stateMat = this.materialSet.getMaterial(
       this.state,
       this._enableMouse
     );

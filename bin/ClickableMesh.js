@@ -1,7 +1,6 @@
-import { ClickableState } from "MouseEventManager";
-import { ThreeMouseEvent, ThreeMouseEventType } from "ThreeMouseEvent";
+import { ClickableState, MouseEventManager } from "./MouseEventManager";
+import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { Mesh } from "three";
-import { MeshStateMaterialSet } from "MeshStateMaterial";
 export class ClickableMesh extends Mesh {
     /**
      * コンストラクタ
@@ -13,7 +12,10 @@ export class ClickableMesh extends Mesh {
         this._enableMouse = true;
         this.state = ClickableState.NORMAL;
         this._alpha = 1.0;
-        this.materialSet = MeshStateMaterialSet.init(parameters.material);
+        if (!MouseEventManager.isInit) {
+            throw new Error("MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。");
+        }
+        this.materialSet = parameters.material;
         this.updateMaterial();
     }
     onMouseDownHandler(event) {
@@ -83,8 +85,8 @@ export class ClickableMesh extends Mesh {
         this.updateMaterial();
     }
     updateMaterial() {
-        MeshStateMaterialSet.setOpacity(this.materialSet, this._alpha);
-        const stateMat = MeshStateMaterialSet.get(this.materialSet, this.state, this._enableMouse);
+        this.materialSet.setOpacity(this._alpha);
+        const stateMat = this.materialSet.getMaterial(this.state, this._enableMouse);
         this.material = stateMat.material;
     }
     switchEnable(bool) {

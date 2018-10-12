@@ -2,6 +2,7 @@ import { Raycaster, Vector2 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 export class MouseEventManager {
     static init(scene, camera, renderer) {
+        MouseEventManager.isInit = true;
         MouseEventManager.camera = camera;
         MouseEventManager.renderer = renderer;
         MouseEventManager.scene = scene;
@@ -46,6 +47,7 @@ export class MouseEventManager {
 }
 MouseEventManager.raycaster = new Raycaster();
 MouseEventManager.mouse = new Vector2();
+MouseEventManager.isInit = false;
 MouseEventManager.onDocumentMouseMove = (event) => {
     if (event.type === "mousemove") {
         event.preventDefault();

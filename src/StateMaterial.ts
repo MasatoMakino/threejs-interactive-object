@@ -1,5 +1,5 @@
 import { MeshMaterialType, SpriteMaterial } from "three";
-import { ClickableState } from "MouseEventManager";
+import { ClickableState } from "./MouseEventManager";
 
 /**
  * ClickableMesh用の、各状態用マテリアル。
@@ -11,7 +11,7 @@ import { ClickableState } from "MouseEventManager";
  * （meshのalphaが0になると全て非表示、1.0になるとマテリアル本来のopacityに戻る）
  */
 
-export class MeshStateMaterial {
+export class StateMaterial {
   private _material!: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
   private alpha: number = 1.0;
   private alphaArray!: number[];
@@ -63,73 +63,91 @@ export class MeshStateMaterial {
   }
 }
 
-export class MeshStateMaterialSet {
-  normal!: MeshStateMaterial;
-  over!: MeshStateMaterial;
-  down!: MeshStateMaterial;
-  disable!: MeshStateMaterial;
+export class StateMaterialSet {
+  normal!: StateMaterial;
+  over!: StateMaterial;
+  down!: StateMaterial;
+  disable!: StateMaterial;
 
-  normalSelect!: MeshStateMaterial;
-  overSelect!: MeshStateMaterial;
-  downSelect!: MeshStateMaterial;
+  normalSelect!: StateMaterial;
+  overSelect!: StateMaterial;
+  downSelect!: StateMaterial;
 
-  public static init(mat: MeshStateMaterialSet): MeshStateMaterialSet {
-    if (mat.normal == null) {
+  constructor(param: {
+    normal: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+    over?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+    down?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+    disable?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+    normalSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+    overSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+    downSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+  }) {
+    this.normal = new StateMaterial(param.normal);
+    if (param.over) this.over = new StateMaterial(param.over);
+    if (param.down) this.down = new StateMaterial(param.down);
+    if (param.disable) this.disable = new StateMaterial(param.disable);
+    if (param.normalSelect)
+      this.normalSelect = new StateMaterial(param.normalSelect);
+    if (param.overSelect) this.overSelect = new StateMaterial(param.overSelect);
+    if (param.downSelect) this.downSelect = new StateMaterial(param.downSelect);
+
+    this.init();
+  }
+
+  public init(): void {
+    if (this.normal == null) {
       throw new Error("通常状態のマテリアルが指定されていません。");
     }
 
-    if (mat.down == null) mat.down = mat.normal;
-    if (mat.over == null) mat.over = mat.normal;
-    if (mat.disable == null) mat.disable = mat.normal;
+    if (this.down == null) this.down = this.normal;
+    if (this.over == null) this.over = this.normal;
+    if (this.disable == null) this.disable = this.normal;
 
-    if (mat.normalSelect == null) mat.normalSelect = mat.normal;
-    if (mat.overSelect == null) mat.overSelect = mat.normal;
-    if (mat.downSelect == null) mat.downSelect = mat.normal;
-
-    return mat;
+    if (this.normalSelect == null) this.normalSelect = this.normal;
+    if (this.overSelect == null) this.overSelect = this.normal;
+    if (this.downSelect == null) this.downSelect = this.normal;
   }
 
-  public static get(
-    mat: MeshStateMaterialSet,
+  public getMaterial(
     state: ClickableState,
     mouseEnabled: boolean,
     isSelected: boolean = false
-  ): MeshStateMaterial {
+  ): StateMaterial {
     //無効状態はstateよりも優先
     if (!mouseEnabled) {
-      return mat.disable;
+      return this.disable;
     }
 
     if (!isSelected) {
       switch (state) {
         case ClickableState.NORMAL:
-          return mat.normal;
+          return this.normal;
         case ClickableState.DOWN:
-          return mat.down;
+          return this.down;
         case ClickableState.OVER:
-          return mat.over;
+          return this.over;
       }
     } else {
       switch (state) {
         case ClickableState.NORMAL:
-          return mat.normalSelect;
+          return this.normalSelect;
         case ClickableState.DOWN:
-          return mat.downSelect;
+          return this.downSelect;
         case ClickableState.OVER:
-          return mat.overSelect;
+          return this.overSelect;
       }
     }
 
-    return mat.normal;
+    return this.normal;
   }
 
-  public static setOpacity(mat: MeshStateMaterialSet, opacity: number) {
-    mat.normal.setOpacity(opacity);
-    mat.normalSelect.setOpacity(opacity);
-    mat.over.setOpacity(opacity);
-    mat.overSelect.setOpacity(opacity);
-    mat.down.setOpacity(opacity);
-    mat.downSelect.setOpacity(opacity);
-    mat.disable.setOpacity(opacity);
+  public setOpacity(opacity: number) {
+    this.normal.setOpacity(opacity);
+    this.normalSelect.setOpacity(opacity);
+    this.over.setOpacity(opacity);
+    this.overSelect.setOpacity(opacity);
+    this.down.setOpacity(opacity);
+    this.downSelect.setOpacity(opacity);
+    this.disable.setOpacity(opacity);
   }
 }
