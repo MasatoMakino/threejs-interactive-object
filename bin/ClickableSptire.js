@@ -10,6 +10,7 @@ export class ClickableSprite extends Sprite {
     constructor(material) {
         super();
         this.isPress = false;
+        this.isOver = false;
         this._enableMouse = true;
         this.state = ClickableState.NORMAL;
         this._alpha = 1.0;
@@ -28,7 +29,8 @@ export class ClickableSprite extends Sprite {
             return;
         let currentPress = this.isPress;
         this.isPress = false;
-        this.updateState(ClickableState.NORMAL);
+        const nextState = this.isOver ? ClickableState.OVER : ClickableState.NORMAL;
+        this.updateState(nextState);
         this.dispatchEvent(event);
         if (this.isPress != currentPress && !this.isPress) {
             let e = new ThreeMouseEvent(ThreeMouseEventType.CLICK, this);
@@ -38,12 +40,14 @@ export class ClickableSprite extends Sprite {
     onMouseOverHandler(event) {
         if (!this.checkActivity())
             return;
+        this.isOver = true;
         this.updateState(ClickableState.OVER);
         this.dispatchEvent(event);
     }
     onMouseOutHandler(event) {
         if (!this.checkActivity())
             return;
+        this.isOver = false;
         this.updateState(ClickableState.NORMAL);
         this.dispatchEvent(event);
     }

@@ -9,6 +9,7 @@ import { StateMaterialSet } from "./StateMaterial";
  */
 export declare class ClickableSprite extends Sprite implements IClickable3DObject {
     isPress: boolean;
+    protected isOver: boolean;
     protected _enableMouse: boolean;
     state: ClickableState;
     materialSet: StateMaterialSet;

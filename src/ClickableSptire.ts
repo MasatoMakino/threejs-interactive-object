@@ -11,6 +11,7 @@ import { StateMaterialSet } from "./StateMaterial";
 
 export class ClickableSprite extends Sprite implements IClickable3DObject {
   public isPress: boolean = false;
+  protected isOver: boolean = false;
   protected _enableMouse: boolean = true;
 
   public state: ClickableState = ClickableState.NORMAL;
@@ -35,7 +36,8 @@ export class ClickableSprite extends Sprite implements IClickable3DObject {
 
     let currentPress: boolean = this.isPress;
     this.isPress = false;
-    this.updateState(ClickableState.NORMAL);
+    const nextState = this.isOver ? ClickableState.OVER : ClickableState.NORMAL;
+    this.updateState(nextState);
     this.dispatchEvent(event);
 
     if (this.isPress != currentPress && !this.isPress) {
@@ -46,12 +48,14 @@ export class ClickableSprite extends Sprite implements IClickable3DObject {
 
   public onMouseOverHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;
+    this.isOver = true;
     this.updateState(ClickableState.OVER);
     this.dispatchEvent(event);
   }
 
   public onMouseOutHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;
+    this.isOver = false;
     this.updateState(ClickableState.NORMAL);
     this.dispatchEvent(event);
   }
