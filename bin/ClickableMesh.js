@@ -13,7 +13,7 @@ export class ClickableMesh extends Mesh {
         this.state = ClickableState.NORMAL;
         this._alpha = 1.0;
         if (!MouseEventManager.isInit) {
-            throw new Error("MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。");
+            console.warn("MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。");
         }
         this.materialSet = parameters.material;
         this.updateMaterial();

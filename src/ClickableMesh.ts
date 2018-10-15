@@ -26,7 +26,7 @@ export class ClickableMesh extends Mesh implements IClickable3DObject {
     super(parameters.geo);
 
     if (!MouseEventManager.isInit) {
-      throw new Error(
+      console.warn(
         "MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。"
       );
     }
