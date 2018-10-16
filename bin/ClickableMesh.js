@@ -62,9 +62,6 @@ export class ClickableMesh extends Mesh {
         this.state = state;
         this.updateMaterial();
     }
-    update() {
-        this.updateState(this.state);
-    }
     /**
      * 現在のボタンの有効、無効状態を取得する
      * @return    ボタンが有効か否か

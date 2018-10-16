@@ -23,7 +23,6 @@ export declare class ClickableMesh extends Mesh implements IClickable3DObject {
     onMouseOutHandler(event: ThreeMouseEvent): void;
     setAlpha(number: number): void;
     protected updateState(state: ClickableState): void;
-    update(): void;
     /**
      * 現在のボタンの有効、無効状態を取得する
      * @return    ボタンが有効か否か

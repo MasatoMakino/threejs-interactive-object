@@ -5,6 +5,9 @@ import {
   BoxBufferGeometry
 } from "three";
 import { ClickableMesh, StateMaterialSet } from "../src/index";
+import { ThreeMouseEvent } from "../src/index";
+import { ThreeMouseEventType } from "../src/index";
+import { Event } from "three";
 
 const W = 1920;
 const H = 1080;
@@ -17,7 +20,7 @@ describe("ClickableMesh", () => {
   scene.add(camera);
 
   let clickable: ClickableMesh;
-  let matSet;
+  let matSet: StateMaterialSet;
 
   test("初期化", () => {
     const geometry = new BoxBufferGeometry(3, 3, 3);
@@ -48,11 +51,85 @@ describe("ClickableMesh", () => {
     expect(clickable.material).toBe(matSet.normal.material);
   });
 
-  test("マウスオーバー", () => {});
+  test("マウスオーバー/アウト", () => {
+    clickable.onMouseOverHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
+    );
+    expect(clickable.material).toBe(matSet.over.material);
+    clickable.onMouseOutHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.OUT, clickable)
+    );
+    expect(clickable.material).toBe(matSet.normal.material);
+    clickable.onMouseOverHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
+    );
+    expect(clickable.material).toBe(matSet.over.material);
+    clickable.onMouseOutHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.OUT, clickable)
+    );
+    expect(clickable.material).toBe(matSet.normal.material);
+  });
 
-  test("マウスアウト", () => {});
+  test("disable", () => {
+    clickable.disable();
+    clickable.onMouseOverHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
+    );
+    expect(clickable.material).toBe(matSet.disable.material);
+    clickable.onMouseDownHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.DOWN, clickable)
+    );
+    expect(clickable.material).toBe(matSet.disable.material);
+    clickable.onMouseUpHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.DOWN, clickable)
+    );
+    expect(clickable.material).toBe(matSet.disable.material);
+    clickable.onMouseOutHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.DOWN, clickable)
+    );
+    expect(clickable.material).toBe(matSet.disable.material);
 
-  test("マウスダウン", () => {});
+    clickable.enable();
+    clickable.onMouseOverHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
+    );
+    expect(clickable.material).toBe(matSet.over.material);
+    clickable.onMouseOutHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.OUT, clickable)
+    );
+    expect(clickable.material).toBe(matSet.normal.material);
+  });
+
+  test("マウスアップ", () => {
+    const spy = jest
+      .spyOn(clickable, "dispatchEvent")
+      .mockImplementation((e: Event) => null);
+    clickable.onMouseUpHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.UP, clickable)
+    );
+    expect(spy).toHaveBeenLastCalledWith(
+      new ThreeMouseEvent(ThreeMouseEventType.UP, clickable)
+    );
+  });
+
+  test("マウスダウン/クリック", () => {
+    const spy = jest
+      .spyOn(clickable, "dispatchEvent")
+      .mockImplementation((e: Event) => null);
+
+    clickable.onMouseOverHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
+    );
+    clickable.onMouseDownHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.DOWN, clickable)
+    );
+    clickable.onMouseUpHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.UP, clickable)
+    );
+    expect(spy).toHaveBeenLastCalledWith(
+      new ThreeMouseEvent(ThreeMouseEventType.CLICK, clickable)
+    );
+  });
 
   test("クリック", () => {});
 });
