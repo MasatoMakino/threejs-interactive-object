@@ -32,8 +32,8 @@ export declare enum ClickableState {
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
 export interface IClickable3DObject {
-    isPress: boolean;
-    state: ClickableState;
+    readonly isPress: boolean;
+    readonly state: ClickableState;
     onMouseDownHandler(event: ThreeMouseEvent): void;
     onMouseUpHandler(event: ThreeMouseEvent): void;
     onMouseOverHandler(event: ThreeMouseEvent): void;
