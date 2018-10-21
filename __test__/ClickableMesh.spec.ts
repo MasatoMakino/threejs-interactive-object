@@ -1,9 +1,4 @@
-import {
-  Scene,
-  PerspectiveCamera,
-  MeshBasicMaterial,
-  BoxBufferGeometry
-} from "three";
+import { MeshBasicMaterial, BoxBufferGeometry } from "three";
 import {
   ClickableMesh,
   StateMaterialSet,
@@ -12,16 +7,7 @@ import {
 } from "../src/index";
 import { Event } from "three";
 
-const W = 1920;
-const H = 1080;
-
 describe("ClickableMesh", () => {
-  // シーンを作成
-  const scene = new Scene();
-  const camera = new PerspectiveCamera(45, W / H, 1, 400);
-  camera.position.set(0, 0, 100);
-  scene.add(camera);
-
   let clickable: ClickableMesh;
   let matSet: StateMaterialSet;
 
@@ -49,7 +35,6 @@ describe("ClickableMesh", () => {
       geo: geometry,
       material: matSet
     });
-    scene.add(clickable);
 
     expect(clickable.material).toBe(matSet.normal.material);
   });
@@ -143,7 +128,7 @@ describe("ClickableMesh", () => {
   });
 
   test("alpha", () => {
-    clickable.setAlpha(0.5);
+    clickable.alpha = 0.5;
     expect(
       (clickable.materialSet.normal.material as MeshBasicMaterial).opacity
     ).toBe(0.3);

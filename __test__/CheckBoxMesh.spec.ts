@@ -1,9 +1,4 @@
-import {
-  Scene,
-  PerspectiveCamera,
-  MeshBasicMaterial,
-  BoxBufferGeometry
-} from "three";
+import { MeshBasicMaterial, BoxBufferGeometry } from "three";
 import {
   StateMaterialSet,
   ThreeMouseEvent,
@@ -12,16 +7,7 @@ import {
 } from "../src/index";
 import { Event } from "three";
 
-const W = 1920;
-const H = 1080;
-
 describe("CheckBoxMesh", () => {
-  // シーンを作成
-  const scene = new Scene();
-  const camera = new PerspectiveCamera(45, W / H, 1, 400);
-  camera.position.set(0, 0, 100);
-  scene.add(camera);
-
   let checkbox: CheckBoxMesh;
   let matSet: StateMaterialSet;
 
@@ -64,7 +50,6 @@ describe("CheckBoxMesh", () => {
       geo: geometry,
       material: matSet
     });
-    scene.add(checkbox);
 
     expect(checkbox.material).toBe(matSet.normal.material);
   });
