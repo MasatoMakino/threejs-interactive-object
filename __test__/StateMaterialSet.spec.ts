@@ -1,7 +1,6 @@
 import { StateMaterial, StateMaterialSet } from "../src/index";
 import { MeshBasicMaterial, MeshMaterialType, Event } from "three";
 
-
 describe("StateMaterial", () => {
   let mat: StateMaterial;
   let matArray: MeshMaterialType[];
@@ -59,19 +58,15 @@ describe("StateMaterial", () => {
 describe("StateMaterialSet", () => {
   let matSet: StateMaterialSet;
 
-  test("constructor : normalマテリアルのみ", ()=>{
-
+  test("constructor : normalマテリアルのみ", () => {
     matSet = new StateMaterialSet({
-        normal: new MeshBasicMaterial({
-            color: 0xffffff,
-            opacity: 0.6,
-            transparent: true
-        })
+      normal: new MeshBasicMaterial({
+        color: 0xffffff,
+        opacity: 0.6,
+        transparent: true
+      })
     });
 
     expect(matSet.down).toBe(matSet.normal);
-
-  })
-
-
+  });
 });

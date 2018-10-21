@@ -71,6 +71,7 @@ describe("CheckBoxMesh", () => {
       .spyOn(checkbox, "dispatchEvent")
       .mockImplementation((e: Event) => null);
 
+    //クリックして選択
     checkbox.onMouseOverHandler(
       new ThreeMouseEvent(ThreeMouseEventType.OVER, checkbox)
     );
@@ -86,5 +87,16 @@ describe("CheckBoxMesh", () => {
     );
     expect(checkbox.getSelection()).toBe(true);
     expect(checkbox.material).toBe(matSet.overSelect.material);
+
+    //クリックして選択解除
+    checkbox.onMouseDownHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.DOWN, checkbox)
+    );
+    expect(checkbox.material).toBe(matSet.downSelect.material);
+    checkbox.onMouseUpHandler(
+      new ThreeMouseEvent(ThreeMouseEventType.UP, checkbox)
+    );
+    expect(checkbox.getSelection()).toBe(false);
+    expect(checkbox.material).toBe(matSet.over.material);
   });
 });
