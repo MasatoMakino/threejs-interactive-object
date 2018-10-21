@@ -4,9 +4,12 @@ import {
   MeshBasicMaterial,
   BoxBufferGeometry
 } from "three";
-import { ClickableMesh, StateMaterialSet } from "../src/index";
-import { ThreeMouseEvent } from "../src/index";
-import { ThreeMouseEventType } from "../src/index";
+import {
+  ClickableMesh,
+  StateMaterialSet,
+  ThreeMouseEvent,
+  ThreeMouseEventType
+} from "../src/index";
 import { Event } from "three";
 
 const W = 1920;
