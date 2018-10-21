@@ -54,7 +54,7 @@ export class ClickableMesh extends Mesh {
         this.updateState(ClickableState.NORMAL);
         this.dispatchEvent(event);
     }
-    setAlpha(number) {
+    set alpha(number) {
         this._alpha = number;
         this.updateMaterial();
     }

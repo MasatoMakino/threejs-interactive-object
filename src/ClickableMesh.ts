@@ -76,7 +76,7 @@ export class ClickableMesh extends Mesh implements IClickable3DObject {
     this.dispatchEvent(event);
   }
 
-  public setAlpha(number: number) {
+  public set alpha(number: number) {
     this._alpha = number;
     this.updateMaterial();
   }
