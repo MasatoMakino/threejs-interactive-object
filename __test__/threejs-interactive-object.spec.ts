@@ -100,6 +100,14 @@ describe("ClickableMesh", () => {
     expect(clickable.material).toBe(matSet.normal.material);
   });
 
+  test("switch", () => {
+    clickable.switchEnable(false);
+    expect(clickable.getEnable()).toBe(false);
+
+    clickable.switchEnable(true);
+    expect(clickable.getEnable()).toBe(true);
+  });
+
   test("マウスアップ", () => {
     const spy = jest
       .spyOn(clickable, "dispatchEvent")
@@ -131,5 +139,16 @@ describe("ClickableMesh", () => {
     );
   });
 
-  test("クリック", () => {});
+  test("alpha", () => {
+    clickable.setAlpha(0.5);
+    expect(
+      (clickable.materialSet.normal.material as MeshBasicMaterial).opacity
+    ).toBe(0.3);
+    expect(
+      (clickable.materialSet.over.material as MeshBasicMaterial).opacity
+    ).toBe(0.4);
+    expect(
+      (clickable.materialSet.down.material as MeshBasicMaterial).opacity
+    ).toBe(0.5);
+  });
 });
