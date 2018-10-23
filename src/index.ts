@@ -5,6 +5,6 @@ export { StateMaterial, StateMaterialSet } from "./StateMaterial";
 export {
   MouseEventManager,
   ClickableState,
-  IClickable3DObject
+  IClickableObject3D
 } from "./MouseEventManager";
 export { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";

@@ -19,7 +19,7 @@ export class MouseEventManager {
   protected static raycaster: Raycaster = new Raycaster();
   protected static mouse: Vector2 = new Vector2();
 
-  protected static currentOver: IClickable3DObject | null;
+  protected static currentOver: IClickableObject3D | null;
 
   public static isInit: boolean = false;
 
@@ -74,7 +74,7 @@ export class MouseEventManager {
     }
 
     for (let i = 0; i < n; i++) {
-      let checked: IClickable3DObject = MouseEventManager.checkTarget(
+      let checked: IClickableObject3D = MouseEventManager.checkTarget(
         intersects[i].object
       );
       if (checked) {
@@ -108,7 +108,7 @@ export class MouseEventManager {
     if (n == 0) return;
 
     for (let i = 0; i < n; i++) {
-      let checked: IClickable3DObject = MouseEventManager.checkTarget(
+      let checked: IClickableObject3D = MouseEventManager.checkTarget(
         intersects[i].object
       );
       if (checked) {
@@ -128,7 +128,7 @@ export class MouseEventManager {
     if (n == 0) return;
 
     for (let i = 0; i < n; i++) {
-      let checked: IClickable3DObject = MouseEventManager.checkTarget(
+      let checked: IClickableObject3D = MouseEventManager.checkTarget(
         intersects[i].object
       );
       if (checked) {
@@ -206,7 +206,7 @@ export enum ClickableState {
  * マウス操作可能な3Dオブジェクトのインターフェース
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
-export interface IClickable3DObject {
+export interface IClickableObject3D {
   readonly isPress: boolean;
   readonly state: ClickableState;
 
@@ -219,4 +219,9 @@ export interface IClickable3DObject {
   disable(): void;
   switchEnable(bool: boolean): void;
   getEnable(): boolean;
+}
+
+export interface ISelectableObject3D {
+  selection: boolean;
+  value: any;
 }

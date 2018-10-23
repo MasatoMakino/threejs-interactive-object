@@ -55,14 +55,14 @@ describe("CheckBoxMesh", () => {
   });
 
   test("set / get selection", () => {
-    expect(checkbox.getSelection()).toBe(false);
+    expect(checkbox.selection).toBe(false);
 
-    checkbox.setSelection(true);
-    expect(checkbox.getSelection()).toBe(true);
+    checkbox.selection = true;
+    expect(checkbox.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.normalSelect.material);
 
-    checkbox.setSelection(false);
-    expect(checkbox.getSelection()).toBe(false);
+    checkbox.selection = false;
+    expect(checkbox.selection).toBe(false);
     expect(checkbox.material).toBe(matSet.normal.material);
   });
 
@@ -85,7 +85,7 @@ describe("CheckBoxMesh", () => {
     expect(spy).toHaveBeenLastCalledWith(
       new ThreeMouseEvent(ThreeMouseEventType.CLICK, checkbox)
     );
-    expect(checkbox.getSelection()).toBe(true);
+    expect(checkbox.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.overSelect.material);
 
     //クリックして選択解除
@@ -96,7 +96,7 @@ describe("CheckBoxMesh", () => {
     checkbox.onMouseUpHandler(
       new ThreeMouseEvent(ThreeMouseEventType.UP, checkbox)
     );
-    expect(checkbox.getSelection()).toBe(false);
+    expect(checkbox.selection).toBe(false);
     expect(checkbox.material).toBe(matSet.over.material);
   });
 });

@@ -7,7 +7,7 @@ export declare class MouseEventManager {
     protected static canvas: HTMLCanvasElement;
     protected static raycaster: Raycaster;
     protected static mouse: Vector2;
-    protected static currentOver: IClickable3DObject | null;
+    protected static currentOver: IClickableObject3D | null;
     static isInit: boolean;
     static init(scene: Scene, camera: Camera, renderer: Renderer): void;
     protected static onDocumentMouseMove: (event: any) => void;
@@ -31,7 +31,7 @@ export declare enum ClickableState {
  * マウス操作可能な3Dオブジェクトのインターフェース
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
-export interface IClickable3DObject {
+export interface IClickableObject3D {
     readonly isPress: boolean;
     readonly state: ClickableState;
     onMouseDownHandler(event: ThreeMouseEvent): void;
@@ -42,5 +42,9 @@ export interface IClickable3DObject {
     disable(): void;
     switchEnable(bool: boolean): void;
     getEnable(): boolean;
+}
+export interface ISelectableObject3D {
+    selection: boolean;
+    value: any;
 }
 //# sourceMappingURL=MouseEventManager.d.ts.map

@@ -1,4 +1,4 @@
-import { IClickable3DObject, ClickableState } from "./MouseEventManager";
+import { IClickableObject3D, ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { Sprite, SpriteMaterial } from "three";
 import { StateMaterialSet } from "./StateMaterial";
@@ -9,7 +9,7 @@ import { StateMaterialSet } from "./StateMaterial";
  * ビルボードボタンとして使用することを想定しています。
  */
 
-export class ClickableSprite extends Sprite implements IClickable3DObject {
+export class ClickableSprite extends Sprite implements IClickableObject3D {
   public isPress: boolean = false;
   protected isOver: boolean = false;
   protected _enableMouse: boolean = true;

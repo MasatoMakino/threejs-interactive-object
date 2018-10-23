@@ -1,5 +1,5 @@
 import {
-  IClickable3DObject,
+  IClickableObject3D,
   ClickableState,
   MouseEventManager
 } from "./MouseEventManager";
@@ -7,7 +7,7 @@ import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { MeshMaterialType, BufferGeometry, Geometry, Mesh } from "three";
 import { StateMaterialSet } from "./StateMaterial";
 
-export class ClickableMesh extends Mesh implements IClickable3DObject {
+export class ClickableMesh extends Mesh implements IClickableObject3D {
   public isPress: boolean = false;
   protected isOver: boolean = false;
   protected _enableMouse: boolean = true;

@@ -1,9 +1,6 @@
 import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { ClickableMesh } from "./ClickableMesh";
-/**
- * Created by makinomasato on 2016/10/12.
- */
 export class CheckBoxMesh extends ClickableMesh {
     constructor() {
         super(...arguments);
@@ -22,10 +19,10 @@ export class CheckBoxMesh extends ClickableMesh {
         this.dispatchEvent(e);
         this.updateMaterial();
     }
-    getSelection() {
+    get selection() {
         return this._isSelect;
     }
-    setSelection(bool) {
+    set selection(bool) {
         this._isSelect = bool;
         this.updateState(ClickableState.NORMAL);
     }

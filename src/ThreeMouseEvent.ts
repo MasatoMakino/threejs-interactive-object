@@ -1,11 +1,11 @@
-import { IClickable3DObject } from "./MouseEventManager";
+import { IClickableObject3D } from "./MouseEventManager";
 
 export class ThreeMouseEvent {
   public type: ThreeMouseEventType;
-  public target: IClickable3DObject;
+  public target: IClickableObject3D;
   public isSelected!: boolean;
 
-  constructor(type: ThreeMouseEventType, target: IClickable3DObject) {
+  constructor(type: ThreeMouseEventType, target: IClickableObject3D) {
     this.type = type;
     this.target = target;
   }

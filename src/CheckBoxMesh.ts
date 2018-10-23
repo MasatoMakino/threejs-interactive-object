@@ -1,13 +1,9 @@
-import { ClickableState } from "./MouseEventManager";
+import { ClickableState, ISelectableObject3D } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { ClickableMesh } from "./ClickableMesh";
 import { MeshMaterialType } from "three";
 
-/**
- * Created by makinomasato on 2016/10/12.
- */
-
-export class CheckBoxMesh extends ClickableMesh {
+export class CheckBoxMesh extends ClickableMesh implements ISelectableObject3D {
   protected _isSelect: boolean = false;
   public value: any;
 
@@ -29,11 +25,11 @@ export class CheckBoxMesh extends ClickableMesh {
     this.updateMaterial();
   }
 
-  public getSelection(): boolean {
+  public get selection(): boolean {
     return this._isSelect;
   }
 
-  public setSelection(bool: boolean): void {
+  public set selection(bool: boolean) {
     this._isSelect = bool;
     this.updateState(ClickableState.NORMAL);
   }
