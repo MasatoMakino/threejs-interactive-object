@@ -13,10 +13,11 @@ export declare class ClickableSprite extends Sprite implements IClickableObject3
     protected _enableMouse: boolean;
     state: ClickableState;
     materialSet: StateMaterialSet;
-    private _alpha;
+    protected _alpha: number;
     constructor(material: StateMaterialSet);
     onMouseDownHandler(event: ThreeMouseEvent): void;
     onMouseUpHandler(event: ThreeMouseEvent): void;
+    onMouseClick(): void;
     onMouseOverHandler(event: ThreeMouseEvent): void;
     onMouseOutHandler(event: ThreeMouseEvent): void;
     alpha: number;

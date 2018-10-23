@@ -1,5 +1,6 @@
 import { Object3D, Raycaster, Vector2, Camera, Renderer, Scene, Intersection } from "three";
 import { ThreeMouseEvent } from "./ThreeMouseEvent";
+import { StateMaterialSet } from "StateMaterial";
 export declare class MouseEventManager {
     protected static camera: Camera;
     protected static renderer: Renderer;
@@ -34,10 +35,12 @@ export declare enum ClickableState {
 export interface IClickableObject3D {
     readonly isPress: boolean;
     readonly state: ClickableState;
+    materialSet: StateMaterialSet;
     onMouseDownHandler(event: ThreeMouseEvent): void;
     onMouseUpHandler(event: ThreeMouseEvent): void;
     onMouseOverHandler(event: ThreeMouseEvent): void;
     onMouseOutHandler(event: ThreeMouseEvent): void;
+    onMouseClick(): void;
     enable(): void;
     disable(): void;
     switchEnable(bool: boolean): void;

@@ -1,9 +1,10 @@
-import { ClickableState, ISelectableObject3D } from "./MouseEventManager";
+import { ISelectableObject3D, ClickableState } from "./MouseEventManager";
+import { ClickableSprite } from "./ClickableSptire";
+import { SpriteMaterial } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { ClickableMesh } from "./ClickableMesh";
-import { MeshMaterialType } from "three";
 
-export class CheckBoxMesh extends ClickableMesh implements ISelectableObject3D {
+export class CheckBoxSprite extends ClickableSprite
+  implements ISelectableObject3D {
   protected _isSelect: boolean = false;
   public value: any;
 
@@ -41,6 +42,7 @@ export class CheckBoxMesh extends ClickableMesh implements ISelectableObject3D {
       this._enableMouse,
       this._isSelect
     );
-    this.material = stateMat.material as MeshMaterialType | MeshMaterialType[];
+    console.log(stateMat);
+    this.material = stateMat.material as SpriteMaterial;
   }
 }

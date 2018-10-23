@@ -32,11 +32,13 @@ export class ClickableSprite extends Sprite {
         const nextState = this.isOver ? ClickableState.OVER : ClickableState.NORMAL;
         this.updateState(nextState);
         this.dispatchEvent(event);
-        if (this.isPress != currentPress && !this.isPress) {
+        if (this.isPress != currentPress) {
+            this.onMouseClick();
             let e = new ThreeMouseEvent(ThreeMouseEventType.CLICK, this);
             this.dispatchEvent(e);
         }
     }
+    onMouseClick() { }
     onMouseOverHandler(event) {
         if (!this.checkActivity())
             return;

@@ -60,7 +60,7 @@ export class ClickableMesh extends Mesh implements IClickableObject3D {
     }
   }
 
-  protected onMouseClick(): void {}
+  public onMouseClick(): void {}
 
   public onMouseOverHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;

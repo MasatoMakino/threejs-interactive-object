@@ -8,6 +8,7 @@ import {
   Intersection
 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+import { StateMaterialSet } from "StateMaterial";
 
 export class MouseEventManager {
   protected static camera: Camera;
@@ -209,11 +210,13 @@ export enum ClickableState {
 export interface IClickableObject3D {
   readonly isPress: boolean;
   readonly state: ClickableState;
+  materialSet: StateMaterialSet;
 
   onMouseDownHandler(event: ThreeMouseEvent): void;
   onMouseUpHandler(event: ThreeMouseEvent): void;
   onMouseOverHandler(event: ThreeMouseEvent): void;
   onMouseOutHandler(event: ThreeMouseEvent): void;
+  onMouseClick(): void;
 
   enable(): void;
   disable(): void;

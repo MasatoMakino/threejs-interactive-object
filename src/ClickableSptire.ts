@@ -16,7 +16,7 @@ export class ClickableSprite extends Sprite implements IClickableObject3D {
 
   public state: ClickableState = ClickableState.NORMAL;
   public materialSet!: StateMaterialSet;
-  private _alpha: number = 1.0;
+  protected _alpha: number = 1.0;
 
   constructor(material: StateMaterialSet) {
     super();
@@ -36,15 +36,20 @@ export class ClickableSprite extends Sprite implements IClickableObject3D {
 
     let currentPress: boolean = this.isPress;
     this.isPress = false;
+
     const nextState = this.isOver ? ClickableState.OVER : ClickableState.NORMAL;
     this.updateState(nextState);
     this.dispatchEvent(event);
 
-    if (this.isPress != currentPress && !this.isPress) {
+    if (this.isPress != currentPress) {
+      this.onMouseClick();
+
       let e = new ThreeMouseEvent(ThreeMouseEventType.CLICK, this);
       this.dispatchEvent(e);
     }
   }
+
+  public onMouseClick(): void {}
 
   public onMouseOverHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;

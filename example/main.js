@@ -3,7 +3,8 @@ import {
   CheckBoxMesh,
   StateMaterialSet,
   StateMaterial,
-  ClickableSprite
+  ClickableSprite,
+  CheckBoxSprite
 } from "../bin/index.js";
 import {
   Scene,
@@ -50,6 +51,7 @@ const onDomContentsLoaded = () => {
   testButton();
   testCheckbox();
   testSprite();
+  testSelectableSprite();
 
   render();
 };
@@ -150,6 +152,56 @@ const testSprite = () => {
   const scale = 4.0;
   clickable.scale.set(scale, scale, scale);
   scene.add(clickable);
+};
+
+const testSelectableSprite = () => {
+  const matSet = new StateMaterialSet({
+    normal: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_01.png"),
+      color: 0xffffff,
+      opacity: 0.3,
+      transparent: true
+    }),
+    over: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_02.png"),
+      color: 0xffffff,
+      opacity: 0.3,
+      transparent: true
+    }),
+    down: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_03.png"),
+      color: 0xffffff,
+      opacity: 0.3,
+      transparent: true
+    }),
+    normalSelect: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_01.png"),
+      color: 0xffffff,
+      opacity: 1.0,
+      transparent: true,
+      name: "normalSelect"
+    }),
+    overSelect: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_02.png"),
+      color: 0xffffff,
+      opacity: 1.0,
+      transparent: true,
+      name: "overSelect"
+    }),
+    downSelect: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_03.png"),
+      color: 0xffffff,
+      opacity: 1.0,
+      transparent: true,
+      name: "downSelect"
+    })
+  });
+
+  const selectable = new CheckBoxSprite(matSet);
+  selectable.position.set(20, -10, 0);
+  const scale = 4.0;
+  selectable.scale.set(scale, scale, scale);
+  scene.add(selectable);
 };
 
 const render = () => {

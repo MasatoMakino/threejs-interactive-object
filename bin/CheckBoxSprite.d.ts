@@ -1,6 +1,6 @@
 import { ISelectableObject3D } from "./MouseEventManager";
-import { ClickableMesh } from "./ClickableMesh";
-export declare class CheckBoxMesh extends ClickableMesh implements ISelectableObject3D {
+import { ClickableSprite } from "./ClickableSptire";
+export declare class CheckBoxSprite extends ClickableSprite implements ISelectableObject3D {
     protected _isSelect: boolean;
     value: any;
     /**
@@ -13,4 +13,4 @@ export declare class CheckBoxMesh extends ClickableMesh implements ISelectableOb
     selection: boolean;
     protected updateMaterial(): void;
 }
-//# sourceMappingURL=CheckBoxMesh.d.ts.map
+//# sourceMappingURL=CheckBoxSprite.d.ts.map

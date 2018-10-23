@@ -18,7 +18,7 @@ export declare class ClickableMesh extends Mesh implements IClickableObject3D {
     });
     onMouseDownHandler(event: ThreeMouseEvent): void;
     onMouseUpHandler(event: ThreeMouseEvent): void;
-    protected onMouseClick(): void;
+    onMouseClick(): void;
     onMouseOverHandler(event: ThreeMouseEvent): void;
     onMouseOutHandler(event: ThreeMouseEvent): void;
     alpha: number;
