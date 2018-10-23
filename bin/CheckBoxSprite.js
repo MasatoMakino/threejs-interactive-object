@@ -29,7 +29,6 @@ export class CheckBoxSprite extends ClickableSprite {
     updateMaterial() {
         this.materialSet.setOpacity(this._alpha);
         const stateMat = this.materialSet.getMaterial(this.state, this._enableMouse, this._isSelect);
-        console.log(stateMat);
         this.material = stateMat.material;
     }
 }

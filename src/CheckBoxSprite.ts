@@ -42,7 +42,6 @@ export class CheckBoxSprite extends ClickableSprite
       this._enableMouse,
       this._isSelect
     );
-    console.log(stateMat);
     this.material = stateMat.material as SpriteMaterial;
   }
 }

@@ -118,7 +118,6 @@ export class StateMaterialSet {
       return this.disable;
     }
 
-    console.log(isSelected);
     if (!isSelected) {
       switch (state) {
         case ClickableState.NORMAL:

@@ -89,7 +89,6 @@ export class StateMaterialSet {
         if (!mouseEnabled) {
             return this.disable;
         }
-        console.log(isSelected);
         if (!isSelected) {
             switch (state) {
                 case ClickableState.NORMAL:
