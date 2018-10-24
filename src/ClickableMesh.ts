@@ -91,8 +91,7 @@ export class ClickableMesh extends Mesh implements IClickableObject3D {
    * @return    ボタンが有効か否か
    */
   protected checkActivity(): Boolean {
-    if (!this._enableMouse) return false;
-    return true;
+    return this._enableMouse;
   }
 
   public enable(): void {

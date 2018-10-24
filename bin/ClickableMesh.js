@@ -67,9 +67,7 @@ export class ClickableMesh extends Mesh {
      * @return    ボタンが有効か否か
      */
     checkActivity() {
-        if (!this._enableMouse)
-            return false;
-        return true;
+        return this._enableMouse;
     }
     enable() {
         this._enableMouse = true;

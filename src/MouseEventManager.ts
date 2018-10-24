@@ -9,6 +9,8 @@ import {
 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { StateMaterialSet } from "StateMaterial";
+import { Event } from "three/three-core";
+import { EventDispatcher } from "three";
 
 export class MouseEventManager {
   protected static camera: Camera;
@@ -207,7 +209,7 @@ export enum ClickableState {
  * マウス操作可能な3Dオブジェクトのインターフェース
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
-export interface IClickableObject3D {
+export interface IClickableObject3D extends EventDispatcher {
   readonly isPress: boolean;
   readonly state: ClickableState;
   materialSet: StateMaterialSet;
@@ -224,7 +226,19 @@ export interface IClickableObject3D {
   getEnable(): boolean;
 }
 
-export interface ISelectableObject3D {
+/**
+ * チェックボックス用インターフェース
+ */
+export interface ISelectableObject3D extends IClickableObject3D {
   selection: boolean;
   value: any;
+}
+
+/**
+ * ラジオボタン用インターフェース
+ * 選択済みのボタンは再選択して解除できないよう
+ * 動作を停止するisFrozenフラグを持つ
+ */
+export interface IRadioButtonObject3D extends ISelectableObject3D {
+  isFrozen: boolean;
 }
