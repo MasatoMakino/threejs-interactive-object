@@ -1,7 +1,4 @@
-import {
-  Event,
-  SpriteMaterial
-} from "three";
+import { Event, SpriteMaterial } from "three";
 import {
   StateMaterialSet,
   ThreeMouseEvent,
