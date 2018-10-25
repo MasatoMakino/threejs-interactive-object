@@ -7,7 +7,6 @@ export declare class CheckBoxMesh extends ClickableMesh implements ISelectableOb
      * クリックイベント時の処理
      * "click"イベントはマウスイベント類の必ず最後に発生するので
      * ここでisSelect状態を一括管理する。
-     * @param event
      */
     onMouseClick(): void;
     selection: boolean;

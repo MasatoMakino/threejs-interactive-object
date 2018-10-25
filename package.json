@@ -31,7 +31,7 @@
   },
   "scripts": {
     "test": "jest --coverage",
-    "build": "tsc && npm run copy && npm run remove && npm run prettier:src && npm run babel",
+    "build": "npm run prettier:src && tsc && npm run copy && npm run remove  && npm run babel",
     "copy": "cpx './bin/src/*' ./bin",
     "remove": "rimraf ./bin/__test__ ./bin/src",
     "prettier:src": "prettier --write './!(bin)/**/*.{js,ts,json}' ",
