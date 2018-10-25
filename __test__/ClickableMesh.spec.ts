@@ -1,11 +1,10 @@
-import { MeshBasicMaterial, BoxBufferGeometry } from "three";
+import { MeshBasicMaterial, BoxBufferGeometry, Event } from "three";
 import {
   ClickableMesh,
   StateMaterialSet,
   ThreeMouseEvent,
   ThreeMouseEventType
 } from "../src/index";
-import { Event } from "three";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
