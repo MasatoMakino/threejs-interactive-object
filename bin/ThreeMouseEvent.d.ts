@@ -1,9 +1,10 @@
 import { IClickableObject3D } from "./MouseEventManager";
 export declare class ThreeMouseEvent {
     type: ThreeMouseEventType;
-    target: IClickableObject3D;
-    isSelected: boolean;
-    constructor(type: ThreeMouseEventType, target: IClickableObject3D);
+    button: IClickableObject3D;
+    readonly isSelected: boolean;
+    constructor(type: ThreeMouseEventType, button: IClickableObject3D);
+    clone(): ThreeMouseEvent;
 }
 export declare enum ThreeMouseEventType {
     CLICK = "THREE_MOUSE_EVENT_CLICK",

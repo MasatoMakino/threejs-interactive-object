@@ -34,9 +34,11 @@ export class RadioButtonManager extends EventDispatcher {
    * 管理下のボタンが選択された場合の処理
    * @param {Event} e
    */
-  private onSelectedButton = (e: Event) => {
+  private onSelectedButton = (e: any) => {
     const evt = e as ThreeMouseEvent;
-    if (evt.isSelected) this.select(evt.target as IRadioButtonObject3D);
+    if (evt.isSelected) {
+      this.select(evt.button as IRadioButtonObject3D);
+    }
   };
 
   /**
@@ -69,11 +71,11 @@ export class RadioButtonManager extends EventDispatcher {
 
     this._selected = button;
     for (let btn of this._buttons) {
-      btn.selection = btn === button;
-      btn.isFrozen = btn === button;
+      btn.selection = btn.isFrozen = btn === button;
     }
 
-    this.dispatchEvent(new ThreeMouseEvent(ThreeMouseEventType.SELECT, button));
+    const evt = new ThreeMouseEvent(ThreeMouseEventType.SELECT, button);
+    this.dispatchEvent(evt);
   }
 
   get selected(): IRadioButtonObject3D {

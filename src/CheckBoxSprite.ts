@@ -21,7 +21,6 @@ export class CheckBoxSprite extends ClickableSprite
       ThreeMouseEventType.SELECT,
       this
     );
-    e.isSelected = this._isSelect;
     this.dispatchEvent(e);
     this.updateMaterial();
   }

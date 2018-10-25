@@ -18,8 +18,9 @@ export class RadioButtonManager extends EventDispatcher {
          */
         this.onSelectedButton = (e) => {
             const evt = e;
-            if (evt.isSelected)
-                this.select(evt.target);
+            if (evt.isSelected) {
+                this.select(evt.button);
+            }
         };
     }
     /**
@@ -55,10 +56,10 @@ export class RadioButtonManager extends EventDispatcher {
         }
         this._selected = button;
         for (let btn of this._buttons) {
-            btn.selection = btn === button;
-            btn.isFrozen = btn === button;
+            btn.selection = btn.isFrozen = btn === button;
         }
-        this.dispatchEvent(new ThreeMouseEvent(ThreeMouseEventType.SELECT, button));
+        const evt = new ThreeMouseEvent(ThreeMouseEventType.SELECT, button);
+        this.dispatchEvent(evt);
     }
     get selected() {
         return this._selected;

@@ -4,7 +4,12 @@ import {
   StateMaterialSet,
   StateMaterial,
   ClickableSprite,
-  CheckBoxSprite
+  CheckBoxSprite,
+  RadioButtonMesh,
+  MouseEventManager,
+  RadioButtonManager,
+  ThreeMouseEvent,
+  ThreeMouseEventType
 } from "../bin/index.js";
 import {
   Scene,
@@ -17,7 +22,6 @@ import {
   SpriteMaterial,
   TextureLoader
 } from "three";
-import { MouseEventManager } from "../bin/MouseEventManager";
 
 const W = 1920;
 const H = 1080;
@@ -52,6 +56,7 @@ const onDomContentsLoaded = () => {
   testCheckbox();
   testSprite();
   testSelectableSprite();
+  testRadio();
 
   render();
 };
@@ -82,7 +87,7 @@ const testButton = () => {
     material: matSet
   });
 
-  clickable.position.set(-10, -10, 0);
+  clickable.position.set(-10, 20, 0);
   scene.add(clickable);
 };
 
@@ -127,7 +132,7 @@ const testCheckbox = () => {
     material: matSet
   });
 
-  clickable.position.set(0, -10, 0);
+  clickable.position.set(0, 20, 0);
   scene.add(clickable);
 };
 
@@ -148,7 +153,7 @@ const testSprite = () => {
   });
 
   const clickable = new ClickableSprite(matSet);
-  clickable.position.set(10, -10, 0);
+  clickable.position.set(10, 20, 0);
   const scale = 4.0;
   clickable.scale.set(scale, scale, scale);
   scene.add(clickable);
@@ -198,10 +203,71 @@ const testSelectableSprite = () => {
   });
 
   const selectable = new CheckBoxSprite(matSet);
-  selectable.position.set(20, -10, 0);
+  selectable.position.set(20, 20, 0);
   const scale = 4.0;
   selectable.scale.set(scale, scale, scale);
   scene.add(selectable);
+};
+
+const testRadio = () => {
+  const geometry = new BoxBufferGeometry(3, 3, 3);
+
+  const getMaterialSet = () => {
+    const matSet = new StateMaterialSet({
+      normal: new MeshBasicMaterial({
+        color: 0xffffff,
+        opacity: 0.6,
+        transparent: true
+      }),
+      over: new MeshBasicMaterial({
+        color: 0xffffff,
+        opacity: 0.8,
+        transparent: true
+      }),
+      down: new MeshBasicMaterial({
+        color: 0xffffff,
+        opacity: 1.0,
+        transparent: true
+      }),
+      normalSelect: new MeshBasicMaterial({
+        color: 0xffff00,
+        opacity: 0.6,
+        transparent: true
+      }),
+      overSelect: new MeshBasicMaterial({
+        color: 0xffff00,
+        opacity: 0.8,
+        transparent: true
+      }),
+      downSelect: new MeshBasicMaterial({
+        color: 0xffff00,
+        opacity: 1.0,
+        transparent: true
+      })
+    });
+    return matSet;
+  };
+
+  const initButton = (x, buttonValue) => {
+    const button = new RadioButtonMesh({
+      geo: geometry,
+      material: getMaterialSet()
+    });
+    button.position.set(x, -10, 0);
+    button.value = buttonValue;
+    scene.add(button);
+    return button;
+  };
+
+  const manager = new RadioButtonManager();
+  manager.addButton(initButton(-10, "button01"));
+  manager.addButton(initButton(0, Math.PI));
+  manager.addButton(initButton(10, { value01: 1, value02: 2 }));
+  manager.addButton(initButton(20, undefined));
+
+  manager.addEventListener(ThreeMouseEventType.SELECT, e => {
+    console.log(e.button.value);
+  });
 };
 
 const render = () => {

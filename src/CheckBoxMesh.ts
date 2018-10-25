@@ -20,7 +20,6 @@ export class CheckBoxMesh extends ClickableMesh implements ISelectableObject3D {
       ThreeMouseEventType.SELECT,
       this
     );
-    e.isSelected = this._isSelect;
     this.dispatchEvent(e);
     this.updateMaterial();
   }
