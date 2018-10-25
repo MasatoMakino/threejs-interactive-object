@@ -37,5 +37,6 @@ export declare class RadioButtonManager extends EventDispatcher {
      */
     select(button: IRadioButtonObject3D): void;
     readonly selected: IRadioButtonObject3D;
+    readonly buttons: IRadioButtonObject3D[];
 }
 //# sourceMappingURL=RadioButtonManager.d.ts.map

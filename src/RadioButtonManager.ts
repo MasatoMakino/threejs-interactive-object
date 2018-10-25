@@ -50,11 +50,11 @@ export class RadioButtonManager extends EventDispatcher {
     const index = this._buttons.indexOf(button);
     if (index > -1) {
       this._buttons.splice(index, 1);
+      button.removeEventListener(
+        ThreeMouseEventType.SELECT,
+        this.onSelectedButton
+      );
     }
-    button.removeEventListener(
-      ThreeMouseEventType.SELECT,
-      this.onSelectedButton
-    );
     return button;
   }
 
@@ -69,6 +69,11 @@ export class RadioButtonManager extends EventDispatcher {
       return;
     }
 
+    //選択済みのボタンを再度渡されても反応しない。
+    if (button === this._selected && button.isFrozen) {
+      return;
+    }
+
     this._selected = button;
     for (let btn of this._buttons) {
       btn.selection = btn.isFrozen = btn === button;
@@ -80,5 +85,9 @@ export class RadioButtonManager extends EventDispatcher {
 
   get selected(): IRadioButtonObject3D {
     return this._selected;
+  }
+
+  get buttons(): IRadioButtonObject3D[] {
+    return this._buttons;
   }
 }
