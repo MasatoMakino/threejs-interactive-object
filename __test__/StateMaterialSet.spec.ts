@@ -1,6 +1,8 @@
 import { StateMaterial, StateMaterialSet } from "../src/index";
 import { MeshBasicMaterial, MeshMaterialType, Event } from "three";
 
+const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+
 describe("StateMaterial", () => {
   let mat: StateMaterial;
   let matArray: MeshMaterialType[];

@@ -7,6 +7,8 @@ import {
 } from "../src/index";
 import { Event } from "three";
 
+const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+
 describe("ClickableMesh", () => {
   let clickable: ClickableMesh;
   let matSet: StateMaterialSet;

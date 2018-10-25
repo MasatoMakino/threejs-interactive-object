@@ -6,7 +6,8 @@ import {
 } from "../src/index";
 import { SpriteMaterial } from "three";
 import { Event } from "three";
-import { MeshBasicMaterial } from "three";
+
+const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
 describe("ClickableSprite", () => {
   let sprite: ClickableSprite;
