@@ -12,25 +12,72 @@ export class MouseEventManager {
         canvas.addEventListener("mousedown", MouseEventManager.onDocumentMouseDown, false);
         canvas.addEventListener("mouseup", MouseEventManager.onDocumentMouseUp, false);
     }
+    /**
+     * 現在マウスオーバーしている対象をなしにする。
+     * もし、すでにマウスオーバー対象が存在するなら、マウスアウトハンドラーを呼び出した後にクリアする。
+     */
+    static clearCurrentOver() {
+        if (MouseEventManager.currentOver) {
+            MouseEventManager.onButtonHandler(MouseEventManager.currentOver, ThreeMouseEventType.OUT);
+        }
+        MouseEventManager.currentOver = null;
+    }
+    /**
+     * マウスの座標にかかっているオブジェクト一覧から、操作対象を検索し
+     * 指定されたタイプのハンドラー関数を実行させる。
+     * @param {Intersection[]} intersects
+     * @param {ThreeMouseEventType} type
+     */
+    static checkIntersects(intersects, type) {
+        const n = intersects.length;
+        if (n === 0)
+            return;
+        for (let i = 0; i < n; i++) {
+            const checked = MouseEventManager.checkTarget(intersects[i].object);
+            if (checked) {
+                MouseEventManager.onButtonHandler(checked, type);
+                break;
+            }
+        }
+    }
+    /**
+     * ボタンの各種イベントハンドラーメソッドを、typeにしたがって実行する。
+     * @param {IClickableObject3D} btn
+     * @param {ThreeMouseEventType} type
+     */
+    static onButtonHandler(btn, type) {
+        switch (type) {
+            case ThreeMouseEventType.DOWN:
+                btn.onMouseDownHandler(new ThreeMouseEvent(type, btn));
+                return;
+            case ThreeMouseEventType.UP:
+                btn.onMouseUpHandler(new ThreeMouseEvent(type, btn));
+                return;
+            case ThreeMouseEventType.OVER:
+                btn.onMouseOverHandler(new ThreeMouseEvent(type, btn));
+                return;
+            case ThreeMouseEventType.OUT:
+                btn.onMouseOutHandler(new ThreeMouseEvent(type, btn));
+                return;
+        }
+    }
     static checkTarget(target) {
         //EdgeHelper / WireframeHelperは無視。
         if (target.type === "LineSegments") {
             return null;
         }
-        //クリッカブルインターフェースを継承しているなら判定
-        if (typeof target.onMouseDownHandler !== "undefined" &&
-            target.getEnable() === true) {
+        //クリッカブルインターフェースを継承しているなら判定OK
+        const targetAny = target;
+        if (targetAny.onMouseDownHandler !== undefined &&
+            targetAny.getEnable() === true) {
             return target;
         }
-        else {
-            //継承していないならその親を探索。
-            //ターゲットから上昇して探す。
-            if (target.parent !== undefined &&
-                target.parent !== null &&
-                target.parent.type !== "Scene") {
-                return MouseEventManager.checkTarget(target.parent /*, event, functionKey*/);
-            }
+        //継承していないならその親を探索継続。
+        //ターゲットから上昇して探す。
+        if (target.parent != null && target.parent.type !== "Scene") {
+            return MouseEventManager.checkTarget(target.parent);
         }
+        //親がシーンの場合は探索終了。nullを返す。
         return null;
     }
     static updateMouse(event, mouse) {
@@ -41,7 +88,7 @@ export class MouseEventManager {
     static getIntersects(event) {
         MouseEventManager.mouse = MouseEventManager.updateMouse(event, MouseEventManager.mouse);
         MouseEventManager.raycaster.setFromCamera(MouseEventManager.mouse, MouseEventManager.camera);
-        let intersects = MouseEventManager.raycaster.intersectObjects(MouseEventManager.scene.children, true);
+        const intersects = MouseEventManager.raycaster.intersectObjects(MouseEventManager.scene.children, true);
         return intersects;
     }
 }
@@ -52,61 +99,35 @@ MouseEventManager.onDocumentMouseMove = (event) => {
     if (event.type === "mousemove") {
         event.preventDefault();
     }
-    let intersects = MouseEventManager.getIntersects(event);
-    let nonTargetFunction = () => {
-        if (MouseEventManager.currentOver) {
-            MouseEventManager.currentOver.onMouseOutHandler(new ThreeMouseEvent(ThreeMouseEventType.OUT, MouseEventManager.currentOver));
-        }
-        MouseEventManager.currentOver = null;
-    };
-    let n = intersects.length;
+    const intersects = MouseEventManager.getIntersects(event);
+    const n = intersects.length;
     if (n == 0) {
-        nonTargetFunction();
+        MouseEventManager.clearCurrentOver();
         return;
     }
     for (let i = 0; i < n; i++) {
         let checked = MouseEventManager.checkTarget(intersects[i].object);
         if (checked) {
             if (checked != MouseEventManager.currentOver) {
-                if (MouseEventManager.currentOver) {
-                    MouseEventManager.currentOver.onMouseOutHandler(new ThreeMouseEvent(ThreeMouseEventType.OUT, MouseEventManager.currentOver));
-                }
+                MouseEventManager.clearCurrentOver();
                 MouseEventManager.currentOver = checked;
-                checked.onMouseOverHandler(new ThreeMouseEvent(ThreeMouseEventType.OVER, checked));
+                MouseEventManager.onButtonHandler(checked, ThreeMouseEventType.OVER);
             }
             return;
         }
     }
-    nonTargetFunction();
+    MouseEventManager.clearCurrentOver();
     return;
 };
 MouseEventManager.onDocumentMouseDown = (event) => {
     event.preventDefault();
     const intersects = MouseEventManager.getIntersects(event);
-    const n = intersects.length;
-    if (n == 0)
-        return;
-    for (let i = 0; i < n; i++) {
-        let checked = MouseEventManager.checkTarget(intersects[i].object);
-        if (checked) {
-            checked.onMouseDownHandler(new ThreeMouseEvent(ThreeMouseEventType.DOWN, checked));
-            break;
-        }
-    }
+    MouseEventManager.checkIntersects(intersects, ThreeMouseEventType.DOWN);
 };
 MouseEventManager.onDocumentMouseUp = (event) => {
     event.preventDefault();
     let intersects = MouseEventManager.getIntersects(event);
-    let n = intersects.length;
-    if (n == 0)
-        return;
-    for (let i = 0; i < n; i++) {
-        let checked = MouseEventManager.checkTarget(intersects[i].object);
-        if (checked) {
-            checked.onMouseUpHandler(new ThreeMouseEvent(ThreeMouseEventType.UP, checked));
-            break;
-        }
-    }
+    MouseEventManager.checkIntersects(intersects, ThreeMouseEventType.UP);
 };
 /**
  * IClickable3DObjectの現在状態を表す定数セット。

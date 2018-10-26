@@ -13,8 +13,26 @@ export declare class MouseEventManager {
     static isInit: boolean;
     static init(scene: Scene, camera: Camera, renderer: Renderer): void;
     protected static onDocumentMouseMove: (event: any) => void;
+    /**
+     * 現在マウスオーバーしている対象をなしにする。
+     * もし、すでにマウスオーバー対象が存在するなら、マウスアウトハンドラーを呼び出した後にクリアする。
+     */
+    protected static clearCurrentOver(): void;
     protected static onDocumentMouseDown: (event: MouseEvent) => void;
     protected static onDocumentMouseUp: (event: MouseEvent) => void;
+    /**
+     * マウスの座標にかかっているオブジェクト一覧から、操作対象を検索し
+     * 指定されたタイプのハンドラー関数を実行させる。
+     * @param {Intersection[]} intersects
+     * @param {ThreeMouseEventType} type
+     */
+    private static checkIntersects;
+    /**
+     * ボタンの各種イベントハンドラーメソッドを、typeにしたがって実行する。
+     * @param {IClickableObject3D} btn
+     * @param {ThreeMouseEventType} type
+     */
+    private static onButtonHandler;
     protected static checkTarget(target: Object3D): any;
     protected static updateMouse(event: MouseEvent, mouse: Vector2): Vector2;
     protected static getIntersects(event: MouseEvent): Intersection[];

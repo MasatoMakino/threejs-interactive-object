@@ -9,7 +9,6 @@ import {
 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { StateMaterialSet } from "StateMaterial";
-import { Event } from "three/three-core";
 import { EventDispatcher } from "three";
 
 export class MouseEventManager {
@@ -56,23 +55,11 @@ export class MouseEventManager {
     if (event.type === "mousemove") {
       event.preventDefault();
     }
-    let intersects = MouseEventManager.getIntersects(event);
+    const intersects = MouseEventManager.getIntersects(event);
 
-    let nonTargetFunction = () => {
-      if (MouseEventManager.currentOver) {
-        MouseEventManager.currentOver.onMouseOutHandler(
-          new ThreeMouseEvent(
-            ThreeMouseEventType.OUT,
-            MouseEventManager.currentOver
-          )
-        );
-      }
-      MouseEventManager.currentOver = null;
-    };
-
-    let n: number = intersects.length;
+    const n: number = intersects.length;
     if (n == 0) {
-      nonTargetFunction();
+      MouseEventManager.clearCurrentOver();
       return;
     }
 
@@ -82,91 +69,114 @@ export class MouseEventManager {
       );
       if (checked) {
         if (checked != MouseEventManager.currentOver) {
-          if (MouseEventManager.currentOver) {
-            MouseEventManager.currentOver.onMouseOutHandler(
-              new ThreeMouseEvent(
-                ThreeMouseEventType.OUT,
-                MouseEventManager.currentOver
-              )
-            );
-          }
+          MouseEventManager.clearCurrentOver();
           MouseEventManager.currentOver = checked;
-          checked.onMouseOverHandler(
-            new ThreeMouseEvent(ThreeMouseEventType.OVER, checked)
-          );
+          MouseEventManager.onButtonHandler(checked, ThreeMouseEventType.OVER);
         }
         return;
       }
     }
 
-    nonTargetFunction();
+    MouseEventManager.clearCurrentOver();
     return;
   };
+
+  /**
+   * 現在マウスオーバーしている対象をなしにする。
+   * もし、すでにマウスオーバー対象が存在するなら、マウスアウトハンドラーを呼び出した後にクリアする。
+   */
+  protected static clearCurrentOver(): void {
+    if (MouseEventManager.currentOver) {
+      MouseEventManager.onButtonHandler(
+        MouseEventManager.currentOver,
+        ThreeMouseEventType.OUT
+      );
+    }
+    MouseEventManager.currentOver = null;
+  }
 
   protected static onDocumentMouseDown = (event: MouseEvent) => {
     event.preventDefault();
     const intersects = MouseEventManager.getIntersects(event);
-
-    const n: number = intersects.length;
-    if (n == 0) return;
-
-    for (let i = 0; i < n; i++) {
-      let checked: IClickableObject3D = MouseEventManager.checkTarget(
-        intersects[i].object
-      );
-      if (checked) {
-        checked.onMouseDownHandler(
-          new ThreeMouseEvent(ThreeMouseEventType.DOWN, checked)
-        );
-        break;
-      }
-    }
+    MouseEventManager.checkIntersects(intersects, ThreeMouseEventType.DOWN);
   };
 
   protected static onDocumentMouseUp = (event: MouseEvent) => {
     event.preventDefault();
     let intersects = MouseEventManager.getIntersects(event);
+    MouseEventManager.checkIntersects(intersects, ThreeMouseEventType.UP);
+  };
 
-    let n: number = intersects.length;
-    if (n == 0) return;
+  /**
+   * マウスの座標にかかっているオブジェクト一覧から、操作対象を検索し
+   * 指定されたタイプのハンドラー関数を実行させる。
+   * @param {Intersection[]} intersects
+   * @param {ThreeMouseEventType} type
+   */
+  private static checkIntersects(
+    intersects: Intersection[],
+    type: ThreeMouseEventType
+  ): void {
+    const n: number = intersects.length;
+    if (n === 0) return;
 
     for (let i = 0; i < n; i++) {
-      let checked: IClickableObject3D = MouseEventManager.checkTarget(
+      const checked: IClickableObject3D = MouseEventManager.checkTarget(
         intersects[i].object
       );
       if (checked) {
-        checked.onMouseUpHandler(
-          new ThreeMouseEvent(ThreeMouseEventType.UP, checked)
-        );
+        MouseEventManager.onButtonHandler(checked, type);
         break;
       }
     }
-  };
+  }
+
+  /**
+   * ボタンの各種イベントハンドラーメソッドを、typeにしたがって実行する。
+   * @param {IClickableObject3D} btn
+   * @param {ThreeMouseEventType} type
+   */
+  private static onButtonHandler(
+    btn: IClickableObject3D,
+    type: ThreeMouseEventType
+  ) {
+    switch (type) {
+      case ThreeMouseEventType.DOWN:
+        btn.onMouseDownHandler(new ThreeMouseEvent(type, btn));
+        return;
+      case ThreeMouseEventType.UP:
+        btn.onMouseUpHandler(new ThreeMouseEvent(type, btn));
+        return;
+      case ThreeMouseEventType.OVER:
+        btn.onMouseOverHandler(new ThreeMouseEvent(type, btn));
+        return;
+      case ThreeMouseEventType.OUT:
+        btn.onMouseOutHandler(new ThreeMouseEvent(type, btn));
+        return;
+    }
+  }
 
   protected static checkTarget(target: Object3D): any {
     //EdgeHelper / WireframeHelperは無視。
     if (target.type === "LineSegments") {
       return null;
     }
-    //クリッカブルインターフェースを継承しているなら判定
+    //クリッカブルインターフェースを継承しているなら判定OK
+    const targetAny = <any>target;
     if (
-      typeof (<any>target).onMouseDownHandler !== "undefined" &&
-      (<any>target).getEnable() === true
+      targetAny.onMouseDownHandler !== undefined &&
+      targetAny.getEnable() === true
     ) {
       return target;
-    } else {
-      //継承していないならその親を探索。
-      //ターゲットから上昇して探す。
-      if (
-        target.parent !== undefined &&
-        target.parent !== null &&
-        target.parent.type !== "Scene"
-      ) {
-        return MouseEventManager.checkTarget(
-          target.parent /*, event, functionKey*/
-        );
-      }
     }
+
+    //継承していないならその親を探索継続。
+    //ターゲットから上昇して探す。
+    if (target.parent != null && target.parent.type !== "Scene") {
+      return MouseEventManager.checkTarget(target.parent);
+    }
+
+    //親がシーンの場合は探索終了。nullを返す。
     return null;
   }
 
@@ -185,7 +195,7 @@ export class MouseEventManager {
       MouseEventManager.mouse,
       MouseEventManager.camera
     );
-    let intersects: Intersection[] = MouseEventManager.raycaster.intersectObjects(
+    const intersects: Intersection[] = MouseEventManager.raycaster.intersectObjects(
       MouseEventManager.scene.children,
       true
     );
