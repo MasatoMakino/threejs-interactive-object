@@ -61,40 +61,12 @@ const onDomContentsLoaded = () => {
   render();
 };
 
-const testButton = () => {
-  const geometry = new BoxBufferGeometry(3, 3, 3);
-
-  const matSet = new StateMaterialSet({
-    normal: new MeshBasicMaterial({
-      color: 0xffffff,
-      opacity: 0.6,
-      transparent: true
-    }),
-    over: new MeshBasicMaterial({
-      color: 0xffffff,
-      opacity: 0.8,
-      transparent: true
-    }),
-    down: new MeshBasicMaterial({
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true
-    })
-  });
-
-  const clickable = new ClickableMesh({
-    geo: geometry,
-    material: matSet
-  });
-
-  clickable.position.set(-10, 20, 0);
-  scene.add(clickable);
-};
-
-const testCheckbox = () => {
-  const geometry = new BoxBufferGeometry(3, 3, 3);
-
-  const matSet = new StateMaterialSet({
+/**
+ * Mesh用のマテリアルセットを新規に取得する。
+ * @returns {StateMaterialSet}
+ */
+const getMaterialSet = () => {
+  return new StateMaterialSet({
     normal: new MeshBasicMaterial({
       color: 0xffffff,
       opacity: 0.6,
@@ -126,10 +98,71 @@ const testCheckbox = () => {
       transparent: true
     })
   });
+};
 
+/**
+ * スプライト用のマテリアルセットを新規に生成する。
+ */
+const getSpriteMaterialSet = () => {
+  return new StateMaterialSet({
+    normal: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_01.png"),
+      color: 0xffffff,
+      opacity: 1.0,
+      transparent: true
+    }),
+    over: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_02.png"),
+      color: 0xffffff,
+      opacity: 1.0,
+      transparent: true
+    }),
+    down: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_03.png"),
+      color: 0xffffff,
+      opacity: 1.0,
+      transparent: true
+    }),
+    normalSelect: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_01.png"),
+      color: 0xffffff,
+      opacity: 0.5,
+      transparent: true,
+      name: "normalSelect"
+    }),
+    overSelect: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_02.png"),
+      color: 0xffffff,
+      opacity: 0.5,
+      transparent: true,
+      name: "overSelect"
+    }),
+    downSelect: new SpriteMaterial({
+      map: new TextureLoader().load("./btn045_03.png"),
+      color: 0xffffff,
+      opacity: 0.5,
+      transparent: true,
+      name: "downSelect"
+    })
+  });
+};
+
+const testButton = () => {
+  const geometry = new BoxBufferGeometry(3, 3, 3);
+  const clickable = new ClickableMesh({
+    geo: geometry,
+    material: getMaterialSet()
+  });
+
+  clickable.position.set(-10, 20, 0);
+  scene.add(clickable);
+};
+
+const testCheckbox = () => {
+  const geometry = new BoxBufferGeometry(3, 3, 3);
   const clickable = new CheckBoxMesh({
     geo: geometry,
-    material: matSet
+    material: getMaterialSet()
   });
 
   clickable.position.set(0, 20, 0);
@@ -137,22 +170,7 @@ const testCheckbox = () => {
 };
 
 const testSprite = () => {
-  const matSet = new StateMaterialSet({
-    normal: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_01.png"),
-      color: 0xffffff
-    }),
-    over: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_02.png"),
-      color: 0xffffff
-    }),
-    down: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_03.png"),
-      color: 0xffffff
-    })
-  });
-
-  const clickable = new ClickableSprite(matSet);
+  const clickable = new ClickableSprite(getSpriteMaterialSet());
   clickable.position.set(10, 20, 0);
   const scale = 4.0;
   clickable.scale.set(scale, scale, scale);
@@ -160,49 +178,7 @@ const testSprite = () => {
 };
 
 const testSelectableSprite = () => {
-  const matSet = new StateMaterialSet({
-    normal: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_01.png"),
-      color: 0xffffff,
-      opacity: 0.3,
-      transparent: true
-    }),
-    over: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_02.png"),
-      color: 0xffffff,
-      opacity: 0.3,
-      transparent: true
-    }),
-    down: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_03.png"),
-      color: 0xffffff,
-      opacity: 0.3,
-      transparent: true
-    }),
-    normalSelect: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_01.png"),
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true,
-      name: "normalSelect"
-    }),
-    overSelect: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_02.png"),
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true,
-      name: "overSelect"
-    }),
-    downSelect: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_03.png"),
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true,
-      name: "downSelect"
-    })
-  });
-
-  const selectable = new CheckBoxSprite(matSet);
+  const selectable = new CheckBoxSprite(getSpriteMaterialSet());
   selectable.position.set(20, 20, 0);
   const scale = 4.0;
   selectable.scale.set(scale, scale, scale);
@@ -211,42 +187,6 @@ const testSelectableSprite = () => {
 
 const testRadio = () => {
   const geometry = new BoxBufferGeometry(3, 3, 3);
-
-  const getMaterialSet = () => {
-    const matSet = new StateMaterialSet({
-      normal: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.6,
-        transparent: true
-      }),
-      over: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.8,
-        transparent: true
-      }),
-      down: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 1.0,
-        transparent: true
-      }),
-      normalSelect: new MeshBasicMaterial({
-        color: 0xffff00,
-        opacity: 0.6,
-        transparent: true
-      }),
-      overSelect: new MeshBasicMaterial({
-        color: 0xffff00,
-        opacity: 0.8,
-        transparent: true
-      }),
-      downSelect: new MeshBasicMaterial({
-        color: 0xffff00,
-        opacity: 1.0,
-        transparent: true
-      })
-    });
-    return matSet;
-  };
 
   const initButton = (x, buttonValue) => {
     const button = new RadioButtonMesh({
