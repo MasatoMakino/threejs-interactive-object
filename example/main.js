@@ -67,36 +67,21 @@ const onDomContentsLoaded = () => {
  */
 const getMaterialSet = () => {
   return new StateMaterialSet({
-    normal: new MeshBasicMaterial({
-      color: 0xffffff,
-      opacity: 0.6,
-      transparent: true
-    }),
-    over: new MeshBasicMaterial({
-      color: 0xffffff,
-      opacity: 0.8,
-      transparent: true
-    }),
-    down: new MeshBasicMaterial({
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true
-    }),
-    normalSelect: new MeshBasicMaterial({
-      color: 0xffff00,
-      opacity: 0.6,
-      transparent: true
-    }),
-    overSelect: new MeshBasicMaterial({
-      color: 0xffff00,
-      opacity: 0.8,
-      transparent: true
-    }),
-    downSelect: new MeshBasicMaterial({
-      color: 0xffff00,
-      opacity: 1.0,
-      transparent: true
-    })
+    normal: getMeshMaterial(0.6),
+    over: getMeshMaterial(0.8),
+    down: getMeshMaterial(1.0),
+    normalSelect: getMeshMaterial(0.6, 0xffff00),
+    overSelect: getMeshMaterial(0.8, 0xffff00),
+    downSelect: getMeshMaterial(1.0, 0xffff00)
+  });
+};
+
+const getMeshMaterial = (opacity, color) => {
+  if (color == null) color = 0xffffff;
+  return new MeshBasicMaterial({
+    color: color,
+    opacity: opacity,
+    transparent: true
   });
 };
 
@@ -105,45 +90,29 @@ const getMaterialSet = () => {
  */
 const getSpriteMaterialSet = () => {
   return new StateMaterialSet({
-    normal: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_01.png"),
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true
-    }),
-    over: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_02.png"),
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true
-    }),
-    down: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_03.png"),
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true
-    }),
-    normalSelect: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_01.png"),
-      color: 0xffffff,
-      opacity: 0.5,
-      transparent: true,
-      name: "normalSelect"
-    }),
-    overSelect: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_02.png"),
-      color: 0xffffff,
-      opacity: 0.5,
-      transparent: true,
-      name: "overSelect"
-    }),
-    downSelect: new SpriteMaterial({
-      map: new TextureLoader().load("./btn045_03.png"),
-      color: 0xffffff,
-      opacity: 0.5,
-      transparent: true,
-      name: "downSelect"
-    })
+    normal: getSpriteMaterial("./btn045_01.png", 1.0),
+    over: getSpriteMaterial("./btn045_02.png", 1.0),
+    down: getSpriteMaterial("./btn045_03.png", 1.0),
+    normalSelect: getSpriteMaterial("./btn045_01.png", 0.5),
+    overSelect: getSpriteMaterial("./btn045_02.png", 0.5),
+    downSelect: getSpriteMaterial("./btn045_03.png", 0.5)
+  });
+};
+
+/**
+ * スプライト用マテリアルを生成する
+ * @param img マップ画像URL
+ * @param opacity 透過度
+ * @param color カラー
+ * @returns {SpriteMaterial}
+ */
+const getSpriteMaterial = (img, opacity, color) => {
+  if (color == null) color = 0xffffff;
+  return new SpriteMaterial({
+    map: new TextureLoader().load(img),
+    color: color,
+    opacity: opacity,
+    transparent: true
   });
 };
 
