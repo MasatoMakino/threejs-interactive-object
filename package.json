@@ -35,8 +35,8 @@
     "copy": "cpx './bin/src/*' ./bin",
     "remove": "rimraf ./bin/__test__ ./bin/src",
     "prettier:src": "prettier --write './!(bin)/**/*.{js,ts,json}' ",
-    "server": "http-server ./example/ -o",
-    "babel": "webpack --mode development --module-bind js=babel-loader ./example/main.js --output ./example/bundle.js"
+    "server": "http-server ./docs/ -o",
+    "babel": "webpack --mode development --module-bind js=babel-loader ./docs/main.js --output ./docs/bundle.js"
   },
   "husky": {
     "hooks": {
