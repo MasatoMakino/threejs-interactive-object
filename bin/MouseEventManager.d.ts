@@ -18,8 +18,12 @@ export declare class MouseEventManager {
      * もし、すでにマウスオーバー対象が存在するなら、マウスアウトハンドラーを呼び出した後にクリアする。
      */
     protected static clearCurrentOver(): void;
-    protected static onDocumentMouseDown: (event: MouseEvent) => void;
-    protected static onDocumentMouseUp: (event: MouseEvent) => void;
+    /**
+     * カンバス上でマウスダウンかマウスアップが行われた際のイベントハンドラー
+     * マウス座標から対象となるObject3Dを探し出して操作を行う。
+     * @param {MouseEvent} event
+     */
+    protected static onDocumentMouseUpDown: (event: MouseEvent) => void;
     /**
      * マウスの座標にかかっているオブジェクト一覧から、操作対象を検索し
      * 指定されたタイプのハンドラー関数を実行させる。

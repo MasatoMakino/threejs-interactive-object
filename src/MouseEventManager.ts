@@ -41,12 +41,12 @@ export class MouseEventManager {
     );
     canvas.addEventListener(
       "mousedown",
-      MouseEventManager.onDocumentMouseDown,
+      MouseEventManager.onDocumentMouseUpDown,
       false
     );
     canvas.addEventListener(
       "mouseup",
-      MouseEventManager.onDocumentMouseUp,
+      MouseEventManager.onDocumentMouseUpDown,
       false
     );
   }
@@ -95,16 +95,24 @@ export class MouseEventManager {
     MouseEventManager.currentOver = null;
   }
 
-  protected static onDocumentMouseDown = (event: MouseEvent) => {
-    event.preventDefault();
-    const intersects = MouseEventManager.getIntersects(event);
-    MouseEventManager.checkIntersects(intersects, ThreeMouseEventType.DOWN);
-  };
-
-  protected static onDocumentMouseUp = (event: MouseEvent) => {
+  /**
+   * カンバス上でマウスダウンかマウスアップが行われた際のイベントハンドラー
+   * マウス座標から対象となるObject3Dを探し出して操作を行う。
+   * @param {MouseEvent} event
+   */
+  protected static onDocumentMouseUpDown = (event: MouseEvent) => {
+    let eventType: ThreeMouseEventType = ThreeMouseEventType.DOWN;
+    switch (event.type) {
+      case "mousedown":
+        eventType = ThreeMouseEventType.DOWN;
+        break;
+      case "mouseup":
+        eventType = ThreeMouseEventType.UP;
+        break;
+    }
     event.preventDefault();
     let intersects = MouseEventManager.getIntersects(event);
-    MouseEventManager.checkIntersects(intersects, ThreeMouseEventType.UP);
+    MouseEventManager.checkIntersects(intersects, eventType);
   };
 
   /**

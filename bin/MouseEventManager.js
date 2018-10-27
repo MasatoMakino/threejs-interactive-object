@@ -9,8 +9,8 @@ export class MouseEventManager {
         const canvas = renderer.domElement;
         MouseEventManager.canvas = canvas;
         canvas.addEventListener("mousemove", MouseEventManager.onDocumentMouseMove, false);
-        canvas.addEventListener("mousedown", MouseEventManager.onDocumentMouseDown, false);
-        canvas.addEventListener("mouseup", MouseEventManager.onDocumentMouseUp, false);
+        canvas.addEventListener("mousedown", MouseEventManager.onDocumentMouseUpDown, false);
+        canvas.addEventListener("mouseup", MouseEventManager.onDocumentMouseUpDown, false);
     }
     /**
      * 現在マウスオーバーしている対象をなしにする。
@@ -119,15 +119,24 @@ MouseEventManager.onDocumentMouseMove = (event) => {
     MouseEventManager.clearCurrentOver();
     return;
 };
-MouseEventManager.onDocumentMouseDown = (event) => {
-    event.preventDefault();
-    const intersects = MouseEventManager.getIntersects(event);
-    MouseEventManager.checkIntersects(intersects, ThreeMouseEventType.DOWN);
-};
-MouseEventManager.onDocumentMouseUp = (event) => {
+/**
+ * カンバス上でマウスダウンかマウスアップが行われた際のイベントハンドラー
+ * マウス座標から対象となるObject3Dを探し出して操作を行う。
+ * @param {MouseEvent} event
+ */
+MouseEventManager.onDocumentMouseUpDown = (event) => {
+    let eventType = ThreeMouseEventType.DOWN;
+    switch (event.type) {
+        case "mousedown":
+            eventType = ThreeMouseEventType.DOWN;
+            break;
+        case "mouseup":
+            eventType = ThreeMouseEventType.UP;
+            break;
+    }
     event.preventDefault();
     let intersects = MouseEventManager.getIntersects(event);
-    MouseEventManager.checkIntersects(intersects, ThreeMouseEventType.UP);
+    MouseEventManager.checkIntersects(intersects, eventType);
 };
 /**
  * IClickable3DObjectの現在状態を表す定数セット。
