@@ -4,12 +4,14 @@ import {
   ThreeMouseEventType,
   ClickableSprite
 } from "../src/index";
-import { SpriteMaterial,Event } from "three";
+import { SpriteMaterial, Event } from "three";
 import { getSpriteMaterialSet } from "../__test__/Materials";
 import { clickButton } from "../__test__/MouseControl";
 import { testMouseOver } from "../__test__/MouseControl";
 import { testDisable } from "../__test__/MouseControl";
 import { testSwitch } from "../__test__/MouseControl";
+import { testMouseUP } from "../__test__/MouseControl";
+import { testClick } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -35,26 +37,11 @@ describe("ClickableSprite", () => {
   });
 
   test("マウスアップ", () => {
-    const spy = jest
-      .spyOn(sprite, "dispatchEvent")
-      .mockImplementation((e: Event) => null);
-    sprite.onMouseUpHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.UP, sprite)
-    );
-    expect(spy).toHaveBeenLastCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.UP, sprite)
-    );
+    testMouseUP(sprite);
   });
 
   test("マウスダウン/クリック", () => {
-    const spy = jest
-      .spyOn(sprite, "dispatchEvent")
-      .mockImplementation((e: Event) => null);
-
-    clickButton(sprite);
-    expect(spy).toHaveBeenLastCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.CLICK, sprite)
-    );
+    testClick(sprite);
   });
 
   test("alpha", () => {

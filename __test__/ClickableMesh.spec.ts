@@ -10,6 +10,8 @@ import { clickButton, changeMaterialState } from "../__test__/MouseControl";
 import { testMouseOver } from "../__test__/MouseControl";
 import { testDisable } from "../__test__/MouseControl";
 import { testSwitch } from "../__test__/MouseControl";
+import { testMouseUP } from "../__test__/MouseControl";
+import { testClick } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -38,26 +40,11 @@ describe("ClickableMesh", () => {
   });
 
   test("マウスアップ", () => {
-    const spy = jest
-      .spyOn(clickable, "dispatchEvent")
-      .mockImplementation((e: Event) => null);
-    clickable.onMouseUpHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.UP, clickable)
-    );
-    expect(spy).toHaveBeenLastCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.UP, clickable)
-    );
+    testMouseUP(clickable);
   });
 
   test("マウスダウン/クリック", () => {
-    const spy = jest
-      .spyOn(clickable, "dispatchEvent")
-      .mockImplementation((e: Event) => null);
-
-    clickButton(clickable);
-    expect(spy).toHaveBeenLastCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.CLICK, clickable)
-    );
+    testClick(clickable);
   });
 
   test("alpha", () => {

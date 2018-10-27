@@ -9,6 +9,7 @@ import { ClickableMesh } from "../src/index";
 import { ClickableSprite } from "../src/index";
 import { MouseEventManager } from "../src/index";
 import { StateMaterialSet } from "../src/index";
+import { Event } from "three";
 
 /**
  * 対象のボタンをクリックする
@@ -91,4 +92,35 @@ export function testSwitch(
   target.switchEnable(true);
   expect(target.getEnable()).toBe(true);
   expect(target.material).toBe(matSet.normal.material);
+}
+
+/**
+ * マウスアップを行う。
+ * マウスアップのみではClickイベントが実行されないことをテストする。
+ * @param {ClickableMesh | ClickableSprite} target
+ */
+export function testMouseUP(target: ClickableMesh | ClickableSprite) {
+  const spy = jest
+    .spyOn(target, "dispatchEvent")
+    .mockImplementation((e: Event) => null);
+  target.onMouseUpHandler(new ThreeMouseEvent(ThreeMouseEventType.UP, target));
+  expect(spy).toHaveBeenLastCalledWith(
+    new ThreeMouseEvent(ThreeMouseEventType.UP, target)
+  );
+}
+
+/**
+ * マウスイベントハンドラーを順に呼び出してクリックを行う。
+ * クリックイベントが正常にdispatchされることをテストする。
+ * @param {ClickableMesh | ClickableSprite} target
+ */
+export function testClick(target: ClickableMesh | ClickableSprite) {
+  const spy = jest
+    .spyOn(target, "dispatchEvent")
+    .mockImplementation((e: Event) => null);
+
+  clickButton(target);
+  expect(spy).toHaveBeenLastCalledWith(
+    new ThreeMouseEvent(ThreeMouseEventType.CLICK, target)
+  );
 }
