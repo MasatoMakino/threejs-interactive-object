@@ -8,6 +8,7 @@ import { StateMaterial } from "../src/index";
 import { ClickableMesh } from "../src/index";
 import { ClickableSprite } from "../src/index";
 import { MouseEventManager } from "../src/index";
+import { StateMaterialSet } from "../src/index";
 
 /**
  * 対象のボタンをクリックする
@@ -37,4 +38,57 @@ export function changeMaterialState(
 ): void {
   MouseEventManager.onButtonHandler(target, type);
   expect(target.material).toBe(mat.material);
+}
+
+/**
+ * マウスオーバー状態での反応をテストする。
+ * @param {ClickableMesh | ClickableSprite} target
+ * @param {StateMaterialSet} matSet
+ */
+export function testMouseOver(
+  target: ClickableMesh | ClickableSprite,
+  matSet: StateMaterialSet
+): void {
+  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
+  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
+  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+}
+
+/**
+ * disable状態での反応をテストする。
+ * disable状態ではどの操作をしてもmaterialはdisableを維持する。
+ * @param {ClickableMesh | ClickableSprite} target
+ * @param {StateMaterialSet} matSet
+ */
+export function testDisable(
+  target: ClickableMesh | ClickableSprite,
+  matSet: StateMaterialSet
+) {
+  target.disable();
+  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.disable);
+  changeMaterialState(target, ThreeMouseEventType.DOWN, matSet.disable);
+  changeMaterialState(target, ThreeMouseEventType.UP, matSet.disable);
+  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.disable);
+
+  target.enable();
+  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
+  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+}
+
+/**
+ * mouse enable / disableのスイッチングをテストする。
+ * @param {ClickableMesh | ClickableSprite} target
+ */
+export function testSwitch(
+  target: ClickableMesh | ClickableSprite,
+  matSet: StateMaterialSet
+) {
+  target.switchEnable(false);
+  expect(target.getEnable()).toBe(false);
+  expect(target.material).toBe(matSet.disable.material);
+
+  target.switchEnable(true);
+  expect(target.getEnable()).toBe(true);
+  expect(target.material).toBe(matSet.normal.material);
 }

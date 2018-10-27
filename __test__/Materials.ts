@@ -10,6 +10,7 @@ export function getMeshMaterialSet(): StateMaterialSet {
     normal: getMeshMaterial(0.6),
     over: getMeshMaterial(0.8),
     down: getMeshMaterial(1.0),
+    disable: getMeshMaterial(0.1),
     normalSelect: getMeshMaterial(0.6, 0xffff00),
     overSelect: getMeshMaterial(0.8, 0xffff00),
     downSelect: getMeshMaterial(1.0, 0xffff00)

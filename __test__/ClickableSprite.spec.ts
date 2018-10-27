@@ -4,11 +4,12 @@ import {
   ThreeMouseEventType,
   ClickableSprite
 } from "../src/index";
-import { SpriteMaterial } from "three";
-import { Event } from "three";
+import { SpriteMaterial,Event } from "three";
 import { getSpriteMaterialSet } from "../__test__/Materials";
 import { clickButton } from "../__test__/MouseControl";
-import { changeMaterialState } from "../__test__/MouseControl";
+import { testMouseOver } from "../__test__/MouseControl";
+import { testDisable } from "../__test__/MouseControl";
+import { testSwitch } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -22,30 +23,15 @@ describe("ClickableSprite", () => {
   });
 
   test("マウスオーバー/アウト", () => {
-    changeMaterialState(sprite, ThreeMouseEventType.OVER, matSet.over);
-    changeMaterialState(sprite, ThreeMouseEventType.OUT, matSet.normal);
+    testMouseOver(sprite, matSet);
   });
 
   test("disable", () => {
-    sprite.disable();
-    changeMaterialState(sprite, ThreeMouseEventType.OVER, matSet.disable);
-    changeMaterialState(sprite, ThreeMouseEventType.DOWN, matSet.disable);
-    changeMaterialState(sprite, ThreeMouseEventType.UP, matSet.disable);
-    changeMaterialState(sprite, ThreeMouseEventType.OUT, matSet.disable);
-
-    sprite.enable();
-    changeMaterialState(sprite, ThreeMouseEventType.OVER, matSet.over);
-    changeMaterialState(sprite, ThreeMouseEventType.OUT, matSet.normal);
+    testDisable(sprite, matSet);
   });
 
   test("switch", () => {
-    sprite.switchEnable(false);
-    expect(sprite.getEnable()).toBe(false);
-    expect(sprite.material).toBe(matSet.disable.material);
-
-    sprite.switchEnable(true);
-    expect(sprite.getEnable()).toBe(true);
-    expect(sprite.material).toBe(matSet.normal.material);
+    testSwitch(sprite, matSet);
   });
 
   test("マウスアップ", () => {

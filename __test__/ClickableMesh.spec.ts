@@ -7,6 +7,9 @@ import {
 } from "../src/index";
 import { getMeshMaterialSet } from "../__test__/Materials";
 import { clickButton, changeMaterialState } from "../__test__/MouseControl";
+import { testMouseOver } from "../__test__/MouseControl";
+import { testDisable } from "../__test__/MouseControl";
+import { testSwitch } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -23,30 +26,15 @@ describe("ClickableMesh", () => {
   });
 
   test("マウスオーバー/アウト", () => {
-    changeMaterialState(clickable, ThreeMouseEventType.OVER, matSet.over);
-    changeMaterialState(clickable, ThreeMouseEventType.OUT, matSet.normal);
-    changeMaterialState(clickable, ThreeMouseEventType.OVER, matSet.over);
-    changeMaterialState(clickable, ThreeMouseEventType.OUT, matSet.normal);
+    testMouseOver(clickable, matSet);
   });
 
   test("disable", () => {
-    clickable.disable();
-    changeMaterialState(clickable, ThreeMouseEventType.OVER, matSet.disable);
-    changeMaterialState(clickable, ThreeMouseEventType.DOWN, matSet.disable);
-    changeMaterialState(clickable, ThreeMouseEventType.UP, matSet.disable);
-    changeMaterialState(clickable, ThreeMouseEventType.OUT, matSet.disable);
-
-    clickable.enable();
-    changeMaterialState(clickable, ThreeMouseEventType.OVER, matSet.over);
-    changeMaterialState(clickable, ThreeMouseEventType.OUT, matSet.normal);
+    testDisable(clickable, matSet);
   });
 
   test("switch", () => {
-    clickable.switchEnable(false);
-    expect(clickable.getEnable()).toBe(false);
-
-    clickable.switchEnable(true);
-    expect(clickable.getEnable()).toBe(true);
+    testSwitch(clickable, matSet);
   });
 
   test("マウスアップ", () => {
