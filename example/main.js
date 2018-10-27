@@ -140,18 +140,19 @@ const testCheckbox = () => {
 
 const testSprite = () => {
   const clickable = new ClickableSprite(getSpriteMaterialSet());
-  clickable.position.set(10, 20, 0);
-  const scale = 4.0;
-  clickable.scale.set(scale, scale, scale);
-  scene.add(clickable);
+  alignSprite(clickable, 10);
 };
 
 const testSelectableSprite = () => {
   const selectable = new CheckBoxSprite(getSpriteMaterialSet());
-  selectable.position.set(20, 20, 0);
+  alignSprite(selectable, 20);
+};
+
+const alignSprite = (sprite, x) => {
+  sprite.position.set(x, 20, 0);
   const scale = 4.0;
-  selectable.scale.set(scale, scale, scale);
-  scene.add(selectable);
+  sprite.scale.set(scale, scale, scale);
+  scene.add(sprite);
 };
 
 const testRadio = () => {
