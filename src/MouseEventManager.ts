@@ -136,7 +136,7 @@ export class MouseEventManager {
    * @param {IClickableObject3D} btn
    * @param {ThreeMouseEventType} type
    */
-  private static onButtonHandler(
+  public static onButtonHandler(
     btn: IClickableObject3D,
     type: ThreeMouseEventType
   ) {

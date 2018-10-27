@@ -5,88 +5,40 @@ import {
   ThreeMouseEvent,
   ThreeMouseEventType
 } from "../src/index";
+import { getMeshMaterialSet } from "../__test__/Materials";
+import { clickButton, changeMaterialState } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
 describe("ClickableMesh", () => {
   let clickable: ClickableMesh;
-  let matSet: StateMaterialSet;
+  const matSet: StateMaterialSet = getMeshMaterialSet();
 
   test("初期化", () => {
-    const geometry = new BoxBufferGeometry(3, 3, 3);
-    matSet = new StateMaterialSet({
-      normal: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.6,
-        transparent: true
-      }),
-      over: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.8,
-        transparent: true
-      }),
-      down: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 1.0,
-        transparent: true
-      })
-    });
-
     clickable = new ClickableMesh({
-      geo: geometry,
+      geo: new BoxBufferGeometry(3, 3, 3),
       material: matSet
     });
-
     expect(clickable.material).toBe(matSet.normal.material);
   });
 
   test("マウスオーバー/アウト", () => {
-    clickable.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
-    );
-    expect(clickable.material).toBe(matSet.over.material);
-    clickable.onMouseOutHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OUT, clickable)
-    );
-    expect(clickable.material).toBe(matSet.normal.material);
-    clickable.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
-    );
-    expect(clickable.material).toBe(matSet.over.material);
-    clickable.onMouseOutHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OUT, clickable)
-    );
-    expect(clickable.material).toBe(matSet.normal.material);
+    changeMaterialState(clickable, ThreeMouseEventType.OVER, matSet.over);
+    changeMaterialState(clickable, ThreeMouseEventType.OUT, matSet.normal);
+    changeMaterialState(clickable, ThreeMouseEventType.OVER, matSet.over);
+    changeMaterialState(clickable, ThreeMouseEventType.OUT, matSet.normal);
   });
 
   test("disable", () => {
     clickable.disable();
-    clickable.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
-    );
-    expect(clickable.material).toBe(matSet.disable.material);
-    clickable.onMouseDownHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.DOWN, clickable)
-    );
-    expect(clickable.material).toBe(matSet.disable.material);
-    clickable.onMouseUpHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.DOWN, clickable)
-    );
-    expect(clickable.material).toBe(matSet.disable.material);
-    clickable.onMouseOutHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.DOWN, clickable)
-    );
-    expect(clickable.material).toBe(matSet.disable.material);
+    changeMaterialState(clickable, ThreeMouseEventType.OVER, matSet.disable);
+    changeMaterialState(clickable, ThreeMouseEventType.DOWN, matSet.disable);
+    changeMaterialState(clickable, ThreeMouseEventType.UP, matSet.disable);
+    changeMaterialState(clickable, ThreeMouseEventType.OUT, matSet.disable);
 
     clickable.enable();
-    clickable.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
-    );
-    expect(clickable.material).toBe(matSet.over.material);
-    clickable.onMouseOutHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OUT, clickable)
-    );
-    expect(clickable.material).toBe(matSet.normal.material);
+    changeMaterialState(clickable, ThreeMouseEventType.OVER, matSet.over);
+    changeMaterialState(clickable, ThreeMouseEventType.OUT, matSet.normal);
   });
 
   test("switch", () => {
@@ -114,15 +66,7 @@ describe("ClickableMesh", () => {
       .spyOn(clickable, "dispatchEvent")
       .mockImplementation((e: Event) => null);
 
-    clickable.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, clickable)
-    );
-    clickable.onMouseDownHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.DOWN, clickable)
-    );
-    clickable.onMouseUpHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.UP, clickable)
-    );
+    clickButton(clickable);
     expect(spy).toHaveBeenLastCalledWith(
       new ThreeMouseEvent(ThreeMouseEventType.CLICK, clickable)
     );

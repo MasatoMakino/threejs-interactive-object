@@ -1,80 +1,24 @@
+import { Event } from "three";
 import {
-  MeshBasicMaterial,
-  BoxBufferGeometry,
-  Event,
-  SpriteMaterial
-} from "three";
-import {
-  RadioButtonMesh,
   RadioButtonManager,
-  StateMaterialSet,
   ThreeMouseEvent,
   ThreeMouseEventType,
-  IRadioButtonObject3D,
   RadioButtonSprite
 } from "../src/index";
+import { getSpriteMaterialSet } from "../__test__/Materials";
+import { clickButton } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
 /**
  * テスト用のボタンを生成する関数。
  * @param buttonValue
- * @returns {RadioButtonMesh}
+ * @returns {RadioButtonSprite}
  */
 const initButton = (buttonValue: any): RadioButtonSprite => {
-  const getMaterialSet = () => {
-    const matSet = new StateMaterialSet({
-      normal: new SpriteMaterial({
-        color: 0xffffff,
-        opacity: 0.6,
-        transparent: true
-      }),
-      over: new SpriteMaterial({
-        color: 0xffffff,
-        opacity: 0.8,
-        transparent: true
-      }),
-      down: new SpriteMaterial({
-        color: 0xffffff,
-        opacity: 1.0,
-        transparent: true
-      }),
-      normalSelect: new SpriteMaterial({
-        color: 0xffff00,
-        opacity: 0.6,
-        transparent: true
-      }),
-      overSelect: new SpriteMaterial({
-        color: 0xffff00,
-        opacity: 0.8,
-        transparent: true
-      }),
-      downSelect: new SpriteMaterial({
-        color: 0xffff00,
-        opacity: 1.0,
-        transparent: true
-      })
-    });
-    return matSet;
-  };
-
-  const button = new RadioButtonSprite(getMaterialSet());
+  const button = new RadioButtonSprite(getSpriteMaterialSet());
   button.value = buttonValue;
   return button;
-};
-
-/**
- * 対象のボタンをクリックする
- * @param {IRadioButtonObject3D} button
- */
-const clickButton = (button: IRadioButtonObject3D) => {
-  button.onMouseOverHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.OVER, button)
-  );
-  button.onMouseDownHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.DOWN, button)
-  );
-  button.onMouseUpHandler(new ThreeMouseEvent(ThreeMouseEventType.UP, button));
 };
 
 const values: any[] = [

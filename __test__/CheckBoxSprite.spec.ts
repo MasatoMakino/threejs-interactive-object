@@ -1,52 +1,13 @@
-import { Event, SpriteMaterial } from "three";
+import { Event } from "three";
 import {
-  StateMaterialSet,
   ThreeMouseEvent,
   ThreeMouseEventType,
-  CheckBoxSprite,
-  ISelectableObject3D
+  CheckBoxSprite
 } from "../src/index";
+import { getSpriteMaterialSet } from "../__test__/Materials";
+import { clickButton } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
-
-/**
- * マテリアルセットを生成する
- * @returns {StateMaterialSet}
- */
-const initMaterial = () => {
-  return new StateMaterialSet({
-    normal: new SpriteMaterial({
-      color: 0xffffff,
-      opacity: 0.6,
-      transparent: true
-    }),
-    over: new SpriteMaterial({
-      color: 0xffffff,
-      opacity: 0.8,
-      transparent: true
-    }),
-    down: new SpriteMaterial({
-      color: 0xffffff,
-      opacity: 1.0,
-      transparent: true
-    }),
-    normalSelect: new SpriteMaterial({
-      color: 0xff00ff,
-      opacity: 0.65,
-      transparent: true
-    }),
-    overSelect: new SpriteMaterial({
-      color: 0xff00ff,
-      opacity: 0.85,
-      transparent: true
-    }),
-    downSelect: new SpriteMaterial({
-      color: 0xff00ff,
-      opacity: 0.95,
-      transparent: true
-    })
-  });
-};
 
 /**
  * ボタンを生成する
@@ -54,23 +15,9 @@ const initMaterial = () => {
  * @returns {CheckBoxSprite}
  */
 const initButton = (value: any): CheckBoxSprite => {
-  const button = new CheckBoxSprite(initMaterial());
+  const button = new CheckBoxSprite(getSpriteMaterialSet());
   button.value = value;
   return button;
-};
-
-/**
- * クリックして選択
- * @param {ISelectableObject3D} button
- */
-const clickButton = (button: ISelectableObject3D) => {
-  button.onMouseOverHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.OVER, button)
-  );
-  button.onMouseDownHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.DOWN, button)
-  );
-  button.onMouseUpHandler(new ThreeMouseEvent(ThreeMouseEventType.UP, button));
 };
 
 describe("CheckBoxSprite", () => {
@@ -92,7 +39,6 @@ describe("CheckBoxSprite", () => {
       .mockImplementation((e: Event) => null);
 
     clickButton(btn);
-
     expect(spy).toHaveBeenCalledWith(
       new ThreeMouseEvent(ThreeMouseEventType.SELECT, btn)
     );

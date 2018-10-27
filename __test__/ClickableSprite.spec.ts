@@ -6,80 +6,36 @@ import {
 } from "../src/index";
 import { SpriteMaterial } from "three";
 import { Event } from "three";
+import { getSpriteMaterialSet } from "../__test__/Materials";
+import { clickButton } from "../__test__/MouseControl";
+import { changeMaterialState } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
 describe("ClickableSprite", () => {
   let sprite: ClickableSprite;
-  let matSet: StateMaterialSet;
+  const matSet: StateMaterialSet = getSpriteMaterialSet();
 
   test("初期化", () => {
-    matSet = new StateMaterialSet({
-      normal: new SpriteMaterial({
-        color: 0xffffff,
-        opacity: 0.6,
-        transparent: true
-      }),
-      over: new SpriteMaterial({
-        color: 0xffffff,
-        opacity: 0.8,
-        transparent: true
-      }),
-      down: new SpriteMaterial({
-        color: 0xffffff,
-        opacity: 1.0,
-        transparent: true
-      }),
-      disable: new SpriteMaterial({
-        color: 0xffffff,
-        opacity: 0.1,
-        transparent: true
-      })
-    });
-
     sprite = new ClickableSprite(matSet);
     expect(sprite.material).toBe(matSet.normal.material);
   });
 
   test("マウスオーバー/アウト", () => {
-    sprite.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, sprite)
-    );
-    expect(sprite.material).toBe(matSet.over.material);
-    sprite.onMouseOutHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OUT, sprite)
-    );
-    expect(sprite.material).toBe(matSet.normal.material);
+    changeMaterialState(sprite, ThreeMouseEventType.OVER, matSet.over);
+    changeMaterialState(sprite, ThreeMouseEventType.OUT, matSet.normal);
   });
 
   test("disable", () => {
     sprite.disable();
-    sprite.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, sprite)
-    );
-    expect(sprite.material).toBe(matSet.disable.material);
-    sprite.onMouseDownHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.DOWN, sprite)
-    );
-    expect(sprite.material).toBe(matSet.disable.material);
-    sprite.onMouseUpHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.UP, sprite)
-    );
-    expect(sprite.material).toBe(matSet.disable.material);
-    sprite.onMouseOutHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OUT, sprite)
-    );
-    expect(sprite.material).toBe(matSet.disable.material);
+    changeMaterialState(sprite, ThreeMouseEventType.OVER, matSet.disable);
+    changeMaterialState(sprite, ThreeMouseEventType.DOWN, matSet.disable);
+    changeMaterialState(sprite, ThreeMouseEventType.UP, matSet.disable);
+    changeMaterialState(sprite, ThreeMouseEventType.OUT, matSet.disable);
 
     sprite.enable();
-    sprite.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, sprite)
-    );
-    expect(sprite.material).toBe(matSet.over.material);
-    sprite.onMouseOutHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OUT, sprite)
-    );
-    expect(sprite.material).toBe(matSet.normal.material);
+    changeMaterialState(sprite, ThreeMouseEventType.OVER, matSet.over);
+    changeMaterialState(sprite, ThreeMouseEventType.OUT, matSet.normal);
   });
 
   test("switch", () => {
@@ -109,15 +65,7 @@ describe("ClickableSprite", () => {
       .spyOn(sprite, "dispatchEvent")
       .mockImplementation((e: Event) => null);
 
-    sprite.onMouseOverHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.OVER, sprite)
-    );
-    sprite.onMouseDownHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.DOWN, sprite)
-    );
-    sprite.onMouseUpHandler(
-      new ThreeMouseEvent(ThreeMouseEventType.UP, sprite)
-    );
+    clickButton(sprite);
     expect(spy).toHaveBeenLastCalledWith(
       new ThreeMouseEvent(ThreeMouseEventType.CLICK, sprite)
     );

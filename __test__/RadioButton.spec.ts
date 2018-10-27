@@ -1,12 +1,12 @@
-import { MeshBasicMaterial, BoxBufferGeometry, Event } from "three";
+import { BoxBufferGeometry, Event } from "three";
 import {
   RadioButtonMesh,
   RadioButtonManager,
-  StateMaterialSet,
   ThreeMouseEvent,
-  ThreeMouseEventType,
-  IRadioButtonObject3D
+  ThreeMouseEventType
 } from "../src/index";
+import { getMeshMaterialSet } from "../__test__/Materials";
+import { clickButton } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -16,62 +16,12 @@ const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
  * @returns {RadioButtonMesh}
  */
 const initButton = (buttonValue: any): RadioButtonMesh => {
-  const getMaterialSet = () => {
-    const matSet = new StateMaterialSet({
-      normal: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.6,
-        transparent: true
-      }),
-      over: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 0.8,
-        transparent: true
-      }),
-      down: new MeshBasicMaterial({
-        color: 0xffffff,
-        opacity: 1.0,
-        transparent: true
-      }),
-      normalSelect: new MeshBasicMaterial({
-        color: 0xffff00,
-        opacity: 0.6,
-        transparent: true
-      }),
-      overSelect: new MeshBasicMaterial({
-        color: 0xffff00,
-        opacity: 0.8,
-        transparent: true
-      }),
-      downSelect: new MeshBasicMaterial({
-        color: 0xffff00,
-        opacity: 1.0,
-        transparent: true
-      })
-    });
-    return matSet;
-  };
-
   const button = new RadioButtonMesh({
     geo: new BoxBufferGeometry(3, 3, 3),
-    material: getMaterialSet()
+    material: getMeshMaterialSet()
   });
   button.value = buttonValue;
   return button;
-};
-
-/**
- * 対象のボタンをクリックする
- * @param {IRadioButtonObject3D} button
- */
-const clickButton = (button: IRadioButtonObject3D) => {
-  button.onMouseOverHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.OVER, button)
-  );
-  button.onMouseDownHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.DOWN, button)
-  );
-  button.onMouseUpHandler(new ThreeMouseEvent(ThreeMouseEventType.UP, button));
 };
 
 const values: any[] = [
@@ -147,7 +97,6 @@ describe("RadioButton", () => {
       .mockImplementation((e: Event) => null);
 
     clickButton(button);
-
     expect(spyButton).toHaveBeenCalledWith(
       new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
     );
@@ -165,7 +114,6 @@ describe("RadioButton", () => {
       expect(button.isFrozen).toBe(true);
 
       clickButton(button);
-
       //二回目の操作はイベントが発生しない。
       setTimeout(() => {
         expect(spyButton).not.toHaveBeenCalledWith(

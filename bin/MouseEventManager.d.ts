@@ -1,5 +1,5 @@
 import { Object3D, Raycaster, Vector2, Camera, Renderer, Scene, Intersection } from "three";
-import { ThreeMouseEvent } from "./ThreeMouseEvent";
+import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { StateMaterialSet } from "StateMaterial";
 import { EventDispatcher } from "three";
 export declare class MouseEventManager {
@@ -32,7 +32,7 @@ export declare class MouseEventManager {
      * @param {IClickableObject3D} btn
      * @param {ThreeMouseEventType} type
      */
-    private static onButtonHandler;
+    static onButtonHandler(btn: IClickableObject3D, type: ThreeMouseEventType): void;
     protected static checkTarget(target: Object3D): any;
     protected static updateMouse(event: MouseEvent, mouse: Vector2): Vector2;
     protected static getIntersects(event: MouseEvent): Intersection[];
