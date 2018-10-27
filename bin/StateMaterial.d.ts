@@ -1,4 +1,4 @@
-import { MeshMaterialType, SpriteMaterial } from "three";
+import { Material } from "three";
 import { ClickableState } from "./MouseEventManager";
 /**
  * ClickableMesh用の、各状態用マテリアル。
@@ -13,10 +13,10 @@ export declare class StateMaterial {
     private _material;
     private alpha;
     private alphaArray;
-    constructor(material: MeshMaterialType | MeshMaterialType[] | SpriteMaterial);
+    constructor(material: Material | Material[]);
     private updateAlpha;
     private getAlphaArray;
-    material: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+    material: Material | Material[];
     setOpacity(opacity: number): void;
 }
 export declare class StateMaterialSet {
@@ -28,13 +28,13 @@ export declare class StateMaterialSet {
     overSelect: StateMaterial;
     downSelect: StateMaterial;
     constructor(param: {
-        normal: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-        over?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-        down?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-        disable?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-        normalSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-        overSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-        downSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+        normal: Material | Material[];
+        over?: Material | Material[];
+        down?: Material | Material[];
+        disable?: Material | Material[];
+        normalSelect?: Material | Material[];
+        overSelect?: Material | Material[];
+        downSelect?: Material | Material[];
     });
     init(): void;
     getMaterial(state: ClickableState, mouseEnabled: boolean, isSelected?: boolean): StateMaterial;

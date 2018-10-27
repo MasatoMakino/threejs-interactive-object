@@ -1,4 +1,4 @@
-import { MeshMaterialType, SpriteMaterial } from "three";
+import { Material, SpriteMaterial } from "three";
 import { ClickableState } from "./MouseEventManager";
 
 /**
@@ -12,13 +12,11 @@ import { ClickableState } from "./MouseEventManager";
  */
 
 export class StateMaterial {
-  private _material!: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+  private _material!: Material | Material[];
   private alpha: number = 1.0;
   private alphaArray!: number[];
 
-  constructor(
-    material: MeshMaterialType | MeshMaterialType[] | SpriteMaterial
-  ) {
+  constructor(material: Material | Material[]) {
     this.material = material;
   }
 
@@ -31,7 +29,7 @@ export class StateMaterial {
   }
 
   private getAlphaArray(): number[] {
-    const matArray = this._material as MeshMaterialType[];
+    const matArray = this._material as Material[];
     const n = matArray.length;
 
     const array = [];
@@ -41,12 +39,12 @@ export class StateMaterial {
     return array;
   }
 
-  set material(value: MeshMaterialType | MeshMaterialType[] | SpriteMaterial) {
+  set material(value: Material | Material[]) {
     this._material = value;
     this.updateAlpha();
   }
 
-  get material(): MeshMaterialType | MeshMaterialType[] | SpriteMaterial {
+  get material(): Material | Material[] {
     return this._material;
   }
 
@@ -74,13 +72,13 @@ export class StateMaterialSet {
   downSelect!: StateMaterial;
 
   constructor(param: {
-    normal: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-    over?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-    down?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-    disable?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-    normalSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-    overSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
-    downSelect?: MeshMaterialType | MeshMaterialType[] | SpriteMaterial;
+    normal: Material | Material[];
+    over?: Material | Material[];
+    down?: Material | Material[];
+    disable?: Material | Material[];
+    normalSelect?: Material | Material[];
+    overSelect?: Material | Material[];
+    downSelect?: Material | Material[];
   }) {
     this.normal = new StateMaterial(param.normal);
     if (param.over) this.over = new StateMaterial(param.over);

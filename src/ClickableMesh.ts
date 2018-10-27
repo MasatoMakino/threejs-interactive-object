@@ -4,7 +4,7 @@ import {
   MouseEventManager
 } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { MeshMaterialType, BufferGeometry, Geometry, Mesh } from "three";
+import { Material, BufferGeometry, Geometry, Mesh } from "three";
 import { StateMaterialSet } from "./StateMaterial";
 
 export class ClickableMesh extends Mesh implements IClickableObject3D {
@@ -112,7 +112,7 @@ export class ClickableMesh extends Mesh implements IClickableObject3D {
       this.state,
       this._enableMouse
     );
-    this.material = stateMat.material as MeshMaterialType | MeshMaterialType[];
+    this.material = stateMat.material;
   }
 
   public switchEnable(bool: boolean): void {

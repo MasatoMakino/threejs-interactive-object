@@ -1,7 +1,7 @@
 import { ClickableState, ISelectableObject3D } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { ClickableMesh } from "./ClickableMesh";
-import { MeshMaterialType } from "three";
+import { Material } from "three";
 
 export class CheckBoxMesh extends ClickableMesh implements ISelectableObject3D {
   protected _isSelect: boolean = false;
@@ -39,6 +39,6 @@ export class CheckBoxMesh extends ClickableMesh implements ISelectableObject3D {
       this._enableMouse,
       this._isSelect
     );
-    this.material = stateMat.material as MeshMaterialType | MeshMaterialType[];
+    this.material = stateMat.material;
   }
 }

@@ -1,11 +1,11 @@
 import { StateMaterial, StateMaterialSet } from "../src/index";
-import { MeshBasicMaterial, MeshMaterialType, Event } from "three";
+import { MeshBasicMaterial, Material, Event } from "three";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
 describe("StateMaterial", () => {
   let mat: StateMaterial;
-  let matArray: MeshMaterialType[];
+  let matArray: Material[];
 
   test("constructor : Material array", () => {
     matArray = [
@@ -42,12 +42,12 @@ describe("StateMaterial", () => {
     ];
     mat = new StateMaterial(matArray);
 
-    expect((mat.material as MeshMaterialType[])[0].opacity).toBe(0.6);
+    expect((mat.material as Material[])[0].opacity).toBe(0.6);
   });
 
   test("updateAlpha : Material array", () => {
     mat.setOpacity(0.5);
-    const array = mat.material as MeshMaterialType[];
+    const array = mat.material as Material[];
     expect(array[0].opacity).toBe(0.3);
     expect(array[1].opacity).toBe(0.25);
     expect(array[2].opacity).toBe(0.2);
