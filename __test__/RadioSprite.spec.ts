@@ -1,8 +1,8 @@
 import { RadioButtonManager, RadioButtonSprite } from "../src/index";
 import { getSpriteMaterialSet } from "../__test__/Materials";
-import { getButtonValues } from "../__test__/RadioObject";
 import { testRadioSelection } from "../__test__/RadioObject";
 import { testRadioSelectionWithMouse } from "../__test__/RadioObject";
+import { testInitManager } from "../__test__/RadioObject";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -20,11 +20,7 @@ const initButton = (buttonValue: any): RadioButtonSprite => {
 const manager: RadioButtonManager = new RadioButtonManager();
 describe("RadioButtonSprite", () => {
   test("初期化", () => {
-    const values = getButtonValues();
-    for (let value of values) {
-      manager.addButton(initButton(value));
-    }
-    expect(manager.buttons[2].value).toBe(values[2]);
+    testInitManager(manager, initButton);
   });
 
   test("選択変更", () => {

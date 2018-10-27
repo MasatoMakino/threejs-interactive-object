@@ -2,9 +2,13 @@ import { Event } from "three";
 import {
   ThreeMouseEventType,
   ThreeMouseEvent,
-  RadioButtonManager
+  RadioButtonManager,
+  RadioButtonMesh,
+  RadioButtonSprite
 } from "../src/index";
 import { clickButton } from "../__test__/MouseControl";
+import { IRadioButtonObject3D } from "../src/index";
+import SpyInstance = jest.SpyInstance;
 
 /**
  * テスト用のbuttonValueサンプルを生成する。
@@ -12,6 +16,23 @@ import { clickButton } from "../__test__/MouseControl";
  */
 export function getButtonValues(): any[] {
   return ["button01", 2, { value: "button03" }, undefined, undefined];
+}
+
+/**
+ * マネージャーの初期化を行う。
+ * 格納されたボタンが正常に呼び出せるかをテストする。
+ * @param {RadioButtonManager} manager
+ * @param {(value: any) => (RadioButtonMesh | RadioButtonSprite)} genarator
+ */
+export function testInitManager(
+  manager: RadioButtonManager,
+  genarator: (value: any) => RadioButtonMesh | RadioButtonSprite
+) {
+  const values = getButtonValues();
+  for (let value of values) {
+    manager.addButton(genarator(value));
+  }
+  expect(manager.buttons[2].value).toBe(values[2]);
 }
 
 /**
@@ -27,10 +48,19 @@ export function testRadioSelection(manager: RadioButtonManager) {
 
   const index = 0;
   const button = manager.buttons[index];
+
+  expect(button.isFrozen).toBe(false);
   manager.select(button);
   expect(manager.selected.value).toEqual(values[index]);
 
   expect(spyManager).toHaveBeenCalledWith(
+    new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
+  );
+  expect(button.isFrozen).toBe(true);
+
+  spyManager.mockClear();
+  manager.select(button);
+  expect(spyManager).not.toHaveBeenCalledWith(
     new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
   );
   expect(button.isFrozen).toBe(true);
@@ -40,48 +70,41 @@ export function testRadioSelection(manager: RadioButtonManager) {
  * マウスイベントハンドラー経由でボタンの選択を行う。
  * @param {RadioButtonManager} manager
  */
-export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
+export function testRadioSelectionWithMouse(
+  manager: RadioButtonManager
+  // done: () => void
+) {
   manager.select(manager.buttons[0]);
 
   const index = 2;
   const button = manager.buttons[index];
+
+  expect(button.isFrozen).toBe(false);
+  clickButton(button);
+  expect(button.isFrozen).toBe(true);
+  expect(manager.selected.value).toEqual(button.value);
+
+  onClickSecondTime(manager, button);
+}
+
+/**
+ * 二回目のクリックテスト
+ * @param {RadioButtonManager} manager
+ * @param {IRadioButtonObject3D} button
+ */
+const onClickSecondTime = (
+  manager: RadioButtonManager,
+  button: IRadioButtonObject3D
+) => {
   const spyButton = jest
     .spyOn(button, "dispatchEvent")
     .mockImplementation((e: Event) => null);
-  const spyManager = jest
-    .spyOn(manager, "dispatchEvent")
-    .mockImplementation((e: Event) => null);
 
   clickButton(button);
-  expect(spyButton).toHaveBeenCalledWith(
+  expect(spyButton).not.toHaveBeenCalledWith(
     new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
   );
-  expect(spyButton).toHaveBeenLastCalledWith(
+  expect(spyButton).not.toHaveBeenCalledWith(
     new ThreeMouseEvent(ThreeMouseEventType.CLICK, button)
   );
-  //操作完了直後はFrozenがdispatchされていないのでまだfalseのまま
-  expect(button.isFrozen).toBe(false);
-
-  //マウス操作の場合、managerはdispatch後に稼働するため、1フレーム分のディレイを入れている。
-  setTimeout(() => {
-    expect(manager.selected.value).toEqual(button.value);
-    expect(spyManager).toHaveBeenCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
-    );
-    expect(button.isFrozen).toBe(true);
-
-    clickButton(button);
-    //二回目の操作はイベントが発生しない。
-    setTimeout(() => {
-      expect(spyButton).not.toHaveBeenCalledWith(
-        new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
-      );
-      expect(spyButton).not.toHaveBeenCalledWith(
-        new ThreeMouseEvent(ThreeMouseEventType.CLICK, button)
-      );
-      expect(spyManager).not.toHaveBeenCalledWith(
-        new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
-      );
-    }, 16);
-  }, 16);
-}
+};
