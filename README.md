@@ -48,7 +48,7 @@ import {
 
 #### init MouseEventManager
 
-MouseEventManager class is watch MouseEvent on canvas element.
+MouseEventManager class watch MouseEvent on canvas element.
 
 initialize MouseEventManager before create a button.
 
