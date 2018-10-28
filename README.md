@@ -16,13 +16,13 @@ Mouse interactive objects for three.js
 
 threejs-interactive-object depend on [three.js](https://threejs.org/)
 
-```
+```bash
 npm install three --save-dev
 ```
 
 and
 
-```
+```bash
 npm install https://github.com/MasatoMakino/threejs-interactive-object.git --save-dev
 ```
 
@@ -84,7 +84,7 @@ see also [demo script](https://masatomakino.github.io/threejs-interactive-object
 
 ## Uninstall
 
-```
+```bash
 npm uninstall https://github.com/MasatoMakino/threejs-interactive-object.git
 ```
 
