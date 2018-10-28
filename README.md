@@ -85,7 +85,7 @@ see also [demo script](https://masatomakino.github.io/threejs-interactive-object
 ## Uninstall
 
 ```bash
-npm uninstall https://github.com/MasatoMakino/threejs-interactive-object.git
+npm uninstall https://github.com/MasatoMakino/threejs-interactive-object.git --save-dev
 ```
 
 ## License
