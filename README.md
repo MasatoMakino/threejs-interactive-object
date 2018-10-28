@@ -10,3 +10,84 @@ Mouse interactive objects for three.js
 
 [Demo Page](https://masatomakino.github.io/threejs-interactive-object/index.html)
 
+## Getting Started
+
+### Install
+
+threejs-interactive-object depend on [three.js](https://threejs.org/)
+
+```
+npm install three --save-dev
+```
+
+and
+
+```
+npm install https://github.com/MasatoMakino/threejs-interactive-object.git --save-dev
+```
+
+### Import
+
+
+threejs-interactive-object is composed of ES6 modules and TypeScript d.ts files.
+
+At first, import classes.
+
+```js
+import {
+  ClickableMesh,
+  StateMaterialSet,
+  StateMaterial,
+  MouseEventManager,
+  ThreeMouseEvent,
+  ThreeMouseEventType
+} from "threejs-interactive-object";
+```
+
+### Create buttons
+
+#### init MouseEventManager
+
+MouseEventManager class is watch MouseEvent on canvas element.
+
+initialize MouseEventManager before create a button.
+
+```js
+MouseEventManager.init(scene, camera, renderer);
+```
+
+#### init button
+
+Create buttons and add to scene.
+
+```js
+const clickable = new ClickableMesh({
+  geo: new BoxBufferGeometry(3, 3, 3),
+  material: new StateMaterialSet({
+    normal: new MeshBasicMaterial({
+      color: 0xffffff
+    })
+  })
+});
+scene.add(clickable);
+```
+
+and add event listener
+
+```js
+clickable.addEventListener(ThreeMouseEventType.CLICK, (e)=>{
+    cosole.log("CLICKED!");
+});
+```
+
+see also [demo script](https://masatomakino.github.io/threejs-interactive-object/main.js).
+
+## Uninstall
+
+```
+npm uninstall https://github.com/MasatoMakino/threejs-interactive-object.git
+```
+
+## License
+
+threejs-interactive-object is [MIT licensed](LICENSE).
