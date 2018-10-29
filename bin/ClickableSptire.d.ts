@@ -3,9 +3,7 @@ import { ThreeMouseEvent } from "./ThreeMouseEvent";
 import { Sprite } from "three";
 import { StateMaterialSet } from "./StateMaterial";
 /**
- * Created by makinomasato on 2016/05/02.
- * クリック可能なSpriteです。
- * ビルボードボタンとして使用することを想定しています。
+ * クリックに反応するSprite。
  */
 export declare class ClickableSprite extends Sprite implements IClickableObject3D {
     isPress: boolean;

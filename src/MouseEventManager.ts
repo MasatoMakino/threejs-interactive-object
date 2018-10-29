@@ -5,11 +5,11 @@ import {
   Camera,
   Renderer,
   Scene,
-  Intersection
+  Intersection,
+  EventDispatcher
 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { StateMaterialSet } from "StateMaterial";
-import { EventDispatcher } from "three";
 
 export class MouseEventManager {
   protected static camera: Camera;

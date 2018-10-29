@@ -1,6 +1,9 @@
 import { ClickableState, MouseEventManager } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { Mesh } from "three";
+/**
+ * クリックに反応するMesh。
+ */
 export class ClickableMesh extends Mesh {
     /**
      * コンストラクタ

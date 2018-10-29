@@ -4,9 +4,7 @@ import { Sprite, SpriteMaterial } from "three";
 import { StateMaterialSet } from "./StateMaterial";
 
 /**
- * Created by makinomasato on 2016/05/02.
- * クリック可能なSpriteです。
- * ビルボードボタンとして使用することを想定しています。
+ * クリックに反応するSprite。
  */
 
 export class ClickableSprite extends Sprite implements IClickableObject3D {

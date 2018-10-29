@@ -1,13 +1,13 @@
 import { Material } from "three";
 import { ClickableState } from "./MouseEventManager";
 /**
- * ClickableMesh用の、各状態用マテリアル。
+ * IClickableObject3D用の各状態用マテリアル。
  * マテリアルと固定値のalphaプロパティで構成される。
  *
- * alphaプロパティはmaterialが設定された時にそのopacityを引き継ぐ。
- * materialのopacityは、alpha * meshのalphaで設定される。
- * これはClickableMeshの各状態のopacityがアニメーションで同期するため。
- * （meshのalphaが0になると全て非表示、1.0になるとマテリアル本来のopacityに戻る）
+ * alphaプロパティはコンストラクタ引数のmaterial.opacityを引き継ぐ。
+ * StateMaterialのopacityは、StateMaterialのalpha * StateMaterialSetのalphaで設定される。
+ * これはStateMaterialSetの各状態のopacityがアニメーションで同期するため。
+ * （StateMaterialSetのalphaが0になると全て非表示、1.0になるとマテリアル本来のopacityに戻る）
  */
 export declare class StateMaterial {
     private _material;

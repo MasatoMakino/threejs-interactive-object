@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "es2015",
+    "target": "es6",
+    "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+    "baseUrl": "./src"         /* Base directory to resolve non-absolute module names. */
+  },
+  "typedocOptions": {
+    "ignoreCompilerErrors": true,
+    "mode": "modules",
+    "out": "./docs/api"
+  }
+}

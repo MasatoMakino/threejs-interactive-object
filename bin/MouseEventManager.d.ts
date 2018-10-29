@@ -1,7 +1,6 @@
-import { Object3D, Raycaster, Vector2, Camera, Renderer, Scene, Intersection } from "three";
+import { Object3D, Raycaster, Vector2, Camera, Renderer, Scene, Intersection, EventDispatcher } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { StateMaterialSet } from "StateMaterial";
-import { EventDispatcher } from "three";
 export declare class MouseEventManager {
     protected static camera: Camera;
     protected static renderer: Renderer;
