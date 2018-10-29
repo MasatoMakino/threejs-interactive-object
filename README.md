@@ -48,7 +48,7 @@ import {
 
 ### Create buttons
 
-[API documents](https://masatomakino.github.io/threejs-interactive-object/api/index.html)
+[API documents](https://masatomakino.github.io/threejs-interactive-object/api/)
 
 #### init MouseEventManager
 
