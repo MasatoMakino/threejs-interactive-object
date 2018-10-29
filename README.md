@@ -4,7 +4,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/2c756ac812782947b080/maintainability)](https://codeclimate.com/github/MasatoMakino/threejs-interactive-object/maintainability)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
-Mouse interactive objects for three.js
+[Github repository](https://github.com/MasatoMakino/threejs-interactive-object)
+
+> Mouse interactive objects for three.js
 
 ## Demo
 
@@ -45,6 +47,8 @@ import {
 ```
 
 ### Create buttons
+
+[API documents](https://masatomakino.github.io/threejs-interactive-object/api/index.html)
 
 #### init MouseEventManager
 
