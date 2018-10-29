@@ -4,8 +4,8 @@ const options = {
   //Glob(s)
   files: ["docs/api/**/*.html"],
   //Replacement to make (string or regex)
-  from: /\/Users.*node_modules\/@types/g,
-  to: "node_modules/@types"
+  from: /\/Users.*node_modules\//g,
+  to: "node_modules/"
 };
 
 try {
