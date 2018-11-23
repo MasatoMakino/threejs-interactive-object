@@ -9,7 +9,7 @@ import {
   EventDispatcher
 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { StateMaterialSet } from "StateMaterial";
+import { StateMaterialSet } from "./StateMaterial";
 
 export class MouseEventManager {
   protected static camera: Camera;
