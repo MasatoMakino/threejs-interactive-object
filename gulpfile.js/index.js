@@ -4,7 +4,7 @@ const { series } = require("gulp");
 
 const doc = require("gulptask-tsdoc")();
 exports.doc = doc;
-const server = require("gulptask-dev-server")("./docs");
+const server = require("gulptask-dev-server")("./docs/demo");
 exports.server = server;
 const { bundleDevelopment, watchBundle } = require("gulptask-webpack")(
   "./webpack.config.js"

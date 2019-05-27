@@ -15,7 +15,7 @@ glob
 module.exports = {
   entry: entries,
   output: {
-    path: path.join(__dirname, "docs"),
+    path: path.join(__dirname, "docs/demo"),
     filename: "[name]"
   },
   module: {

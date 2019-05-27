@@ -10,7 +10,7 @@
 
 ## Demo
 
-[Demo Page](https://masatomakino.github.io/threejs-interactive-object/index.html)
+[Demo Page](https://masatomakino.github.io/threejs-interactive-object/demo/)
 
 ## Getting Started
 
@@ -84,7 +84,6 @@ clickable.addEventListener(ThreeMouseEventType.CLICK, (e)=>{
 });
 ```
 
-see also [demo script](https://masatomakino.github.io/threejs-interactive-object/main.js).
 
 ## Uninstall
 
