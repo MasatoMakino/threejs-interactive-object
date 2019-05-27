@@ -17,13 +17,12 @@
     "babel-loader": "^8.0.4",
     "gulp": "^4.0.2",
     "gulptask-dev-server": "https://github.com/MasatoMakino/gulptask-dev-server.git",
+    "gulptask-tsdoc": "https://github.com/MasatoMakino/gulptask-tsdoc.git",
     "husky": "^2.3.0",
     "jest": "^24.1.0",
     "prettier": "^1.15.2",
-    "replace-in-file": "^4.1.0",
     "three": "^0.104.0",
     "ts-jest": "^24.0.2",
-    "typedoc": "^0.14.2",
     "typescript": "^3.1.6",
     "webpack": "^4.26.0",
     "webpack-cli": "^3.1.2"
@@ -34,9 +33,7 @@
     "prettier:src": "prettier --write './!(bin|docs|coverage)/**/*.{js,ts,json}' ",
     "server": "gulp server",
     "babel": "webpack --mode development --module-bind js=babel-loader ./docs/main.js --output ./docs/bundle.js",
-    "doc": "npm run doc:generate && npm run doc:replaceNode && npm run doc:card",
-    "doc:generate": "typedoc --tsconfig tsdocconfig.json src",
-    "doc:replaceNode": "node ./task/replaceAPI.js",
+    "doc": "gulp doc && npm run doc:card",
     "doc:card": "repoimg -n MasatoMakino/threejs-interactive-object -o ./docs/card.png"
   },
   "husky": {
