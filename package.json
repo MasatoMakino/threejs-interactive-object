@@ -32,10 +32,8 @@
   "scripts": {
     "test": "jest --coverage",
     "start:dev": "gulp start_dev",
-    "build": "npm run prettier:src && gulp tsc && npm run babel && npm run doc",
+    "build": "npm run prettier:src && gulp build && npm run doc:card",
     "prettier:src": "prettier --write './!(bin|docs|coverage)/**/*.{js,ts,json}' ",
-    "babel": "gulp bundleDevelopment",
-    "doc": "gulp doc && npm run doc:card",
     "doc:card": "repoimg -n MasatoMakino/threejs-interactive-object -o ./docs/card.png"
   },
   "husky": {
