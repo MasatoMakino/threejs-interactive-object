@@ -1,6 +1,6 @@
 {
   "name": "threejs-interactive-object",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "main": "./bin/index.js",
   "types": "./bin/index.d.ts",
   "repository": "https://MasatoMakino@github.com/MasatoMakino/threejs-interactive-object.git",
@@ -20,10 +20,10 @@
     "gulptask-tsc": "https://github.com/MasatoMakino/gulptask-tsc.git",
     "gulptask-tsdoc": "https://github.com/MasatoMakino/gulptask-tsdoc.git",
     "gulptask-webpack": "https://github.com/MasatoMakino/gulptask-webpack.git",
-    "husky": "^2.3.0",
+    "husky": "^2.4.0",
     "jest": "^24.1.0",
-    "prettier": "^1.15.2",
-    "three": "^0.104.0",
+    "prettier": "^1.18.2",
+    "three": "^0.105.2",
     "ts-jest": "^24.0.2"
   },
   "scripts": {
