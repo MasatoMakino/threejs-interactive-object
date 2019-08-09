@@ -1,6 +1,6 @@
 {
   "name": "threejs-interactive-object",
-  "version": "0.7.6",
+  "version": "0.7.7",
   "main": "./bin/index.js",
   "types": "./bin/index.d.ts",
   "repository": "https://MasatoMakino@github.com/MasatoMakino/threejs-interactive-object.git",
@@ -9,22 +9,23 @@
   "keywords": [
     "threejs"
   ],
-  "dependencies": {
-    "three": "^0.106.2"
+  "peerDependencies": {
+    "three": "^0.107.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
-    "@types/jest": "^24.0.15",
+    "@types/jest": "^24.0.17",
     "babel-loader": "^8.0.6",
     "gulp": "^4.0.2",
     "gulptask-dev-server": "https://github.com/MasatoMakino/gulptask-dev-server.git",
     "gulptask-tsc": "https://github.com/MasatoMakino/gulptask-tsc.git",
     "gulptask-tsdoc": "https://github.com/MasatoMakino/gulptask-tsdoc.git",
     "gulptask-webpack": "https://github.com/MasatoMakino/gulptask-webpack.git",
-    "husky": "^3.0.1",
+    "husky": "^3.0.3",
     "jest": "^24.1.0",
     "prettier": "^1.18.2",
+    "three": "^0.107.0",
     "ts-jest": "^24.0.2"
   },
   "scripts": {
