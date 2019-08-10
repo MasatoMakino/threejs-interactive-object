@@ -1,5 +1,6 @@
 import { StateMaterial, StateMaterialSet } from "../src/index";
-import { MeshBasicMaterial, Material, Event } from "three";
+import { ClickableState } from "../src/index";
+import { Material, MeshBasicMaterial } from "three";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -58,17 +59,34 @@ describe("StateMaterial", () => {
 });
 
 describe("StateMaterialSet", () => {
-  let matSet: StateMaterialSet;
-
-  test("constructor : normalマテリアルのみ", () => {
-    matSet = new StateMaterialSet({
+  const getMatSet = () => {
+    return new StateMaterialSet({
       normal: new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.6,
         transparent: true
       })
     });
-
+  };
+  test("constructor : normalマテリアルのみ", () => {
+    const matSet = getMatSet();
     expect(matSet.down).toBe(matSet.normal);
+  });
+
+  test("constructor : 任意のマテリアルの取得", () => {
+    const matSet = getMatSet();
+    matSet.overSelect = new StateMaterial(
+      new MeshBasicMaterial({
+        color: 0xff66ff,
+        opacity: 0.6,
+        transparent: true
+      })
+    );
+
+    const mat = matSet.getMaterial(ClickableState.OVER, true, true);
+
+    expect(mat).toBe(matSet.overSelect);
+    expect(mat).not.toBe(matSet.over);
+    expect(mat).not.toBe(matSet.normal);
   });
 });
