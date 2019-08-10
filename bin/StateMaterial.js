@@ -53,61 +53,36 @@ export class StateMaterial {
 export class StateMaterialSet {
     constructor(param) {
         this.normal = new StateMaterial(param.normal);
-        if (param.over)
-            this.over = new StateMaterial(param.over);
-        if (param.down)
-            this.down = new StateMaterial(param.down);
-        if (param.disable)
-            this.disable = new StateMaterial(param.disable);
-        if (param.normalSelect)
-            this.normalSelect = new StateMaterial(param.normalSelect);
-        if (param.overSelect)
-            this.overSelect = new StateMaterial(param.overSelect);
-        if (param.downSelect)
-            this.downSelect = new StateMaterial(param.downSelect);
+        this.over = StateMaterialSet.initMaterial(param.over, this.normal);
+        this.down = StateMaterialSet.initMaterial(param.down, this.normal);
+        this.disable = StateMaterialSet.initMaterial(param.disable, this.normal);
+        this.normalSelect = StateMaterialSet.initMaterial(param.normalSelect, this.normal);
+        this.overSelect = StateMaterialSet.initMaterial(param.overSelect, this.normal);
+        this.downSelect = StateMaterialSet.initMaterial(param.downSelect, this.normal);
         this.init();
+    }
+    static initMaterial(value, defaultMaterial) {
+        if (value == null)
+            return defaultMaterial;
+        return new StateMaterial(value);
     }
     init() {
         if (this.normal == null) {
             throw new Error("通常状態のマテリアルが指定されていません。");
         }
-        if (this.down == null)
-            this.down = this.normal;
-        if (this.over == null)
-            this.over = this.normal;
-        if (this.disable == null)
-            this.disable = this.normal;
-        if (this.normalSelect == null)
-            this.normalSelect = this.normal;
-        if (this.overSelect == null)
-            this.overSelect = this.normal;
-        if (this.downSelect == null)
-            this.downSelect = this.normal;
     }
     getMaterial(state, mouseEnabled, isSelected = false) {
         //無効状態はstateよりも優先
         if (!mouseEnabled) {
             return this.disable;
         }
-        if (!isSelected) {
-            switch (state) {
-                case ClickableState.NORMAL:
-                    return this.normal;
-                case ClickableState.DOWN:
-                    return this.down;
-                case ClickableState.OVER:
-                    return this.over;
-            }
-        }
-        else {
-            switch (state) {
-                case ClickableState.NORMAL:
-                    return this.normalSelect;
-                case ClickableState.DOWN:
-                    return this.downSelect;
-                case ClickableState.OVER:
-                    return this.overSelect;
-            }
+        switch (state) {
+            case ClickableState.NORMAL:
+                return isSelected ? this.normalSelect : this.normal;
+            case ClickableState.DOWN:
+                return isSelected ? this.downSelect : this.down;
+            case ClickableState.OVER:
+                return isSelected ? this.overSelect : this.over;
         }
         return this.normal;
     }

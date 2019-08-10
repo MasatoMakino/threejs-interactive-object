@@ -36,6 +36,7 @@ export declare class StateMaterialSet {
         overSelect?: Material | Material[];
         downSelect?: Material | Material[];
     });
+    private static initMaterial;
     init(): void;
     getMaterial(state: ClickableState, mouseEnabled: boolean, isSelected?: boolean): StateMaterial;
     setOpacity(opacity: number): void;
