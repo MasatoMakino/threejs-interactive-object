@@ -1,4 +1,4 @@
-import { Material, SpriteMaterial } from "three";
+import { Material } from "three";
 import { ClickableState } from "./MouseEventManager";
 
 /**

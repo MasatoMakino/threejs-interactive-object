@@ -1,12 +1,12 @@
 import {
+  Camera,
+  EventDispatcher,
+  Intersection,
   Object3D,
   Raycaster,
-  Vector2,
-  Camera,
   Renderer,
   Scene,
-  Intersection,
-  EventDispatcher
+  Vector2
 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { ClickableObject } from "./ClickableObject";

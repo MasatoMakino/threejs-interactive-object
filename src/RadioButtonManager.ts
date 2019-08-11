@@ -1,6 +1,7 @@
-import { EventDispatcher, Event } from "three";
+import { Event, EventDispatcher } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { RadioButtonObject } from "./RadioButtonObject";
+import { IRadioButtonObject3D } from "./MouseEventManager";
 
 export class RadioButtonManager extends EventDispatcher {
   /**
@@ -23,9 +24,13 @@ export class RadioButtonManager extends EventDispatcher {
 
   /**
    * このマネージャーの管理下にボタンを追加する
-   * @param {RadioButtonObject} model
+   * @param {IRadioButtonObject3D} button
    */
-  public addButton(model: RadioButtonObject): void {
+  public addButton(button: IRadioButtonObject3D): void {
+    this.addModel(button.model);
+  }
+
+  public addModel(model: RadioButtonObject): void {
     this._models.push(model);
     model.view.addEventListener(
       ThreeMouseEventType.SELECT,
@@ -47,9 +52,13 @@ export class RadioButtonManager extends EventDispatcher {
   /**
    * ボタンを管理下から外す。
    * ボタン自体の削除は行わない。
-   * @param {RadioButtonObject} model
+   * @param {IRadioButtonObject3D} button
    */
-  public removeButton(model: RadioButtonObject): RadioButtonObject {
+  public removeButton(button: IRadioButtonObject3D): void {
+    this.removeModel(button.model);
+  }
+
+  public removeModel(model: RadioButtonObject): RadioButtonObject {
     const index = this._models.indexOf(model);
     if (index > -1) {
       this._models.splice(index, 1);
