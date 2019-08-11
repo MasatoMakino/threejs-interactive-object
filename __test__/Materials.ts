@@ -1,4 +1,4 @@
-import { MeshBasicMaterial, TextureLoader, SpriteMaterial } from "three";
+import { MeshBasicMaterial, SpriteMaterial, TextureLoader } from "three";
 import { StateMaterialSet } from "../src/index";
 
 /**

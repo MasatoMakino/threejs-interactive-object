@@ -1,8 +1,10 @@
 import { RadioButtonManager, RadioButtonSprite } from "../src/index";
 import { getSpriteMaterialSet } from "../__test__/Materials";
-import { testRadioSelection } from "../__test__/RadioObject";
-import { testRadioSelectionWithMouse } from "../__test__/RadioObject";
-import { testInitManager } from "../__test__/RadioObject";
+import {
+  testRadioSelection,
+  testRadioSelectionWithMouse,
+  testInitManager
+} from "../__test__/RadioObject";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -13,7 +15,7 @@ const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
  */
 const initButton = (buttonValue: any): RadioButtonSprite => {
   const button = new RadioButtonSprite(getSpriteMaterialSet());
-  button.value = buttonValue;
+  button.model.value = buttonValue;
   return button;
 };
 

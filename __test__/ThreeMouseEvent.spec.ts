@@ -1,10 +1,10 @@
-import { MeshBasicMaterial, BoxBufferGeometry, Event } from "three";
+import { BoxBufferGeometry, MeshBasicMaterial } from "three";
 import {
+  CheckBoxMesh,
   ClickableMesh,
   StateMaterialSet,
   ThreeMouseEvent,
-  ThreeMouseEventType,
-  CheckBoxMesh
+  ThreeMouseEventType
 } from "../src/index";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
@@ -26,7 +26,7 @@ describe("ThreeMouseEvent", () => {
     });
 
     expect(() => {
-      new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable);
+      new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable.model);
     }).toThrowError("選択可能なボタン以外を引数にして");
   });
 
@@ -45,7 +45,7 @@ describe("ThreeMouseEvent", () => {
       material: matSet
     });
 
-    const e = new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable);
+    const e = new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable.model);
 
     expect(e).toEqual(e.clone());
   });

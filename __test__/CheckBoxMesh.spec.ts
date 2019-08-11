@@ -1,12 +1,12 @@
 import { BoxBufferGeometry, Event } from "three";
 import {
+  CheckBoxMesh,
   StateMaterialSet,
   ThreeMouseEvent,
-  ThreeMouseEventType,
-  CheckBoxMesh
+  ThreeMouseEventType
 } from "../src/index";
 import { getMeshMaterialSet } from "../__test__/Materials";
-import { clickButton, changeMaterialState } from "../__test__/MouseControl";
+import { changeMaterialState, clickButton } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -26,14 +26,14 @@ describe("CheckBoxMesh", () => {
   });
 
   test("set / get selection", () => {
-    expect(checkbox.selection).toBe(false);
+    expect(checkbox.model.selection).toBe(false);
 
-    checkbox.selection = true;
-    expect(checkbox.selection).toBe(true);
+    checkbox.model.selection = true;
+    expect(checkbox.model.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.normalSelect.material);
 
-    checkbox.selection = false;
-    expect(checkbox.selection).toBe(false);
+    checkbox.model.selection = false;
+    expect(checkbox.model.selection).toBe(false);
     expect(checkbox.material).toBe(matSet.normal.material);
   });
 
@@ -45,14 +45,14 @@ describe("CheckBoxMesh", () => {
     //クリックして選択
     clickButton(checkbox);
     expect(spy).toHaveBeenLastCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.CLICK, checkbox)
+      new ThreeMouseEvent(ThreeMouseEventType.CLICK, checkbox.model)
     );
-    expect(checkbox.selection).toBe(true);
+    expect(checkbox.model.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.overSelect.material);
 
     //クリックして選択解除
     changeMaterialState(checkbox, ThreeMouseEventType.DOWN, matSet.downSelect);
     changeMaterialState(checkbox, ThreeMouseEventType.UP, matSet.over);
-    expect(checkbox.selection).toBe(false);
+    expect(checkbox.model.selection).toBe(false);
   });
 });

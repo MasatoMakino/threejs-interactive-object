@@ -1,9 +1,11 @@
-import { BoxBufferGeometry, Event } from "three";
-import { RadioButtonMesh, RadioButtonManager } from "../src/index";
+import { BoxBufferGeometry } from "three";
+import { RadioButtonManager, RadioButtonMesh } from "../src/index";
 import { getMeshMaterialSet } from "../__test__/Materials";
-import { testRadioSelection } from "../__test__/RadioObject";
-import { testRadioSelectionWithMouse } from "../__test__/RadioObject";
-import { testInitManager } from "../__test__/RadioObject";
+import {
+  testRadioSelection,
+  testRadioSelectionWithMouse,
+  testInitManager
+} from "../__test__/RadioObject";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -17,7 +19,7 @@ const initButton = (buttonValue: any): RadioButtonMesh => {
     geo: new BoxBufferGeometry(3, 3, 3),
     material: getMeshMaterialSet()
   });
-  button.value = buttonValue;
+  button.model.value = buttonValue;
   return button;
 };
 
@@ -34,22 +36,20 @@ describe("RadioButton", () => {
 
   test("管理外のボタンを選択", () => {
     const notManagedButton = initButton("notManagedButton");
-    manager.select(notManagedButton);
+    manager.select(notManagedButton.model);
     expect(spyWarn).toHaveBeenCalledWith(
       "管理下でないボタンが選択処理されました。"
     );
 
-    //管理外のボタンをremoveしてもそのまま返ってくるだけ
+    //管理外のボタンをremoveしてもエラーは発生しない。
     const removedButton = manager.removeButton(notManagedButton);
-    expect(removedButton).toBe(notManagedButton);
   });
 
   test("ボタンを管理から外す", () => {
     const index = 4;
-    const button = manager.buttons[index];
-    const removedButton = manager.removeButton(button);
-    expect(removedButton).toBe(button);
-    expect(manager.buttons.length).toEqual(4);
+    const model = manager.models[index];
+    manager.removeModel(model);
+    expect(manager.models.length).toEqual(4);
   });
 
   test("マウスで選択変更", () => {

@@ -1,14 +1,14 @@
 import { Event } from "three";
 import {
-  ThreeMouseEventType,
-  ThreeMouseEvent,
   RadioButtonManager,
   RadioButtonMesh,
-  RadioButtonSprite
+  RadioButtonSprite,
+  ThreeMouseEvent,
+  ThreeMouseEventType,
+  IRadioButtonObject3D,
+  IClickableObject3D
 } from "../src/index";
 import { clickButton } from "../__test__/MouseControl";
-import { IRadioButtonObject3D } from "../src/index";
-import SpyInstance = jest.SpyInstance;
 
 /**
  * テスト用のbuttonValueサンプルを生成する。
@@ -32,7 +32,7 @@ export function testInitManager(
   for (let value of values) {
     manager.addButton(genarator(value));
   }
-  expect(manager.buttons[2].value).toBe(values[2]);
+  expect(manager.models[2].value).toBe(values[2]);
 }
 
 /**
@@ -47,7 +47,7 @@ export function testRadioSelection(manager: RadioButtonManager) {
     .mockImplementation((e: Event) => null);
 
   const index = 0;
-  const button = manager.buttons[index];
+  const button = manager.models[index];
 
   expect(button.isFrozen).toBe(false);
   manager.select(button);
@@ -70,21 +70,19 @@ export function testRadioSelection(manager: RadioButtonManager) {
  * マウスイベントハンドラー経由でボタンの選択を行う。
  * @param {RadioButtonManager} manager
  */
-export function testRadioSelectionWithMouse(
-  manager: RadioButtonManager
-  // done: () => void
-) {
-  manager.select(manager.buttons[0]);
+export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
+  manager.select(manager.models[0]);
 
   const index = 2;
-  const button = manager.buttons[index];
 
-  expect(button.isFrozen).toBe(false);
-  clickButton(button);
-  expect(button.isFrozen).toBe(true);
-  expect(manager.selected.value).toEqual(button.value);
+  const model = manager.models[index];
 
-  onClickSecondTime(manager, button);
+  expect(model.isFrozen).toBe(false);
+  clickButton(model.view);
+  expect(model.isFrozen).toBe(true);
+  expect(manager.selected.value).toEqual(model.value);
+
+  onClickSecondTime(manager, model.view);
 }
 
 /**
@@ -102,9 +100,9 @@ const onClickSecondTime = (
 
   clickButton(button);
   expect(spyButton).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
+    new ThreeMouseEvent(ThreeMouseEventType.SELECT, button.model)
   );
   expect(spyButton).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.CLICK, button)
+    new ThreeMouseEvent(ThreeMouseEventType.CLICK, button.model)
   );
 };

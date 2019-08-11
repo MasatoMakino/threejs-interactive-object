@@ -1,17 +1,13 @@
-import {
-  StateMaterialSet,
-  ThreeMouseEvent,
-  ThreeMouseEventType,
-  ClickableSprite
-} from "../src/index";
-import { SpriteMaterial, Event } from "three";
+import { ClickableSprite, StateMaterialSet } from "../src/index";
+import { SpriteMaterial } from "three";
 import { getSpriteMaterialSet } from "../__test__/Materials";
-import { clickButton } from "../__test__/MouseControl";
-import { testMouseOver } from "../__test__/MouseControl";
-import { testDisable } from "../__test__/MouseControl";
-import { testSwitch } from "../__test__/MouseControl";
-import { testMouseUP } from "../__test__/MouseControl";
-import { testClick } from "../__test__/MouseControl";
+import {
+  testMouseOver,
+  testDisable,
+  testSwitch,
+  testMouseUP,
+  testClick
+} from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -45,8 +41,8 @@ describe("ClickableSprite", () => {
   });
 
   test("alpha", () => {
-    const matSet = sprite.materialSet;
-    sprite.alpha = 0.5;
+    const matSet = sprite.model.materialSet;
+    sprite.model.alpha = 0.5;
     expect((matSet.normal.material as SpriteMaterial).opacity).toBe(0.3);
     expect((matSet.over.material as SpriteMaterial).opacity).toBe(0.4);
     expect((matSet.down.material as SpriteMaterial).opacity).toBe(0.5);

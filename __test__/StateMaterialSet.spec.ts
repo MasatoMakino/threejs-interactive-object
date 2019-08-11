@@ -1,5 +1,4 @@
-import { StateMaterial, StateMaterialSet } from "../src/index";
-import { ClickableState } from "../src/index";
+import { StateMaterial, StateMaterialSet, ClickableState } from "../src/index";
 import { Material, MeshBasicMaterial } from "three";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);

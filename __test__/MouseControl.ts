@@ -1,14 +1,14 @@
 import {
-  ThreeMouseEventType,
   IRadioButtonObject3D,
-  ThreeMouseEvent
+  ThreeMouseEvent,
+  ThreeMouseEventType,
+  IClickableObject3D,
+  StateMaterial,
+  ClickableMesh,
+  ClickableSprite,
+  MouseEventManager,
+  StateMaterialSet
 } from "../src/index";
-import { IClickableObject3D } from "../src/index";
-import { StateMaterial } from "../src/index";
-import { ClickableMesh } from "../src/index";
-import { ClickableSprite } from "../src/index";
-import { MouseEventManager } from "../src/index";
-import { StateMaterialSet } from "../src/index";
 import { Event } from "three";
 
 /**
@@ -16,13 +16,15 @@ import { Event } from "three";
  * @param {IRadioButtonObject3D} button
  */
 export function clickButton(button: IClickableObject3D) {
-  button.onMouseOverHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.OVER, button)
+  button.model.onMouseOverHandler(
+    new ThreeMouseEvent(ThreeMouseEventType.OVER, button.model)
   );
-  button.onMouseDownHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.DOWN, button)
+  button.model.onMouseDownHandler(
+    new ThreeMouseEvent(ThreeMouseEventType.DOWN, button.model)
   );
-  button.onMouseUpHandler(new ThreeMouseEvent(ThreeMouseEventType.UP, button));
+  button.model.onMouseUpHandler(
+    new ThreeMouseEvent(ThreeMouseEventType.UP, button.model)
+  );
 }
 
 /**
@@ -66,13 +68,13 @@ export function testDisable(
   target: ClickableMesh | ClickableSprite,
   matSet: StateMaterialSet
 ) {
-  target.disable();
+  target.model.disable();
   changeMaterialState(target, ThreeMouseEventType.OVER, matSet.disable);
   changeMaterialState(target, ThreeMouseEventType.DOWN, matSet.disable);
   changeMaterialState(target, ThreeMouseEventType.UP, matSet.disable);
   changeMaterialState(target, ThreeMouseEventType.OUT, matSet.disable);
 
-  target.enable();
+  target.model.enable();
   changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
   changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
 }
@@ -85,12 +87,12 @@ export function testSwitch(
   target: ClickableMesh | ClickableSprite,
   matSet: StateMaterialSet
 ) {
-  target.switchEnable(false);
-  expect(target.getEnable()).toBe(false);
+  target.model.switchEnable(false);
+  expect(target.model.getEnable()).toBe(false);
   expect(target.material).toBe(matSet.disable.material);
 
-  target.switchEnable(true);
-  expect(target.getEnable()).toBe(true);
+  target.model.switchEnable(true);
+  expect(target.model.getEnable()).toBe(true);
   expect(target.material).toBe(matSet.normal.material);
 }
 
@@ -103,9 +105,11 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
   const spy = jest
     .spyOn(target, "dispatchEvent")
     .mockImplementation((e: Event) => null);
-  target.onMouseUpHandler(new ThreeMouseEvent(ThreeMouseEventType.UP, target));
+  target.model.onMouseUpHandler(
+    new ThreeMouseEvent(ThreeMouseEventType.UP, target.model)
+  );
   expect(spy).toHaveBeenLastCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.UP, target)
+    new ThreeMouseEvent(ThreeMouseEventType.UP, target.model)
   );
 }
 
@@ -121,6 +125,6 @@ export function testClick(target: ClickableMesh | ClickableSprite) {
 
   clickButton(target);
   expect(spy).toHaveBeenLastCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.CLICK, target)
+    new ThreeMouseEvent(ThreeMouseEventType.CLICK, target.model)
   );
 }
