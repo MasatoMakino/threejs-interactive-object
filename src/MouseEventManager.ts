@@ -9,7 +9,9 @@ import {
   EventDispatcher
 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { StateMaterialSet } from "./StateMaterial";
+import { ClickableObject } from "./ClickableObject";
+import { CheckBoxObject } from "./CheckBoxObject";
+import { RadioButtonObject } from "./RadioButtonObject";
 
 export class MouseEventManager {
   protected static camera: Camera;
@@ -150,16 +152,16 @@ export class MouseEventManager {
   ) {
     switch (type) {
       case ThreeMouseEventType.DOWN:
-        btn.onMouseDownHandler(new ThreeMouseEvent(type, btn));
+        btn.model.onMouseDownHandler(new ThreeMouseEvent(type, btn.model));
         return;
       case ThreeMouseEventType.UP:
-        btn.onMouseUpHandler(new ThreeMouseEvent(type, btn));
+        btn.model.onMouseUpHandler(new ThreeMouseEvent(type, btn.model));
         return;
       case ThreeMouseEventType.OVER:
-        btn.onMouseOverHandler(new ThreeMouseEvent(type, btn));
+        btn.model.onMouseOverHandler(new ThreeMouseEvent(type, btn.model));
         return;
       case ThreeMouseEventType.OUT:
-        btn.onMouseOutHandler(new ThreeMouseEvent(type, btn));
+        btn.model.onMouseOutHandler(new ThreeMouseEvent(type, btn.model));
         return;
     }
   }
@@ -228,35 +230,19 @@ export enum ClickableState {
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
 export interface IClickableObject3D extends EventDispatcher {
-  readonly isPress: boolean;
-  readonly state: ClickableState;
-  materialSet: StateMaterialSet;
-
-  onMouseDownHandler(event: ThreeMouseEvent): void;
-  onMouseUpHandler(event: ThreeMouseEvent): void;
-  onMouseOverHandler(event: ThreeMouseEvent): void;
-  onMouseOutHandler(event: ThreeMouseEvent): void;
-  onMouseClick(): void;
-
-  enable(): void;
-  disable(): void;
-  switchEnable(bool: boolean): void;
-  getEnable(): boolean;
+  model: ClickableObject;
 }
 
 /**
  * チェックボックス用インターフェース
  */
 export interface ISelectableObject3D extends IClickableObject3D {
-  selection: boolean;
-  value: any;
+  model: CheckBoxObject;
 }
 
 /**
  * ラジオボタン用インターフェース
- * 選択済みのボタンは再選択して解除できないよう
- * 動作を停止するisFrozenフラグを持つ
  */
 export interface IRadioButtonObject3D extends ISelectableObject3D {
-  isFrozen: boolean;
+  model: RadioButtonObject;
 }

@@ -1,18 +1,19 @@
-import { IClickableObject3D, ISelectableObject3D } from "./MouseEventManager";
+import { ClickableObject } from "./ClickableObject";
 
 export class ThreeMouseEvent {
   public type: ThreeMouseEventType;
-  public button: IClickableObject3D;
+  public model: ClickableObject;
+
   public readonly isSelected!: boolean;
 
-  constructor(type: ThreeMouseEventType, button: IClickableObject3D) {
+  constructor(type: ThreeMouseEventType, model: ClickableObject) {
     this.type = type;
-    this.button = button;
+    this.model = model;
 
     //SELECTイベントの場合は、対象ボタンの選択状態を記録
     if (type === ThreeMouseEventType.SELECT) {
-      if ((button as any).selection !== undefined) {
-        this.isSelected = (button as ISelectableObject3D).selection;
+      if ((model as any).selection !== undefined) {
+        this.isSelected = (model as any).selection;
       } else {
         throw new Error(
           "選択可能なボタン以外を引数にして、SELECTイベントをインスタンス化しました。SELECTイベントはISelectableObject3Dを実装したクラスとともにインスタンス化してください。"
@@ -22,7 +23,7 @@ export class ThreeMouseEvent {
   }
 
   public clone(): ThreeMouseEvent {
-    return new ThreeMouseEvent(this.type, this.button);
+    return new ThreeMouseEvent(this.type, this.model);
   }
 }
 
