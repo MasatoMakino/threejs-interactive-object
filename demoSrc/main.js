@@ -164,19 +164,19 @@ const testRadio = () => {
       material: getMaterialSet()
     });
     button.position.set(x, -10, 0);
-    button.value = buttonValue;
+    button.model.value = buttonValue;
     scene.add(button);
     return button;
   };
 
   const manager = new RadioButtonManager();
-  manager.addButton(initButton(-10, "button01"));
-  manager.addButton(initButton(0, Math.PI));
-  manager.addButton(initButton(10, { value01: 1, value02: 2 }));
-  manager.addButton(initButton(20, undefined));
+  manager.addButton(initButton(-10, "button01").model);
+  manager.addButton(initButton(0, Math.PI).model);
+  manager.addButton(initButton(10, { value01: 1, value02: 2 }).model);
+  manager.addButton(initButton(20, undefined).model);
 
   manager.addEventListener(ThreeMouseEventType.SELECT, e => {
-    console.log(e.button.value);
+    console.log(e.model.value);
   });
 };
 

@@ -173,10 +173,7 @@ export class MouseEventManager {
     }
     //クリッカブルインターフェースを継承しているなら判定OK
     const targetAny = <any>target;
-    if (
-      targetAny.onMouseDownHandler !== undefined &&
-      targetAny.getEnable() === true
-    ) {
+    if (targetAny.model !== undefined && targetAny.model.getEnable() === true) {
       return target;
     }
 
