@@ -1,26 +1,24 @@
 import {
-  ClickableMesh,
   CheckBoxMesh,
-  StateMaterialSet,
-  StateMaterial,
-  ClickableSprite,
   CheckBoxSprite,
-  RadioButtonMesh,
+  ClickableMesh,
+  ClickableSprite,
   MouseEventManager,
   RadioButtonManager,
-  ThreeMouseEvent,
+  RadioButtonMesh,
+  StateMaterialSet,
   ThreeMouseEventType
 } from "../bin";
 import {
-  Scene,
-  WebGLRenderer,
   AmbientLight,
-  Color,
   BoxBufferGeometry,
+  Color,
   MeshBasicMaterial,
   PerspectiveCamera,
+  Scene,
   SpriteMaterial,
-  TextureLoader
+  TextureLoader,
+  WebGLRenderer
 } from "three";
 
 const W = 1920;
@@ -170,10 +168,13 @@ const testRadio = () => {
   };
 
   const manager = new RadioButtonManager();
-  manager.addButton(initButton(-10, "button01").model);
-  manager.addButton(initButton(0, Math.PI).model);
-  manager.addButton(initButton(10, { value01: 1, value02: 2 }).model);
-  manager.addButton(initButton(20, undefined).model);
+
+  manager.addButton(
+    initButton(-10, "button01"),
+    initButton(0, Math.PI),
+    initButton(10, { value01: 1, value02: 2 })
+  );
+  manager.addButton(initButton(20, undefined));
 
   manager.addEventListener(ThreeMouseEventType.SELECT, e => {
     console.log(e.model.value);

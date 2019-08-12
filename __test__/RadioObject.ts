@@ -29,9 +29,12 @@ export function testInitManager(
   genarator: (value: any) => RadioButtonMesh | RadioButtonSprite
 ) {
   const values = getButtonValues();
+  const buttons = [];
   for (let value of values) {
-    manager.addButton(genarator(value));
+    buttons.push( genarator(value) );
   }
+
+  manager.addButton(...buttons);
   expect(manager.models[2].value).toBe(values[2]);
 }
 

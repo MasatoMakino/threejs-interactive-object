@@ -24,10 +24,12 @@ export class RadioButtonManager extends EventDispatcher {
 
   /**
    * このマネージャーの管理下にボタンを追加する
-   * @param {IRadioButtonObject3D} button
+   * @param {IRadioButtonObject3D[]} buttons
    */
-  public addButton(button: IRadioButtonObject3D): void {
-    this.addModel(button.model);
+  public addButton(...buttons: IRadioButtonObject3D[]): void {
+    buttons.forEach(btn => {
+      this.addModel(btn.model);
+    });
   }
 
   public addModel(model: RadioButtonObject): void {
