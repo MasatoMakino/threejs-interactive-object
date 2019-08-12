@@ -92,14 +92,14 @@
 						<section class="tsd-index-section tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="radiobuttonmanager.html#_buttons" class="tsd-kind-icon">_buttons</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="radiobuttonmanager.html#_models" class="tsd-kind-icon">_models</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="radiobuttonmanager.html#_selected" class="tsd-kind-icon">_selected</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="radiobuttonmanager.html#buttons" class="tsd-kind-icon">buttons</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="radiobuttonmanager.html#models" class="tsd-kind-icon">models</a></li>
 								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="radiobuttonmanager.html#selected" class="tsd-kind-icon">selected</a></li>
 							</ul>
 						</section>
@@ -108,11 +108,13 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="radiobuttonmanager.html#addbutton" class="tsd-kind-icon">add<wbr>Button</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="radiobuttonmanager.html#addeventlistener" class="tsd-kind-icon">add<wbr>Event<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="radiobuttonmanager.html#addmodel" class="tsd-kind-icon">add<wbr>Model</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="radiobuttonmanager.html#dispatchevent" class="tsd-kind-icon">dispatch<wbr>Event</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="radiobuttonmanager.html#haseventlistener" class="tsd-kind-icon">has<wbr>Event<wbr>Listener</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="radiobuttonmanager.html#onselectedbutton" class="tsd-kind-icon">on<wbr>Selected<wbr>Button</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="radiobuttonmanager.html#removebutton" class="tsd-kind-icon">remove<wbr>Button</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="radiobuttonmanager.html#removeeventlistener" class="tsd-kind-icon">remove<wbr>Event<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="radiobuttonmanager.html#removemodel" class="tsd-kind-icon">remove<wbr>Model</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="radiobuttonmanager.html#select" class="tsd-kind-icon">select</a></li>
 							</ul>
 						</section>
@@ -132,7 +134,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides EventDispatcher.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L15">RadioButtonManager.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L16">RadioButtonManager.ts:16</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -148,12 +150,12 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="_buttons" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _buttons</h3>
-					<div class="tsd-signature tsd-kind-icon">_buttons<span class="tsd-signature-symbol">:</span> <a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
+					<a name="_models" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _models</h3>
+					<div class="tsd-signature tsd-kind-icon">_models<span class="tsd-signature-symbol">:</span> <a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L11">RadioButtonManager.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L12">RadioButtonManager.ts:12</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -170,10 +172,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="_selected" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _selected</h3>
-					<div class="tsd-signature tsd-kind-icon">_selected<span class="tsd-signature-symbol">:</span> <a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a></div>
+					<div class="tsd-signature tsd-kind-icon">_selected<span class="tsd-signature-symbol">:</span> <a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L15">RadioButtonManager.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L16">RadioButtonManager.ts:16</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -186,19 +188,19 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Accessors</h2>
 				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
-					<a name="buttons" class="tsd-anchor"></a>
-					<h3>buttons</h3>
+					<a name="models" class="tsd-anchor"></a>
+					<h3>models</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> buttons<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">[]</span></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> models<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L90">RadioButtonManager.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L104">RadioButtonManager.ts:104</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">[]</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -206,16 +208,16 @@
 					<a name="selected" class="tsd-anchor"></a>
 					<h3>selected</h3>
 					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> selected<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a></li>
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> selected<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L86">RadioButtonManager.ts:86</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L100">RadioButtonManager.ts:100</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -226,13 +228,13 @@
 					<a name="addbutton" class="tsd-anchor"></a>
 					<h3>add<wbr>Button</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Button<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Button<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>buttons<span class="tsd-signature-symbol">: </span><a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L28">RadioButtonManager.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L29">RadioButtonManager.ts:29</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -243,7 +245,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>button: <a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a></h5>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>buttons: <a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">[]</span></h5>
 									<div class="tsd-comment tsd-typography">
 									</div>
 								</li>
@@ -302,6 +304,29 @@
 											</ul>
 										</li>
 									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addmodel" class="tsd-anchor"></a>
+					<h3>add<wbr>Model</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Model<span class="tsd-signature-symbol">(</span>model<span class="tsd-signature-symbol">: </span><a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L35">RadioButtonManager.ts:35</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>model: <a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -411,7 +436,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L37">RadioButtonManager.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L47">RadioButtonManager.ts:47</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -437,13 +462,13 @@
 					<a name="removebutton" class="tsd-anchor"></a>
 					<h3>remove<wbr>Button</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<wbr>Button<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a></li>
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Button<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L49">RadioButtonManager.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L59">RadioButtonManager.ts:59</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -460,7 +485,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -521,16 +546,39 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="select" class="tsd-anchor"></a>
-					<h3>select</h3>
+					<a name="removemodel" class="tsd-anchor"></a>
+					<h3>remove<wbr>Model</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>button<span class="tsd-signature-symbol">: </span><a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Model<span class="tsd-signature-symbol">(</span>model<span class="tsd-signature-symbol">: </span><a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/519a5b8/src/RadioButtonManager.ts#L65">RadioButtonManager.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L63">RadioButtonManager.ts:63</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>model: <a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="select" class="tsd-anchor"></a>
+					<h3>select</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">select<span class="tsd-signature-symbol">(</span>model<span class="tsd-signature-symbol">: </span><a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/496c0f1/src/RadioButtonManager.ts#L79">RadioButtonManager.ts:79</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -541,7 +589,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>button: <a href="../interfaces/iradiobuttonobject3d.html" class="tsd-signature-type">IRadioButtonObject3D</a></h5>
+									<h5>model: <a href="radiobuttonobject.html" class="tsd-signature-type">RadioButtonObject</a></h5>
 									<div class="tsd-comment tsd-typography">
 									</div>
 								</li>
@@ -572,10 +620,16 @@
 						<a href="checkboxmesh.html" class="tsd-kind-icon">Check<wbr>Box<wbr>Mesh</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="checkboxobject.html" class="tsd-kind-icon">Check<wbr>Box<wbr>Object</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="checkboxsprite.html" class="tsd-kind-icon">Check<wbr>Box<wbr>Sprite</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="clickablemesh.html" class="tsd-kind-icon">Clickable<wbr>Mesh</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="clickableobject.html" class="tsd-kind-icon">Clickable<wbr>Object</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="clickablesprite.html" class="tsd-kind-icon">Clickable<wbr>Sprite</a>
@@ -592,13 +646,13 @@
 								<a href="radiobuttonmanager.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="radiobuttonmanager.html#_buttons" class="tsd-kind-icon">_buttons</a>
+								<a href="radiobuttonmanager.html#_models" class="tsd-kind-icon">_models</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 								<a href="radiobuttonmanager.html#_selected" class="tsd-kind-icon">_selected</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
-								<a href="radiobuttonmanager.html#buttons" class="tsd-kind-icon">buttons</a>
+								<a href="radiobuttonmanager.html#models" class="tsd-kind-icon">models</a>
 							</li>
 							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
 								<a href="radiobuttonmanager.html#selected" class="tsd-kind-icon">selected</a>
@@ -608,6 +662,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="radiobuttonmanager.html#addeventlistener" class="tsd-kind-icon">add<wbr>Event<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="radiobuttonmanager.html#addmodel" class="tsd-kind-icon">add<wbr>Model</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="radiobuttonmanager.html#dispatchevent" class="tsd-kind-icon">dispatch<wbr>Event</a>
@@ -625,6 +682,9 @@
 								<a href="radiobuttonmanager.html#removeeventlistener" class="tsd-kind-icon">remove<wbr>Event<wbr>Listener</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="radiobuttonmanager.html#removemodel" class="tsd-kind-icon">remove<wbr>Model</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="radiobuttonmanager.html#select" class="tsd-kind-icon">select</a>
 							</li>
 						</ul>
@@ -633,6 +693,9 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="radiobuttonmesh.html" class="tsd-kind-icon">Radio<wbr>Button<wbr>Mesh</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="radiobuttonobject.html" class="tsd-kind-icon">Radio<wbr>Button<wbr>Object</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="radiobuttonsprite.html" class="tsd-kind-icon">Radio<wbr>Button<wbr>Sprite</a>

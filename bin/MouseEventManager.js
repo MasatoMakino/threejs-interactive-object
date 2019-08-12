@@ -48,16 +48,16 @@ export class MouseEventManager {
     static onButtonHandler(btn, type) {
         switch (type) {
             case ThreeMouseEventType.DOWN:
-                btn.onMouseDownHandler(new ThreeMouseEvent(type, btn));
+                btn.model.onMouseDownHandler(new ThreeMouseEvent(type, btn));
                 return;
             case ThreeMouseEventType.UP:
-                btn.onMouseUpHandler(new ThreeMouseEvent(type, btn));
+                btn.model.onMouseUpHandler(new ThreeMouseEvent(type, btn));
                 return;
             case ThreeMouseEventType.OVER:
-                btn.onMouseOverHandler(new ThreeMouseEvent(type, btn));
+                btn.model.onMouseOverHandler(new ThreeMouseEvent(type, btn));
                 return;
             case ThreeMouseEventType.OUT:
-                btn.onMouseOutHandler(new ThreeMouseEvent(type, btn));
+                btn.model.onMouseOutHandler(new ThreeMouseEvent(type, btn));
                 return;
         }
     }
@@ -68,8 +68,7 @@ export class MouseEventManager {
         }
         //クリッカブルインターフェースを継承しているなら判定OK
         const targetAny = target;
-        if (targetAny.onMouseDownHandler !== undefined &&
-            targetAny.getEnable() === true) {
+        if (targetAny.model !== undefined && targetAny.model.getEnable() === true) {
             return target;
         }
         //継承していないならその親を探索継続。

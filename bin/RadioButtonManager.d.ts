@@ -1,4 +1,5 @@
 import { EventDispatcher } from "three";
+import { RadioButtonObject } from "./RadioButtonObject";
 import { IRadioButtonObject3D } from "./MouseEventManager";
 export declare class RadioButtonManager extends EventDispatcher {
     /**
@@ -6,20 +7,21 @@ export declare class RadioButtonManager extends EventDispatcher {
      * @type {any[]}
      * @private
      */
-    protected _buttons: IRadioButtonObject3D[];
+    protected _models: RadioButtonObject[];
     /**
      * 現状選択されているボタン。
      */
-    protected _selected: IRadioButtonObject3D;
+    protected _selected: RadioButtonObject;
     /**
      * コンストラクタ
      */
     constructor();
     /**
      * このマネージャーの管理下にボタンを追加する
-     * @param {IRadioButtonObject3D} button
+     * @param {IRadioButtonObject3D[]} buttons
      */
-    addButton(button: IRadioButtonObject3D): void;
+    addButton(...buttons: IRadioButtonObject3D[]): void;
+    addModel(model: RadioButtonObject): void;
     /**
      * 管理下のボタンが選択された場合の処理
      * @param {Event} e
@@ -30,13 +32,14 @@ export declare class RadioButtonManager extends EventDispatcher {
      * ボタン自体の削除は行わない。
      * @param {IRadioButtonObject3D} button
      */
-    removeButton(button: IRadioButtonObject3D): IRadioButtonObject3D;
+    removeButton(button: IRadioButtonObject3D): void;
+    removeModel(model: RadioButtonObject): RadioButtonObject;
     /**
      * 特定のボタンを選択する
-     * @param {IRadioButtonObject3D} button
+     * @param {RadioButtonObject} model
      */
-    select(button: IRadioButtonObject3D): void;
-    readonly selected: IRadioButtonObject3D;
-    readonly buttons: IRadioButtonObject3D[];
+    select(model: RadioButtonObject): void;
+    readonly selected: RadioButtonObject;
+    readonly models: RadioButtonObject[];
 }
 //# sourceMappingURL=RadioButtonManager.d.ts.map

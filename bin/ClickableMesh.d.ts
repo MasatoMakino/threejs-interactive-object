@@ -1,17 +1,12 @@
-import { IClickableObject3D, ClickableState } from "./MouseEventManager";
-import { ThreeMouseEvent } from "./ThreeMouseEvent";
+import { IClickableObject3D } from "./MouseEventManager";
 import { BufferGeometry, Geometry, Mesh } from "three";
 import { StateMaterialSet } from "./StateMaterial";
+import { ClickableObject } from "./ClickableObject";
 /**
  * クリックに反応するMesh。
  */
 export declare class ClickableMesh extends Mesh implements IClickableObject3D {
-    isPress: boolean;
-    protected isOver: boolean;
-    protected _enableMouse: boolean;
-    state: ClickableState;
-    materialSet: StateMaterialSet;
-    protected _alpha: number;
+    model: ClickableObject;
     /**
      * コンストラクタ
      */
@@ -19,22 +14,5 @@ export declare class ClickableMesh extends Mesh implements IClickableObject3D {
         geo?: Geometry | BufferGeometry;
         material: StateMaterialSet;
     });
-    onMouseDownHandler(event: ThreeMouseEvent): void;
-    onMouseUpHandler(event: ThreeMouseEvent): void;
-    onMouseClick(): void;
-    onMouseOverHandler(event: ThreeMouseEvent): void;
-    onMouseOutHandler(event: ThreeMouseEvent): void;
-    alpha: number;
-    protected updateState(state: ClickableState): void;
-    /**
-     * 現在のボタンの有効、無効状態を取得する
-     * @return    ボタンが有効か否か
-     */
-    protected checkActivity(): Boolean;
-    enable(): void;
-    disable(): void;
-    protected updateMaterial(): void;
-    switchEnable(bool: boolean): void;
-    getEnable(): boolean;
 }
 //# sourceMappingURL=ClickableMesh.d.ts.map

@@ -1,15 +1,17 @@
+import { StateMaterialSet } from "./StateMaterial";
+import { CheckBoxObject } from "./CheckBoxObject";
+import { Geometry } from "three";
+import { BufferGeometry } from "three";
+import { Mesh } from "three";
 import { ISelectableObject3D } from "./MouseEventManager";
-import { ClickableMesh } from "./ClickableMesh";
-export declare class CheckBoxMesh extends ClickableMesh implements ISelectableObject3D {
-    protected _isSelect: boolean;
-    value: any;
+export declare class CheckBoxMesh extends Mesh implements ISelectableObject3D {
+    model: CheckBoxObject;
     /**
-     * クリックイベント時の処理
-     * "click"イベントはマウスイベント類の必ず最後に発生するので
-     * ここでisSelect状態を一括管理する。
+     * コンストラクタ
      */
-    onMouseClick(): void;
-    selection: boolean;
-    protected updateMaterial(): void;
+    constructor(parameters: {
+        geo?: Geometry | BufferGeometry;
+        material: StateMaterialSet;
+    });
 }
 //# sourceMappingURL=CheckBoxMesh.d.ts.map

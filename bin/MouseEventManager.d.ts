@@ -1,6 +1,8 @@
-import { Object3D, Raycaster, Vector2, Camera, Renderer, Scene, Intersection, EventDispatcher } from "three";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { StateMaterialSet } from "./StateMaterial";
+import { Camera, EventDispatcher, Intersection, Object3D, Raycaster, Renderer, Scene, Vector2 } from "three";
+import { ThreeMouseEventType } from "./ThreeMouseEvent";
+import { ClickableObject } from "./ClickableObject";
+import { CheckBoxObject } from "./CheckBoxObject";
+import { RadioButtonObject } from "./RadioButtonObject";
 export declare class MouseEventManager {
     protected static camera: Camera;
     protected static renderer: Renderer;
@@ -55,32 +57,18 @@ export declare enum ClickableState {
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
 export interface IClickableObject3D extends EventDispatcher {
-    readonly isPress: boolean;
-    readonly state: ClickableState;
-    materialSet: StateMaterialSet;
-    onMouseDownHandler(event: ThreeMouseEvent): void;
-    onMouseUpHandler(event: ThreeMouseEvent): void;
-    onMouseOverHandler(event: ThreeMouseEvent): void;
-    onMouseOutHandler(event: ThreeMouseEvent): void;
-    onMouseClick(): void;
-    enable(): void;
-    disable(): void;
-    switchEnable(bool: boolean): void;
-    getEnable(): boolean;
+    model: ClickableObject;
 }
 /**
  * チェックボックス用インターフェース
  */
 export interface ISelectableObject3D extends IClickableObject3D {
-    selection: boolean;
-    value: any;
+    model: CheckBoxObject;
 }
 /**
  * ラジオボタン用インターフェース
- * 選択済みのボタンは再選択して解除できないよう
- * 動作を停止するisFrozenフラグを持つ
  */
 export interface IRadioButtonObject3D extends ISelectableObject3D {
-    isFrozen: boolean;
+    model: RadioButtonObject;
 }
 //# sourceMappingURL=MouseEventManager.d.ts.map

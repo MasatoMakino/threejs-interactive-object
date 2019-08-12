@@ -1,13 +1,17 @@
+import { StateMaterialSet } from "./StateMaterial";
+import { RadioButtonObject } from "./RadioButtonObject";
+import { Mesh } from "three";
+import { Geometry } from "three";
+import { BufferGeometry } from "three";
 import { IRadioButtonObject3D } from "./MouseEventManager";
-import { CheckBoxMesh } from "./CheckBoxMesh";
-export declare class RadioButtonMesh extends CheckBoxMesh implements IRadioButtonObject3D {
-    protected _isFrozen: boolean;
+export declare class RadioButtonMesh extends Mesh implements IRadioButtonObject3D {
+    model: RadioButtonObject;
     /**
-     * 現在のボタンの有効、無効状態を取得する
-     * ラジオボタンは選択中は自身の状態を変更できない。
-     * @return    ボタンが有効か否か
+     * コンストラクタ
      */
-    protected checkActivity(): Boolean;
-    isFrozen: boolean;
+    constructor(parameters: {
+        geo?: Geometry | BufferGeometry;
+        material: StateMaterialSet;
+    });
 }
 //# sourceMappingURL=RadioButtonMesh.d.ts.map

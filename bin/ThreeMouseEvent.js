@@ -1,19 +1,32 @@
 export class ThreeMouseEvent {
-    constructor(type, button) {
+    constructor(type, modelOrView) {
+        const model = ThreeMouseEvent.getModel(modelOrView);
         this.type = type;
-        this.button = button;
-        //SELECTイベントの場合は、対象ボタンの選択状態を記録
+        this.model = model;
         if (type === ThreeMouseEventType.SELECT) {
-            if (button.selection !== undefined) {
-                this.isSelected = button.selection;
-            }
-            else {
-                throw new Error("選択可能なボタン以外を引数にして、SELECTイベントをインスタンス化しました。SELECTイベントはISelectableObject3Dを実装したクラスとともにインスタンス化してください。");
-            }
+            this.isSelected = ThreeMouseEvent.getSelection(model);
+        }
+    }
+    static getModel(modelOrView) {
+        if ("model" in modelOrView) {
+            return modelOrView.model;
+        }
+        return modelOrView;
+    }
+    /**
+     * SELECTイベントの場合は、対象ボタンの選択状態を取得
+     * @param model
+     */
+    static getSelection(model) {
+        if ("selection" in model) {
+            return model["selection"];
+        }
+        else {
+            throw new Error("選択可能なボタン以外を引数にして、SELECTイベントをインスタンス化しました。SELECTイベントはISelectableObject3Dを実装したクラスとともにインスタンス化してください。");
         }
     }
     clone() {
-        return new ThreeMouseEvent(this.type, this.button);
+        return new ThreeMouseEvent(this.type, this.model);
     }
 }
 export var ThreeMouseEventType;

@@ -1,13 +1,9 @@
+import { StateMaterialSet } from "./StateMaterial";
+import { RadioButtonObject } from "./RadioButtonObject";
+import { Sprite } from "three";
 import { IRadioButtonObject3D } from "./MouseEventManager";
-import { CheckBoxSprite } from "./CheckBoxSprite";
-export declare class RadioButtonSprite extends CheckBoxSprite implements IRadioButtonObject3D {
-    protected _isFrozen: boolean;
-    /**
-     * 現在のボタンの有効、無効状態を取得する
-     * ラジオボタンは選択中は自身の状態を変更できない。
-     * @return    ボタンが有効か否か
-     */
-    protected checkActivity(): Boolean;
-    isFrozen: boolean;
+export declare class RadioButtonSprite extends Sprite implements IRadioButtonObject3D {
+    model: RadioButtonObject;
+    constructor(material: StateMaterialSet);
 }
 //# sourceMappingURL=RadioButtonSprite.d.ts.map
