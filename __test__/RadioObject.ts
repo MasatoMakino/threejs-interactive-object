@@ -5,8 +5,7 @@ import {
   RadioButtonSprite,
   ThreeMouseEvent,
   ThreeMouseEventType,
-  IRadioButtonObject3D,
-  IClickableObject3D
+  IRadioButtonObject3D
 } from "../src/index";
 import { clickButton } from "../__test__/MouseControl";
 
@@ -31,7 +30,7 @@ export function testInitManager(
   const values = getButtonValues();
   const buttons = [];
   for (let value of values) {
-    buttons.push( genarator(value) );
+    buttons.push(genarator(value));
   }
 
   manager.addButton(...buttons);
