@@ -102,9 +102,9 @@ const onClickSecondTime = (
 
   clickButton(button);
   expect(spyButton).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.SELECT, button.model)
+    new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
   );
   expect(spyButton).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.CLICK, button.model)
+    new ThreeMouseEvent(ThreeMouseEventType.CLICK, button)
   );
 };

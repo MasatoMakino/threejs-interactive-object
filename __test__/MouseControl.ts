@@ -7,7 +7,7 @@ import {
   ClickableSprite,
   MouseEventManager,
   StateMaterialSet,
-  ClickableView
+  IClickableObject3D
 } from "../src/index";
 import { Event } from "three";
 
@@ -15,7 +15,7 @@ import { Event } from "three";
  * 対象のボタンをクリックする
  * @param {IRadioButtonObject3D} button
  */
-export function clickButton(button: ClickableView) {
+export function clickButton(button: IClickableObject3D) {
   button.model.onMouseOverHandler(
     new ThreeMouseEvent(ThreeMouseEventType.OVER, button)
   );
@@ -107,10 +107,10 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
     .spyOn(target, "dispatchEvent")
     .mockImplementation((e: Event) => null);
   target.model.onMouseUpHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.UP, target.model)
+    new ThreeMouseEvent(ThreeMouseEventType.UP, target)
   );
   expect(spy).toHaveBeenLastCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.UP, target.model)
+    new ThreeMouseEvent(ThreeMouseEventType.UP, target)
   );
 }
 
@@ -126,6 +126,6 @@ export function testClick(target: ClickableMesh | ClickableSprite) {
 
   clickButton(target);
   expect(spy).toHaveBeenLastCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.CLICK, target.model)
+    new ThreeMouseEvent(ThreeMouseEventType.CLICK, target)
   );
 }

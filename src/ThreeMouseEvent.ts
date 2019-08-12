@@ -1,5 +1,5 @@
 import { ClickableObject } from "./ClickableObject";
-import { ClickableView } from "./index";
+import { IClickableObject3D } from "./MouseEventManager";
 
 export class ThreeMouseEvent {
   public type: ThreeMouseEventType;
@@ -9,7 +9,7 @@ export class ThreeMouseEvent {
 
   constructor(
     type: ThreeMouseEventType,
-    modelOrView: ClickableObject | ClickableView
+    modelOrView: ClickableObject | IClickableObject3D
   ) {
     const model = ThreeMouseEvent.getModel(modelOrView);
 
@@ -22,7 +22,7 @@ export class ThreeMouseEvent {
   }
 
   private static getModel(
-    modelOrView: ClickableObject | ClickableView
+    modelOrView: ClickableObject | IClickableObject3D
   ): ClickableObject {
     if ("model" in modelOrView) {
       return modelOrView.model;

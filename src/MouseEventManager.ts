@@ -152,16 +152,16 @@ export class MouseEventManager {
   ) {
     switch (type) {
       case ThreeMouseEventType.DOWN:
-        btn.model.onMouseDownHandler(new ThreeMouseEvent(type, btn.model));
+        btn.model.onMouseDownHandler(new ThreeMouseEvent(type, btn));
         return;
       case ThreeMouseEventType.UP:
-        btn.model.onMouseUpHandler(new ThreeMouseEvent(type, btn.model));
+        btn.model.onMouseUpHandler(new ThreeMouseEvent(type, btn));
         return;
       case ThreeMouseEventType.OVER:
-        btn.model.onMouseOverHandler(new ThreeMouseEvent(type, btn.model));
+        btn.model.onMouseOverHandler(new ThreeMouseEvent(type, btn));
         return;
       case ThreeMouseEventType.OUT:
-        btn.model.onMouseOutHandler(new ThreeMouseEvent(type, btn.model));
+        btn.model.onMouseOutHandler(new ThreeMouseEvent(type, btn));
         return;
     }
   }
