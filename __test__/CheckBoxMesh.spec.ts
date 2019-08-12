@@ -45,7 +45,7 @@ describe("CheckBoxMesh", () => {
     //クリックして選択
     clickButton(checkbox);
     expect(spy).toHaveBeenLastCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.CLICK, checkbox.model)
+      new ThreeMouseEvent(ThreeMouseEventType.CLICK, checkbox)
     );
     expect(checkbox.model.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.overSelect.material);

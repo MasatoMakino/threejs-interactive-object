@@ -2,12 +2,12 @@ import {
   IRadioButtonObject3D,
   ThreeMouseEvent,
   ThreeMouseEventType,
-  IClickableObject3D,
   StateMaterial,
   ClickableMesh,
   ClickableSprite,
   MouseEventManager,
-  StateMaterialSet
+  StateMaterialSet,
+  ClickableView
 } from "../src/index";
 import { Event } from "three";
 
@@ -15,15 +15,15 @@ import { Event } from "three";
  * 対象のボタンをクリックする
  * @param {IRadioButtonObject3D} button
  */
-export function clickButton(button: IClickableObject3D) {
+export function clickButton(button: ClickableView) {
   button.model.onMouseOverHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.OVER, button.model)
+    new ThreeMouseEvent(ThreeMouseEventType.OVER, button)
   );
   button.model.onMouseDownHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.DOWN, button.model)
+    new ThreeMouseEvent(ThreeMouseEventType.DOWN, button)
   );
   button.model.onMouseUpHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.UP, button.model)
+    new ThreeMouseEvent(ThreeMouseEventType.UP, button)
   );
 }
 
@@ -81,7 +81,8 @@ export function testDisable(
 
 /**
  * mouse enable / disableのスイッチングをテストする。
- * @param {ClickableMesh | ClickableSprite} target
+ * @param target
+ * @param matSet
  */
 export function testSwitch(
   target: ClickableMesh | ClickableSprite,
@@ -116,7 +117,7 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
 /**
  * マウスイベントハンドラーを順に呼び出してクリックを行う。
  * クリックイベントが正常にdispatchされることをテストする。
- * @param {ClickableMesh | ClickableSprite} target
+ * @param target
  */
 export function testClick(target: ClickableMesh | ClickableSprite) {
   const spy = jest

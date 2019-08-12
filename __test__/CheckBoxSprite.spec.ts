@@ -40,10 +40,10 @@ describe("CheckBoxSprite", () => {
 
     clickButton(btn);
     expect(spy).toHaveBeenCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.SELECT, btn.model)
+      new ThreeMouseEvent(ThreeMouseEventType.SELECT, btn)
     );
     expect(spy).toHaveBeenCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.CLICK, btn.model)
+      new ThreeMouseEvent(ThreeMouseEventType.CLICK, btn)
     );
     expect(btn.material.opacity).toBe(0.85);
   });

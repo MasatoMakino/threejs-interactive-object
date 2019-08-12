@@ -26,7 +26,7 @@ describe("ThreeMouseEvent", () => {
     });
 
     expect(() => {
-      new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable.model);
+      new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable);
     }).toThrowError("選択可能なボタン以外を引数にして");
   });
 
@@ -45,7 +45,7 @@ describe("ThreeMouseEvent", () => {
       material: matSet
     });
 
-    const e = new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable.model);
+    const e = new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable);
 
     expect(e).toEqual(e.clone());
   });
