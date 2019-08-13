@@ -96,15 +96,11 @@ export class ClickableObject {
   }
 
   public enable(): void {
-    this._enableMouse = true;
-    this.state = ClickableState.NORMAL;
-    this.updateMaterial();
+    this.switchEnable(true);
   }
 
   public disable(): void {
-    this._enableMouse = false;
-    this.state = ClickableState.DISABLE;
-    this.updateMaterial();
+    this.switchEnable(false);
   }
 
   protected updateMaterial(): void {
@@ -117,11 +113,9 @@ export class ClickableObject {
   }
 
   public switchEnable(bool: boolean): void {
-    if (bool) {
-      this.enable();
-    } else {
-      this.disable();
-    }
+    this._enableMouse = bool;
+    this.state = bool ? ClickableState.NORMAL : ClickableState.DISABLE;
+    this.updateMaterial();
   }
 
   public getEnable(): boolean {
