@@ -46,7 +46,7 @@ export class ClickableObject {
   public onMouseUpHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;
 
-    let currentPress: boolean = this.isPress;
+    const currentPress: boolean = this.isPress;
     this.isPress = false;
 
     const nextState = this.isOver ? ClickableState.OVER : ClickableState.NORMAL;
@@ -64,16 +64,18 @@ export class ClickableObject {
   public onMouseClick(): void {}
 
   public onMouseOverHandler(event: ThreeMouseEvent): void {
-    if (!this.checkActivity()) return;
-    this.isOver = true;
-    this.updateState(ClickableState.OVER);
-    this.view.dispatchEvent(event);
+    this.onMouseOverOutHandler(event);
   }
 
   public onMouseOutHandler(event: ThreeMouseEvent): void {
+    this.onMouseOverOutHandler(event);
+  }
+
+  private onMouseOverOutHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;
-    this.isOver = false;
-    this.updateState(ClickableState.NORMAL);
+
+    this.isOver = event.type === ThreeMouseEventType.OVER;
+    this.updateState(this.isOver ? ClickableState.OVER : ClickableState.NORMAL);
     this.view.dispatchEvent(event);
   }
 
