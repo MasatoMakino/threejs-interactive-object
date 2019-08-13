@@ -26,6 +26,7 @@ export declare class ClickableObject {
     onMouseClick(): void;
     onMouseOverHandler(event: ThreeMouseEvent): void;
     onMouseOutHandler(event: ThreeMouseEvent): void;
+    private onMouseOverOutHandler;
     alpha: number;
     protected updateState(state: ClickableState): void;
     /**

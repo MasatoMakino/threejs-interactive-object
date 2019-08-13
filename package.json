@@ -1,6 +1,6 @@
 {
   "name": "threejs-interactive-object",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "main": "./bin/index.js",
   "types": "./bin/index.d.ts",
   "repository": "https://MasatoMakino@github.com/MasatoMakino/threejs-interactive-object.git",

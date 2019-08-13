@@ -30,7 +30,7 @@ export class ClickableObject {
     onMouseUpHandler(event) {
         if (!this.checkActivity())
             return;
-        let currentPress = this.isPress;
+        const currentPress = this.isPress;
         this.isPress = false;
         const nextState = this.isOver ? ClickableState.OVER : ClickableState.NORMAL;
         this.updateState(nextState);
@@ -43,17 +43,16 @@ export class ClickableObject {
     }
     onMouseClick() { }
     onMouseOverHandler(event) {
-        if (!this.checkActivity())
-            return;
-        this.isOver = true;
-        this.updateState(ClickableState.OVER);
-        this.view.dispatchEvent(event);
+        this.onMouseOverOutHandler(event);
     }
     onMouseOutHandler(event) {
+        this.onMouseOverOutHandler(event);
+    }
+    onMouseOverOutHandler(event) {
         if (!this.checkActivity())
             return;
-        this.isOver = false;
-        this.updateState(ClickableState.NORMAL);
+        this.isOver = event.type === ThreeMouseEventType.OVER;
+        this.updateState(this.isOver ? ClickableState.OVER : ClickableState.NORMAL);
         this.view.dispatchEvent(event);
     }
     set alpha(number) {
@@ -72,14 +71,10 @@ export class ClickableObject {
         return this._enableMouse;
     }
     enable() {
-        this._enableMouse = true;
-        this.state = ClickableState.NORMAL;
-        this.updateMaterial();
+        this.switchEnable(true);
     }
     disable() {
-        this._enableMouse = false;
-        this.state = ClickableState.DISABLE;
-        this.updateMaterial();
+        this.switchEnable(false);
     }
     updateMaterial() {
         this.materialSet.setOpacity(this._alpha);
@@ -87,12 +82,9 @@ export class ClickableObject {
         this.view.material = stateMat.material;
     }
     switchEnable(bool) {
-        if (bool) {
-            this.enable();
-        }
-        else {
-            this.disable();
-        }
+        this._enableMouse = bool;
+        this.state = bool ? ClickableState.NORMAL : ClickableState.DISABLE;
+        this.updateMaterial();
     }
     getEnable() {
         return this._enableMouse;
