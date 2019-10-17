@@ -12,6 +12,7 @@ export class ClickableObject {
   public isPress: boolean = false;
   protected isOver: boolean = false;
   protected _enableMouse: boolean = true;
+  public frozen: boolean = false;
 
   public state: ClickableState = ClickableState.NORMAL;
   public materialSet!: StateMaterialSet;
@@ -94,7 +95,7 @@ export class ClickableObject {
    * @return    ボタンが有効か否か
    */
   protected checkActivity(): Boolean {
-    return this._enableMouse;
+    return this._enableMouse && !this.frozen;
   }
 
   public enable(): void {

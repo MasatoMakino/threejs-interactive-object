@@ -79,6 +79,22 @@ export function testDisable(
   changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
 }
 
+export function testFrozen(
+  target: ClickableMesh | ClickableSprite,
+  matSet: StateMaterialSet
+) {
+  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+  target.model.frozen = true;
+  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.normal);
+  changeMaterialState(target, ThreeMouseEventType.DOWN, matSet.normal);
+  changeMaterialState(target, ThreeMouseEventType.UP, matSet.normal);
+  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+
+  target.model.frozen = false;
+  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
+  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+}
+
 /**
  * mouse enable / disableのスイッチングをテストする。
  * @param target

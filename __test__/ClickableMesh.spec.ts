@@ -8,6 +8,7 @@ import {
   testMouseUP,
   testClick
 } from "../__test__/MouseControl";
+import { testFrozen } from "../__test__/MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
@@ -29,6 +30,10 @@ describe("ClickableMesh", () => {
 
   test("disable", () => {
     testDisable(clickable, matSet);
+  });
+
+  test("frozen", () => {
+    testFrozen(clickable, matSet);
   });
 
   test("switch", () => {
