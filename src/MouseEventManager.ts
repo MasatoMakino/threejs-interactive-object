@@ -188,8 +188,8 @@ export class MouseEventManager {
   }
 
   protected static updateMouse(event: MouseEvent, mouse: Vector2): Vector2 {
-    mouse.x = (event.layerX / MouseEventManager.canvas.clientWidth) * 2 - 1;
-    mouse.y = -(event.layerY / MouseEventManager.canvas.clientHeight) * 2 + 1;
+    mouse.x = (event.offsetX / MouseEventManager.canvas.clientWidth) * 2 - 1;
+    mouse.y = -(event.offsetY / MouseEventManager.canvas.clientHeight) * 2 + 1;
     return mouse;
   }
 
