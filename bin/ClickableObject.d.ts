@@ -11,6 +11,7 @@ export declare class ClickableObject {
     isPress: boolean;
     protected isOver: boolean;
     protected _enableMouse: boolean;
+    frozen: boolean;
     state: ClickableState;
     materialSet: StateMaterialSet;
     protected _alpha: number;

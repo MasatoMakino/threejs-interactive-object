@@ -11,6 +11,7 @@ export class ClickableObject {
         this.isPress = false;
         this.isOver = false;
         this._enableMouse = true;
+        this.frozen = false;
         this.state = ClickableState.NORMAL;
         this._alpha = 1.0;
         this.view = parameters.view;
@@ -68,7 +69,7 @@ export class ClickableObject {
      * @return    ボタンが有効か否か
      */
     checkActivity() {
-        return this._enableMouse;
+        return this._enableMouse && !this.frozen;
     }
     enable() {
         this.switchEnable(true);
