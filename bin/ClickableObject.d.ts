@@ -7,13 +7,14 @@ import { ClickableSprite } from "./ClickableSptire";
  * クリックに反応するMesh。
  */
 export declare class ClickableObject {
+    materialSet: StateMaterialSet;
     view: ClickableMesh | ClickableSprite;
     isPress: boolean;
     protected isOver: boolean;
     protected _enableMouse: boolean;
     frozen: boolean;
     state: ClickableState;
-    materialSet: StateMaterialSet;
+    protected _materialSet: StateMaterialSet;
     protected _alpha: number;
     /**
      * コンストラクタ

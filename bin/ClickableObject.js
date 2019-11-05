@@ -18,8 +18,18 @@ export class ClickableObject {
         if (!MouseEventManager.isInit) {
             console.warn("MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。");
         }
-        this.materialSet = parameters.material;
+        this._materialSet = parameters.material;
         this.updateMaterial();
+    }
+    get materialSet() {
+        return this._materialSet;
+    }
+    set materialSet(value) {
+        const isSame = value === this._materialSet;
+        this._materialSet = value;
+        if (!isSame) {
+            this.updateMaterial();
+        }
     }
     onMouseDownHandler(event) {
         if (!this.checkActivity())
@@ -78,8 +88,8 @@ export class ClickableObject {
         this.switchEnable(false);
     }
     updateMaterial() {
-        this.materialSet.setOpacity(this._alpha);
-        const stateMat = this.materialSet.getMaterial(this.state, this._enableMouse);
+        this._materialSet.setOpacity(this._alpha);
+        const stateMat = this._materialSet.getMaterial(this.state, this._enableMouse);
         this.view.material = stateMat.material;
     }
     switchEnable(bool) {
