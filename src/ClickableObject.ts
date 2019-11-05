@@ -8,6 +8,18 @@ import { ClickableSprite } from "./ClickableSptire";
  * クリックに反応するMesh。
  */
 export class ClickableObject {
+  get materialSet(): StateMaterialSet {
+    return this._materialSet;
+  }
+
+  set materialSet(value: StateMaterialSet) {
+    const isSame = value === this._materialSet;
+    this._materialSet = value;
+    if (!isSame) {
+      this.updateMaterial();
+    }
+  }
+
   public view: ClickableMesh | ClickableSprite;
   public isPress: boolean = false;
   protected isOver: boolean = false;
@@ -15,7 +27,7 @@ export class ClickableObject {
   public frozen: boolean = false;
 
   public state: ClickableState = ClickableState.NORMAL;
-  public materialSet!: StateMaterialSet;
+  protected _materialSet!: StateMaterialSet;
   protected _alpha: number = 1.0;
 
   /**
@@ -33,7 +45,7 @@ export class ClickableObject {
       );
     }
 
-    this.materialSet = parameters.material;
+    this._materialSet = parameters.material;
     this.updateMaterial();
   }
 
@@ -107,8 +119,8 @@ export class ClickableObject {
   }
 
   protected updateMaterial(): void {
-    this.materialSet.setOpacity(this._alpha);
-    const stateMat = this.materialSet.getMaterial(
+    this._materialSet.setOpacity(this._alpha);
+    const stateMat = this._materialSet.getMaterial(
       this.state,
       this._enableMouse
     );
