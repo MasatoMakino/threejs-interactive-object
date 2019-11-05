@@ -62,13 +62,23 @@ export class MouseEventManager {
         }
     }
     static checkTarget(target) {
+        // ユーザ定義タイプガード
+        function implementsIClickableObject3D(arg) {
+            return (arg !== null &&
+                typeof arg === "object" &&
+                arg.model !== null &&
+                typeof arg.model === "object" &&
+                arg.model.getEnable !== null &&
+                typeof arg.model.getEnable === "function");
+        }
         //EdgeHelper / WireframeHelperは無視。
         if (target.type === "LineSegments") {
             return null;
         }
         //クリッカブルインターフェースを継承しているなら判定OK
         const targetAny = target;
-        if (targetAny.model !== undefined && targetAny.model.getEnable() === true) {
+        if (implementsIClickableObject3D(targetAny) &&
+            targetAny.model.getEnable() === true) {
             return target;
         }
         //継承していないならその親を探索継続。
