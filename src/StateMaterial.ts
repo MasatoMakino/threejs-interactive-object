@@ -10,13 +10,13 @@ import { ClickableState } from "./MouseEventManager";
  * これはStateMaterialSetの各状態のopacityがアニメーションで同期するため。
  * （StateMaterialSetのalphaが0になると全て非表示、1.0になるとマテリアル本来のopacityに戻る）
  */
-
+export type StateMaterialType = Material | Material[];
 export class StateMaterial {
-  private _material!: Material | Material[];
+  private _material!: StateMaterialType;
   private alpha: number = 1.0;
   private alphaArray!: number[];
 
-  constructor(material: Material | Material[]) {
+  constructor(material: StateMaterialType) {
     this.material = material;
   }
 
@@ -39,12 +39,12 @@ export class StateMaterial {
     return array;
   }
 
-  set material(value: Material | Material[]) {
+  set material(value: StateMaterialType) {
     this._material = value;
     this.updateAlpha();
   }
 
-  get material(): Material | Material[] {
+  get material(): StateMaterialType {
     return this._material;
   }
 
@@ -66,19 +66,18 @@ export class StateMaterialSet {
   over!: StateMaterial;
   down!: StateMaterial;
   disable!: StateMaterial;
-
   normalSelect!: StateMaterial;
   overSelect!: StateMaterial;
   downSelect!: StateMaterial;
-
+  materials: StateMaterial[];
   constructor(param: {
-    normal: Material | Material[];
-    over?: Material | Material[];
-    down?: Material | Material[];
-    disable?: Material | Material[];
-    normalSelect?: Material | Material[];
-    overSelect?: Material | Material[];
-    downSelect?: Material | Material[];
+    normal: StateMaterialType;
+    over?: StateMaterialType;
+    down?: StateMaterialType;
+    disable?: StateMaterialType;
+    normalSelect?: StateMaterialType;
+    overSelect?: StateMaterialType;
+    downSelect?: StateMaterialType;
   }) {
     this.normal = new StateMaterial(param.normal);
     this.over = StateMaterialSet.initMaterial(param.over, this.normal);
@@ -101,7 +100,7 @@ export class StateMaterialSet {
   }
 
   private static initMaterial(
-    value: Material | Material[],
+    value: StateMaterialType,
     defaultMaterial: StateMaterial
   ): StateMaterial {
     if (value == null) return defaultMaterial;
@@ -112,6 +111,16 @@ export class StateMaterialSet {
     if (this.normal == null) {
       throw new Error("通常状態のマテリアルが指定されていません。");
     }
+
+    this.materials = [
+      this.normal,
+      this.normalSelect,
+      this.over,
+      this.overSelect,
+      this.down,
+      this.downSelect,
+      this.disable
+    ];
   }
 
   public getMaterial(
@@ -137,12 +146,8 @@ export class StateMaterialSet {
   }
 
   public setOpacity(opacity: number) {
-    this.normal.setOpacity(opacity);
-    this.normalSelect.setOpacity(opacity);
-    this.over.setOpacity(opacity);
-    this.overSelect.setOpacity(opacity);
-    this.down.setOpacity(opacity);
-    this.downSelect.setOpacity(opacity);
-    this.disable.setOpacity(opacity);
+    this.materials.forEach(mat => {
+      mat.setOpacity(opacity);
+    });
   }
 }
