@@ -9,14 +9,16 @@ import { ClickableState } from "./MouseEventManager";
  * これはStateMaterialSetの各状態のopacityがアニメーションで同期するため。
  * （StateMaterialSetのalphaが0になると全て非表示、1.0になるとマテリアル本来のopacityに戻る）
  */
+export declare type StateMaterialType = Material | Material[];
 export declare class StateMaterial {
     private _material;
     private alpha;
     private alphaArray;
-    constructor(material: Material | Material[]);
+    constructor(material: StateMaterialType);
     private updateAlpha;
     private getAlphaArray;
-    material: Material | Material[];
+    set material(value: StateMaterialType);
+    get material(): StateMaterialType;
     setOpacity(opacity: number): void;
 }
 export declare class StateMaterialSet {
@@ -27,14 +29,15 @@ export declare class StateMaterialSet {
     normalSelect: StateMaterial;
     overSelect: StateMaterial;
     downSelect: StateMaterial;
+    materials: StateMaterial[];
     constructor(param: {
-        normal: Material | Material[];
-        over?: Material | Material[];
-        down?: Material | Material[];
-        disable?: Material | Material[];
-        normalSelect?: Material | Material[];
-        overSelect?: Material | Material[];
-        downSelect?: Material | Material[];
+        normal: StateMaterialType;
+        over?: StateMaterialType;
+        down?: StateMaterialType;
+        disable?: StateMaterialType;
+        normalSelect?: StateMaterialType;
+        overSelect?: StateMaterialType;
+        downSelect?: StateMaterialType;
     });
     private static initMaterial;
     init(): void;

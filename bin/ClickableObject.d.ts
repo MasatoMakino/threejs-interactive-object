@@ -7,7 +7,8 @@ import { ClickableSprite } from "./ClickableSptire";
  * クリックに反応するMesh。
  */
 export declare class ClickableObject {
-    materialSet: StateMaterialSet;
+    get materialSet(): StateMaterialSet;
+    set materialSet(value: StateMaterialSet);
     view: ClickableMesh | ClickableSprite;
     isPress: boolean;
     protected isOver: boolean;
@@ -29,7 +30,7 @@ export declare class ClickableObject {
     onMouseOverHandler(event: ThreeMouseEvent): void;
     onMouseOutHandler(event: ThreeMouseEvent): void;
     private onMouseOverOutHandler;
-    alpha: number;
+    set alpha(number: number);
     protected updateState(state: ClickableState): void;
     /**
      * 現在のボタンの有効、無効状態を取得する

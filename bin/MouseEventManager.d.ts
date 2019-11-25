@@ -12,7 +12,12 @@ export declare class MouseEventManager {
     protected static mouse: Vector2;
     protected static currentOver: IClickableObject3D | null;
     static isInit: boolean;
-    static init(scene: Scene, camera: Camera, renderer: Renderer): void;
+    protected static hasThrottled: boolean;
+    static throttlingTime_ms: number;
+    protected static throttlingDelta: number;
+    static init(scene: Scene, camera: Camera, renderer: Renderer, option?: {
+        throttlingTime_ms?: number;
+    }): void;
     protected static onDocumentMouseMove: (event: any) => void;
     /**
      * 現在マウスオーバーしている対象をなしにする。

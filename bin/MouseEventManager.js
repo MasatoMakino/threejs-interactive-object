@@ -1,16 +1,28 @@
 import { Raycaster, Vector2 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+import { RAFTicker } from "raf-ticker";
+import { RAFTickerEventType } from "raf-ticker";
 export class MouseEventManager {
-    static init(scene, camera, renderer) {
+    static init(scene, camera, renderer, option) {
+        var _a, _b;
         MouseEventManager.isInit = true;
         MouseEventManager.camera = camera;
         MouseEventManager.renderer = renderer;
         MouseEventManager.scene = scene;
+        MouseEventManager.throttlingTime_ms = (_b = (_a = option) === null || _a === void 0 ? void 0 : _a.throttlingTime_ms, (_b !== null && _b !== void 0 ? _b : 33));
         const canvas = renderer.domElement;
         MouseEventManager.canvas = canvas;
         canvas.addEventListener("mousemove", MouseEventManager.onDocumentMouseMove, false);
         canvas.addEventListener("mousedown", MouseEventManager.onDocumentMouseUpDown, false);
         canvas.addEventListener("mouseup", MouseEventManager.onDocumentMouseUpDown, false);
+        RAFTicker.addEventListener(RAFTickerEventType.tick, (e) => {
+            MouseEventManager.throttlingDelta += e.delta;
+            if (MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms) {
+                return;
+            }
+            MouseEventManager.hasThrottled = false;
+            MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
+        });
     }
     /**
      * 現在マウスオーバーしている対象をなしにする。
@@ -104,7 +116,12 @@ export class MouseEventManager {
 MouseEventManager.raycaster = new Raycaster();
 MouseEventManager.mouse = new Vector2();
 MouseEventManager.isInit = false;
+MouseEventManager.hasThrottled = false;
+MouseEventManager.throttlingDelta = 0;
 MouseEventManager.onDocumentMouseMove = (event) => {
+    if (MouseEventManager.hasThrottled)
+        return;
+    MouseEventManager.hasThrottled = true;
     if (event.type === "mousemove") {
         event.preventDefault();
     }

@@ -1,13 +1,4 @@
 import { ClickableState } from "./MouseEventManager";
-/**
- * IClickableObject3D用の各状態用マテリアル。
- * マテリアルと固定値のalphaプロパティで構成される。
- *
- * alphaプロパティはコンストラクタ引数のmaterial.opacityを引き継ぐ。
- * StateMaterialのopacityは、StateMaterialのalpha * StateMaterialSetのalphaで設定される。
- * これはStateMaterialSetの各状態のopacityがアニメーションで同期するため。
- * （StateMaterialSetのalphaが0になると全て非表示、1.0になるとマテリアル本来のopacityに戻る）
- */
 export class StateMaterial {
     constructor(material) {
         this.alpha = 1.0;
@@ -70,6 +61,15 @@ export class StateMaterialSet {
         if (this.normal == null) {
             throw new Error("通常状態のマテリアルが指定されていません。");
         }
+        this.materials = [
+            this.normal,
+            this.normalSelect,
+            this.over,
+            this.overSelect,
+            this.down,
+            this.downSelect,
+            this.disable
+        ];
     }
     getMaterial(state, mouseEnabled, isSelected = false) {
         //無効状態はstateよりも優先
@@ -87,12 +87,8 @@ export class StateMaterialSet {
         return this.normal;
     }
     setOpacity(opacity) {
-        this.normal.setOpacity(opacity);
-        this.normalSelect.setOpacity(opacity);
-        this.over.setOpacity(opacity);
-        this.overSelect.setOpacity(opacity);
-        this.down.setOpacity(opacity);
-        this.downSelect.setOpacity(opacity);
-        this.disable.setOpacity(opacity);
+        this.materials.forEach(mat => {
+            mat.setOpacity(opacity);
+        });
     }
 }

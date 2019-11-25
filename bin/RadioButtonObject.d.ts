@@ -10,6 +10,7 @@ export declare class RadioButtonObject extends CheckBoxObject {
      * @return    ボタンが有効か否か
      */
     protected checkActivity(): Boolean;
-    isFrozen: boolean;
+    get isFrozen(): boolean;
+    set isFrozen(bool: boolean);
 }
 //# sourceMappingURL=RadioButtonObject.d.ts.map

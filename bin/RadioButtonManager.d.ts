@@ -39,7 +39,7 @@ export declare class RadioButtonManager extends EventDispatcher {
      * @param {RadioButtonObject} model
      */
     select(model: RadioButtonObject): void;
-    readonly selected: RadioButtonObject;
-    readonly models: RadioButtonObject[];
+    get selected(): RadioButtonObject;
+    get models(): RadioButtonObject[];
 }
 //# sourceMappingURL=RadioButtonManager.d.ts.map

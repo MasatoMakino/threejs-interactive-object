@@ -11,7 +11,8 @@ export declare class CheckBoxObject extends ClickableObject {
      * ここでisSelect状態を一括管理する。
      */
     onMouseClick(): void;
-    selection: boolean;
+    get selection(): boolean;
+    set selection(bool: boolean);
     protected updateMaterial(): void;
 }
 //# sourceMappingURL=CheckBoxObject.d.ts.map
