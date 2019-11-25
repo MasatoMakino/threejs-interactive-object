@@ -12,6 +12,9 @@ import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { ClickableObject } from "./ClickableObject";
 import { CheckBoxObject } from "./CheckBoxObject";
 import { RadioButtonObject } from "./RadioButtonObject";
+import { RAFTicker } from "raf-ticker";
+import { RAFTickerEventType } from "raf-ticker";
+import { RAFTickerEvent } from "raf-ticker";
 
 export class MouseEventManager {
   protected static camera: Camera;
@@ -26,12 +29,22 @@ export class MouseEventManager {
   protected static currentOver: IClickableObject3D | null;
 
   public static isInit: boolean = false;
+  protected static hasThrottled: boolean = false;
+  public static throttlingTime_ms: number;
+  protected static throttlingDelta: number = 0;
 
-  public static init(scene: Scene, camera: Camera, renderer: Renderer): void {
+  public static init(
+    scene: Scene,
+    camera: Camera,
+    renderer: Renderer,
+    option?: { throttlingTime_ms?: number }
+  ): void {
     MouseEventManager.isInit = true;
     MouseEventManager.camera = camera;
     MouseEventManager.renderer = renderer;
     MouseEventManager.scene = scene;
+
+    MouseEventManager.throttlingTime_ms = option?.throttlingTime_ms ?? 33;
 
     const canvas = renderer.domElement;
     MouseEventManager.canvas = canvas;
@@ -51,9 +64,23 @@ export class MouseEventManager {
       MouseEventManager.onDocumentMouseUpDown,
       false
     );
+
+    RAFTicker.addEventListener(RAFTickerEventType.tick, (e: RAFTickerEvent) => {
+      MouseEventManager.throttlingDelta += e.delta;
+      if (
+        MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms
+      ) {
+        return;
+      }
+      MouseEventManager.hasThrottled = false;
+      MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
+    });
   }
 
   protected static onDocumentMouseMove = (event: any) => {
+    if (MouseEventManager.hasThrottled) return;
+    MouseEventManager.hasThrottled = true;
+
     if (event.type === "mousemove") {
       event.preventDefault();
     }
