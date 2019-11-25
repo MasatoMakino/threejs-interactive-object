@@ -41,5 +41,8 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
+  },
+  "dependencies": {
+    "raf-ticker": "https://github.com/MasatoMakino/raf-ticker.git"
   }
 }
