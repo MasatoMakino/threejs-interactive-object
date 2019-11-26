@@ -266,6 +266,14 @@
     "@babel/helper-plugin-utils" "^7.0.0"
     "@babel/plugin-syntax-optional-catch-binding" "^7.7.4"
 
+"@babel/plugin-proposal-optional-chaining@^7.7.4":
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-optional-chaining/-/plugin-proposal-optional-chaining-7.7.4.tgz#3f04c2de1a942cbd3008324df8144b9cbc0ca0ba"
+  integrity sha512-JmgaS+ygAWDR/STPe3/7y0lNlHgS+19qZ9aC06nYLwQ/XB7c0q5Xs+ksFU3EDnp9EiEsO0dnRAOKeyLHTZuW3A==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.0.0"
+    "@babel/plugin-syntax-optional-chaining" "^7.7.4"
+
 "@babel/plugin-proposal-unicode-property-regex@^7.7.4":
   version "7.7.4"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-unicode-property-regex/-/plugin-proposal-unicode-property-regex-7.7.4.tgz#7c239ccaf09470dbe1d453d50057460e84517ebb"
@@ -306,6 +314,13 @@
   version "7.7.4"
   resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-optional-catch-binding/-/plugin-syntax-optional-catch-binding-7.7.4.tgz#a3e38f59f4b6233867b4a92dcb0ee05b2c334aa6"
   integrity sha512-4ZSuzWgFxqHRE31Glu+fEr/MirNZOMYmD/0BhBWyLyOOQz/gTAl7QmWm2hX1QxEIXsr2vkdlwxIzTyiYRC4xcQ==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.0.0"
+
+"@babel/plugin-syntax-optional-chaining@^7.7.4":
+  version "7.7.4"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-optional-chaining/-/plugin-syntax-optional-chaining-7.7.4.tgz#c91fdde6de85d2eb8906daea7b21944c3610c901"
+  integrity sha512-2MqYD5WjZSbJdUagnJvIdSfkb/ucOC9/1fRJxm7GAxY6YQLWlUvkfxoNbUPcPLHJyetKUDQ4+yyuUyAoc0HriA==
   dependencies:
     "@babel/helper-plugin-utils" "^7.0.0"
 
@@ -6263,10 +6278,6 @@ querystring@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
   integrity sha1-sgmEkgO7Jd+CDadW50cAWHhSFiA=
-
-"raf-ticker@https://github.com/MasatoMakino/raf-ticker.git":
-  version "0.1.0"
-  resolved "https://github.com/MasatoMakino/raf-ticker.git#e079d5a8587745393f9189f2353be7dc56b6dc60"
 
 randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
   version "2.1.0"
