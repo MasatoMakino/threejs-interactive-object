@@ -12,9 +12,6 @@ import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { ClickableObject } from "./ClickableObject";
 import { CheckBoxObject } from "./CheckBoxObject";
 import { RadioButtonObject } from "./RadioButtonObject";
-import { RAFTicker } from "raf-ticker";
-import { RAFTickerEventType } from "raf-ticker";
-import { RAFTickerEvent } from "raf-ticker";
 
 export class MouseEventManager {
   protected static camera: Camera;
@@ -32,6 +29,7 @@ export class MouseEventManager {
   protected static hasThrottled: boolean = false;
   public static throttlingTime_ms: number;
   protected static throttlingDelta: number = 0;
+  protected static lastRAFTime: number;
 
   public static init(
     scene: Scene,
@@ -65,8 +63,17 @@ export class MouseEventManager {
       false
     );
 
-    RAFTicker.addEventListener(RAFTickerEventType.tick, (e: RAFTickerEvent) => {
-      MouseEventManager.throttlingDelta += e.delta;
+    const callBackRAF = timestamp => {
+      if (this.lastRAFTime == null) {
+        this.lastRAFTime = timestamp;
+      }
+
+      const delta = timestamp - this.lastRAFTime;
+      MouseEventManager.throttlingDelta += delta;
+
+      this.lastRAFTime = timestamp;
+      requestAnimationFrame(callBackRAF);
+
       if (
         MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms
       ) {
@@ -74,7 +81,8 @@ export class MouseEventManager {
       }
       MouseEventManager.hasThrottled = false;
       MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
-    });
+    };
+    requestAnimationFrame(callBackRAF);
   }
 
   protected static onDocumentMouseMove = (event: any) => {
