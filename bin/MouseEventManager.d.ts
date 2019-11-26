@@ -15,6 +15,7 @@ export declare class MouseEventManager {
     protected static hasThrottled: boolean;
     static throttlingTime_ms: number;
     protected static throttlingDelta: number;
+    protected static lastRAFTime: number;
     static init(scene: Scene, camera: Camera, renderer: Renderer, option?: {
         throttlingTime_ms?: number;
     }): void;
