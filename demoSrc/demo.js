@@ -21,8 +21,8 @@ import {
   WebGLRenderer
 } from "three";
 
-const W = 1920;
-const H = 1080;
+const W = 1280;
+const H = 900;
 let renderer;
 let scene;
 let camera;
