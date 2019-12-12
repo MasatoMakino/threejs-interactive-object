@@ -9,19 +9,14 @@ const { bundleDemo, watchDemo } = require("gulptask-demo-page").get({
   externalScripts: [],
   body: `<canvas id="webgl-canvas"></canvas>`
 });
-const copyGlob = "./demoSrc/**/*.{png,jpg,jpeg}";
-const copy = () => {
-  return src(copyGlob, { base: "./demoSrc/" }).pipe(dest("./docs/demo"));
-};
 
 const { tsc, tscClean, watchTsc } = require("gulptask-tsc").get();
 
 const watchTasks = async () => {
   watchDemo();
   watchTsc();
-  watch(copyGlob, copy);
 };
 
 exports.start_dev = series(watchTasks, server);
-exports.build = series(tsc, copy, bundleDemo, doc);
-exports.build_clean = series(tscClean, copy, bundleDemo, doc);
+exports.build = series(tsc, bundleDemo, doc);
+exports.build_clean = series(tscClean, bundleDemo, doc);
