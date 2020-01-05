@@ -5,8 +5,8 @@ import {
   ThreeMouseEvent,
   ThreeMouseEventType
 } from "../src/index";
-import { getMeshMaterialSet } from "../__test__/Materials";
-import { changeMaterialState, clickButton } from "../__test__/MouseControl";
+import { getMeshMaterialSet } from "./Materials";
+import { changeMaterialState, clickButton } from "./MouseControl";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 
