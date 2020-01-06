@@ -10,7 +10,9 @@ const { bundleDemo, watchDemo } = require("gulptask-demo-page").get({
   body: `<canvas id="webgl-canvas"></canvas>`
 });
 
-const { tsc, tscClean, watchTsc } = require("gulptask-tsc").get();
+const { tsc, tscClean, watchTsc } = require("gulptask-tsc").get({
+  projects: ["tsconfig.json", "tsconfig.esm.json"]
+});
 
 const watchTasks = async () => {
   watchDemo();
