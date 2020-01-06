@@ -1,5 +1,6 @@
 import { Raycaster, Vector2 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+import { RAFTickerEventType, RAFTicker } from "raf-ticker";
 export class MouseEventManager {
     static init(scene, camera, renderer, option) {
         var _a, _b;
@@ -13,21 +14,14 @@ export class MouseEventManager {
         canvas.addEventListener("mousemove", MouseEventManager.onDocumentMouseMove, false);
         canvas.addEventListener("mousedown", MouseEventManager.onDocumentMouseUpDown, false);
         canvas.addEventListener("mouseup", MouseEventManager.onDocumentMouseUpDown, false);
-        const callBackRAF = timestamp => {
-            if (this.lastRAFTime == null) {
-                this.lastRAFTime = timestamp;
-            }
-            const delta = timestamp - this.lastRAFTime;
-            MouseEventManager.throttlingDelta += delta;
-            this.lastRAFTime = timestamp;
-            requestAnimationFrame(callBackRAF);
+        RAFTicker.addEventListener(RAFTickerEventType.tick, (e) => {
+            MouseEventManager.throttlingDelta += e.delta;
             if (MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms) {
                 return;
             }
             MouseEventManager.hasThrottled = false;
             MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
-        };
-        requestAnimationFrame(callBackRAF);
+        });
     }
     /**
      * 現在マウスオーバーしている対象をなしにする。
