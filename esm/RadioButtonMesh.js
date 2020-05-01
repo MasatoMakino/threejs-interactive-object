@@ -1,5 +1,6 @@
 import { RadioButtonObject } from "./RadioButtonObject";
 import { Mesh } from "three";
+
 export class RadioButtonMesh extends Mesh {
   /**
    * コンストラクタ
@@ -8,7 +9,7 @@ export class RadioButtonMesh extends Mesh {
     super(parameters.geo);
     this.model = new RadioButtonObject({
       view: this,
-      material: parameters.material
+      material: parameters.material,
     });
   }
 }

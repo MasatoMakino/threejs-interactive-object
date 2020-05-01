@@ -1,5 +1,6 @@
 import { Mesh } from "three";
 import { ClickableObject } from "./ClickableObject";
+
 /**
  * クリックに反応するMesh。
  */
@@ -11,7 +12,7 @@ export class ClickableMesh extends Mesh {
     super(parameters.geo);
     this.model = new ClickableObject({
       view: this,
-      material: parameters.material
+      material: parameters.material,
     });
   }
 }

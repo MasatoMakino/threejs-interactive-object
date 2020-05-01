@@ -2,6 +2,7 @@ import { IClickableObject3D } from "./MouseEventManager";
 import { BufferGeometry, Geometry, Mesh } from "three";
 import { StateMaterialSet } from "./StateMaterial";
 import { ClickableObject } from "./ClickableObject";
+
 /**
  * クリックに反応するMesh。
  */

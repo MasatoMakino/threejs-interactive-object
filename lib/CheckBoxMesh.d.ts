@@ -4,6 +4,7 @@ import { Geometry } from "three";
 import { BufferGeometry } from "three";
 import { Mesh } from "three";
 import { ISelectableObject3D } from "./MouseEventManager";
+
 export declare class CheckBoxMesh extends Mesh implements ISelectableObject3D {
   model: CheckBoxObject;
   /**

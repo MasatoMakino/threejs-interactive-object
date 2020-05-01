@@ -1,4 +1,5 @@
 import { CheckBoxObject } from "./CheckBoxObject";
+
 export class RadioButtonObject extends CheckBoxObject {
   constructor() {
     super(...arguments);

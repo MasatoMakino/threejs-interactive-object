@@ -1,19 +1,21 @@
 import { Raycaster, Vector2 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { RAFTickerEventType, RAFTicker } from "raf-ticker";
+import { RAFTicker, RAFTickerEventType } from "raf-ticker";
+
 export class MouseEventManager {
   static init(scene, camera, renderer, option) {
-    var _a, _b;
+    var _a;
     MouseEventManager.isInit = true;
     MouseEventManager.camera = camera;
     MouseEventManager.renderer = renderer;
     MouseEventManager.scene = scene;
     MouseEventManager.throttlingTime_ms =
-      ((_b =
-        (_a = option) === null || _a === void 0
+      (_a =
+        option === null || option === void 0
           ? void 0
-          : _a.throttlingTime_ms),
-      _b !== null && _b !== void 0 ? _b : 33);
+          : option.throttlingTime_ms) !== null && _a !== void 0
+        ? _a
+        : 33;
     const canvas = renderer.domElement;
     MouseEventManager.canvas = canvas;
     canvas.addEventListener(
@@ -31,7 +33,7 @@ export class MouseEventManager {
       MouseEventManager.onDocumentMouseUpDown,
       false
     );
-    RAFTicker.addEventListener(RAFTickerEventType.tick, e => {
+    RAFTicker.addEventListener(RAFTickerEventType.tick, (e) => {
       MouseEventManager.throttlingDelta += e.delta;
       if (
         MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms
@@ -151,7 +153,7 @@ MouseEventManager.mouse = new Vector2();
 MouseEventManager.isInit = false;
 MouseEventManager.hasThrottled = false;
 MouseEventManager.throttlingDelta = 0;
-MouseEventManager.onDocumentMouseMove = event => {
+MouseEventManager.onDocumentMouseMove = (event) => {
   if (MouseEventManager.hasThrottled) return;
   MouseEventManager.hasThrottled = true;
   if (event.type === "mousemove") {
@@ -182,7 +184,7 @@ MouseEventManager.onDocumentMouseMove = event => {
  * マウス座標から対象となるObject3Dを探し出して操作を行う。
  * @param {MouseEvent} event
  */
-MouseEventManager.onDocumentMouseUpDown = event => {
+MouseEventManager.onDocumentMouseUpDown = (event) => {
   let eventType = ThreeMouseEventType.DOWN;
   switch (event.type) {
     case "mousedown":
@@ -201,7 +203,7 @@ MouseEventManager.onDocumentMouseUpDown = event => {
  * これとselectフラグを掛け合わせることで状態を判定する。
  */
 export var ClickableState;
-(function(ClickableState) {
+(function (ClickableState) {
   //ボタンの状態を表す定数
   ClickableState["NORMAL"] = "normal";
   ClickableState["OVER"] = "normal_over";

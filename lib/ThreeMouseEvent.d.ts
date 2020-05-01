@@ -1,5 +1,6 @@
 import { ClickableObject } from "./ClickableObject";
 import { IClickableObject3D } from "./MouseEventManager";
+
 export declare class ThreeMouseEvent {
   type: ThreeMouseEventType;
   model: ClickableObject;
@@ -22,6 +23,6 @@ export declare enum ThreeMouseEventType {
   OUT = "THREE_MOUSE_EVENT_OUT",
   DOWN = "THREE_MOUSE_EVENT_DOWN",
   UP = "THREE_MOUSE_EVENT_UP",
-  SELECT = "THREE_MOUSE_EVENT_SELECT"
+  SELECT = "THREE_MOUSE_EVENT_SELECT",
 }
 //# sourceMappingURL=ThreeMouseEvent.d.ts.map

@@ -3,6 +3,7 @@ import { ThreeMouseEvent } from "./ThreeMouseEvent";
 import { StateMaterialSet } from "./StateMaterial";
 import { ClickableMesh } from "./ClickableMesh";
 import { ClickableSprite } from "./ClickableSptire";
+
 /**
  * クリックに反応するMesh。
  */

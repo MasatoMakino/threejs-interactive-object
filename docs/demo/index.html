@@ -50,13 +50,13 @@
       }
     </style>
     <script>
-      document.addEventListener("DOMContentLoaded", function(e) {
+      document.addEventListener("DOMContentLoaded", function (e) {
         var menuItems = document.getElementsByClassName("pure-menu-item");
 
         function init() {
           for (var i = 0; i < menuItems.length; i++) {
             var item = menuItems[i];
-            item.addEventListener("click", function(e) {
+            item.addEventListener("click", function (e) {
               selectMenu(e.currentTarget);
             });
           }

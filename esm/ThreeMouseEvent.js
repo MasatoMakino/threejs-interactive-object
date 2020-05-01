@@ -31,7 +31,7 @@ export class ThreeMouseEvent {
   }
 }
 export var ThreeMouseEventType;
-(function(ThreeMouseEventType) {
+(function (ThreeMouseEventType) {
   ThreeMouseEventType["CLICK"] = "THREE_MOUSE_EVENT_CLICK";
   ThreeMouseEventType["OVER"] = "THREE_MOUSE_EVENT_OVER";
   ThreeMouseEventType["OUT"] = "THREE_MOUSE_EVENT_OUT";

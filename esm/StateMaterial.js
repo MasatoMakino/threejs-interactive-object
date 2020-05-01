@@ -1,4 +1,5 @@
 import { ClickableState } from "./MouseEventManager";
+
 export class StateMaterial {
   constructor(material) {
     this.alpha = 1.0;
@@ -74,7 +75,7 @@ export class StateMaterialSet {
       this.overSelect,
       this.down,
       this.downSelect,
-      this.disable
+      this.disable,
     ];
   }
   getMaterial(state, mouseEnabled, isSelected = false) {
@@ -93,7 +94,7 @@ export class StateMaterialSet {
     return this.normal;
   }
   setOpacity(opacity) {
-    this.materials.forEach(mat => {
+    this.materials.forEach((mat) => {
       mat.setOpacity(opacity);
     });
   }

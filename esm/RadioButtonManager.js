@@ -1,5 +1,6 @@
 import { EventDispatcher } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+
 export class RadioButtonManager extends EventDispatcher {
   /**
    * コンストラクタ
@@ -16,7 +17,7 @@ export class RadioButtonManager extends EventDispatcher {
      * 管理下のボタンが選択された場合の処理
      * @param {Event} e
      */
-    this.onSelectedButton = e => {
+    this.onSelectedButton = (e) => {
       const evt = e;
       if (evt.isSelected) {
         this.select(evt.model);
@@ -28,7 +29,7 @@ export class RadioButtonManager extends EventDispatcher {
    * @param {IRadioButtonObject3D[]} buttons
    */
   addButton(...buttons) {
-    buttons.forEach(btn => {
+    buttons.forEach((btn) => {
       this.addModel(btn.model);
     });
   }
