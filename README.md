@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/MasatoMakino/threejs-interactive-object.svg?branch=master)](https://travis-ci.org/MasatoMakino/threejs-interactive-object)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2c756ac812782947b080/maintainability)](https://codeclimate.com/github/MasatoMakino/threejs-interactive-object/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/2c756ac812782947b080/test_coverage)](https://codeclimate.com/github/MasatoMakino/threejs-interactive-object/test_coverage)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 
 [Github repository](https://github.com/MasatoMakino/threejs-interactive-object)
@@ -22,7 +23,6 @@ npm install https://github.com/MasatoMakino/threejs-interactive-object.git --sav
 
 ### Import
 
-
 threejs-interactive-object is composed of ES6 modules and TypeScript d.ts files.
 
 At first, import classes.
@@ -34,7 +34,7 @@ import {
   StateMaterial,
   MouseEventManager,
   ThreeMouseEvent,
-  ThreeMouseEventType
+  ThreeMouseEventType,
 } from "threejs-interactive-object";
 ```
 
@@ -61,9 +61,9 @@ const clickable = new ClickableMesh({
   geo: new BoxBufferGeometry(3, 3, 3),
   material: new StateMaterialSet({
     normal: new MeshBasicMaterial({
-      color: 0xffffff
-    })
-  })
+      color: 0xffffff,
+    }),
+  }),
 });
 scene.add(clickable);
 ```
@@ -71,11 +71,10 @@ scene.add(clickable);
 and add event listener
 
 ```js
-clickable.addEventListener(ThreeMouseEventType.CLICK, (e)=>{
-    cosole.log("CLICKED!");
+clickable.addEventListener(ThreeMouseEventType.CLICK, (e) => {
+  cosole.log("CLICKED!");
 });
 ```
-
 
 ## Uninstall
 
