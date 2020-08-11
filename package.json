@@ -35,10 +35,9 @@
   "scripts": {
     "test": "jest --coverage",
     "start:dev": "gulp start_dev",
-    "build": "gulp build && npm run doc:card",
-    "build:clean": "gulp build_clean && npm run doc:card",
-    "checkout:docs": "git checkout HEAD ./docs/",
-    "doc:card": "repoimg -n MasatoMakino/threejs-interactive-object -o ./docs/card.png"
+    "build": "gulp build",
+    "build:clean": "gulp build_clean",
+    "checkout:docs": "git checkout HEAD ./docs/"
   },
   "husky": {
     "hooks": {
