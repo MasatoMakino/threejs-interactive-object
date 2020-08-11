@@ -18,18 +18,18 @@
     "three": "^0.118.3"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.4",
+    "@types/jest": "^26.0.9",
     "gulp": "^4.0.2",
     "gulptask-demo-page": "https://github.com/MasatoMakino/gulptask-demo-page.git",
     "gulptask-dev-server": "https://github.com/MasatoMakino/gulptask-dev-server.git",
     "gulptask-tsc": "https://github.com/MasatoMakino/gulptask-tsc.git",
     "gulptask-tsdoc": "https://github.com/MasatoMakino/gulptask-tsdoc.git",
     "husky": "^4.2.5",
-    "jest": "^26.1.0",
+    "jest": "^26.3.0",
     "prettier": "^2.0.5",
     "pretty-quick": "^2.0.1",
-    "three": "^0.118.3",
-    "ts-jest": "^26.1.2",
+    "three": "^0.119.1",
+    "ts-jest": "^26.1.4",
     "typescript": "^3.9.7"
   },
   "scripts": {

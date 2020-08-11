@@ -6,13 +6,13 @@ import {
   Raycaster,
   Renderer,
   Scene,
-  Vector2
+  Vector2,
 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 import { ClickableObject } from "./ClickableObject";
 import { CheckBoxObject } from "./CheckBoxObject";
 import { RadioButtonObject } from "./RadioButtonObject";
-import { RAFTickerEventType, RAFTickerEvent, RAFTicker } from "raf-ticker";
+import { RAFTicker, RAFTickerEvent, RAFTickerEventType } from "raf-ticker";
 
 export class MouseEventManager {
   protected static camera: Camera;
@@ -63,7 +63,7 @@ export class MouseEventManager {
       false
     );
 
-    RAFTicker.addEventListener(RAFTickerEventType.tick, (e: RAFTickerEvent) => {
+    RAFTicker.on(RAFTickerEventType.tick, (e: RAFTickerEvent) => {
       MouseEventManager.throttlingDelta += e.delta;
       if (
         MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms
@@ -259,7 +259,7 @@ export enum ClickableState {
   NORMAL = "normal",
   OVER = "normal_over",
   DOWN = "normal_down",
-  DISABLE = "disable"
+  DISABLE = "disable",
 }
 
 /**
