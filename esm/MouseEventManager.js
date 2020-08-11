@@ -33,7 +33,7 @@ export class MouseEventManager {
       MouseEventManager.onDocumentMouseUpDown,
       false
     );
-    RAFTicker.addEventListener(RAFTickerEventType.tick, (e) => {
+    RAFTicker.on(RAFTickerEventType.tick, (e) => {
       MouseEventManager.throttlingDelta += e.delta;
       if (
         MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms

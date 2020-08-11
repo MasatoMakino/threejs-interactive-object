@@ -67,13 +67,14 @@
 				<a href="#threejs-interactive-object" id="threejs-interactive-object" style="color: inherit; text-decoration: none;">
 					<h1>threejs-interactive-object</h1>
 				</a>
-				<p><a href="https://travis-ci.org/MasatoMakino/threejs-interactive-object"><img src="https://travis-ci.org/MasatoMakino/threejs-interactive-object.svg?branch=master" alt="Build Status"></a>
-					<a href="https://codeclimate.com/github/MasatoMakino/threejs-interactive-object/maintainability"><img src="https://api.codeclimate.com/v1/badges/2c756ac812782947b080/maintainability" alt="Maintainability"></a>
-				<a href="LICENSE"><img src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="MIT License"></a></p>
-				<p><a href="https://github.com/MasatoMakino/threejs-interactive-object">Github repository</a></p>
 				<blockquote>
 					<p>Mouse interactive objects for three.js</p>
 				</blockquote>
+				<p><a href="https://travis-ci.org/MasatoMakino/threejs-interactive-object"><img src="https://travis-ci.org/MasatoMakino/threejs-interactive-object.svg?branch=master" alt="Build Status"></a>
+					<a href="https://codeclimate.com/github/MasatoMakino/threejs-interactive-object/maintainability"><img src="https://api.codeclimate.com/v1/badges/2c756ac812782947b080/maintainability" alt="Maintainability"></a>
+					<a href="https://codeclimate.com/github/MasatoMakino/threejs-interactive-object/test_coverage"><img src="https://api.codeclimate.com/v1/badges/2c756ac812782947b080/test_coverage" alt="Test Coverage"></a>
+				<a href="LICENSE"><img src="http://img.shields.io/badge/license-MIT-blue.svg?style=flat" alt="MIT License"></a></p>
+				<p><a href="https://github.com/MasatoMakino/threejs-interactive-object"><img src="https://github-readme-stats.vercel.app/api/pin/?username=MasatoMakino&repo=threejs-interactive-object&show_owner=true" alt="ReadMe Card"></a></p>
 				<a href="#demo" id="demo" style="color: inherit; text-decoration: none;">
 					<h2>Demo</h2>
 				</a>
@@ -96,7 +97,7 @@
   StateMaterial,
   MouseEventManager,
   ThreeMouseEvent,
-  ThreeMouseEventType
+  ThreeMouseEventType,
 } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;threejs-interactive-object&quot;</span>;</code></pre>
 				<a href="#create-buttons" id="create-buttons" style="color: inherit; text-decoration: none;">
 					<h3>Create buttons</h3>
@@ -116,14 +117,14 @@
   <span class="hljs-attr">geo</span>: <span class="hljs-keyword">new</span> BoxBufferGeometry(<span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>),
   <span class="hljs-attr">material</span>: <span class="hljs-keyword">new</span> StateMaterialSet({
     <span class="hljs-attr">normal</span>: <span class="hljs-keyword">new</span> MeshBasicMaterial({
-      <span class="hljs-attr">color</span>: <span class="hljs-number">0xffffff</span>
-    })
-  })
+      <span class="hljs-attr">color</span>: <span class="hljs-number">0xffffff</span>,
+    }),
+  }),
 });
 scene.add(clickable);</code></pre>
 				<p>and add event listener</p>
-				<pre><code class="language-js">clickable.addEventListener(ThreeMouseEventType.CLICK, <span class="hljs-function">(<span class="hljs-params">e</span>)=&gt;</span>{
-    cosole.log(<span class="hljs-string">&quot;CLICKED!&quot;</span>);
+				<pre><code class="language-js">clickable.addEventListener(ThreeMouseEventType.CLICK, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
+  cosole.log(<span class="hljs-string">&quot;CLICKED!&quot;</span>);
 });</code></pre>
 				<a href="#uninstall" id="uninstall" style="color: inherit; text-decoration: none;">
 					<h2>Uninstall</h2>
