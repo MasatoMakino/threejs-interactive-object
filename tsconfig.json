@@ -1,18 +1,8 @@
 {
   "compilerOptions": {
-    /* Basic Options */
-    "incremental": true,
-    "target": "es5",
-    "module": "commonjs",
-    "declaration": true /* Generates corresponding '.d.ts' file. */,
-    "declarationMap": true /* Generates a sourcemap for each corresponding '.d.ts' file. */,
-    "outDir": "./lib" /* Redirect output structure to the directory. */,
-    "rootDir": "./src",
-
-    /* Module Resolution Options */
+    "target": "es6",
     "moduleResolution": "node",
     "esModuleInterop": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules"]
 }
