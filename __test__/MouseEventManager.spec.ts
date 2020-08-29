@@ -1,4 +1,3 @@
-import { getMouseEvent } from "fake-mouse-event";
 import { MouseEventManager } from "../src";
 import { generateScene } from "./MouseEventManagerGenerator";
 
@@ -7,11 +6,5 @@ describe("MouseEventManager", () => {
 
   test("Init", () => {
     expect(MouseEventManager.isInit).toBe(true);
-    resetMouseEventManager(canvas);
   });
 });
-
-const resetMouseEventManager = (canvas: HTMLCanvasElement) => {
-  const e = getMouseEvent("mouseup");
-  canvas.dispatchEvent(e);
-};
