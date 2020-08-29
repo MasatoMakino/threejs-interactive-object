@@ -18,7 +18,7 @@
     "three": "^0.118.3"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.9",
+    "@types/jest": "^26.0.10",
     "fake-mouse-event": "https://github.com/MasatoMakino/fake-mouse-event.git",
     "gulp": "^4.0.2",
     "gulptask-demo-page": "https://github.com/MasatoMakino/gulptask-demo-page.git",
@@ -26,13 +26,13 @@
     "gulptask-tsc": "https://github.com/MasatoMakino/gulptask-tsc.git",
     "gulptask-tsdoc": "https://github.com/MasatoMakino/gulptask-tsdoc.git",
     "husky": "^4.2.5",
-    "jest": "^26.3.0",
+    "jest": "^26.4.2",
     "jest-electron": "^0.1.11",
-    "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
-    "three": "^0.119.1",
-    "ts-jest": "^26.1.4",
-    "typescript": "^3.9.7"
+    "prettier": "^2.1.1",
+    "pretty-quick": "^3.0.0",
+    "three": "^0.120.0",
+    "ts-jest": "^26.3.0",
+    "typescript": "^4.0.2"
   },
   "scripts": {
     "test": "jest --coverage",
