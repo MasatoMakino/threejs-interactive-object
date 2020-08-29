@@ -2,6 +2,14 @@ env:
   global:
     - CC_TEST_REPORTER_ID=a2541d0fb1788f649d4b9327069808f2269e6b8def69550d364eae074f8f7481
 language: node_js
+addons:
+  apt:
+    packages:
+      - xvfb
+install:
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - npm install
 node_js:
   - "10"
   - "12"

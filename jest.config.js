@@ -1,5 +1,6 @@
 module.exports = {
   preset: "ts-jest",
-  testEnvironment: "jsdom",
-  collectCoverageFrom: ["**/src/*.ts"]
+  runner: "jest-electron/runner",
+  testEnvironment: "jest-electron/environment",
+  collectCoverageFrom: ["**/src/*.ts"],
 };
