@@ -1,13 +1,13 @@
 import { Event } from "three";
 import {
+  IRadioButtonObject3D,
   RadioButtonManager,
   RadioButtonMesh,
   RadioButtonSprite,
   ThreeMouseEvent,
   ThreeMouseEventType,
-  IRadioButtonObject3D
 } from "../src/index";
-import { clickButton } from "../__test__/MouseControl";
+import { clickButton } from "./MouseControl";
 
 /**
  * テスト用のbuttonValueサンプルを生成する。
