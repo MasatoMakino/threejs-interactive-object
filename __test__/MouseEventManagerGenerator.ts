@@ -1,14 +1,18 @@
-import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { Camera, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import { MouseEventManager } from "../src";
 
 export function generateScene(): {
   canvas: HTMLCanvasElement;
   scene: Scene;
   renderer: WebGLRenderer;
+  camera: Camera;
 } {
   const canvas = document.createElement("canvas");
   canvas.width = 1920;
   canvas.height = 1080;
+  canvas.style.setProperty("margin", "0");
+  canvas.style.setProperty("padding", "0");
+  document.body.appendChild(canvas);
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(
@@ -28,5 +32,5 @@ export function generateScene(): {
 
   //マウスイベントの取得開始
   MouseEventManager.init(scene, camera, renderer);
-  return { canvas, scene, renderer };
+  return { canvas, scene, renderer, camera };
 }
