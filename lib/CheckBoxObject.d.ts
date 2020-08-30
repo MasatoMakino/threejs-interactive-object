@@ -1,6 +1,6 @@
-import { ClickableObject } from "./ClickableObject";
 import { CheckBoxMesh } from "./CheckBoxMesh";
 import { CheckBoxSprite } from "./CheckBoxSprite";
+import { ClickableObject } from "./ClickableObject";
 
 export declare class CheckBoxObject extends ClickableObject {
   view: CheckBoxMesh | CheckBoxSprite;

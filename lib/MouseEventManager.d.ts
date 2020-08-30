@@ -8,10 +8,10 @@ import {
   Scene,
   Vector2,
 } from "three";
-import { ThreeMouseEventType } from "./ThreeMouseEvent";
-import { ClickableObject } from "./ClickableObject";
 import { CheckBoxObject } from "./CheckBoxObject";
+import { ClickableObject } from "./ClickableObject";
 import { RadioButtonObject } from "./RadioButtonObject";
+import { ThreeMouseEventType } from "./ThreeMouseEvent";
 
 export declare class MouseEventManager {
   protected static camera: Camera;

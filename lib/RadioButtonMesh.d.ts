@@ -1,11 +1,10 @@
-import { StateMaterialSet } from "./StateMaterial";
-import { RadioButtonObject } from "./RadioButtonObject";
-import { Mesh } from "three";
-import { Geometry } from "three";
-import { BufferGeometry } from "three";
+import { BufferGeometry, Geometry, Mesh } from "three";
 import { IRadioButtonObject3D } from "./MouseEventManager";
+import { RadioButtonObject } from "./RadioButtonObject";
+import { StateMaterialSet } from "./StateMaterial";
 
-export declare class RadioButtonMesh extends Mesh
+export declare class RadioButtonMesh
+  extends Mesh
   implements IRadioButtonObject3D {
   model: RadioButtonObject;
   /**
