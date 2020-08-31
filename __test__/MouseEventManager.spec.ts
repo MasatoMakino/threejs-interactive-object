@@ -6,7 +6,7 @@ import {
   StateMaterialSet,
 } from "../src";
 import { getMeshMaterialSet } from "./Materials";
-import { MouseEventManagerScene } from "./MouseEventManagerGenerator";
+import { MouseEventManagerScene } from "./MouseEventManagerScene";
 
 describe("MouseEventManager", () => {
   const managerScene = new MouseEventManagerScene();
