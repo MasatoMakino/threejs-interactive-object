@@ -1,6 +1,6 @@
+import { RAFTicker, RAFTickerEventType } from "raf-ticker";
 import { Raycaster, Vector2 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { RAFTicker, RAFTickerEventType } from "raf-ticker";
 
 export class MouseEventManager {
   static init(scene, camera, renderer, option) {
@@ -113,10 +113,7 @@ export class MouseEventManager {
     }
     //クリッカブルインターフェースを継承しているなら判定OK
     const targetAny = target;
-    if (
-      implementsIClickableObject3D(targetAny) &&
-      targetAny.model.getEnable() === true
-    ) {
+    if (implementsIClickableObject3D(targetAny)) {
       return target;
     }
     //継承していないならその親を探索継続。
