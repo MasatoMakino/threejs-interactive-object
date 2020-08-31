@@ -1,4 +1,3 @@
-import { RAFTicker, RAFTickerEventType } from "raf-ticker";
 import { BoxBufferGeometry, Mesh, MeshPhongMaterial } from "three";
 import {
   ClickableMesh,
@@ -7,75 +6,61 @@ import {
   StateMaterialSet,
 } from "../src";
 import { getMeshMaterialSet } from "./Materials";
-import { generateScene } from "./MouseEventManagerGenerator";
+import { MouseEventManagerScene } from "./MouseEventManagerGenerator";
 
 describe("MouseEventManager", () => {
-  const { scene, canvas, renderer, camera } = generateScene();
+  const managerScene = new MouseEventManagerScene();
+  const mat = getMeshMaterialSet();
+  const btn = new ClickableMesh({
+    geo: new BoxBufferGeometry(3, 3, 3),
+    material: mat,
+  });
+  managerScene.scene.add(btn);
+  const halfW = managerScene.canvas.width / 2;
+  const halfH = managerScene.canvas.height / 2;
 
   test("Init", () => {
     expect(MouseEventManager.isInit).toBe(true);
-    resetManager(canvas);
+    managerScene.reset();
   });
 
   test("mouse move", () => {
-    const mat = getMeshMaterialSet();
-    const btn = new ClickableMesh({
-      geo: new BoxBufferGeometry(3, 3, 3),
-      material: mat,
-    });
-    scene.add(btn);
     checkMaterial(mat, ClickableState.NORMAL, btn);
-    renderer.render(scene, camera);
+    managerScene.render();
 
-    const margin = getOffset(canvas);
-
-    const e1 = new MouseEvent("mousemove", { clientX: 0, clientY: 0 });
-    canvas.dispatchEvent(e1);
-    const e2 = new MouseEvent("mousemove", {
-      clientX: canvas.width / 2 + margin.x,
-      clientY: canvas.height / 2 + margin.y,
-    });
-    canvas.dispatchEvent(e2);
-
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.render();
     //スロットリングされるのでnormalのまま
     checkMaterial(mat, ClickableState.NORMAL, btn);
 
-    RAFTicker.emit(RAFTickerEventType.tick, {
-      timestamp: 0,
-      delta: MouseEventManager.throttlingTime_ms * 3,
-    });
-    renderer.render(scene, camera);
-    const e3 = new MouseEvent("mousemove", {
-      clientX: canvas.width / 2 + margin.x,
-      clientY: canvas.height / 2 + margin.y,
-    });
-    canvas.dispatchEvent(e3);
+    //スロットリングされるのでnormalのまま
+    managerScene.interval(0.1);
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    checkMaterial(mat, ClickableState.NORMAL, btn);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     checkMaterial(mat, ClickableState.OVER, btn);
 
-    resetManager(canvas);
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    checkMaterial(mat, ClickableState.NORMAL, btn);
+
+    managerScene.reset();
+  });
+
+  test("mouse down", () => {
+    checkMaterial(mat, ClickableState.NORMAL, btn);
+    managerScene.render();
+
+    managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
+    checkMaterial(mat, ClickableState.DOWN, btn);
+
+    managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
+    checkMaterial(mat, ClickableState.NORMAL, btn);
   });
 });
-
-/**
- * MouseEventManagerの状態を初期化する。
- * @param canvas
- */
-const resetManager = (canvas: HTMLCanvasElement) => {
-  const e = new MouseEvent("mouseup", { clientX: 0, clientY: 0 });
-  canvas.dispatchEvent(e);
-};
-
-const getOffset = (canvas: HTMLCanvasElement) => {
-  const spyClick = jest.fn((e) => e);
-  canvas.addEventListener("mouseleave", spyClick);
-  canvas.dispatchEvent(new MouseEvent("mouseleave"));
-  const result = spyClick.mock.results[0].value;
-  canvas.removeEventListener("mouseleave", spyClick);
-  return {
-    x: -result.offsetX,
-    y: -result.offsetY,
-  };
-};
 
 /**
  * マテリアルの状態を比較する
