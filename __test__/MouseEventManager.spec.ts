@@ -66,5 +66,35 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    managerScene.reset();
+  });
+
+  test("disable and overlap", () => {
+    btn.button.model.disable();
+
+    btn.checkMaterial(ClickableState.DISABLE);
+    btnBackground.checkMaterial(ClickableState.NORMAL);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    btn.checkMaterial(ClickableState.DISABLE);
+    btnBackground.checkMaterial(ClickableState.NORMAL);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    btn.checkMaterial(ClickableState.DISABLE);
+    btnBackground.checkMaterial(ClickableState.NORMAL);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
+    btn.checkMaterial(ClickableState.DISABLE);
+    btnBackground.checkMaterial(ClickableState.NORMAL);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
+    btn.checkMaterial(ClickableState.DISABLE);
+    btnBackground.checkMaterial(ClickableState.NORMAL);
+
+    //disableボタンの背面のオブジェクトは、すべて操作が遮られる
   });
 });

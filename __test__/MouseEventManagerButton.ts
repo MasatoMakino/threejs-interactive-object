@@ -17,15 +17,13 @@ export class MouseEventManagerButton {
   /**
    * マテリアルの状態を比較する
    * @param state
-   * @param mouseEnabled
    */
-  public checkMaterial(
-    state: ClickableState,
-    mouseEnabled: boolean = true
-  ): void {
+  public checkMaterial(state: ClickableState): void {
     const targetMat = this.button.material as MeshPhongMaterial;
-    const setMat = this.materialSet.getMaterial(state, mouseEnabled)
-      .material as MeshPhongMaterial;
+    const setMat = this.materialSet.getMaterial(
+      state,
+      state !== ClickableState.DISABLE
+    ).material as MeshPhongMaterial;
 
     expect(targetMat.opacity).toBe(setMat.opacity);
     expect(targetMat.color).toBe(setMat.color);

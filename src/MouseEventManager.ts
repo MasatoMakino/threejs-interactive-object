@@ -1,3 +1,4 @@
+import { RAFTicker, RAFTickerEvent, RAFTickerEventType } from "raf-ticker";
 import {
   Camera,
   EventDispatcher,
@@ -8,11 +9,10 @@ import {
   Scene,
   Vector2,
 } from "three";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { ClickableObject } from "./ClickableObject";
 import { CheckBoxObject } from "./CheckBoxObject";
+import { ClickableObject } from "./ClickableObject";
 import { RadioButtonObject } from "./RadioButtonObject";
-import { RAFTicker, RAFTickerEvent, RAFTickerEventType } from "raf-ticker";
+import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
 export class MouseEventManager {
   protected static camera: Camera;
@@ -210,10 +210,7 @@ export class MouseEventManager {
     }
     //クリッカブルインターフェースを継承しているなら判定OK
     const targetAny = <any>target;
-    if (
-      implementsIClickableObject3D(targetAny) &&
-      targetAny.model.getEnable() === true
-    ) {
+    if (implementsIClickableObject3D(targetAny)) {
       return target;
     }
 
