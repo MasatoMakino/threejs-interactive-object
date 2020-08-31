@@ -1,21 +1,11 @@
-import { BoxBufferGeometry, Mesh, MeshPhongMaterial } from "three";
-import {
-  ClickableMesh,
-  ClickableState,
-  MouseEventManager,
-  StateMaterialSet,
-} from "../src";
-import { getMeshMaterialSet } from "./Materials";
+import { ClickableState, MouseEventManager } from "../src";
+import { MouseEventManagerButton } from "./MouseEventManagerButton";
 import { MouseEventManagerScene } from "./MouseEventManagerScene";
 
 describe("MouseEventManager", () => {
   const managerScene = new MouseEventManagerScene();
-  const mat = getMeshMaterialSet();
-  const btn = new ClickableMesh({
-    geo: new BoxBufferGeometry(3, 3, 3),
-    material: mat,
-  });
-  managerScene.scene.add(btn);
+  const btn = new MouseEventManagerButton();
+  managerScene.scene.add(btn.button);
   const halfW = managerScene.canvas.width / 2;
   const halfH = managerScene.canvas.height / 2;
 
@@ -25,60 +15,39 @@ describe("MouseEventManager", () => {
   });
 
   test("mouse move", () => {
-    checkMaterial(mat, ClickableState.NORMAL, btn);
+    btn.checkMaterial(ClickableState.NORMAL);
     managerScene.render();
 
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     managerScene.render();
     //スロットリングされるのでnormalのまま
-    checkMaterial(mat, ClickableState.NORMAL, btn);
+    btn.checkMaterial(ClickableState.NORMAL);
 
     //スロットリングされるのでnormalのまま
     managerScene.interval(0.1);
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
-    checkMaterial(mat, ClickableState.NORMAL, btn);
+    btn.checkMaterial(ClickableState.NORMAL);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
-    checkMaterial(mat, ClickableState.OVER, btn);
+    btn.checkMaterial(ClickableState.OVER);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
-    checkMaterial(mat, ClickableState.NORMAL, btn);
+    btn.checkMaterial(ClickableState.NORMAL);
 
     managerScene.reset();
   });
 
   test("mouse down", () => {
-    checkMaterial(mat, ClickableState.NORMAL, btn);
+    btn.checkMaterial(ClickableState.NORMAL);
     managerScene.render();
 
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
-    checkMaterial(mat, ClickableState.DOWN, btn);
+    btn.checkMaterial(ClickableState.DOWN);
 
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
-    checkMaterial(mat, ClickableState.NORMAL, btn);
+    btn.checkMaterial(ClickableState.NORMAL);
   });
 });
-
-/**
- * マテリアルの状態を比較する
- * @param materialSet
- * @param state
- * @param target
- * @param mouseEnabled
- */
-const checkMaterial = (
-  materialSet: StateMaterialSet,
-  state: ClickableState,
-  target: Mesh,
-  mouseEnabled: boolean = true
-) => {
-  const targetMat = target.material as MeshPhongMaterial;
-  const setMat = materialSet.getMaterial(state, mouseEnabled)
-    .material as MeshPhongMaterial;
-
-  expect(targetMat.opacity).toBe(setMat.opacity);
-  expect(targetMat.color).toBe(setMat.color);
-};
