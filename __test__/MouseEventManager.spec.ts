@@ -1,15 +1,21 @@
+import { Group } from "three";
 import { ClickableState, MouseEventManager } from "../src";
 import { MouseEventManagerButton } from "./MouseEventManagerButton";
 import { MouseEventManagerScene } from "./MouseEventManagerScene";
 
 describe("MouseEventManager", () => {
   const managerScene = new MouseEventManagerScene();
-  const btn = new MouseEventManagerButton();
-  managerScene.scene.add(btn.button);
 
+  const wrapper = new Group();
+  const btn = new MouseEventManagerButton();
+  wrapper.add(btn.button);
+  managerScene.scene.add(wrapper);
+
+  const wrapperBackground = new Group();
   const btnBackground = new MouseEventManagerButton();
-  btnBackground.button.position.setZ(-10);
-  managerScene.scene.add(btnBackground.button);
+  wrapperBackground.position.setZ(-10);
+  wrapperBackground.add(btnBackground.button);
+  managerScene.scene.add(wrapperBackground);
 
   const halfW = managerScene.canvas.width / 2;
   const halfH = managerScene.canvas.height / 2;
