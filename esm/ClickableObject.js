@@ -11,7 +11,8 @@ export class ClickableObject {
   constructor(parameters) {
     this.isPress = false;
     this.isOver = false;
-    this._enableMouse = true;
+    this._enable = true;
+    this.mouseEnabled = true;
     this.frozen = false;
     this.state = ClickableState.NORMAL;
     this._alpha = 1.0;
@@ -79,7 +80,7 @@ export class ClickableObject {
    * @return    ボタンが有効か否か
    */
   checkActivity() {
-    return this._enableMouse && !this.frozen;
+    return this._enable && !this.frozen;
   }
   enable() {
     this.switchEnable(true);
@@ -89,18 +90,12 @@ export class ClickableObject {
   }
   updateMaterial() {
     this._materialSet.setOpacity(this._alpha);
-    const stateMat = this._materialSet.getMaterial(
-      this.state,
-      this._enableMouse
-    );
+    const stateMat = this._materialSet.getMaterial(this.state, this._enable);
     this.view.material = stateMat.material;
   }
   switchEnable(bool) {
-    this._enableMouse = bool;
+    this._enable = bool;
     this.state = bool ? ClickableState.NORMAL : ClickableState.DISABLE;
     this.updateMaterial();
-  }
-  getEnable() {
-    return this._enableMouse;
   }
 }

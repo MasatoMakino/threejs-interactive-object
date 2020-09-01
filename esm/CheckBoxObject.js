@@ -1,6 +1,6 @@
+import { ClickableObject } from "./ClickableObject";
 import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { ClickableObject } from "./ClickableObject";
 
 export class CheckBoxObject extends ClickableObject {
   constructor() {
@@ -29,7 +29,7 @@ export class CheckBoxObject extends ClickableObject {
     this.materialSet.setOpacity(this._alpha);
     const stateMat = this.materialSet.getMaterial(
       this.state,
-      this._enableMouse,
+      this._enable,
       this._isSelect
     );
     this.view.material = stateMat.material;

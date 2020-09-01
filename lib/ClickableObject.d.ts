@@ -13,7 +13,8 @@ export declare class ClickableObject {
   view: ClickableMesh | ClickableSprite;
   isPress: boolean;
   protected isOver: boolean;
-  protected _enableMouse: boolean;
+  protected _enable: boolean;
+  mouseEnabled: boolean;
   frozen: boolean;
   state: ClickableState;
   protected _materialSet: StateMaterialSet;
@@ -42,6 +43,5 @@ export declare class ClickableObject {
   disable(): void;
   protected updateMaterial(): void;
   switchEnable(bool: boolean): void;
-  getEnable(): boolean;
 }
 //# sourceMappingURL=ClickableObject.d.ts.map
