@@ -199,8 +199,8 @@ export class MouseEventManager {
         typeof arg === "object" &&
         arg.model !== null &&
         typeof arg.model === "object" &&
-        arg.model.getEnable !== null &&
-        typeof arg.model.getEnable === "function"
+        arg.model.mouseEnabled !== null &&
+        typeof arg.model.mouseEnabled === "boolean"
       );
     }
 
@@ -210,7 +210,10 @@ export class MouseEventManager {
     }
     //クリッカブルインターフェースを継承しているなら判定OK
     const targetAny = <any>target;
-    if (implementsIClickableObject3D(targetAny)) {
+    if (
+      implementsIClickableObject3D(targetAny) &&
+      targetAny.model.mouseEnabled === true
+    ) {
       return target;
     }
 

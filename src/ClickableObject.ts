@@ -130,8 +130,4 @@ export class ClickableObject {
     this.state = bool ? ClickableState.NORMAL : ClickableState.DISABLE;
     this.updateMaterial();
   }
-
-  public getEnable(): boolean {
-    return this.mouseEnabled;
-  }
 }
