@@ -24,6 +24,7 @@ export class ClickableObject {
   public isPress: boolean = false;
   protected isOver: boolean = false;
   protected _enable: boolean = true;
+  public mouseEnabled: boolean = true;
   public frozen: boolean = false;
 
   public state: ClickableState = ClickableState.NORMAL;
@@ -131,6 +132,6 @@ export class ClickableObject {
   }
 
   public getEnable(): boolean {
-    return this._enable;
+    return this.mouseEnabled;
   }
 }

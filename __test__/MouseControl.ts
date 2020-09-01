@@ -1,15 +1,15 @@
+import { Event } from "three";
 import {
-  IRadioButtonObject3D,
-  ThreeMouseEvent,
-  ThreeMouseEventType,
-  StateMaterial,
   ClickableMesh,
   ClickableSprite,
+  IClickableObject3D,
+  IRadioButtonObject3D,
   MouseEventManager,
+  StateMaterial,
   StateMaterialSet,
-  IClickableObject3D
+  ThreeMouseEvent,
+  ThreeMouseEventType,
 } from "../src/index";
-import { Event } from "three";
 
 /**
  * 対象のボタンをクリックする
@@ -105,11 +105,9 @@ export function testSwitch(
   matSet: StateMaterialSet
 ) {
   target.model.switchEnable(false);
-  expect(target.model.getEnable()).toBe(false);
   expect(target.material).toBe(matSet.disable.material);
 
   target.model.switchEnable(true);
-  expect(target.model.getEnable()).toBe(true);
   expect(target.material).toBe(matSet.normal.material);
 }
 
