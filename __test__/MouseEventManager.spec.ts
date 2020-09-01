@@ -69,8 +69,12 @@ describe("MouseEventManager", () => {
     managerScene.reset();
   });
 
+  /**
+   * disableボタンの背面のオブジェクトは、すべて操作が遮られる
+   */
   test("disable and overlap", () => {
     btn.button.model.disable();
+    btn.button.model.mouseEnabled = true;
 
     btn.checkMaterial(ClickableState.DISABLE);
     btnBackground.checkMaterial(ClickableState.NORMAL);
@@ -95,6 +99,39 @@ describe("MouseEventManager", () => {
     btn.checkMaterial(ClickableState.DISABLE);
     btnBackground.checkMaterial(ClickableState.NORMAL);
 
-    //disableボタンの背面のオブジェクトは、すべて操作が遮られる
+    managerScene.reset();
+  });
+
+  /**
+   * mouseEnabled : falseのボタンはマウス操作の対象外。
+   * 操作は背面に透過する。
+   */
+  test("mouseEnabled : false and overlap", () => {
+    btn.button.model.enable();
+    btn.button.model.mouseEnabled = false;
+    btn.checkMaterial(ClickableState.NORMAL);
+    btnBackground.checkMaterial(ClickableState.NORMAL);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    btn.checkMaterial(ClickableState.NORMAL);
+    btnBackground.checkMaterial(ClickableState.OVER);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    btn.checkMaterial(ClickableState.NORMAL);
+    btnBackground.checkMaterial(ClickableState.NORMAL);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
+    btn.checkMaterial(ClickableState.NORMAL);
+    btnBackground.checkMaterial(ClickableState.DOWN);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
+    btn.checkMaterial(ClickableState.NORMAL);
+    btnBackground.checkMaterial(ClickableState.NORMAL);
+
+    managerScene.reset();
   });
 });
