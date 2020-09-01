@@ -1,8 +1,11 @@
+import { ClickableGroup } from "./ClickableGroup";
 import { ClickableMesh } from "./ClickableMesh";
 import { ClickableSprite } from "./ClickableSptire";
 import { ClickableState, MouseEventManager } from "./MouseEventManager";
 import { StateMaterialSet } from "./StateMaterial";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+
+export type ClickableView = ClickableMesh | ClickableSprite | ClickableGroup;
 
 /**
  * クリックに反応するMesh。
@@ -20,7 +23,7 @@ export class ClickableObject {
     }
   }
 
-  public view: ClickableMesh | ClickableSprite;
+  public view: ClickableView;
   public isPress: boolean = false;
   protected isOver: boolean = false;
   protected _enable: boolean = true;
@@ -35,8 +38,8 @@ export class ClickableObject {
    * コンストラクタ
    */
   constructor(parameters: {
-    view: ClickableMesh | ClickableSprite;
-    material: StateMaterialSet;
+    view: ClickableView;
+    material?: StateMaterialSet;
   }) {
     this.view = parameters.view;
 
@@ -46,7 +49,7 @@ export class ClickableObject {
       );
     }
 
-    this._materialSet = parameters.material;
+    this._materialSet ??= parameters.material;
     this.updateMaterial();
   }
 
@@ -122,7 +125,15 @@ export class ClickableObject {
   protected updateMaterial(): void {
     this._materialSet.setOpacity(this._alpha);
     const stateMat = this._materialSet.getMaterial(this.state, this._enable);
-    this.view.material = stateMat.material;
+    switch (this.view.type) {
+      case "Mesh":
+      case "Sprite":
+        this.view.material = stateMat.material;
+        break;
+      case "Group":
+      default:
+        break;
+    }
   }
 
   public switchEnable(bool: boolean): void {
