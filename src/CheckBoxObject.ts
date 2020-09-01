@@ -1,8 +1,8 @@
-import { ClickableState } from "./MouseEventManager";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { ClickableObject } from "./ClickableObject";
 import { CheckBoxMesh } from "./CheckBoxMesh";
 import { CheckBoxSprite } from "./CheckBoxSprite";
+import { ClickableObject } from "./ClickableObject";
+import { ClickableState } from "./MouseEventManager";
+import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
 export class CheckBoxObject extends ClickableObject {
   public view: CheckBoxMesh | CheckBoxSprite;
@@ -38,7 +38,7 @@ export class CheckBoxObject extends ClickableObject {
     this.materialSet.setOpacity(this._alpha);
     const stateMat = this.materialSet.getMaterial(
       this.state,
-      this._enableMouse,
+      this._enable,
       this._isSelect
     );
     this.view.material = stateMat.material;

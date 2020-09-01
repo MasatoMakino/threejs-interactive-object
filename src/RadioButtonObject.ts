@@ -12,7 +12,7 @@ export class RadioButtonObject extends CheckBoxObject {
    * @return    ボタンが有効か否か
    */
   protected checkActivity(): Boolean {
-    return this._enableMouse && !this._isFrozen;
+    return this._enable && !this._isFrozen;
   }
 
   get isFrozen(): boolean {

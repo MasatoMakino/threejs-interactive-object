@@ -1,8 +1,8 @@
-import { ClickableState, MouseEventManager } from "./MouseEventManager";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { StateMaterialSet } from "./StateMaterial";
 import { ClickableMesh } from "./ClickableMesh";
 import { ClickableSprite } from "./ClickableSptire";
+import { ClickableState, MouseEventManager } from "./MouseEventManager";
+import { StateMaterialSet } from "./StateMaterial";
+import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
 /**
  * クリックに反応するMesh。
@@ -23,7 +23,7 @@ export class ClickableObject {
   public view: ClickableMesh | ClickableSprite;
   public isPress: boolean = false;
   protected isOver: boolean = false;
-  protected _enableMouse: boolean = true;
+  protected _enable: boolean = true;
   public frozen: boolean = false;
 
   public state: ClickableState = ClickableState.NORMAL;
@@ -107,7 +107,7 @@ export class ClickableObject {
    * @return    ボタンが有効か否か
    */
   protected checkActivity(): Boolean {
-    return this._enableMouse && !this.frozen;
+    return this._enable && !this.frozen;
   }
 
   public enable(): void {
@@ -120,20 +120,17 @@ export class ClickableObject {
 
   protected updateMaterial(): void {
     this._materialSet.setOpacity(this._alpha);
-    const stateMat = this._materialSet.getMaterial(
-      this.state,
-      this._enableMouse
-    );
+    const stateMat = this._materialSet.getMaterial(this.state, this._enable);
     this.view.material = stateMat.material;
   }
 
   public switchEnable(bool: boolean): void {
-    this._enableMouse = bool;
+    this._enable = bool;
     this.state = bool ? ClickableState.NORMAL : ClickableState.DISABLE;
     this.updateMaterial();
   }
 
   public getEnable(): boolean {
-    return this._enableMouse;
+    return this._enable;
   }
 }
