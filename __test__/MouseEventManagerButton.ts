@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, MeshPhongMaterial } from "three";
+import { BoxBufferGeometry } from "three";
 import { ClickableMesh, ClickableState, StateMaterialSet } from "../src";
 import { getMeshMaterialSet } from "./Materials";
 
@@ -19,13 +19,11 @@ export class MouseEventManagerButton {
    * @param state
    */
   public checkMaterial(state: ClickableState): void {
-    const targetMat = this.button.material as MeshPhongMaterial;
     const setMat = this.materialSet.getMaterial(
       state,
       state !== ClickableState.DISABLE
-    ).material as MeshPhongMaterial;
+    ).material;
 
-    expect(targetMat.opacity).toBe(setMat.opacity);
-    expect(targetMat.color).toBe(setMat.color);
+    expect(this.button.material).toBe(setMat);
   }
 }
