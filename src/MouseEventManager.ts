@@ -91,20 +91,19 @@ export class MouseEventManager {
     const beforeOver = MouseEventManager.currentOver;
     MouseEventManager.currentOver = [];
 
-    for (let i = 0; i < n; i++) {
+    for (let intersect of intersects) {
       const checked = MouseEventManager.checkTarget(
-        intersects[i].object,
+        intersect.object,
         ThreeMouseEventType.OVER
       );
-      if (!checked) continue;
-
-      beforeOver?.forEach((btn) => {
-        if (!MouseEventManager.currentOver.includes(btn)) {
-          MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
-        }
-      });
-      break;
+      if (checked) break;
     }
+
+    beforeOver?.forEach((btn) => {
+      if (!MouseEventManager.currentOver.includes(btn)) {
+        MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
+      }
+    });
   };
 
   /**
