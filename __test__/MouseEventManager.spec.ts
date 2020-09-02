@@ -1,5 +1,10 @@
 import { Group } from "three";
-import { ClickableGroup, ClickableState, MouseEventManager } from "../src";
+import {
+  ClickableGroup,
+  ClickableState,
+  MouseEventManager,
+  ThreeMouseEventType,
+} from "../src";
 import { MouseEventManagerButton } from "./MouseEventManagerButton";
 import { MouseEventManagerScene } from "./MouseEventManagerScene";
 
@@ -35,37 +40,44 @@ describe("MouseEventManager", () => {
     //スロットリングされるのでnormalのまま
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isOver).toBe(false);
 
     //スロットリングされるのでnormalのまま
     managerScene.interval(0.1);
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     btn.checkMaterial(ClickableState.OVER);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isOver).toBe(true);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isOver).toBe(false);
 
     managerScene.reset();
   });
 
-  test("mouse down", () => {
+  test("mouse down / mouse up", () => {
     btn.checkMaterial(ClickableState.NORMAL);
     managerScene.render();
 
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
     btn.checkMaterial(ClickableState.DOWN);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isPress).toBe(true);
 
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isPress).toBe(false);
+
     managerScene.reset();
   });
 
@@ -83,21 +95,29 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     btn.checkMaterial(ClickableState.DISABLE);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isPress).toBe(false);
+    expect(wrapper.model.isOver).toBe(true);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
     btn.checkMaterial(ClickableState.DISABLE);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isPress).toBe(false);
+    expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
     btn.checkMaterial(ClickableState.DISABLE);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isPress).toBe(true);
+    expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
     btn.checkMaterial(ClickableState.DISABLE);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isPress).toBe(false);
+    expect(wrapper.model.isOver).toBe(false);
 
     managerScene.reset();
   });
@@ -117,22 +137,80 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.OVER);
+    expect(wrapper.model.isPress).toBe(false);
+    expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isPress).toBe(false);
+    expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.DOWN);
+    expect(wrapper.model.isPress).toBe(false);
+    expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.NORMAL);
+    expect(wrapper.model.isPress).toBe(false);
+    expect(wrapper.model.isOver).toBe(false);
 
+    btn.button.model.mouseEnabled = true;
+    wrapper.model.mouseEnabled = true;
+    managerScene.reset();
+  });
+
+  test("click", () => {
+    const spyClickButton = jest.fn((e) => e);
+    const spyClickGroup = jest.fn((e) => e);
+    btn.button.addEventListener(ThreeMouseEventType.CLICK, spyClickButton);
+    wrapper.addEventListener(ThreeMouseEventType.CLICK, spyClickGroup);
+
+    managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
+    managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
+
+    expect(spyClickButton).toHaveBeenCalledTimes(1);
+    expect(spyClickGroup).toHaveBeenCalledTimes(1);
+
+    btn.button.removeEventListener(ThreeMouseEventType.CLICK, spyClickButton);
+    wrapper.removeEventListener(ThreeMouseEventType.CLICK, spyClickGroup);
+    managerScene.reset();
+  });
+
+  test("multiple over", () => {
+    const spyOver = jest.fn((e) => e);
+    btn.button.addEventListener(ThreeMouseEventType.OVER, spyOver);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    expect(spyOver).toBeCalled();
+    spyOver.mockClear();
+
+    //2度目はoverが呼び出されない
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW + 1, halfH + 1);
+    expect(spyOver).not.toBeCalled();
+    spyOver.mockClear();
+
+    //一度outする
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    expect(spyOver).not.toBeCalled();
+    spyOver.mockClear();
+
+    //再度overすると呼び出される
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    expect(spyOver).toBeCalled();
+    spyOver.mockClear();
+
+    btn.button.removeEventListener(ThreeMouseEventType.OVER, spyOver);
     managerScene.reset();
   });
 });
