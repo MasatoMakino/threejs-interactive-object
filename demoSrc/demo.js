@@ -7,18 +7,19 @@ import {
   RadioButtonManager,
   RadioButtonMesh,
   StateMaterialSet,
-  ThreeMouseEventType
+  ThreeMouseEventType,
 } from "../lib";
 import {
   AmbientLight,
   BoxBufferGeometry,
   Color,
+  Mesh,
   MeshBasicMaterial,
   PerspectiveCamera,
   Scene,
   SpriteMaterial,
   TextureLoader,
-  WebGLRenderer
+  WebGLRenderer,
 } from "three";
 
 const W = 1280;
@@ -36,7 +37,7 @@ const onDomContentsLoaded = () => {
 
   const renderOption = {
     canvas: document.getElementById("webgl-canvas"),
-    antialias: true
+    antialias: true,
   };
   renderer = new WebGLRenderer(renderOption);
   renderer.setClearColor(new Color(0x000000));
@@ -49,6 +50,11 @@ const onDomContentsLoaded = () => {
 
   //マウスイベントの取得開始
   MouseEventManager.init(scene, camera, renderer);
+
+  const geometry = new BoxBufferGeometry(3, 3, 3);
+  const dummyCube = new Mesh(geometry, getMeshMaterial(0.6));
+  dummyCube.position.set(-8, 20, 0);
+  scene.add(dummyCube);
 
   testButton();
   testCheckbox();
@@ -70,7 +76,7 @@ const getMaterialSet = () => {
     down: getMeshMaterial(1.0),
     normalSelect: getMeshMaterial(0.6, 0xffff00),
     overSelect: getMeshMaterial(0.8, 0xffff00),
-    downSelect: getMeshMaterial(1.0, 0xffff00)
+    downSelect: getMeshMaterial(1.0, 0xffff00),
   });
 };
 
@@ -79,7 +85,7 @@ const getMeshMaterial = (opacity, color) => {
   return new MeshBasicMaterial({
     color: color,
     opacity: opacity,
-    transparent: true
+    transparent: true,
   });
 };
 
@@ -93,7 +99,7 @@ const getSpriteMaterialSet = () => {
     down: getSpriteMaterial("./btn045_03.png", 1.0),
     normalSelect: getSpriteMaterial("./btn045_01.png", 0.5),
     overSelect: getSpriteMaterial("./btn045_02.png", 0.5),
-    downSelect: getSpriteMaterial("./btn045_03.png", 0.5)
+    downSelect: getSpriteMaterial("./btn045_03.png", 0.5),
   });
 };
 
@@ -110,7 +116,7 @@ const getSpriteMaterial = (img, opacity, color) => {
     map: new TextureLoader().load(img),
     color: color,
     opacity: opacity,
-    transparent: true
+    transparent: true,
   });
 };
 
@@ -118,7 +124,7 @@ const testButton = () => {
   const geometry = new BoxBufferGeometry(3, 3, 3);
   const clickable = new ClickableMesh({
     geo: geometry,
-    material: getMaterialSet()
+    material: getMaterialSet(),
   });
 
   clickable.position.set(-10, 20, 0);
@@ -129,7 +135,7 @@ const testCheckbox = () => {
   const geometry = new BoxBufferGeometry(3, 3, 3);
   const clickable = new CheckBoxMesh({
     geo: geometry,
-    material: getMaterialSet()
+    material: getMaterialSet(),
   });
 
   clickable.position.set(0, 20, 0);
@@ -159,7 +165,7 @@ const testRadio = () => {
   const initButton = (x, buttonValue) => {
     const button = new RadioButtonMesh({
       geo: geometry,
-      material: getMaterialSet()
+      material: getMaterialSet(),
     });
     button.position.set(x, -10, 0);
     button.model.value = buttonValue;
@@ -176,7 +182,7 @@ const testRadio = () => {
   );
   manager.addButton(initButton(20, undefined));
 
-  manager.addEventListener(ThreeMouseEventType.SELECT, e => {
+  manager.addEventListener(ThreeMouseEventType.SELECT, (e) => {
     console.log(e.model.value);
   });
 };
