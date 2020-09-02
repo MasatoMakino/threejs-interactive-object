@@ -1,11 +1,9 @@
-import { StateMaterialSet } from "./StateMaterial";
+import { BufferGeometry, Geometry, Mesh } from "three";
+import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
-import { Mesh } from "three";
-import { Geometry } from "three";
-import { BufferGeometry } from "three";
-import { IRadioButtonObject3D } from "./MouseEventManager";
+import { StateMaterialSet } from "./StateMaterial";
 
-export class RadioButtonMesh extends Mesh implements IRadioButtonObject3D {
+export class RadioButtonMesh extends Mesh implements IClickableObject3D {
   public model: RadioButtonObject;
   /**
    * コンストラクタ
@@ -17,7 +15,7 @@ export class RadioButtonMesh extends Mesh implements IRadioButtonObject3D {
     super(parameters.geo);
     this.model = new RadioButtonObject({
       view: this,
-      material: parameters.material
+      material: parameters.material,
     });
   }
 }

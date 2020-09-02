@@ -1,11 +1,9 @@
-import { StateMaterialSet } from "./StateMaterial";
+import { BufferGeometry, Geometry, Mesh } from "three";
 import { CheckBoxObject } from "./CheckBoxObject";
-import { Geometry } from "three";
-import { BufferGeometry } from "three";
-import { Mesh } from "three";
-import { ISelectableObject3D } from "./MouseEventManager";
+import { IClickableObject3D } from "./MouseEventManager";
+import { StateMaterialSet } from "./StateMaterial";
 
-export class CheckBoxMesh extends Mesh implements ISelectableObject3D {
+export class CheckBoxMesh extends Mesh implements IClickableObject3D {
   public model: CheckBoxObject;
   /**
    * コンストラクタ
@@ -17,7 +15,7 @@ export class CheckBoxMesh extends Mesh implements ISelectableObject3D {
     super(parameters.geo);
     this.model = new CheckBoxObject({
       view: this,
-      material: parameters.material
+      material: parameters.material,
     });
   }
 }

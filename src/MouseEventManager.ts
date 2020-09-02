@@ -9,9 +9,7 @@ import {
   Scene,
   Vector2,
 } from "three";
-import { CheckBoxObject } from "./CheckBoxObject";
 import { ClickableObject } from "./ClickableObject";
-import { RadioButtonObject } from "./RadioButtonObject";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
 export class MouseEventManager {
@@ -271,18 +269,4 @@ export enum ClickableState {
  */
 export interface IClickableObject3D extends EventDispatcher {
   model: ClickableObject;
-}
-
-/**
- * チェックボックス用インターフェース
- */
-export interface ISelectableObject3D extends IClickableObject3D {
-  model: CheckBoxObject;
-}
-
-/**
- * ラジオボタン用インターフェース
- */
-export interface IRadioButtonObject3D extends ISelectableObject3D {
-  model: RadioButtonObject;
 }

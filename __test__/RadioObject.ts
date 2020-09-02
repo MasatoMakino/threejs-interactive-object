@@ -1,12 +1,12 @@
 import { Event } from "three";
 import {
-  IRadioButtonObject3D,
+  IClickableObject3D,
   RadioButtonManager,
   RadioButtonMesh,
   RadioButtonSprite,
   ThreeMouseEvent,
   ThreeMouseEventType,
-} from "../src/index";
+} from "../src/";
 import { clickButton } from "./MouseControl";
 
 /**
@@ -94,7 +94,7 @@ export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
  */
 const onClickSecondTime = (
   manager: RadioButtonManager,
-  button: IRadioButtonObject3D
+  button: IClickableObject3D
 ) => {
   const spyButton = jest
     .spyOn(button, "dispatchEvent")

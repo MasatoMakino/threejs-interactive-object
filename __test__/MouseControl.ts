@@ -3,7 +3,6 @@ import {
   ClickableMesh,
   ClickableSprite,
   IClickableObject3D,
-  IRadioButtonObject3D,
   MouseEventManager,
   StateMaterial,
   StateMaterialSet,

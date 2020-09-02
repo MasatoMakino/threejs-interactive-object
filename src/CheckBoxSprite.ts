@@ -1,16 +1,16 @@
 import { Sprite } from "three";
-import { StateMaterialSet } from "./StateMaterial";
 import { CheckBoxObject } from "./CheckBoxObject";
-import { ISelectableObject3D } from "./MouseEventManager";
+import { IClickableObject3D } from "./MouseEventManager";
+import { StateMaterialSet } from "./StateMaterial";
 
-export class CheckBoxSprite extends Sprite implements ISelectableObject3D {
+export class CheckBoxSprite extends Sprite implements IClickableObject3D {
   public model: CheckBoxObject;
 
   constructor(material: StateMaterialSet) {
     super();
     this.model = new CheckBoxObject({
       view: this,
-      material: material
+      material: material,
     });
   }
 }
