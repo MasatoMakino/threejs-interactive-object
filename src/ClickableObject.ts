@@ -8,7 +8,7 @@ import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 export type ClickableView = ClickableMesh | ClickableSprite | ClickableGroup;
 
 /**
- * クリックに反応するMesh。
+ * クリックに反応するObject。
  */
 export class ClickableObject {
   get materialSet(): StateMaterialSet {
@@ -23,9 +23,17 @@ export class ClickableObject {
     }
   }
 
+  get isOver(): boolean {
+    return this._isOver;
+  }
+
+  get isPress(): boolean {
+    return this._isPress;
+  }
+
   public view: ClickableView;
-  public isPress: boolean = false;
-  protected isOver: boolean = false;
+  protected _isPress: boolean = false;
+  protected _isOver: boolean = false;
   protected _enable: boolean = true;
   public mouseEnabled: boolean = true;
   public frozen: boolean = false;
@@ -55,7 +63,7 @@ export class ClickableObject {
 
   public onMouseDownHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;
-    this.isPress = true;
+    this._isPress = true;
     this.updateState(ClickableState.DOWN);
     this.view.dispatchEvent(event);
   }
@@ -63,14 +71,16 @@ export class ClickableObject {
   public onMouseUpHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;
 
-    const currentPress: boolean = this.isPress;
-    this.isPress = false;
+    const currentPress: boolean = this._isPress;
+    this._isPress = false;
 
-    const nextState = this.isOver ? ClickableState.OVER : ClickableState.NORMAL;
+    const nextState = this._isOver
+      ? ClickableState.OVER
+      : ClickableState.NORMAL;
     this.updateState(nextState);
     this.view.dispatchEvent(event);
 
-    if (this.isPress != currentPress) {
+    if (this._isPress != currentPress) {
       this.onMouseClick();
 
       let e = new ThreeMouseEvent(ThreeMouseEventType.CLICK, this);
@@ -91,8 +101,10 @@ export class ClickableObject {
   private onMouseOverOutHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;
 
-    this.isOver = event.type === ThreeMouseEventType.OVER;
-    this.updateState(this.isOver ? ClickableState.OVER : ClickableState.NORMAL);
+    this._isOver = event.type === ThreeMouseEventType.OVER;
+    this.updateState(
+      this._isOver ? ClickableState.OVER : ClickableState.NORMAL
+    );
     this.view.dispatchEvent(event);
   }
 
