@@ -1,5 +1,5 @@
-import { CheckBoxObject } from "./CheckBoxObject";
 import { Mesh } from "three";
+import { CheckBoxObject } from "./CheckBoxObject";
 
 export class CheckBoxMesh extends Mesh {
   /**

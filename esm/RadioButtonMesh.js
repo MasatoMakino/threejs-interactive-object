@@ -1,5 +1,5 @@
-import { RadioButtonObject } from "./RadioButtonObject";
 import { Mesh } from "three";
+import { RadioButtonObject } from "./RadioButtonObject";
 
 export class RadioButtonMesh extends Mesh {
   /**

@@ -1,5 +1,5 @@
 import { EventDispatcher } from "three";
-import { IRadioButtonObject3D } from "./MouseEventManager";
+import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
 
 export declare class RadioButtonManager extends EventDispatcher {
@@ -21,7 +21,7 @@ export declare class RadioButtonManager extends EventDispatcher {
    * このマネージャーの管理下にボタンを追加する
    * @param {IRadioButtonObject3D[]} buttons
    */
-  addButton(...buttons: IRadioButtonObject3D[]): void;
+  addButton(...buttons: IClickableObject3D[]): void;
   addModel(model: RadioButtonObject): void;
   /**
    * 管理下のボタンが選択された場合の処理
@@ -33,7 +33,7 @@ export declare class RadioButtonManager extends EventDispatcher {
    * ボタン自体の削除は行わない。
    * @param {IRadioButtonObject3D} button
    */
-  removeButton(button: IRadioButtonObject3D): void;
+  removeButton(button: IClickableObject3D): void;
   removeModel(model: RadioButtonObject): RadioButtonObject;
   /**
    * 特定のボタンを選択する

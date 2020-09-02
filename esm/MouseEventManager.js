@@ -170,21 +170,20 @@ MouseEventManager.onDocumentMouseMove = (event) => {
   }
   const beforeOver = MouseEventManager.currentOver;
   MouseEventManager.currentOver = [];
-  for (let i = 0; i < n; i++) {
+  for (let intersect of intersects) {
     const checked = MouseEventManager.checkTarget(
-      intersects[i].object,
+      intersect.object,
       ThreeMouseEventType.OVER
     );
-    if (!checked) continue;
-    beforeOver === null || beforeOver === void 0
-      ? void 0
-      : beforeOver.forEach((btn) => {
-          if (!MouseEventManager.currentOver.includes(btn)) {
-            MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
-          }
-        });
-    break;
+    if (checked) break;
   }
+  beforeOver === null || beforeOver === void 0
+    ? void 0
+    : beforeOver.forEach((btn) => {
+        if (!MouseEventManager.currentOver.includes(btn)) {
+          MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
+        }
+      });
 };
 /**
  * カンバス上でマウスダウンかマウスアップが行われた際のイベントハンドラー

@@ -1,9 +1,9 @@
 import { BufferGeometry, Geometry, Mesh } from "three";
 import { CheckBoxObject } from "./CheckBoxObject";
-import { ISelectableObject3D } from "./MouseEventManager";
+import { IClickableObject3D } from "./MouseEventManager";
 import { StateMaterialSet } from "./StateMaterial";
 
-export declare class CheckBoxMesh extends Mesh implements ISelectableObject3D {
+export declare class CheckBoxMesh extends Mesh implements IClickableObject3D {
   model: CheckBoxObject;
   /**
    * コンストラクタ

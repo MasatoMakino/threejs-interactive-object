@@ -1,5 +1,5 @@
-import { RadioButtonObject } from "./RadioButtonObject";
 import { Sprite } from "three";
+import { RadioButtonObject } from "./RadioButtonObject";
 
 export class RadioButtonSprite extends Sprite {
   constructor(material) {
