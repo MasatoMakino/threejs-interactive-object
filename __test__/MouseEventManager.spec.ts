@@ -1,12 +1,12 @@
 import { Group } from "three";
-import { ClickableState, MouseEventManager } from "../src";
+import { ClickableGroup, ClickableState, MouseEventManager } from "../src";
 import { MouseEventManagerButton } from "./MouseEventManagerButton";
 import { MouseEventManagerScene } from "./MouseEventManagerScene";
 
 describe("MouseEventManager", () => {
   const managerScene = new MouseEventManagerScene();
 
-  const wrapper = new Group();
+  const wrapper = new ClickableGroup();
   const btn = new MouseEventManagerButton();
   wrapper.add(btn.button);
   managerScene.scene.add(wrapper);
@@ -109,6 +109,7 @@ describe("MouseEventManager", () => {
   test("mouseEnabled : false and overlap", () => {
     btn.button.model.enable();
     btn.button.model.mouseEnabled = false;
+    wrapper.model.mouseEnabled = false;
     btn.checkMaterial(ClickableState.NORMAL);
     btnBackground.checkMaterial(ClickableState.NORMAL);
 

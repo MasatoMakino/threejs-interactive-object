@@ -123,9 +123,12 @@ export class ClickableObject {
   }
 
   protected updateMaterial(): void {
-    this._materialSet.setOpacity(this._alpha);
-    const stateMat = this._materialSet.getMaterial(this.state, this._enable);
+    this._materialSet?.setOpacity(this._alpha);
+    const stateMat = this._materialSet?.getMaterial(this.state, this._enable);
+    if (!stateMat) return;
+
     switch (this.view.type) {
+      //TODO PR Mesh.d.ts
       case "Mesh":
       case "Sprite":
         this.view.material = stateMat.material;
