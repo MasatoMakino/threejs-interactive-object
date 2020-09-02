@@ -48,13 +48,13 @@ export class MouseEventManager {
    * 現在マウスオーバーしている対象をなしにする。
    * もし、すでにマウスオーバー対象が存在するなら、マウスアウトハンドラーを呼び出した後にクリアする。
    */
-  static clearCurrentOver() {
-    if (MouseEventManager.currentOver) {
-      MouseEventManager.onButtonHandler(
-        MouseEventManager.currentOver,
-        ThreeMouseEventType.OUT
-      );
-    }
+  static clearOver() {
+    var _a;
+    (_a = MouseEventManager.currentOver) === null || _a === void 0
+      ? void 0
+      : _a.forEach((over) => {
+          this.onButtonHandler(over, ThreeMouseEventType.OUT);
+        });
     MouseEventManager.currentOver = null;
   }
   /**
@@ -67,9 +67,8 @@ export class MouseEventManager {
     const n = intersects.length;
     if (n === 0) return;
     for (let i = 0; i < n; i++) {
-      const checked = MouseEventManager.checkTarget(intersects[i].object);
+      const checked = MouseEventManager.checkTarget(intersects[i].object, type);
       if (checked) {
-        MouseEventManager.onButtonHandler(checked, type);
         break;
       }
     }
@@ -88,14 +87,18 @@ export class MouseEventManager {
         btn.model.onMouseUpHandler(new ThreeMouseEvent(type, btn));
         return;
       case ThreeMouseEventType.OVER:
-        btn.model.onMouseOverHandler(new ThreeMouseEvent(type, btn));
+        if (!btn.model.isOver) {
+          btn.model.onMouseOverHandler(new ThreeMouseEvent(type, btn));
+        }
         return;
       case ThreeMouseEventType.OUT:
-        btn.model.onMouseOutHandler(new ThreeMouseEvent(type, btn));
+        if (btn.model.isOver) {
+          btn.model.onMouseOutHandler(new ThreeMouseEvent(type, btn));
+        }
         return;
     }
   }
-  static checkTarget(target) {
+  static checkTarget(target, type, hasTarget = false) {
     // ユーザ定義タイプガード
     function implementsIClickableObject3D(arg) {
       return (
@@ -107,25 +110,25 @@ export class MouseEventManager {
         typeof arg.model.mouseEnabled === "boolean"
       );
     }
-    //EdgeHelper / WireframeHelperは無視。
-    if (target.type === "LineSegments") {
-      return null;
-    }
     //クリッカブルインターフェースを継承しているなら判定OK
     const targetAny = target;
     if (
       implementsIClickableObject3D(targetAny) &&
       targetAny.model.mouseEnabled === true
     ) {
-      return target;
+      if (type === ThreeMouseEventType.OVER) {
+        MouseEventManager.currentOver.push(targetAny);
+      }
+      this.onButtonHandler(targetAny, type);
+      return this.checkTarget(target.parent, type, true);
     }
     //継承していないならその親を探索継続。
     //ターゲットから上昇して探す。
     if (target.parent != null && target.parent.type !== "Scene") {
-      return MouseEventManager.checkTarget(target.parent);
+      return MouseEventManager.checkTarget(target.parent, type, hasTarget);
     }
-    //親がシーンの場合は探索終了。nullを返す。
-    return null;
+    //親がシーンの場合は探索終了。
+    return hasTarget;
   }
   static updateMouse(event, mouse) {
     mouse.x = (event.offsetX / MouseEventManager.canvas.clientWidth) * 2 - 1;
@@ -161,23 +164,27 @@ MouseEventManager.onDocumentMouseMove = (event) => {
   }
   const intersects = MouseEventManager.getIntersects(event);
   const n = intersects.length;
-  if (n == 0) {
-    MouseEventManager.clearCurrentOver();
+  if (n === 0) {
+    MouseEventManager.clearOver();
     return;
   }
+  const beforeOver = MouseEventManager.currentOver;
+  MouseEventManager.currentOver = [];
   for (let i = 0; i < n; i++) {
-    let checked = MouseEventManager.checkTarget(intersects[i].object);
-    if (checked) {
-      if (checked != MouseEventManager.currentOver) {
-        MouseEventManager.clearCurrentOver();
-        MouseEventManager.currentOver = checked;
-        MouseEventManager.onButtonHandler(checked, ThreeMouseEventType.OVER);
-      }
-      return;
-    }
+    const checked = MouseEventManager.checkTarget(
+      intersects[i].object,
+      ThreeMouseEventType.OVER
+    );
+    if (!checked) continue;
+    beforeOver === null || beforeOver === void 0
+      ? void 0
+      : beforeOver.forEach((btn) => {
+          if (!MouseEventManager.currentOver.includes(btn)) {
+            MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
+          }
+        });
+    break;
   }
-  MouseEventManager.clearCurrentOver();
-  return;
 };
 /**
  * カンバス上でマウスダウンかマウスアップが行われた際のイベントハンドラー

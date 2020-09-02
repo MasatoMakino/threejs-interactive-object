@@ -99,11 +99,11 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="checkboxobject.html#_alpha" class="tsd-kind-icon">_alpha</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="checkboxobject.html#_enable" class="tsd-kind-icon">_enable</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="checkboxobject.html#_isover" class="tsd-kind-icon">_is<wbr>Over</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="checkboxobject.html#_ispress" class="tsd-kind-icon">_is<wbr>Press</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="checkboxobject.html#_isselect" class="tsd-kind-icon">_is<wbr>Select</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="checkboxobject.html#_materialset" class="tsd-kind-icon">_material<wbr>Set</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="checkboxobject.html#frozen" class="tsd-kind-icon">frozen</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="checkboxobject.html#isover" class="tsd-kind-icon">is<wbr>Over</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="checkboxobject.html#ispress" class="tsd-kind-icon">is<wbr>Press</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="checkboxobject.html#mouseenabled" class="tsd-kind-icon">mouse<wbr>Enabled</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="checkboxobject.html#state" class="tsd-kind-icon">state</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="checkboxobject.html#value" class="tsd-kind-icon">value</a></li>
@@ -114,6 +114,8 @@
 							<h3>Accessors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-set-signature tsd-parent-kind-class tsd-is-inherited"><a href="checkboxobject.html#alpha" class="tsd-kind-icon">alpha</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="checkboxobject.html#isover" class="tsd-kind-icon">is<wbr>Over</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited"><a href="checkboxobject.html#ispress" class="tsd-kind-icon">is<wbr>Press</a></li>
 								<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><a href="checkboxobject.html#materialset" class="tsd-kind-icon">material<wbr>Set</a></li>
 								<li class="tsd-kind-accessor tsd-parent-kind-class"><a href="checkboxobject.html#selection" class="tsd-kind-icon">selection</a></li>
 							</ul>
@@ -143,14 +145,14 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Check<wbr>Box<wbr>Object<span class="tsd-signature-symbol">(</span>parameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>material<span class="tsd-signature-symbol">: </span><a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a><span class="tsd-signature-symbol">; </span>view<span class="tsd-signature-symbol">: </span><a href="clickablemesh.html" class="tsd-signature-type">ClickableMesh</a><span class="tsd-signature-symbol"> | </span><a href="clickablesprite.html" class="tsd-signature-type">ClickableSprite</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="checkboxobject.html" class="tsd-signature-type">CheckBoxObject</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Check<wbr>Box<wbr>Object<span class="tsd-signature-symbol">(</span>parameters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>material<span class="tsd-signature-symbol">?: </span><a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a><span class="tsd-signature-symbol">; </span>view<span class="tsd-signature-symbol">: </span><a href="../globals.html#clickableview" class="tsd-signature-type">ClickableView</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="checkboxobject.html" class="tsd-signature-type">CheckBoxObject</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L32">src/ClickableObject.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L43">src/ClickableObject.ts:43</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -161,13 +163,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>parameters: <span class="tsd-signature-symbol">{ </span>material<span class="tsd-signature-symbol">: </span><a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a><span class="tsd-signature-symbol">; </span>view<span class="tsd-signature-symbol">: </span><a href="clickablemesh.html" class="tsd-signature-type">ClickableMesh</a><span class="tsd-signature-symbol"> | </span><a href="clickablesprite.html" class="tsd-signature-type">ClickableSprite</a><span class="tsd-signature-symbol"> }</span></h5>
+									<h5>parameters: <span class="tsd-signature-symbol">{ </span>material<span class="tsd-signature-symbol">?: </span><a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a><span class="tsd-signature-symbol">; </span>view<span class="tsd-signature-symbol">: </span><a href="../globals.html#clickableview" class="tsd-signature-type">ClickableView</a><span class="tsd-signature-symbol"> }</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter">
-											<h5>material<span class="tsd-signature-symbol">: </span><a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a></h5>
+											<h5><span class="tsd-flag ts-flagOptional">Optional</span> material<span class="tsd-signature-symbol">?: </span><a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>view<span class="tsd-signature-symbol">: </span><a href="clickablemesh.html" class="tsd-signature-type">ClickableMesh</a><span class="tsd-signature-symbol"> | </span><a href="clickablesprite.html" class="tsd-signature-type">ClickableSprite</a></h5>
+											<h5>view<span class="tsd-signature-symbol">: </span><a href="../globals.html#clickableview" class="tsd-signature-type">ClickableView</a></h5>
 										</li>
 									</ul>
 								</li>
@@ -186,7 +188,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#_alpha">_alpha</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L32">src/ClickableObject.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L43">src/ClickableObject.ts:43</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -197,7 +199,29 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#_enable">_enable</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L26">src/ClickableObject.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L37">src/ClickableObject.ts:37</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="_isover" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _is<wbr>Over</h3>
+					<div class="tsd-signature tsd-kind-icon">_is<wbr>Over<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#_isover">_isOver</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L36">src/ClickableObject.ts:36</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="_ispress" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> _is<wbr>Press</h3>
+					<div class="tsd-signature tsd-kind-icon">_is<wbr>Press<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#_ispress">_isPress</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L35">src/ClickableObject.ts:35</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -207,7 +231,7 @@
 					<div class="tsd-signature tsd-kind-icon">_is<wbr>Select<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/CheckBoxObject.ts#L9">src/CheckBoxObject.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/CheckBoxObject.ts#L9">src/CheckBoxObject.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -218,7 +242,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#_materialset">_materialSet</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L31">src/ClickableObject.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L42">src/ClickableObject.ts:42</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -229,29 +253,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#frozen">frozen</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L28">src/ClickableObject.ts:28</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-					<a name="isover" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagProtected">Protected</span> is<wbr>Over</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Over<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#isover">isOver</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L25">src/ClickableObject.ts:25</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="ispress" class="tsd-anchor"></a>
-					<h3>is<wbr>Press</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Press<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#ispress">isPress</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L24">src/ClickableObject.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L39">src/ClickableObject.ts:39</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -262,7 +264,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#mouseenabled">mouseEnabled</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L27">src/ClickableObject.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L38">src/ClickableObject.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -273,7 +275,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#state">state</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L30">src/ClickableObject.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L41">src/ClickableObject.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -283,7 +285,7 @@
 					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/CheckBoxObject.ts#L10">src/CheckBoxObject.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/CheckBoxObject.ts#L10">src/CheckBoxObject.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -294,7 +296,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#view">view</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/CheckBoxObject.ts#L8">src/CheckBoxObject.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/CheckBoxObject.ts#L8">src/CheckBoxObject.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -312,7 +314,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#alpha">alpha</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L96">src/ClickableObject.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L111">src/ClickableObject.ts:111</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -322,6 +324,42 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="isover" class="tsd-anchor"></a>
+					<h3>is<wbr>Over</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isOver<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#isover">isOver</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L26">src/ClickableObject.ts:26</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+					<a name="ispress" class="tsd-anchor"></a>
+					<h3>is<wbr>Press</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> isPress<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#ispress">isPress</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L30">src/ClickableObject.ts:30</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -337,7 +375,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#materialset">materialSet</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L11">src/ClickableObject.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L14">src/ClickableObject.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a></h4>
@@ -346,7 +384,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#materialset">materialSet</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L15">src/ClickableObject.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L18">src/ClickableObject.ts:18</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -370,7 +408,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/CheckBoxObject.ts#L28">src/CheckBoxObject.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/CheckBoxObject.ts#L28">src/CheckBoxObject.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -378,7 +416,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/CheckBoxObject.ts#L32">src/CheckBoxObject.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/CheckBoxObject.ts#L32">src/CheckBoxObject.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -405,7 +443,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#checkactivity">checkActivity</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L110">src/ClickableObject.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L125">src/ClickableObject.ts:125</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -429,7 +467,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#disable">disable</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L118">src/ClickableObject.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L133">src/ClickableObject.ts:133</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -447,7 +485,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#enable">enable</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L114">src/ClickableObject.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L129">src/ClickableObject.ts:129</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -465,7 +503,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#onmouseclick">onMouseClick</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/CheckBoxObject.ts#L17">src/CheckBoxObject.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/CheckBoxObject.ts#L17">src/CheckBoxObject.ts:17</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -490,7 +528,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#onmousedownhandler">onMouseDownHandler</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L53">src/ClickableObject.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L64">src/ClickableObject.ts:64</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -514,7 +552,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#onmouseouthandler">onMouseOutHandler</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L84">src/ClickableObject.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L97">src/ClickableObject.ts:97</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -538,7 +576,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#onmouseoverhandler">onMouseOverHandler</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L80">src/ClickableObject.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L93">src/ClickableObject.ts:93</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -562,7 +600,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#onmouseuphandler">onMouseUpHandler</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L60">src/ClickableObject.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L71">src/ClickableObject.ts:71</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -586,7 +624,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#switchenable">switchEnable</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L128">src/ClickableObject.ts:128</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L154">src/ClickableObject.ts:154</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -610,7 +648,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#updatematerial">updateMaterial</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/CheckBoxObject.ts#L37">src/CheckBoxObject.ts:37</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/CheckBoxObject.ts#L37">src/CheckBoxObject.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -628,7 +666,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="clickableobject.html">ClickableObject</a>.<a href="clickableobject.html#updatestate">updateState</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5bf9d7b/src/ClickableObject.ts#L101">src/ClickableObject.ts:101</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/975944d/src/ClickableObject.ts#L116">src/ClickableObject.ts:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -676,6 +714,12 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="checkboxobject.html#_enable" class="tsd-kind-icon">_enable</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="checkboxobject.html#_isover" class="tsd-kind-icon">_is<wbr>Over</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="checkboxobject.html#_ispress" class="tsd-kind-icon">_is<wbr>Press</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 								<a href="checkboxobject.html#_isselect" class="tsd-kind-icon">_is<wbr>Select</a>
 							</li>
@@ -684,12 +728,6 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="checkboxobject.html#frozen" class="tsd-kind-icon">frozen</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
-								<a href="checkboxobject.html#isover" class="tsd-kind-icon">is<wbr>Over</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="checkboxobject.html#ispress" class="tsd-kind-icon">is<wbr>Press</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="checkboxobject.html#mouseenabled" class="tsd-kind-icon">mouse<wbr>Enabled</a>
@@ -705,6 +743,12 @@
 							</li>
 							<li class=" tsd-kind-set-signature tsd-parent-kind-class tsd-is-inherited">
 								<a href="checkboxobject.html#alpha" class="tsd-kind-icon">alpha</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="checkboxobject.html#isover" class="tsd-kind-icon">is<wbr>Over</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-inherited">
+								<a href="checkboxobject.html#ispress" class="tsd-kind-icon">is<wbr>Press</a>
 							</li>
 							<li class=" tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited">
 								<a href="checkboxobject.html#materialset" class="tsd-kind-icon">material<wbr>Set</a>
@@ -752,6 +796,9 @@
 					<li class=" tsd-kind-class">
 						<a href="checkboxsprite.html" class="tsd-kind-icon">Check<wbr>Box<wbr>Sprite</a>
 					</li>
+					<li class=" tsd-kind-class">
+						<a href="clickablegroup.html" class="tsd-kind-icon">Clickable<wbr>Group</a>
+					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="clickablemesh.html" class="tsd-kind-icon">Clickable<wbr>Mesh</a>
 					</li>
@@ -793,6 +840,9 @@
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="../interfaces/iselectableobject3d.html" class="tsd-kind-icon">ISelectable<wbr>Object3D</a>
+					</li>
+					<li class=" tsd-kind-type-alias">
+						<a href="../globals.html#clickableview" class="tsd-kind-icon">Clickable<wbr>View</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#statematerialtype" class="tsd-kind-icon">State<wbr>Material<wbr>Type</a>

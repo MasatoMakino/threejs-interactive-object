@@ -1,6 +1,7 @@
 export * from "./ClickableMesh";
 export * from "./ClickableSptire";
 export * from "./ClickableObject";
+export * from "./ClickableGroup";
 export * from "./CheckBoxMesh";
 export * from "./CheckBoxSprite";
 export * from "./CheckBoxObject";

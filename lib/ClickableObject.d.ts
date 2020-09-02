@@ -1,18 +1,25 @@
+import { ClickableGroup } from "./ClickableGroup";
 import { ClickableMesh } from "./ClickableMesh";
 import { ClickableSprite } from "./ClickableSptire";
 import { ClickableState } from "./MouseEventManager";
 import { StateMaterialSet } from "./StateMaterial";
 import { ThreeMouseEvent } from "./ThreeMouseEvent";
 
+export declare type ClickableView =
+  | ClickableMesh
+  | ClickableSprite
+  | ClickableGroup;
 /**
- * クリックに反応するMesh。
+ * クリックに反応するObject。
  */
 export declare class ClickableObject {
   get materialSet(): StateMaterialSet;
   set materialSet(value: StateMaterialSet);
-  view: ClickableMesh | ClickableSprite;
-  isPress: boolean;
-  protected isOver: boolean;
+  get isOver(): boolean;
+  get isPress(): boolean;
+  view: ClickableView;
+  protected _isPress: boolean;
+  protected _isOver: boolean;
   protected _enable: boolean;
   mouseEnabled: boolean;
   frozen: boolean;
@@ -22,10 +29,7 @@ export declare class ClickableObject {
   /**
    * コンストラクタ
    */
-  constructor(parameters: {
-    view: ClickableMesh | ClickableSprite;
-    material: StateMaterialSet;
-  });
+  constructor(parameters: { view: ClickableView; material?: StateMaterialSet });
   onMouseDownHandler(event: ThreeMouseEvent): void;
   onMouseUpHandler(event: ThreeMouseEvent): void;
   onMouseClick(): void;

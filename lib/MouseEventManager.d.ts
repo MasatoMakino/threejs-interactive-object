@@ -20,7 +20,7 @@ export declare class MouseEventManager {
   protected static canvas: HTMLCanvasElement;
   protected static raycaster: Raycaster;
   protected static mouse: Vector2;
-  protected static currentOver: IClickableObject3D | null;
+  protected static currentOver: IClickableObject3D[] | null;
   static isInit: boolean;
   protected static hasThrottled: boolean;
   static throttlingTime_ms: number;
@@ -38,7 +38,7 @@ export declare class MouseEventManager {
    * 現在マウスオーバーしている対象をなしにする。
    * もし、すでにマウスオーバー対象が存在するなら、マウスアウトハンドラーを呼び出した後にクリアする。
    */
-  protected static clearCurrentOver(): void;
+  protected static clearOver(): void;
   /**
    * カンバス上でマウスダウンかマウスアップが行われた際のイベントハンドラー
    * マウス座標から対象となるObject3Dを探し出して操作を行う。
@@ -61,7 +61,11 @@ export declare class MouseEventManager {
     btn: IClickableObject3D,
     type: ThreeMouseEventType
   ): void;
-  protected static checkTarget(target: Object3D): any;
+  protected static checkTarget(
+    target: Object3D,
+    type: ThreeMouseEventType,
+    hasTarget?: boolean
+  ): boolean;
   protected static updateMouse(event: MouseEvent, mouse: Vector2): Vector2;
   protected static getIntersects(event: MouseEvent): Intersection[];
 }

@@ -2,15 +2,16 @@ import { ClickableState, MouseEventManager } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
 /**
- * クリックに反応するMesh。
+ * クリックに反応するObject。
  */
 export class ClickableObject {
   /**
    * コンストラクタ
    */
   constructor(parameters) {
-    this.isPress = false;
-    this.isOver = false;
+    var _a;
+    this._isPress = false;
+    this._isOver = false;
     this._enable = true;
     this.mouseEnabled = true;
     this.frozen = false;
@@ -22,7 +23,9 @@ export class ClickableObject {
         "MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。"
       );
     }
-    this._materialSet = parameters.material;
+    (_a = this._materialSet) !== null && _a !== void 0
+      ? _a
+      : (this._materialSet = parameters.material);
     this.updateMaterial();
   }
   get materialSet() {
@@ -35,20 +38,28 @@ export class ClickableObject {
       this.updateMaterial();
     }
   }
+  get isOver() {
+    return this._isOver;
+  }
+  get isPress() {
+    return this._isPress;
+  }
   onMouseDownHandler(event) {
     if (!this.checkActivity()) return;
-    this.isPress = true;
+    this._isPress = true;
     this.updateState(ClickableState.DOWN);
     this.view.dispatchEvent(event);
   }
   onMouseUpHandler(event) {
     if (!this.checkActivity()) return;
-    const currentPress = this.isPress;
-    this.isPress = false;
-    const nextState = this.isOver ? ClickableState.OVER : ClickableState.NORMAL;
+    const currentPress = this._isPress;
+    this._isPress = false;
+    const nextState = this._isOver
+      ? ClickableState.OVER
+      : ClickableState.NORMAL;
     this.updateState(nextState);
     this.view.dispatchEvent(event);
-    if (this.isPress != currentPress) {
+    if (this._isPress != currentPress) {
       this.onMouseClick();
       let e = new ThreeMouseEvent(ThreeMouseEventType.CLICK, this);
       this.view.dispatchEvent(e);
@@ -63,8 +74,10 @@ export class ClickableObject {
   }
   onMouseOverOutHandler(event) {
     if (!this.checkActivity()) return;
-    this.isOver = event.type === ThreeMouseEventType.OVER;
-    this.updateState(this.isOver ? ClickableState.OVER : ClickableState.NORMAL);
+    this._isOver = event.type === ThreeMouseEventType.OVER;
+    this.updateState(
+      this._isOver ? ClickableState.OVER : ClickableState.NORMAL
+    );
     this.view.dispatchEvent(event);
   }
   set alpha(number) {
@@ -89,9 +102,25 @@ export class ClickableObject {
     this.switchEnable(false);
   }
   updateMaterial() {
-    this._materialSet.setOpacity(this._alpha);
-    const stateMat = this._materialSet.getMaterial(this.state, this._enable);
-    this.view.material = stateMat.material;
+    var _a, _b;
+    (_a = this._materialSet) === null || _a === void 0
+      ? void 0
+      : _a.setOpacity(this._alpha);
+    const stateMat =
+      (_b = this._materialSet) === null || _b === void 0
+        ? void 0
+        : _b.getMaterial(this.state, this._enable);
+    if (!stateMat) return;
+    switch (this.view.type) {
+      //TODO PR Mesh.d.ts
+      case "Mesh":
+      case "Sprite":
+        this.view.material = stateMat.material;
+        break;
+      case "Group":
+      default:
+        break;
+    }
   }
   switchEnable(bool) {
     this._enable = bool;
