@@ -15,9 +15,12 @@ export class MouseEventManagerScene {
   private offset: Offset;
 
   constructor() {
+    const W = 1920;
+    const H = 1080;
+
     this.canvas = document.createElement("canvas");
-    this.canvas.width = 1920;
-    this.canvas.height = 1080;
+    this.canvas.width = W;
+    this.canvas.height = H;
     this.canvas.style.setProperty("margin", "0");
     this.canvas.style.setProperty("padding", "0");
     document.body.appendChild(this.canvas);
@@ -35,6 +38,7 @@ export class MouseEventManagerScene {
     this.scene.add(this.camera);
 
     const renderOption = {
+      antialias: false,
       canvas: this.canvas,
     };
     this.renderer = new WebGLRenderer(renderOption);
