@@ -1,6 +1,6 @@
 import { CheckBoxMesh } from "./CheckBoxMesh";
-import { CheckBoxSprite } from "./CheckBoxSprite";
 import { ClickableObject } from "./ClickableObject";
+import { CheckBoxSprite } from "./InteractiveSprite";
 import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
