@@ -1,5 +1,5 @@
 import { ClickableGroup } from "./ClickableGroup";
-import { ClickableMesh } from "./ClickableMesh";
+import { ClickableMesh } from "./InteractiveMesh";
 import { ClickableSprite } from "./InteractiveSprite";
 import { ClickableState, MouseEventManager } from "./MouseEventManager";
 import { StateMaterialSet } from "./StateMaterial";

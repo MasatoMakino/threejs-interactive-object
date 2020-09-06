@@ -1,13 +1,11 @@
 export * from "./InteractiveSprite";
+export * from "./InteractiveMesh";
 
-export * from "./ClickableMesh";
 export * from "./ClickableObject";
 export * from "./ClickableGroup";
 
-export * from "./CheckBoxMesh";
 export * from "./CheckBoxObject";
 
-export * from "./RadioButtonMesh";
 export * from "./RadioButtonObject";
 export * from "./RadioButtonManager";
 
