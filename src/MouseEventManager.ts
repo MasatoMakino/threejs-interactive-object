@@ -61,17 +61,19 @@ export class MouseEventManager {
       false
     );
 
-    RAFTicker.on(RAFTickerEventType.tick, (e: RAFTickerEvent) => {
-      MouseEventManager.throttlingDelta += e.delta;
-      if (
-        MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms
-      ) {
-        return;
-      }
-      MouseEventManager.hasThrottled = false;
-      MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
-    });
+    RAFTicker.on(RAFTickerEventType.tick, this.onTick);
   }
+
+  private static onTick = (e: RAFTickerEvent) => {
+    MouseEventManager.throttlingDelta += e.delta;
+    if (
+      MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms
+    ) {
+      return;
+    }
+    MouseEventManager.hasThrottled = false;
+    MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
+  };
 
   protected static onDocumentMouseMove = (event: any) => {
     if (MouseEventManager.hasThrottled) return;
