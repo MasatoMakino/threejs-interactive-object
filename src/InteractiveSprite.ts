@@ -5,7 +5,7 @@ import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
 import { StateMaterialSet } from "./StateMaterial";
 
-interface TConstructor<T> {
+export interface TConstructor<T> {
   new (param: ClickableObjectParameters): T;
 }
 
