@@ -189,33 +189,39 @@ export class MouseEventManager {
     }
   }
 
+  /**
+   * IClickableObject3Dインターフェースを実装しているか否かを判定する。
+   * ユーザー定義Type Guard
+   * @param arg
+   * @private
+   */
+  private static implementsIClickableObject3D(
+    arg: any
+  ): arg is IClickableObject3D {
+    return (
+      arg !== null &&
+      typeof arg === "object" &&
+      arg.model !== null &&
+      typeof arg.model === "object" &&
+      arg.model.mouseEnabled !== null &&
+      typeof arg.model.mouseEnabled === "boolean"
+    );
+  }
+
   protected static checkTarget(
     target: Object3D,
     type: ThreeMouseEventType,
     hasTarget: boolean = false
   ): boolean {
-    // ユーザ定義タイプガード
-    function implementsIClickableObject3D(arg: any): arg is IClickableObject3D {
-      return (
-        arg !== null &&
-        typeof arg === "object" &&
-        arg.model !== null &&
-        typeof arg.model === "object" &&
-        arg.model.mouseEnabled !== null &&
-        typeof arg.model.mouseEnabled === "boolean"
-      );
-    }
-
     //クリッカブルインターフェースを継承しているなら判定OK
-    const targetAny = <any>target;
     if (
-      implementsIClickableObject3D(targetAny) &&
-      targetAny.model.mouseEnabled === true
+      this.implementsIClickableObject3D(target) &&
+      target.model.mouseEnabled === true
     ) {
       if (type === ThreeMouseEventType.OVER) {
-        MouseEventManager.currentOver.push(targetAny);
+        MouseEventManager.currentOver.push(target);
       }
-      this.onButtonHandler(targetAny, type);
+      this.onButtonHandler(target, type);
       return this.checkTarget(target.parent, type, true);
     }
 
