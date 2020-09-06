@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ClickableMesh | threejs-interactive-object</title>
+	<title>InteractiveSprite | threejs-interactive-object</title>
 	<meta name="description" content="Documentation for threejs-interactive-object">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="clickablemesh.html">ClickableMesh</a>
+					<a href="interactivesprite.html">InteractiveSprite</a>
 				</li>
 			</ul>
-			<h1>Class ClickableMesh&lt;TGeometry, TMaterial&gt;</h1>
+			<h1>Class InteractiveSprite&lt;T&gt;</h1>
 		</div>
 	</div>
 </header>
@@ -70,10 +70,7 @@
 				<h3>Type parameters</h3>
 				<ul class="tsd-type-parameters">
 					<li>
-						<h4>TGeometry<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Geometry</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BufferGeometry</span></h4>
-					</li>
-					<li>
-						<h4>TMaterial<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Material</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Material</span><span class="tsd-signature-symbol">[]</span></h4>
+						<h4>T<span class="tsd-signature-symbol">: </span><a href="clickableobject.html" class="tsd-signature-type">ClickableObject</a></h4>
 					</li>
 				</ul>
 			</section>
@@ -81,10 +78,21 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="interactivemesh.html" class="tsd-signature-type">InteractiveMesh</a><span class="tsd-signature-symbol">&lt;</span><a href="clickableobject.html" class="tsd-signature-type">ClickableObject</a><span class="tsd-signature-symbol">&gt;</span>
+						<span class="tsd-signature-type">Sprite</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">ClickableMesh</span>
+								<span class="target">InteractiveSprite</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="clickablesprite.html" class="tsd-signature-type">ClickableSprite</a>
+									</li>
+									<li>
+										<a href="checkboxsprite.html" class="tsd-signature-type">CheckBoxSprite</a>
+									</li>
+									<li>
+										<a href="radiobuttonsprite.html" class="tsd-signature-type">RadioButtonSprite</a>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</li>
@@ -93,7 +101,6 @@
 			<section class="tsd-panel">
 				<h3>Implements</h3>
 				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/iclickableobject3d.html" class="tsd-signature-type">IClickableObject3D</a></li>
 					<li><a href="../interfaces/iclickableobject3d.html" class="tsd-signature-type">IClickableObject3D</a></li>
 				</ul>
 			</section>
@@ -104,97 +111,95 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="clickablemesh.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="interactivesprite.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-inherited">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#castshadow" class="tsd-kind-icon">cast<wbr>Shadow</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#children" class="tsd-kind-icon">children</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#customdepthmaterial" class="tsd-kind-icon">custom<wbr>Depth<wbr>Material</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#customdistancematerial" class="tsd-kind-icon">custom<wbr>Distance<wbr>Material</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#frustumculled" class="tsd-kind-icon">frustum<wbr>Culled</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#geometry" class="tsd-kind-icon">geometry</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#ismesh" class="tsd-kind-icon">is<wbr>Mesh</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#isobject3d" class="tsd-kind-icon">is<wbr>Object3D</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#layers" class="tsd-kind-icon">layers</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#material" class="tsd-kind-icon">material</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#matrix" class="tsd-kind-icon">matrix</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#matrixautoupdate" class="tsd-kind-icon">matrix<wbr>Auto<wbr>Update</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#matrixworld" class="tsd-kind-icon">matrix<wbr>World</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#matrixworldneedsupdate" class="tsd-kind-icon">matrix<wbr>World<wbr>Needs<wbr>Update</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#model" class="tsd-kind-icon">model</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#modelviewmatrix" class="tsd-kind-icon">model<wbr>View<wbr>Matrix</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#morphtargetdictionary" class="tsd-kind-icon">morph<wbr>Target<wbr>Dictionary</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#morphtargetinfluences" class="tsd-kind-icon">morph<wbr>Target<wbr>Influences</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#normalmatrix" class="tsd-kind-icon">normal<wbr>Matrix</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#onafterrender" class="tsd-kind-icon">on<wbr>After<wbr>Render</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#onbeforerender" class="tsd-kind-icon">on<wbr>Before<wbr>Render</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#parent" class="tsd-kind-icon">parent</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#position" class="tsd-kind-icon">position</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#quaternion" class="tsd-kind-icon">quaternion</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#receiveshadow" class="tsd-kind-icon">receive<wbr>Shadow</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#renderorder" class="tsd-kind-icon">render<wbr>Order</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#rotation" class="tsd-kind-icon">rotation</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#scale" class="tsd-kind-icon">scale</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="clickablemesh.html#type" class="tsd-kind-icon">type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#up" class="tsd-kind-icon">up</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#userdata" class="tsd-kind-icon">user<wbr>Data</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#uuid" class="tsd-kind-icon">uuid</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#visible" class="tsd-kind-icon">visible</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="clickablemesh.html#defaultmatrixautoupdate" class="tsd-kind-icon">Default<wbr>Matrix<wbr>Auto<wbr>Update</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="clickablemesh.html#defaultup" class="tsd-kind-icon">Default<wbr>Up</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#castshadow" class="tsd-kind-icon">cast<wbr>Shadow</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#center" class="tsd-kind-icon">center</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#children" class="tsd-kind-icon">children</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#customdepthmaterial" class="tsd-kind-icon">custom<wbr>Depth<wbr>Material</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#customdistancematerial" class="tsd-kind-icon">custom<wbr>Distance<wbr>Material</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#frustumculled" class="tsd-kind-icon">frustum<wbr>Culled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#geometry" class="tsd-kind-icon">geometry</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#isobject3d" class="tsd-kind-icon">is<wbr>Object3D</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#issprite" class="tsd-kind-icon">is<wbr>Sprite</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#layers" class="tsd-kind-icon">layers</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#material" class="tsd-kind-icon">material</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#matrix" class="tsd-kind-icon">matrix</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#matrixautoupdate" class="tsd-kind-icon">matrix<wbr>Auto<wbr>Update</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#matrixworld" class="tsd-kind-icon">matrix<wbr>World</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#matrixworldneedsupdate" class="tsd-kind-icon">matrix<wbr>World<wbr>Needs<wbr>Update</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="interactivesprite.html#model" class="tsd-kind-icon">model</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#modelviewmatrix" class="tsd-kind-icon">model<wbr>View<wbr>Matrix</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#normalmatrix" class="tsd-kind-icon">normal<wbr>Matrix</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#onafterrender" class="tsd-kind-icon">on<wbr>After<wbr>Render</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#onbeforerender" class="tsd-kind-icon">on<wbr>Before<wbr>Render</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#parent" class="tsd-kind-icon">parent</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#position" class="tsd-kind-icon">position</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#quaternion" class="tsd-kind-icon">quaternion</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#receiveshadow" class="tsd-kind-icon">receive<wbr>Shadow</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#renderorder" class="tsd-kind-icon">render<wbr>Order</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#rotation" class="tsd-kind-icon">rotation</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#scale" class="tsd-kind-icon">scale</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="interactivesprite.html#type" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#up" class="tsd-kind-icon">up</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#userdata" class="tsd-kind-icon">user<wbr>Data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#uuid" class="tsd-kind-icon">uuid</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#visible" class="tsd-kind-icon">visible</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="interactivesprite.html#defaultmatrixautoupdate" class="tsd-kind-icon">Default<wbr>Matrix<wbr>Auto<wbr>Update</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="interactivesprite.html#defaultup" class="tsd-kind-icon">Default<wbr>Up</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#add" class="tsd-kind-icon">add</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#addeventlistener" class="tsd-kind-icon">add<wbr>Event<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#applymatrix4" class="tsd-kind-icon">apply<wbr>Matrix4</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#applyquaternion" class="tsd-kind-icon">apply<wbr>Quaternion</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#attach" class="tsd-kind-icon">attach</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#clone" class="tsd-kind-icon">clone</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#copy" class="tsd-kind-icon">copy</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#dispatchevent" class="tsd-kind-icon">dispatch<wbr>Event</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#getobjectbyid" class="tsd-kind-icon">get<wbr>Object<wbr>ById</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#getobjectbyname" class="tsd-kind-icon">get<wbr>Object<wbr>ByName</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#getobjectbyproperty" class="tsd-kind-icon">get<wbr>Object<wbr>ByProperty</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#getworlddirection" class="tsd-kind-icon">get<wbr>World<wbr>Direction</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#getworldposition" class="tsd-kind-icon">get<wbr>World<wbr>Position</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#getworldquaternion" class="tsd-kind-icon">get<wbr>World<wbr>Quaternion</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#getworldscale" class="tsd-kind-icon">get<wbr>World<wbr>Scale</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#haseventlistener" class="tsd-kind-icon">has<wbr>Event<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#localtoworld" class="tsd-kind-icon">local<wbr>ToWorld</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#lookat" class="tsd-kind-icon">look<wbr>At</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="clickablemesh.html#raycast" class="tsd-kind-icon">raycast</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#remove" class="tsd-kind-icon">remove</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#removeeventlistener" class="tsd-kind-icon">remove<wbr>Event<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#rotateonaxis" class="tsd-kind-icon">rotate<wbr>OnAxis</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#rotateonworldaxis" class="tsd-kind-icon">rotate<wbr>OnWorld<wbr>Axis</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#rotatex" class="tsd-kind-icon">rotateX</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#rotatey" class="tsd-kind-icon">rotateY</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#rotatez" class="tsd-kind-icon">rotateZ</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#setrotationfromaxisangle" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Axis<wbr>Angle</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#setrotationfromeuler" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Euler</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#setrotationfrommatrix" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Matrix</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#setrotationfromquaternion" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Quaternion</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#tojson" class="tsd-kind-icon">toJSON</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#translateonaxis" class="tsd-kind-icon">translate<wbr>OnAxis</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#translatex" class="tsd-kind-icon">translateX</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#translatey" class="tsd-kind-icon">translateY</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#translatez" class="tsd-kind-icon">translateZ</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#traverse" class="tsd-kind-icon">traverse</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#traverseancestors" class="tsd-kind-icon">traverse<wbr>Ancestors</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#traversevisible" class="tsd-kind-icon">traverse<wbr>Visible</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#updatematrix" class="tsd-kind-icon">update<wbr>Matrix</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#updatematrixworld" class="tsd-kind-icon">update<wbr>Matrix<wbr>World</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#updatemorphtargets" class="tsd-kind-icon">update<wbr>Morph<wbr>Targets</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#updateworldmatrix" class="tsd-kind-icon">update<wbr>World<wbr>Matrix</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="clickablemesh.html#worldtolocal" class="tsd-kind-icon">world<wbr>ToLocal</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#add" class="tsd-kind-icon">add</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#addeventlistener" class="tsd-kind-icon">add<wbr>Event<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#applymatrix4" class="tsd-kind-icon">apply<wbr>Matrix4</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#applyquaternion" class="tsd-kind-icon">apply<wbr>Quaternion</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#attach" class="tsd-kind-icon">attach</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#clone" class="tsd-kind-icon">clone</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="interactivesprite.html#copy" class="tsd-kind-icon">copy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#dispatchevent" class="tsd-kind-icon">dispatch<wbr>Event</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#getobjectbyid" class="tsd-kind-icon">get<wbr>Object<wbr>ById</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#getobjectbyname" class="tsd-kind-icon">get<wbr>Object<wbr>ByName</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#getobjectbyproperty" class="tsd-kind-icon">get<wbr>Object<wbr>ByProperty</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#getworlddirection" class="tsd-kind-icon">get<wbr>World<wbr>Direction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#getworldposition" class="tsd-kind-icon">get<wbr>World<wbr>Position</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#getworldquaternion" class="tsd-kind-icon">get<wbr>World<wbr>Quaternion</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#getworldscale" class="tsd-kind-icon">get<wbr>World<wbr>Scale</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#haseventlistener" class="tsd-kind-icon">has<wbr>Event<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#localtoworld" class="tsd-kind-icon">local<wbr>ToWorld</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#lookat" class="tsd-kind-icon">look<wbr>At</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="interactivesprite.html#raycast" class="tsd-kind-icon">raycast</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#remove" class="tsd-kind-icon">remove</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#removeeventlistener" class="tsd-kind-icon">remove<wbr>Event<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#rotateonaxis" class="tsd-kind-icon">rotate<wbr>OnAxis</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#rotateonworldaxis" class="tsd-kind-icon">rotate<wbr>OnWorld<wbr>Axis</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#rotatex" class="tsd-kind-icon">rotateX</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#rotatey" class="tsd-kind-icon">rotateY</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#rotatez" class="tsd-kind-icon">rotateZ</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#setrotationfromaxisangle" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Axis<wbr>Angle</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#setrotationfromeuler" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Euler</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#setrotationfrommatrix" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Matrix</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#setrotationfromquaternion" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Quaternion</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#tojson" class="tsd-kind-icon">toJSON</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#translateonaxis" class="tsd-kind-icon">translate<wbr>OnAxis</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#translatex" class="tsd-kind-icon">translateX</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#translatey" class="tsd-kind-icon">translateY</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#translatez" class="tsd-kind-icon">translateZ</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#traverse" class="tsd-kind-icon">traverse</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#traverseancestors" class="tsd-kind-icon">traverse<wbr>Ancestors</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#traversevisible" class="tsd-kind-icon">traverse<wbr>Visible</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#updatematrix" class="tsd-kind-icon">update<wbr>Matrix</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#updatematrixworld" class="tsd-kind-icon">update<wbr>Matrix<wbr>World</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#updateworldmatrix" class="tsd-kind-icon">update<wbr>World<wbr>Matrix</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="interactivesprite.html#worldtolocal" class="tsd-kind-icon">world<wbr>ToLocal</a></li>
 							</ul>
 						</section>
 					</div>
@@ -206,28 +211,31 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Clickable<wbr>Mesh<span class="tsd-signature-symbol">(</span>parameters<span class="tsd-signature-symbol">: </span><a href="../interfaces/interactivemeshparameters.html" class="tsd-signature-type">InteractiveMeshParameters</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="clickablemesh.html" class="tsd-signature-type">ClickableMesh</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Interactive<wbr>Sprite<span class="tsd-signature-symbol">(</span>material<span class="tsd-signature-symbol">: </span><a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a>, ctor<span class="tsd-signature-symbol">: </span><a href="../interfaces/tconstructor.html" class="tsd-signature-type">TConstructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interactivesprite.html" class="tsd-signature-type">InteractiveSprite</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Overrides <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#constructor">constructor</a></p>
+								<p>Overrides Sprite.__constructor</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/InteractiveMesh.ts#L27">src/InteractiveMesh.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/InteractiveSprite.ts#L15">src/InteractiveSprite.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>parameters: <a href="../interfaces/interactivemeshparameters.html" class="tsd-signature-type">InteractiveMeshParameters</a></h5>
+									<h5>material: <a href="statematerialset.html" class="tsd-signature-type">StateMaterialSet</a></h5>
+								</li>
+								<li>
+									<h5>ctor: <a href="../interfaces/tconstructor.html" class="tsd-signature-type">TConstructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="clickablemesh.html" class="tsd-signature-type">ClickableMesh</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="interactivesprite.html" class="tsd-signature-type">InteractiveSprite</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="castshadow" class="tsd-anchor"></a>
@@ -249,6 +257,17 @@
 							</dd>
 						</dl>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="center" class="tsd-anchor"></a>
+					<h3>center</h3>
+					<div class="tsd-signature tsd-kind-icon">center<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Vector2</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="interactivesprite.html">InteractiveSprite</a>.<a href="interactivesprite.html#center">center</a></p>
+						<ul>
+							<li>Defined in node_modules/three/src/objects/Sprite.d.ts:17</li>
+						</ul>
+					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="children" class="tsd-anchor"></a>
@@ -330,11 +349,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="geometry" class="tsd-anchor"></a>
 					<h3>geometry</h3>
-					<div class="tsd-signature tsd-kind-icon">geometry<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">TGeometry</span></div>
+					<div class="tsd-signature tsd-kind-icon">geometry<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">BufferGeometry</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#geometry">geometry</a></p>
+						<p>Inherited from <a href="interactivesprite.html">InteractiveSprite</a>.<a href="interactivesprite.html#geometry">geometry</a></p>
 						<ul>
-							<li>Defined in node_modules/three/src/objects/Mesh.d.ts:18</li>
+							<li>Defined in node_modules/three/src/objects/Sprite.d.ts:15</li>
 						</ul>
 					</aside>
 				</section>
@@ -355,17 +374,6 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="ismesh" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Mesh</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Mesh<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#ismesh">isMesh</a></p>
-						<ul>
-							<li>Defined in node_modules/three/src/objects/Mesh.d.ts:22</li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="isobject3d" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Object3D</h3>
 					<div class="tsd-signature tsd-kind-icon">is<wbr>Object3D<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span></div>
@@ -381,6 +389,17 @@
 							You should not change this, as it is used internally for optimisation.</p>
 						</div>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="issprite" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> is<wbr>Sprite</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Sprite<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="interactivesprite.html">InteractiveSprite</a>.<a href="interactivesprite.html#issprite">isSprite</a></p>
+						<ul>
+							<li>Defined in node_modules/three/src/objects/Sprite.d.ts:13</li>
+						</ul>
+					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="layers" class="tsd-anchor"></a>
@@ -403,11 +422,11 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="material" class="tsd-anchor"></a>
 					<h3>material</h3>
-					<div class="tsd-signature tsd-kind-icon">material<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">TMaterial</span></div>
+					<div class="tsd-signature tsd-kind-icon">material<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">SpriteMaterial</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#material">material</a></p>
+						<p>Inherited from <a href="interactivesprite.html">InteractiveSprite</a>.<a href="interactivesprite.html#material">material</a></p>
 						<ul>
-							<li>Defined in node_modules/three/src/objects/Mesh.d.ts:19</li>
+							<li>Defined in node_modules/three/src/objects/Sprite.d.ts:16</li>
 						</ul>
 					</aside>
 				</section>
@@ -495,15 +514,14 @@
 						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="model" class="tsd-anchor"></a>
 					<h3>model</h3>
-					<div class="tsd-signature tsd-kind-icon">model<span class="tsd-signature-symbol">:</span> <a href="clickableobject.html" class="tsd-signature-type">ClickableObject</a></div>
+					<div class="tsd-signature tsd-kind-icon">model<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span></div>
 					<aside class="tsd-sources">
 						<p>Implementation of <a href="../interfaces/iclickableobject3d.html">IClickableObject3D</a>.<a href="../interfaces/iclickableobject3d.html#model">model</a></p>
-						<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#model">model</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/InteractiveMesh.ts#L17">src/InteractiveMesh.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/InteractiveSprite.ts#L15">src/InteractiveSprite.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -524,36 +542,6 @@
 							</dd>
 						</dl>
 					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="morphtargetdictionary" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> morph<wbr>Target<wbr>Dictionary</h3>
-					<div class="tsd-signature tsd-kind-icon">morph<wbr>Target<wbr>Dictionary<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#morphtargetdictionary">morphTargetDictionary</a></p>
-						<ul>
-							<li>Defined in node_modules/three/src/objects/Mesh.d.ts:21</li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-index-signature">
-								<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">number</span></h5>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="morphtargetinfluences" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> morph<wbr>Target<wbr>Influences</h3>
-					<div class="tsd-signature tsd-kind-icon">morph<wbr>Target<wbr>Influences<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#morphtargetinfluences">morphTargetInfluences</a></p>
-						<ul>
-							<li>Defined in node_modules/three/src/objects/Mesh.d.ts:20</li>
-						</ul>
-					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="name" class="tsd-anchor"></a>
@@ -848,12 +836,12 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="type" class="tsd-anchor"></a>
 					<h3>type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"Sprite"</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#type">type</a></p>
+						<p>Inherited from <a href="interactivesprite.html">InteractiveSprite</a>.<a href="interactivesprite.html#type">type</a></p>
 						<p>Overrides Object3D.type</p>
 						<ul>
-							<li>Defined in node_modules/three/src/objects/Mesh.d.ts:23</li>
+							<li>Defined in node_modules/three/src/objects/Sprite.d.ts:12</li>
 						</ul>
 					</aside>
 				</section>
@@ -1155,31 +1143,25 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="copy" class="tsd-anchor"></a>
 					<h3>copy</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span>, recursive<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">copy<span class="tsd-signature-symbol">(</span>source<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="clickablegroup.html">ClickableGroup</a>.<a href="clickablegroup.html#copy">copy</a></p>
+								<p>Inherited from <a href="interactivesprite.html">InteractiveSprite</a>.<a href="interactivesprite.html#copy">copy</a></p>
+								<p>Overrides <a href="clickablegroup.html">ClickableGroup</a>.<a href="clickablegroup.html#copy">copy</a></p>
 								<ul>
-									<li>Defined in node_modules/three/src/core/Object3D.d.ts:379</li>
+									<li>Defined in node_modules/three/src/objects/Sprite.d.ts:20</li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>source: <span class="tsd-signature-type">this</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> recursive: <span class="tsd-signature-type">boolean</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">this</span></h4>
@@ -1545,10 +1527,10 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#raycast">raycast</a></p>
+								<p>Inherited from <a href="interactivesprite.html">InteractiveSprite</a>.<a href="interactivesprite.html#raycast">raycast</a></p>
 								<p>Overrides <a href="clickablegroup.html">ClickableGroup</a>.<a href="clickablegroup.html#raycast">raycast</a></p>
 								<ul>
-									<li>Defined in node_modules/three/src/objects/Mesh.d.ts:26</li>
+									<li>Defined in node_modules/three/src/objects/Sprite.d.ts:19</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -2256,24 +2238,6 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<a name="updatemorphtargets" class="tsd-anchor"></a>
-					<h3>update<wbr>Morph<wbr>Targets</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>Morph<wbr>Targets<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Inherited from <a href="interactivemesh.html">InteractiveMesh</a>.<a href="interactivemesh.html#updatemorphtargets">updateMorphTargets</a></p>
-								<ul>
-									<li>Defined in node_modules/three/src/objects/Mesh.d.ts:25</li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="updateworldmatrix" class="tsd-anchor"></a>
 					<h3>update<wbr>World<wbr>Matrix</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -2362,258 +2326,9 @@
 					<li class=" tsd-kind-class">
 						<a href="clickablegroup.html" class="tsd-kind-icon">Clickable<wbr>Group</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class tsd-has-type-parameter">
+					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="clickablemesh.html" class="tsd-kind-icon">Clickable<wbr>Mesh</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-								<a href="clickablemesh.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#castshadow" class="tsd-kind-icon">cast<wbr>Shadow</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#children" class="tsd-kind-icon">children</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#customdepthmaterial" class="tsd-kind-icon">custom<wbr>Depth<wbr>Material</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#customdistancematerial" class="tsd-kind-icon">custom<wbr>Distance<wbr>Material</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#frustumculled" class="tsd-kind-icon">frustum<wbr>Culled</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#geometry" class="tsd-kind-icon">geometry</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#id" class="tsd-kind-icon">id</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#ismesh" class="tsd-kind-icon">is<wbr>Mesh</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#isobject3d" class="tsd-kind-icon">is<wbr>Object3D</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#layers" class="tsd-kind-icon">layers</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#material" class="tsd-kind-icon">material</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#matrix" class="tsd-kind-icon">matrix</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#matrixautoupdate" class="tsd-kind-icon">matrix<wbr>Auto<wbr>Update</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#matrixworld" class="tsd-kind-icon">matrix<wbr>World</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#matrixworldneedsupdate" class="tsd-kind-icon">matrix<wbr>World<wbr>Needs<wbr>Update</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#model" class="tsd-kind-icon">model</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#modelviewmatrix" class="tsd-kind-icon">model<wbr>View<wbr>Matrix</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#morphtargetdictionary" class="tsd-kind-icon">morph<wbr>Target<wbr>Dictionary</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#morphtargetinfluences" class="tsd-kind-icon">morph<wbr>Target<wbr>Influences</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#normalmatrix" class="tsd-kind-icon">normal<wbr>Matrix</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#onafterrender" class="tsd-kind-icon">on<wbr>After<wbr>Render</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#onbeforerender" class="tsd-kind-icon">on<wbr>Before<wbr>Render</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#parent" class="tsd-kind-icon">parent</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#position" class="tsd-kind-icon">position</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#quaternion" class="tsd-kind-icon">quaternion</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#receiveshadow" class="tsd-kind-icon">receive<wbr>Shadow</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#renderorder" class="tsd-kind-icon">render<wbr>Order</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#rotation" class="tsd-kind-icon">rotation</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#scale" class="tsd-kind-icon">scale</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="clickablemesh.html#type" class="tsd-kind-icon">type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#up" class="tsd-kind-icon">up</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#userdata" class="tsd-kind-icon">user<wbr>Data</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#uuid" class="tsd-kind-icon">uuid</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#visible" class="tsd-kind-icon">visible</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
-								<a href="clickablemesh.html#defaultmatrixautoupdate" class="tsd-kind-icon">Default<wbr>Matrix<wbr>Auto<wbr>Update</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
-								<a href="clickablemesh.html#defaultup" class="tsd-kind-icon">Default<wbr>Up</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#add" class="tsd-kind-icon">add</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#addeventlistener" class="tsd-kind-icon">add<wbr>Event<wbr>Listener</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#applymatrix4" class="tsd-kind-icon">apply<wbr>Matrix4</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#applyquaternion" class="tsd-kind-icon">apply<wbr>Quaternion</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#attach" class="tsd-kind-icon">attach</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#clone" class="tsd-kind-icon">clone</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#copy" class="tsd-kind-icon">copy</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#dispatchevent" class="tsd-kind-icon">dispatch<wbr>Event</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#getobjectbyid" class="tsd-kind-icon">get<wbr>Object<wbr>ById</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#getobjectbyname" class="tsd-kind-icon">get<wbr>Object<wbr>ByName</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#getobjectbyproperty" class="tsd-kind-icon">get<wbr>Object<wbr>ByProperty</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#getworlddirection" class="tsd-kind-icon">get<wbr>World<wbr>Direction</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#getworldposition" class="tsd-kind-icon">get<wbr>World<wbr>Position</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#getworldquaternion" class="tsd-kind-icon">get<wbr>World<wbr>Quaternion</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#getworldscale" class="tsd-kind-icon">get<wbr>World<wbr>Scale</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#haseventlistener" class="tsd-kind-icon">has<wbr>Event<wbr>Listener</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#localtoworld" class="tsd-kind-icon">local<wbr>ToWorld</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#lookat" class="tsd-kind-icon">look<wbr>At</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="clickablemesh.html#raycast" class="tsd-kind-icon">raycast</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#remove" class="tsd-kind-icon">remove</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#removeeventlistener" class="tsd-kind-icon">remove<wbr>Event<wbr>Listener</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#rotateonaxis" class="tsd-kind-icon">rotate<wbr>OnAxis</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#rotateonworldaxis" class="tsd-kind-icon">rotate<wbr>OnWorld<wbr>Axis</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#rotatex" class="tsd-kind-icon">rotateX</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#rotatey" class="tsd-kind-icon">rotateY</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#rotatez" class="tsd-kind-icon">rotateZ</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#setrotationfromaxisangle" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Axis<wbr>Angle</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#setrotationfromeuler" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Euler</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#setrotationfrommatrix" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Matrix</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#setrotationfromquaternion" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Quaternion</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#tojson" class="tsd-kind-icon">toJSON</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#translateonaxis" class="tsd-kind-icon">translate<wbr>OnAxis</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#translatex" class="tsd-kind-icon">translateX</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#translatey" class="tsd-kind-icon">translateY</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#translatez" class="tsd-kind-icon">translateZ</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#traverse" class="tsd-kind-icon">traverse</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#traverseancestors" class="tsd-kind-icon">traverse<wbr>Ancestors</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#traversevisible" class="tsd-kind-icon">traverse<wbr>Visible</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#updatematrix" class="tsd-kind-icon">update<wbr>Matrix</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#updatematrixworld" class="tsd-kind-icon">update<wbr>Matrix<wbr>World</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#updatemorphtargets" class="tsd-kind-icon">update<wbr>Morph<wbr>Targets</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#updateworldmatrix" class="tsd-kind-icon">update<wbr>World<wbr>Matrix</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="clickablemesh.html#worldtolocal" class="tsd-kind-icon">world<wbr>ToLocal</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="clickableobject.html" class="tsd-kind-icon">Clickable<wbr>Object</a>
 					</li>
@@ -2623,9 +2338,252 @@
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="interactivemesh.html" class="tsd-kind-icon">Interactive<wbr>Mesh</a>
 					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-has-type-parameter">
 						<a href="interactivesprite.html" class="tsd-kind-icon">Interactive<wbr>Sprite</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="interactivesprite.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#castshadow" class="tsd-kind-icon">cast<wbr>Shadow</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#center" class="tsd-kind-icon">center</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#children" class="tsd-kind-icon">children</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#customdepthmaterial" class="tsd-kind-icon">custom<wbr>Depth<wbr>Material</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#customdistancematerial" class="tsd-kind-icon">custom<wbr>Distance<wbr>Material</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#frustumculled" class="tsd-kind-icon">frustum<wbr>Culled</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#geometry" class="tsd-kind-icon">geometry</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#isobject3d" class="tsd-kind-icon">is<wbr>Object3D</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#issprite" class="tsd-kind-icon">is<wbr>Sprite</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#layers" class="tsd-kind-icon">layers</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#material" class="tsd-kind-icon">material</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#matrix" class="tsd-kind-icon">matrix</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#matrixautoupdate" class="tsd-kind-icon">matrix<wbr>Auto<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#matrixworld" class="tsd-kind-icon">matrix<wbr>World</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#matrixworldneedsupdate" class="tsd-kind-icon">matrix<wbr>World<wbr>Needs<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="interactivesprite.html#model" class="tsd-kind-icon">model</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#modelviewmatrix" class="tsd-kind-icon">model<wbr>View<wbr>Matrix</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#name" class="tsd-kind-icon">name</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#normalmatrix" class="tsd-kind-icon">normal<wbr>Matrix</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#onafterrender" class="tsd-kind-icon">on<wbr>After<wbr>Render</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#onbeforerender" class="tsd-kind-icon">on<wbr>Before<wbr>Render</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#parent" class="tsd-kind-icon">parent</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#position" class="tsd-kind-icon">position</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#quaternion" class="tsd-kind-icon">quaternion</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#receiveshadow" class="tsd-kind-icon">receive<wbr>Shadow</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#renderorder" class="tsd-kind-icon">render<wbr>Order</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#rotation" class="tsd-kind-icon">rotation</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#scale" class="tsd-kind-icon">scale</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="interactivesprite.html#type" class="tsd-kind-icon">type</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#up" class="tsd-kind-icon">up</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#userdata" class="tsd-kind-icon">user<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#uuid" class="tsd-kind-icon">uuid</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#visible" class="tsd-kind-icon">visible</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="interactivesprite.html#defaultmatrixautoupdate" class="tsd-kind-icon">Default<wbr>Matrix<wbr>Auto<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="interactivesprite.html#defaultup" class="tsd-kind-icon">Default<wbr>Up</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#add" class="tsd-kind-icon">add</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#addeventlistener" class="tsd-kind-icon">add<wbr>Event<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#applymatrix4" class="tsd-kind-icon">apply<wbr>Matrix4</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#applyquaternion" class="tsd-kind-icon">apply<wbr>Quaternion</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#attach" class="tsd-kind-icon">attach</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#clone" class="tsd-kind-icon">clone</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="interactivesprite.html#copy" class="tsd-kind-icon">copy</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#dispatchevent" class="tsd-kind-icon">dispatch<wbr>Event</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#getobjectbyid" class="tsd-kind-icon">get<wbr>Object<wbr>ById</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#getobjectbyname" class="tsd-kind-icon">get<wbr>Object<wbr>ByName</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#getobjectbyproperty" class="tsd-kind-icon">get<wbr>Object<wbr>ByProperty</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#getworlddirection" class="tsd-kind-icon">get<wbr>World<wbr>Direction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#getworldposition" class="tsd-kind-icon">get<wbr>World<wbr>Position</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#getworldquaternion" class="tsd-kind-icon">get<wbr>World<wbr>Quaternion</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#getworldscale" class="tsd-kind-icon">get<wbr>World<wbr>Scale</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#haseventlistener" class="tsd-kind-icon">has<wbr>Event<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#localtoworld" class="tsd-kind-icon">local<wbr>ToWorld</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#lookat" class="tsd-kind-icon">look<wbr>At</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="interactivesprite.html#raycast" class="tsd-kind-icon">raycast</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#remove" class="tsd-kind-icon">remove</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#removeeventlistener" class="tsd-kind-icon">remove<wbr>Event<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#rotateonaxis" class="tsd-kind-icon">rotate<wbr>OnAxis</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#rotateonworldaxis" class="tsd-kind-icon">rotate<wbr>OnWorld<wbr>Axis</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#rotatex" class="tsd-kind-icon">rotateX</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#rotatey" class="tsd-kind-icon">rotateY</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#rotatez" class="tsd-kind-icon">rotateZ</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#setrotationfromaxisangle" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Axis<wbr>Angle</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#setrotationfromeuler" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Euler</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#setrotationfrommatrix" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Matrix</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#setrotationfromquaternion" class="tsd-kind-icon">set<wbr>Rotation<wbr>From<wbr>Quaternion</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#tojson" class="tsd-kind-icon">toJSON</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#translateonaxis" class="tsd-kind-icon">translate<wbr>OnAxis</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#translatex" class="tsd-kind-icon">translateX</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#translatey" class="tsd-kind-icon">translateY</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#translatez" class="tsd-kind-icon">translateZ</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#traverse" class="tsd-kind-icon">traverse</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#traverseancestors" class="tsd-kind-icon">traverse<wbr>Ancestors</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#traversevisible" class="tsd-kind-icon">traverse<wbr>Visible</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#updatematrix" class="tsd-kind-icon">update<wbr>Matrix</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#updatematrixworld" class="tsd-kind-icon">update<wbr>Matrix<wbr>World</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#updateworldmatrix" class="tsd-kind-icon">update<wbr>World<wbr>Matrix</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="interactivesprite.html#worldtolocal" class="tsd-kind-icon">world<wbr>ToLocal</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class">
 						<a href="mouseeventmanager.html" class="tsd-kind-icon">Mouse<wbr>Event<wbr>Manager</a>
 					</li>

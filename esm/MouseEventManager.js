@@ -33,16 +33,7 @@ export class MouseEventManager {
       MouseEventManager.onDocumentMouseUpDown,
       false
     );
-    RAFTicker.on(RAFTickerEventType.tick, (e) => {
-      MouseEventManager.throttlingDelta += e.delta;
-      if (
-        MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms
-      ) {
-        return;
-      }
-      MouseEventManager.hasThrottled = false;
-      MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
-    });
+    RAFTicker.on(RAFTickerEventType.tick, this.onTick);
   }
   /**
    * 現在マウスオーバーしている対象をなしにする。
@@ -98,28 +89,32 @@ export class MouseEventManager {
         return;
     }
   }
+  /**
+   * IClickableObject3Dインターフェースを実装しているか否かを判定する。
+   * ユーザー定義Type Guard
+   * @param arg
+   * @private
+   */
+  static implementsIClickableObject3D(arg) {
+    return (
+      arg !== null &&
+      typeof arg === "object" &&
+      arg.model !== null &&
+      typeof arg.model === "object" &&
+      arg.model.mouseEnabled !== null &&
+      typeof arg.model.mouseEnabled === "boolean"
+    );
+  }
   static checkTarget(target, type, hasTarget = false) {
-    // ユーザ定義タイプガード
-    function implementsIClickableObject3D(arg) {
-      return (
-        arg !== null &&
-        typeof arg === "object" &&
-        arg.model !== null &&
-        typeof arg.model === "object" &&
-        arg.model.mouseEnabled !== null &&
-        typeof arg.model.mouseEnabled === "boolean"
-      );
-    }
     //クリッカブルインターフェースを継承しているなら判定OK
-    const targetAny = target;
     if (
-      implementsIClickableObject3D(targetAny) &&
-      targetAny.model.mouseEnabled === true
+      this.implementsIClickableObject3D(target) &&
+      target.model.mouseEnabled === true
     ) {
       if (type === ThreeMouseEventType.OVER) {
-        MouseEventManager.currentOver.push(targetAny);
+        MouseEventManager.currentOver.push(target);
       }
-      this.onButtonHandler(targetAny, type);
+      this.onButtonHandler(target, type);
       return this.checkTarget(target.parent, type, true);
     }
     //継承していないならその親を探索継続。
@@ -156,6 +151,14 @@ MouseEventManager.mouse = new Vector2();
 MouseEventManager.isInit = false;
 MouseEventManager.hasThrottled = false;
 MouseEventManager.throttlingDelta = 0;
+MouseEventManager.onTick = (e) => {
+  MouseEventManager.throttlingDelta += e.delta;
+  if (MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms) {
+    return;
+  }
+  MouseEventManager.hasThrottled = false;
+  MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
+};
 MouseEventManager.onDocumentMouseMove = (event) => {
   if (MouseEventManager.hasThrottled) return;
   MouseEventManager.hasThrottled = true;

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ClickableState | threejs-interactive-object</title>
+	<title>ClickableObjectParameters | threejs-interactive-object</title>
 	<meta name="description" content="Documentation for threejs-interactive-object">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,79 +56,57 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="clickablestate.html">ClickableState</a>
+					<a href="clickableobjectparameters.html">ClickableObjectParameters</a>
 				</li>
 			</ul>
-			<h1>Enumeration ClickableState</h1>
+			<h1>Interface ClickableObjectParameters</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>IClickable3DObjectの現在状態を表す定数セット。
-						これとselectフラグを掛け合わせることで状態を判定する。</p>
-					</div>
-				</div>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">ClickableObjectParameters</span>
+					</li>
+				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Enumeration members</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="clickablestate.html#disable" class="tsd-kind-icon">DISABLE</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="clickablestate.html#down" class="tsd-kind-icon">DOWN</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="clickablestate.html#normal" class="tsd-kind-icon">NORMAL</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="clickablestate.html#over" class="tsd-kind-icon">OVER</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="clickableobjectparameters.html#material" class="tsd-kind-icon">material</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="clickableobjectparameters.html#view" class="tsd-kind-icon">view</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Enumeration members</h2>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="disable" class="tsd-anchor"></a>
-					<h3>DISABLE</h3>
-					<div class="tsd-signature tsd-kind-icon">DISABLE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;disable&quot;</span></div>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="material" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> material</h3>
+					<div class="tsd-signature tsd-kind-icon">material<span class="tsd-signature-symbol">:</span> <a href="../classes/statematerialset.html" class="tsd-signature-type">StateMaterialSet</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/MouseEventManager.ts#L270">src/MouseEventManager.ts:270</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/ClickableObject.ts#L12">src/ClickableObject.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="down" class="tsd-anchor"></a>
-					<h3>DOWN</h3>
-					<div class="tsd-signature tsd-kind-icon">DOWN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;normal_down&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="view" class="tsd-anchor"></a>
+					<h3>view</h3>
+					<div class="tsd-signature tsd-kind-icon">view<span class="tsd-signature-symbol">:</span> <a href="../globals.html#clickableview" class="tsd-signature-type">ClickableView</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/MouseEventManager.ts#L269">src/MouseEventManager.ts:269</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="normal" class="tsd-anchor"></a>
-					<h3>NORMAL</h3>
-					<div class="tsd-signature tsd-kind-icon">NORMAL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;normal&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/MouseEventManager.ts#L267">src/MouseEventManager.ts:267</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="over" class="tsd-anchor"></a>
-					<h3>OVER</h3>
-					<div class="tsd-signature tsd-kind-icon">OVER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;normal_over&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/MouseEventManager.ts#L268">src/MouseEventManager.ts:268</a></li>
+							<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/43a7eeb/src/ClickableObject.ts#L11">src/ClickableObject.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -144,29 +122,11 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-enum">
-						<a href="clickablestate.html" class="tsd-kind-icon">Clickable<wbr>State</a>
-						<ul>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="clickablestate.html#disable" class="tsd-kind-icon">DISABLE</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="clickablestate.html#down" class="tsd-kind-icon">DOWN</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="clickablestate.html#normal" class="tsd-kind-icon">NORMAL</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="clickablestate.html#over" class="tsd-kind-icon">OVER</a>
-							</li>
-						</ul>
-					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-enum">
-						<a href="threemouseeventtype.html" class="tsd-kind-icon">Three<wbr>Mouse<wbr>Event<wbr>Type</a>
+						<a href="../enums/clickablestate.html" class="tsd-kind-icon">Clickable<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-enum">
+						<a href="../enums/threemouseeventtype.html" class="tsd-kind-icon">Three<wbr>Mouse<wbr>Event<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-class tsd-has-type-parameter">
 						<a href="../classes/checkboxmesh.html" class="tsd-kind-icon">Check<wbr>Box<wbr>Mesh</a>
@@ -219,17 +179,29 @@
 					<li class=" tsd-kind-class">
 						<a href="../classes/threemouseevent.html" class="tsd-kind-icon">Three<wbr>Mouse<wbr>Event</a>
 					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
+						<a href="clickableobjectparameters.html" class="tsd-kind-icon">Clickable<wbr>Object<wbr>Parameters</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="clickableobjectparameters.html#material" class="tsd-kind-icon">material</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="clickableobjectparameters.html#view" class="tsd-kind-icon">view</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/clickableobjectparameters.html" class="tsd-kind-icon">Clickable<wbr>Object<wbr>Parameters</a>
+						<a href="iclickableobject3d.html" class="tsd-kind-icon">IClickable<wbr>Object3D</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="../interfaces/iclickableobject3d.html" class="tsd-kind-icon">IClickable<wbr>Object3D</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="../interfaces/interactivemeshparameters.html" class="tsd-kind-icon">Interactive<wbr>Mesh<wbr>Parameters</a>
+						<a href="interactivemeshparameters.html" class="tsd-kind-icon">Interactive<wbr>Mesh<wbr>Parameters</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
-						<a href="../interfaces/tconstructor.html" class="tsd-kind-icon">TConstructor</a>
+						<a href="tconstructor.html" class="tsd-kind-icon">TConstructor</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="../globals.html#clickableview" class="tsd-kind-icon">Clickable<wbr>View</a>

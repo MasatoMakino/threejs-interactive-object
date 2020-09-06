@@ -31,6 +31,7 @@ export declare class MouseEventManager {
       throttlingTime_ms?: number;
     }
   ): void;
+  private static onTick;
   protected static onDocumentMouseMove: (event: any) => void;
   /**
    * 現在マウスオーバーしている対象をなしにする。
@@ -59,6 +60,13 @@ export declare class MouseEventManager {
     btn: IClickableObject3D,
     type: ThreeMouseEventType
   ): void;
+  /**
+   * IClickableObject3Dインターフェースを実装しているか否かを判定する。
+   * ユーザー定義Type Guard
+   * @param arg
+   * @private
+   */
+  private static implementsIClickableObject3D;
   protected static checkTarget(
     target: Object3D,
     type: ThreeMouseEventType,

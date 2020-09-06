@@ -1,6 +1,6 @@
 import { ClickableGroup } from "./ClickableGroup";
-import { ClickableMesh } from "./ClickableMesh";
-import { ClickableSprite } from "./ClickableSptire";
+import { ClickableMesh } from "./InteractiveMesh";
+import { ClickableSprite } from "./InteractiveSprite";
 import { ClickableState } from "./MouseEventManager";
 import { StateMaterialSet } from "./StateMaterial";
 import { ThreeMouseEvent } from "./ThreeMouseEvent";
@@ -9,6 +9,10 @@ export declare type ClickableView =
   | ClickableMesh
   | ClickableSprite
   | ClickableGroup;
+export interface ClickableObjectParameters {
+  view: ClickableView;
+  material?: StateMaterialSet;
+}
 /**
  * クリックに反応するObject。
  */
@@ -29,7 +33,7 @@ export declare class ClickableObject {
   /**
    * コンストラクタ
    */
-  constructor(parameters: { view: ClickableView; material?: StateMaterialSet });
+  constructor(parameters: ClickableObjectParameters);
   onMouseDownHandler(event: ThreeMouseEvent): void;
   onMouseUpHandler(event: ThreeMouseEvent): void;
   onMouseClick(): void;
