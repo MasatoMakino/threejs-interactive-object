@@ -13,7 +13,6 @@ import {
   AmbientLight,
   BoxBufferGeometry,
   Color,
-  Mesh,
   MeshBasicMaterial,
   PerspectiveCamera,
   Scene,
@@ -50,11 +49,6 @@ const onDomContentsLoaded = () => {
 
   //マウスイベントの取得開始
   MouseEventManager.init(scene, camera, renderer);
-
-  const geometry = new BoxBufferGeometry(3, 3, 3);
-  const dummyCube = new Mesh(geometry, getMeshMaterial(0.6));
-  dummyCube.position.set(-8, 20, 0);
-  scene.add(dummyCube);
 
   testButton();
   testCheckbox();
