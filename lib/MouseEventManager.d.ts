@@ -10,7 +10,6 @@ import {
 } from "three";
 import { ClickableObject } from "./ClickableObject";
 import { ThreeMouseEventType } from "./ThreeMouseEvent";
-
 export declare class MouseEventManager {
   protected static camera: Camera;
   protected static renderer: Renderer;

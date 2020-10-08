@@ -1,7 +1,6 @@
 import { RAFTicker, RAFTickerEventType } from "raf-ticker";
 import { Raycaster, Vector2 } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-
 export class MouseEventManager {
   static init(scene, camera, renderer, option) {
     var _a;

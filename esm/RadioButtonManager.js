@@ -1,6 +1,5 @@
 import { EventDispatcher } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-
 export class RadioButtonManager extends EventDispatcher {
   /**
    * コンストラクタ

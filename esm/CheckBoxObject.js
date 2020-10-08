@@ -1,7 +1,6 @@
 import { ClickableObject } from "./ClickableObject";
 import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-
 export class CheckBoxObject extends ClickableObject {
   constructor() {
     super(...arguments);

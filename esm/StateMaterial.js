@@ -1,5 +1,4 @@
 import { ClickableState } from "./MouseEventManager";
-
 export class StateMaterial {
   constructor(material) {
     this.alpha = 1.0;

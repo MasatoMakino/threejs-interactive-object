@@ -1,7 +1,6 @@
 import { CheckBoxObject } from "./CheckBoxObject";
 import { RadioButtonMesh } from "./InteractiveMesh";
 import { RadioButtonSprite } from "./InteractiveSprite";
-
 export declare class RadioButtonObject extends CheckBoxObject {
   view: RadioButtonMesh | RadioButtonSprite;
   protected _isFrozen: boolean;

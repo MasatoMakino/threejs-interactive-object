@@ -2,7 +2,6 @@ import { Mesh } from "three";
 import { CheckBoxObject } from "./CheckBoxObject";
 import { ClickableObject } from "./ClickableObject";
 import { RadioButtonObject } from "./RadioButtonObject";
-
 class InteractiveMesh extends Mesh {
   constructor(parameters, ctor) {
     super(parameters.geo);

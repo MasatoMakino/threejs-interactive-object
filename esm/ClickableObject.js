@@ -1,6 +1,5 @@
 import { ClickableState, MouseEventManager } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-
 /**
  * クリックに反応するObject。
  */

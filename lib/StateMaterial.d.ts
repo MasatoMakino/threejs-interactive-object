@@ -1,6 +1,5 @@
 import { Material } from "three";
 import { ClickableState } from "./MouseEventManager";
-
 /**
  * IClickableObject3D用の各状態用マテリアル。
  * マテリアルと固定値のalphaプロパティで構成される。

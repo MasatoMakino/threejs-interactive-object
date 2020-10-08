@@ -1,6 +1,5 @@
 import { ClickableObject } from "./ClickableObject";
 import { IClickableObject3D } from "./MouseEventManager";
-
 export declare class ThreeMouseEvent {
   type: ThreeMouseEventType;
   model: ClickableObject;

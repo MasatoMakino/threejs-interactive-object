@@ -5,7 +5,6 @@ import { TConstructor } from "./InteractiveSprite";
 import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
 import { StateMaterialSet } from "./StateMaterial";
-
 interface InteractiveMeshParameters {
   geo?: Geometry | BufferGeometry;
   material: StateMaterialSet;

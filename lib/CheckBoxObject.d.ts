@@ -1,7 +1,6 @@
 import { ClickableObject } from "./ClickableObject";
 import { CheckBoxMesh } from "./InteractiveMesh";
 import { CheckBoxSprite } from "./InteractiveSprite";
-
 export declare class CheckBoxObject extends ClickableObject {
   view: CheckBoxMesh | CheckBoxSprite;
   protected _isSelect: boolean;

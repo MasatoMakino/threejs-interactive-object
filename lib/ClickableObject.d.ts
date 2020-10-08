@@ -4,7 +4,6 @@ import { ClickableSprite } from "./InteractiveSprite";
 import { ClickableState } from "./MouseEventManager";
 import { StateMaterialSet } from "./StateMaterial";
 import { ThreeMouseEvent } from "./ThreeMouseEvent";
-
 export declare type ClickableView =
   | ClickableMesh
   | ClickableSprite

@@ -2,7 +2,6 @@ import { Sprite } from "three";
 import { CheckBoxObject } from "./CheckBoxObject";
 import { ClickableObject } from "./ClickableObject";
 import { RadioButtonObject } from "./RadioButtonObject";
-
 class InteractiveSprite extends Sprite {
   constructor(material, ctor) {
     super();
