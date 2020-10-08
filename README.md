@@ -68,7 +68,7 @@ const clickable = new ClickableMesh({
 scene.add(clickable);
 ```
 
-and add event listener
+Add event listener.
 
 ```js
 clickable.addEventListener(ThreeMouseEventType.CLICK, (e) => {
@@ -78,7 +78,7 @@ clickable.addEventListener(ThreeMouseEventType.CLICK, (e) => {
 
 ## Uninstall
 
-```bash
+```shell script
 npm uninstall https://github.com/MasatoMakino/threejs-interactive-object.git --save-dev
 ```
 
