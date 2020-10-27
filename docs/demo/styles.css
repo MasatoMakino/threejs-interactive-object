@@ -90,6 +90,7 @@ This styles the menu heading.
   background-blend-mode: darken;
 }
 
+#menu .pure-menu-heading:focus,
 #menu .pure-menu-heading:hover {
   background-image: url("GitHub-Mark-Light-64px.png");
   background-color: rgba(68, 68, 68, 0.6);
