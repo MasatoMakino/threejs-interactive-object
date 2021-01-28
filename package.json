@@ -20,7 +20,7 @@
   "devDependencies": {
     "@jest-runner/electron": "^3.0.0",
     "@types/jest": "^26.0.15",
-    "electron": "^10.1.5",
+    "electron": "^10.2.0",
     "gulp": "^4.0.2",
     "gulptask-demo-page": "https://github.com/MasatoMakino/gulptask-demo-page.git",
     "gulptask-dev-server": "https://github.com/MasatoMakino/gulptask-dev-server.git",
