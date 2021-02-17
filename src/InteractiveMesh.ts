@@ -1,4 +1,4 @@
-import { BufferGeometry, Geometry, Mesh } from "three";
+import { BufferGeometry, Mesh } from "three";
 import { CheckBoxObject } from "./CheckBoxObject";
 import { ClickableObject } from "./ClickableObject";
 import { TConstructor } from "./InteractiveSprite";
@@ -7,7 +7,7 @@ import { RadioButtonObject } from "./RadioButtonObject";
 import { StateMaterialSet } from "./StateMaterial";
 
 interface InteractiveMeshParameters {
-  geo?: Geometry | BufferGeometry;
+  geo?: BufferGeometry;
   material: StateMaterialSet;
 }
 
