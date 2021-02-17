@@ -7,6 +7,7 @@
 	<meta name="description" content="Documentation for threejs-interactive-object">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
+	<script async src="assets/js/search.js" id="search-script"></script>
 </head>
 <body>
 <header>
@@ -40,8 +41,6 @@
 							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
 							<input type="checkbox" id="tsd-filter-externals" checked />
 							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
-							<input type="checkbox" id="tsd-filter-only-exported" />
-							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
 						</div>
 					</div>
 					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
@@ -51,11 +50,6 @@
 	</div>
 	<div class="tsd-page-title">
 		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="globals.html">Globals</a>
-				</li>
-			</ul>
 			<h1>threejs-interactive-object</h1>
 		</div>
 	</div>
@@ -85,20 +79,22 @@
 				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
 					<h3>Install</h3>
 				</a>
-				<pre><code class="language-bash">npm install https://github.com/MasatoMakino/threejs-interactive-object.git --save-dev</code></pre>
+				<pre><code class="language-bash"><span style="color: #000000">npm install https://github.com/MasatoMakino/threejs-interactive-object.git --save-dev</span>
+</code></pre>
 				<a href="#import" id="import" style="color: inherit; text-decoration: none;">
 					<h3>Import</h3>
 				</a>
 				<p>threejs-interactive-object is composed of ES6 modules and TypeScript d.ts files.</p>
 				<p>At first, import classes.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">import</span> {
-  ClickableMesh,
-  StateMaterialSet,
-  StateMaterial,
-  MouseEventManager,
-  ThreeMouseEvent,
-  ThreeMouseEventType,
-} <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;threejs-interactive-object&quot;</span>;</code></pre>
+				<pre><code class="language-js"><span style="color: #AF00DB">import</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #001080">ClickableMesh</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">StateMaterialSet</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">StateMaterial</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">MouseEventManager</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">ThreeMouseEvent</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">ThreeMouseEventType</span><span style="color: #000000">,</span>
+<span style="color: #000000">} </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;threejs-interactive-object&quot;</span><span style="color: #000000">;</span>
+</code></pre>
 				<a href="#create-buttons" id="create-buttons" style="color: inherit; text-decoration: none;">
 					<h3>Create buttons</h3>
 				</a>
@@ -108,28 +104,32 @@
 				</a>
 				<p>MouseEventManager class watch MouseEvent on canvas element.</p>
 				<p>initialize MouseEventManager before create a button.</p>
-				<pre><code class="language-js">MouseEventManager.init(scene, camera, renderer);</code></pre>
+				<pre><code class="language-js"><span style="color: #001080">MouseEventManager</span><span style="color: #000000">.</span><span style="color: #795E26">init</span><span style="color: #000000">(</span><span style="color: #001080">scene</span><span style="color: #000000">, </span><span style="color: #001080">camera</span><span style="color: #000000">, </span><span style="color: #001080">renderer</span><span style="color: #000000">);</span>
+</code></pre>
 				<a href="#init-button" id="init-button" style="color: inherit; text-decoration: none;">
 					<h4>init button</h4>
 				</a>
 				<p>Create buttons and add to scene.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> clickable = <span class="hljs-keyword">new</span> ClickableMesh({
-  <span class="hljs-attr">geo</span>: <span class="hljs-keyword">new</span> BoxBufferGeometry(<span class="hljs-number">3</span>, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>),
-  <span class="hljs-attr">material</span>: <span class="hljs-keyword">new</span> StateMaterialSet({
-    <span class="hljs-attr">normal</span>: <span class="hljs-keyword">new</span> MeshBasicMaterial({
-      <span class="hljs-attr">color</span>: <span class="hljs-number">0xffffff</span>,
-    }),
-  }),
-});
-scene.add(clickable);</code></pre>
+				<pre><code class="language-js"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">clickable</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">ClickableMesh</span><span style="color: #000000">({</span>
+<span style="color: #000000">  </span><span style="color: #001080">geo:</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">BoxBufferGeometry</span><span style="color: #000000">(</span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">, </span><span style="color: #098658">3</span><span style="color: #000000">),</span>
+<span style="color: #000000">  </span><span style="color: #001080">material:</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">StateMaterialSet</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">normal:</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">MeshBasicMaterial</span><span style="color: #000000">({</span>
+<span style="color: #000000">      </span><span style="color: #001080">color:</span><span style="color: #000000"> </span><span style="color: #098658">0xffffff</span><span style="color: #000000">,</span>
+<span style="color: #000000">    }),</span>
+<span style="color: #000000">  }),</span>
+<span style="color: #000000">});</span>
+<span style="color: #001080">scene</span><span style="color: #000000">.</span><span style="color: #795E26">add</span><span style="color: #000000">(</span><span style="color: #001080">clickable</span><span style="color: #000000">);</span>
+</code></pre>
 				<p>Add event listener.</p>
-				<pre><code class="language-js">clickable.addEventListener(ThreeMouseEventType.CLICK, <span class="hljs-function">(<span class="hljs-params">e</span>) =&gt;</span> {
-  cosole.log(<span class="hljs-string">&quot;CLICKED!&quot;</span>);
-});</code></pre>
+				<pre><code class="language-js"><span style="color: #001080">clickable</span><span style="color: #000000">.</span><span style="color: #795E26">addEventListener</span><span style="color: #000000">(</span><span style="color: #001080">ThreeMouseEventType</span><span style="color: #000000">.</span><span style="color: #0070C1">CLICK</span><span style="color: #000000">, (</span><span style="color: #001080">e</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #001080">cosole</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;CLICKED!&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">});</span>
+</code></pre>
 				<a href="#uninstall" id="uninstall" style="color: inherit; text-decoration: none;">
 					<h2>Uninstall</h2>
 				</a>
-				<pre><code class="language-shell">npm uninstall https://github.com/MasatoMakino/threejs-interactive-object.git --save-dev</code></pre>
+				<pre><code class="language-shell"><span style="color: #000000">npm uninstall https://github.com/MasatoMakino/threejs-interactive-object.git --save-dev</span>
+</code></pre>
 				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
 					<h2>License</h2>
 				</a>
@@ -139,8 +139,8 @@ scene.add(clickable);</code></pre>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class="globals  ">
-						<a href="globals.html"><em>Globals</em></a>
+					<li class=" ">
+						<a href="modules.html">Exports</a>
 					</li>
 				</ul>
 			</nav>
@@ -173,12 +173,6 @@ scene.add(clickable);</code></pre>
 					<li class=" tsd-kind-class">
 						<a href="classes/clickablesprite.html" class="tsd-kind-icon">Clickable<wbr>Sprite</a>
 					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/interactivemesh.html" class="tsd-kind-icon">Interactive<wbr>Mesh</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/interactivesprite.html" class="tsd-kind-icon">Interactive<wbr>Sprite</a>
-					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/mouseeventmanager.html" class="tsd-kind-icon">Mouse<wbr>Event<wbr>Manager</a>
 					</li>
@@ -209,17 +203,14 @@ scene.add(clickable);</code></pre>
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/iclickableobject3d.html" class="tsd-kind-icon">IClickable<wbr>Object3D</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="interfaces/interactivemeshparameters.html" class="tsd-kind-icon">Interactive<wbr>Mesh<wbr>Parameters</a>
-					</li>
 					<li class=" tsd-kind-interface tsd-has-type-parameter">
 						<a href="interfaces/tconstructor.html" class="tsd-kind-icon">TConstructor</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#clickableview" class="tsd-kind-icon">Clickable<wbr>View</a>
+						<a href="modules.html#clickableview" class="tsd-kind-icon">Clickable<wbr>View</a>
 					</li>
 					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#statematerialtype" class="tsd-kind-icon">State<wbr>Material<wbr>Type</a>
+						<a href="modules.html#statematerialtype" class="tsd-kind-icon">State<wbr>Material<wbr>Type</a>
 					</li>
 				</ul>
 			</nav>
