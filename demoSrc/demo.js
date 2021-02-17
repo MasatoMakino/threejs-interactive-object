@@ -8,7 +8,7 @@ import {
   RadioButtonMesh,
   StateMaterialSet,
   ThreeMouseEventType,
-} from "../lib";
+} from "..";
 import {
   AmbientLight,
   BoxBufferGeometry,
