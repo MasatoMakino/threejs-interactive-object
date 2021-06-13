@@ -6,14 +6,16 @@ addons:
   apt:
     packages:
       - xvfb
+node_js:
+  - "12"
+  - "14"
+  - "16"
+before_install:
+  - git config --global url."https://github.com/".insteadOf ssh://git@github.com/
 install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - npm install
-node_js:
-  - "10"
-  - "12"
-  - "14"
+  - npm ci
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
