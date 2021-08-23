@@ -12,7 +12,6 @@ import {
 import {
   AmbientLight,
   BoxBufferGeometry,
-  Color,
   MeshBasicMaterial,
   PerspectiveCamera,
   Scene,
@@ -24,9 +23,6 @@ import {
 
 const W = 1280;
 const H = 900;
-// let renderer;
-// let scene;
-
 
 class SceneSet {
   bg;
@@ -36,7 +32,7 @@ class SceneSet {
   manager;
   constructor(x, y, w, h, canvas, bg) {
     this.viewport = new Vector4(x, y, w, h);
-    this.bg = bg
+    this.bg = bg;
 
     this.scene = new Scene();
     this.camera = new PerspectiveCamera(45, w / h, 1, 400);
@@ -50,7 +46,6 @@ class SceneSet {
     this.manager = new MouseEventManager(this.scene, this.camera, canvas, {
       viewport: this.viewport,
     });
-
 
     testButton(this.scene);
     testCheckbox(this.scene);
@@ -84,8 +79,8 @@ const onDomContentsLoaded = () => {
   renderer.setSize(W, H);
   renderer.setPixelRatio(window.devicePixelRatio);
 
-  const scene1 = new SceneSet( 20, 20, 480, 360, canvas, 0x222222);
-  const scene2 = new SceneSet( 480, 360, 520, 480, canvas, 0x444444);
+  const scene1 = new SceneSet(20, 20, 480, 360, canvas, 0x222222);
+  const scene2 = new SceneSet(480, 360, 520, 480, canvas, 0x444444);
 
   const render = () => {
     renderer.setClearColor(0x000000);
@@ -177,7 +172,7 @@ const testCheckbox = (scene) => {
 
 const testSprite = (scene) => {
   const clickable = new ClickableSprite(getSpriteMaterialSet());
-  alignSprite( scene, clickable, 10);
+  alignSprite(scene, clickable, 10);
 };
 
 const testSelectableSprite = (scene) => {
@@ -219,8 +214,6 @@ const testRadio = (scene) => {
     console.log(e.model.value);
   });
 };
-
-
 
 /**
  * DOMContentLoaded以降に初期化処理を実行する
