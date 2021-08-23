@@ -13,88 +13,72 @@ import { ClickableObject } from "./ClickableObject";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
 export class MouseEventManager {
-  protected static camera: Camera;
-  protected static renderer: Renderer;
-  protected static scene: Scene;
+  protected camera: Camera;
+  protected renderer: Renderer;
+  protected scene: Scene;
 
-  protected static canvas: HTMLCanvasElement;
+  protected canvas: HTMLCanvasElement;
 
-  protected static raycaster: Raycaster = new Raycaster();
-  protected static mouse: Vector2 = new Vector2();
+  protected raycaster: Raycaster = new Raycaster();
+  protected mouse: Vector2 = new Vector2();
 
-  protected static currentOver: IClickableObject3D[] | null;
+  protected currentOver: IClickableObject3D[] | null;
 
-  public static isInit: boolean = false;
-  protected static hasThrottled: boolean = false;
-  public static throttlingTime_ms: number;
-  protected static throttlingDelta: number = 0;
+  protected hasThrottled: boolean = false;
+  public throttlingTime_ms: number;
+  protected throttlingDelta: number = 0;
 
-  public static init(
+  constructor(
     scene: Scene,
     camera: Camera,
     renderer: Renderer,
     option?: { throttlingTime_ms?: number }
-  ): void {
-    MouseEventManager.isInit = true;
-    MouseEventManager.camera = camera;
-    MouseEventManager.renderer = renderer;
-    MouseEventManager.scene = scene;
+  ) {
+    this.camera = camera;
+    this.renderer = renderer;
+    this.scene = scene;
 
-    MouseEventManager.throttlingTime_ms = option?.throttlingTime_ms ?? 33;
+    this.throttlingTime_ms = option?.throttlingTime_ms ?? 33;
 
     const canvas = renderer.domElement;
-    MouseEventManager.canvas = canvas;
+    this.canvas = canvas;
 
-    canvas.addEventListener(
-      "mousemove",
-      MouseEventManager.onDocumentMouseMove,
-      false
-    );
-    canvas.addEventListener(
-      "mousedown",
-      MouseEventManager.onDocumentMouseUpDown,
-      false
-    );
-    canvas.addEventListener(
-      "mouseup",
-      MouseEventManager.onDocumentMouseUpDown,
-      false
-    );
+    canvas.addEventListener("mousemove", this.onDocumentMouseMove, false);
+    canvas.addEventListener("mousedown", this.onDocumentMouseUpDown, false);
+    canvas.addEventListener("mouseup", this.onDocumentMouseUpDown, false);
 
     RAFTicker.on(RAFTickerEventType.tick, this.onTick);
   }
 
-  private static onTick = (e: RAFTickerEvent) => {
-    MouseEventManager.throttlingDelta += e.delta;
-    if (
-      MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms
-    ) {
+  private onTick = (e: RAFTickerEvent) => {
+    this.throttlingDelta += e.delta;
+    if (this.throttlingDelta < this.throttlingTime_ms) {
       return;
     }
-    MouseEventManager.hasThrottled = false;
-    MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
+    this.hasThrottled = false;
+    this.throttlingDelta %= this.throttlingTime_ms;
   };
 
-  protected static onDocumentMouseMove = (event: any) => {
-    if (MouseEventManager.hasThrottled) return;
-    MouseEventManager.hasThrottled = true;
+  protected onDocumentMouseMove = (event: any) => {
+    if (this.hasThrottled) return;
+    this.hasThrottled = true;
 
     if (event.type === "mousemove") {
       event.preventDefault();
     }
-    const intersects = MouseEventManager.getIntersects(event);
+    const intersects = this.getIntersects(event);
 
     const n: number = intersects.length;
     if (n === 0) {
-      MouseEventManager.clearOver();
+      this.clearOver();
       return;
     }
 
-    const beforeOver = MouseEventManager.currentOver;
-    MouseEventManager.currentOver = [];
+    const beforeOver = this.currentOver;
+    this.currentOver = [];
 
     for (let intersect of intersects) {
-      const checked = MouseEventManager.checkTarget(
+      const checked = this.checkTarget(
         intersect.object,
         ThreeMouseEventType.OVER
       );
@@ -102,7 +86,7 @@ export class MouseEventManager {
     }
 
     beforeOver?.forEach((btn) => {
-      if (!MouseEventManager.currentOver.includes(btn)) {
+      if (!this.currentOver.includes(btn)) {
         MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
       }
     });
@@ -112,11 +96,11 @@ export class MouseEventManager {
    * 現在マウスオーバーしている対象をなしにする。
    * もし、すでにマウスオーバー対象が存在するなら、マウスアウトハンドラーを呼び出した後にクリアする。
    */
-  protected static clearOver(): void {
-    MouseEventManager.currentOver?.forEach((over) => {
-      this.onButtonHandler(over, ThreeMouseEventType.OUT);
+  protected clearOver(): void {
+    this.currentOver?.forEach((over) => {
+      MouseEventManager.onButtonHandler(over, ThreeMouseEventType.OUT);
     });
-    MouseEventManager.currentOver = null;
+    this.currentOver = null;
   }
 
   /**
@@ -124,7 +108,7 @@ export class MouseEventManager {
    * マウス座標から対象となるObject3Dを探し出して操作を行う。
    * @param {MouseEvent} event
    */
-  protected static onDocumentMouseUpDown = (event: MouseEvent) => {
+  protected onDocumentMouseUpDown = (event: MouseEvent) => {
     let eventType: ThreeMouseEventType = ThreeMouseEventType.DOWN;
     switch (event.type) {
       case "mousedown":
@@ -135,8 +119,8 @@ export class MouseEventManager {
         break;
     }
     event.preventDefault();
-    let intersects = MouseEventManager.getIntersects(event);
-    MouseEventManager.checkIntersects(intersects, eventType);
+    const intersects = this.getIntersects(event);
+    this.checkIntersects(intersects, eventType);
   };
 
   /**
@@ -145,7 +129,7 @@ export class MouseEventManager {
    * @param {Intersection[]} intersects
    * @param {ThreeMouseEventType} type
    */
-  private static checkIntersects(
+  private checkIntersects(
     intersects: Intersection[],
     type: ThreeMouseEventType
   ): void {
@@ -153,7 +137,7 @@ export class MouseEventManager {
     if (n === 0) return;
 
     for (let i = 0; i < n; i++) {
-      const checked = MouseEventManager.checkTarget(intersects[i].object, type);
+      const checked = this.checkTarget(intersects[i].object, type);
       if (checked) {
         break;
       }
@@ -165,10 +149,7 @@ export class MouseEventManager {
    * @param {IClickableObject3D} btn
    * @param {ThreeMouseEventType} type
    */
-  public static onButtonHandler(
-    btn: IClickableObject3D,
-    type: ThreeMouseEventType
-  ) {
+  public static onButtonHandler(btn: IClickableObject3D, type: ThreeMouseEventType) {
     switch (type) {
       case ThreeMouseEventType.DOWN:
         btn.model.onMouseDownHandler(new ThreeMouseEvent(type, btn));
@@ -208,50 +189,44 @@ export class MouseEventManager {
     );
   }
 
-  protected static checkTarget(
+  protected checkTarget(
     target: Object3D,
     type: ThreeMouseEventType,
     hasTarget: boolean = false
   ): boolean {
     //クリッカブルインターフェースを継承しているなら判定OK
     if (
-      this.implementsIClickableObject3D(target) &&
+      MouseEventManager.implementsIClickableObject3D(target) &&
       target.model.mouseEnabled === true
     ) {
       if (type === ThreeMouseEventType.OVER) {
-        MouseEventManager.currentOver.push(target);
+        this.currentOver.push(target);
       }
-      this.onButtonHandler(target, type);
+      MouseEventManager.onButtonHandler(target, type);
       return this.checkTarget(target.parent, type, true);
     }
 
     //継承していないならその親を探索継続。
     //ターゲットから上昇して探す。
     if (target.parent != null && target.parent.type !== "Scene") {
-      return MouseEventManager.checkTarget(target.parent, type, hasTarget);
+      return this.checkTarget(target.parent, type, hasTarget);
     }
 
     //親がシーンの場合は探索終了。
     return hasTarget;
   }
 
-  protected static updateMouse(event: MouseEvent, mouse: Vector2): Vector2 {
-    mouse.x = (event.offsetX / MouseEventManager.canvas.clientWidth) * 2 - 1;
-    mouse.y = -(event.offsetY / MouseEventManager.canvas.clientHeight) * 2 + 1;
+  protected static updateMouse(canvas:HTMLCanvasElement, event: MouseEvent, mouse: Vector2): Vector2 {
+    mouse.x = (event.offsetX / canvas.clientWidth) * 2 - 1;
+    mouse.y = -(event.offsetY / canvas.clientHeight) * 2 + 1;
     return mouse;
   }
 
-  protected static getIntersects(event: MouseEvent): Intersection[] {
-    MouseEventManager.mouse = MouseEventManager.updateMouse(
-      event,
-      MouseEventManager.mouse
-    );
-    MouseEventManager.raycaster.setFromCamera(
-      MouseEventManager.mouse,
-      MouseEventManager.camera
-    );
-    const intersects: Intersection[] = MouseEventManager.raycaster.intersectObjects(
-      MouseEventManager.scene.children,
+  protected getIntersects(event: MouseEvent): Intersection[] {
+    this.mouse = MouseEventManager.updateMouse( this.canvas, event, this.mouse);
+    this.raycaster.setFromCamera(this.mouse, this.camera);
+    const intersects: Intersection[] = this.raycaster.intersectObjects(
+      this.scene.children,
       true
     );
     return intersects;

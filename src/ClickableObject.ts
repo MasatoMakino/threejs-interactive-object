@@ -1,7 +1,7 @@
 import { ClickableGroup } from "./ClickableGroup";
 import { ClickableMesh } from "./InteractiveMesh";
 import { ClickableSprite } from "./InteractiveSprite";
-import { ClickableState, MouseEventManager } from "./MouseEventManager";
+import { ClickableState } from "./MouseEventManager";
 import { StateMaterialSet } from "./StateMaterial";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
@@ -52,12 +52,6 @@ export class ClickableObject {
    */
   constructor(parameters: ClickableObjectParameters) {
     this.view = parameters.view;
-
-    if (!MouseEventManager.isInit) {
-      console.warn(
-        "MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。"
-      );
-    }
 
     this._materialSet ??= parameters.material;
     this.updateMaterial();
