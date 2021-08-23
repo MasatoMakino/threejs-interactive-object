@@ -5,16 +5,16 @@ import {
   Intersection,
   Object3D,
   Raycaster,
-  Renderer,
   Scene,
   Vector2,
+  Vector4,
 } from "three";
 import { ClickableObject } from "./ClickableObject";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+import { ViewPortUtil } from "./ViewPortUtil";
 
 export class MouseEventManager {
   protected camera: Camera;
-  protected renderer: Renderer;
   protected scene: Scene;
 
   protected canvas: HTMLCanvasElement;
@@ -27,20 +27,20 @@ export class MouseEventManager {
   protected hasThrottled: boolean = false;
   public throttlingTime_ms: number;
   protected throttlingDelta: number = 0;
+  protected viewport?: Vector4;
 
   constructor(
     scene: Scene,
     camera: Camera,
-    renderer: Renderer,
-    option?: { throttlingTime_ms?: number }
+    canvas: HTMLCanvasElement,
+    option?: { throttlingTime_ms?: number; viewport?: Vector4 }
   ) {
     this.camera = camera;
-    this.renderer = renderer;
     this.scene = scene;
 
     this.throttlingTime_ms = option?.throttlingTime_ms ?? 33;
+    this.viewport = option?.viewport;
 
-    const canvas = renderer.domElement;
     this.canvas = canvas;
 
     canvas.addEventListener("mousemove", this.onDocumentMouseMove, false);
@@ -63,13 +63,9 @@ export class MouseEventManager {
     if (this.hasThrottled) return;
     this.hasThrottled = true;
 
-    if (event.type === "mousemove") {
-      event.preventDefault();
-    }
+    event.preventDefault();
     const intersects = this.getIntersects(event);
-
-    const n: number = intersects.length;
-    if (n === 0) {
+    if (intersects.length === 0) {
       this.clearOver();
       return;
     }
@@ -118,6 +114,14 @@ export class MouseEventManager {
         eventType = ThreeMouseEventType.UP;
         break;
     }
+
+    if (
+      !ViewPortUtil.isContain(this.canvas, this.viewport, event) &&
+      eventType === ThreeMouseEventType.DOWN
+    ) {
+      return;
+    }
+
     event.preventDefault();
     const intersects = this.getIntersects(event);
     this.checkIntersects(intersects, eventType);
@@ -126,6 +130,9 @@ export class MouseEventManager {
   /**
    * マウスの座標にかかっているオブジェクト一覧から、操作対象を検索し
    * 指定されたタイプのハンドラー関数を実行させる。
+   * 重なり合ったオブジェクトがある場合、最前面から検索を開始する。
+   * 操作対象が見つかった時点で処理は中断され、背面オブジェクトは操作対象にならない。
+   *
    * @param {Intersection[]} intersects
    * @param {ThreeMouseEventType} type
    */
@@ -149,7 +156,10 @@ export class MouseEventManager {
    * @param {IClickableObject3D} btn
    * @param {ThreeMouseEventType} type
    */
-  public static onButtonHandler(btn: IClickableObject3D, type: ThreeMouseEventType) {
+  public static onButtonHandler(
+    btn: IClickableObject3D,
+    type: ThreeMouseEventType
+  ) {
     switch (type) {
       case ThreeMouseEventType.DOWN:
         btn.model.onMouseDownHandler(new ThreeMouseEvent(type, btn));
@@ -189,6 +199,15 @@ export class MouseEventManager {
     );
   }
 
+  /**
+   * 指定されたtargetオブジェクトから親方向に、クリッカブルインターフェースを継承しているオブジェクトを検索する。
+   * オブジェクトを発見した場合はtrueを、発見できない場合はfalseを返す。
+   *
+   * @param target
+   * @param type
+   * @param hasTarget
+   * @protected
+   */
   protected checkTarget(
     target: Object3D,
     type: ThreeMouseEventType,
@@ -216,14 +235,13 @@ export class MouseEventManager {
     return hasTarget;
   }
 
-  protected static updateMouse(canvas:HTMLCanvasElement, event: MouseEvent, mouse: Vector2): Vector2 {
-    mouse.x = (event.offsetX / canvas.clientWidth) * 2 - 1;
-    mouse.y = -(event.offsetY / canvas.clientHeight) * 2 + 1;
-    return mouse;
-  }
-
   protected getIntersects(event: MouseEvent): Intersection[] {
-    this.mouse = MouseEventManager.updateMouse( this.canvas, event, this.mouse);
+    ViewPortUtil.convertToMousePosition(
+      this.canvas,
+      event,
+      this.viewport,
+      this.mouse
+    );
     this.raycaster.setFromCamera(this.mouse, this.camera);
     const intersects: Intersection[] = this.raycaster.intersectObjects(
       this.scene.children,

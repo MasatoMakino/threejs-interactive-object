@@ -48,7 +48,7 @@ const onDomContentsLoaded = () => {
   scene.add(ambientLight);
 
   //マウスイベントの取得開始
-  const manager = new MouseEventManager(scene, camera, renderer);
+  const manager = new MouseEventManager(scene, camera, renderer.domElement);
 
   testButton();
   testCheckbox();

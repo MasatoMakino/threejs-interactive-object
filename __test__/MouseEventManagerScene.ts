@@ -46,7 +46,7 @@ export class MouseEventManagerScene {
     this.renderer.setSize(this.canvas.width, this.canvas.height);
 
     //マウスイベントの取得開始
-    this.manager = new MouseEventManager(this.scene, this.camera, this.renderer);
+    this.manager = new MouseEventManager(this.scene, this.camera, this.renderer.domElement);
   }
 
   private getOffset(): Offset {
