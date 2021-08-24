@@ -25,11 +25,6 @@ describe("MouseEventManager", () => {
   const halfW = managerScene.canvas.width / 2;
   const halfH = managerScene.canvas.height / 2;
 
-  test("Init", () => {
-    expect(MouseEventManager.isInit).toBe(true);
-    managerScene.reset();
-  });
-
   test("mouse move", () => {
     btn.checkMaterial(ClickableState.NORMAL);
     managerScene.render();

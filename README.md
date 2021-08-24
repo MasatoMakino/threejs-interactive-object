@@ -49,7 +49,7 @@ MouseEventManager class watch MouseEvent on canvas element.
 initialize MouseEventManager before create a button.
 
 ```js
-MouseEventManager.init(scene, camera, renderer);
+const manager = new MouseEventManager(scene, camera, renderer);
 ```
 
 #### init button

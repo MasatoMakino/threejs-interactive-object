@@ -11,6 +11,7 @@ export class MouseEventManagerScene {
   public scene: Scene;
   public renderer: WebGLRenderer;
   public camera: Camera;
+  public manager:MouseEventManager;
 
   private offset: Offset;
 
@@ -45,7 +46,7 @@ export class MouseEventManagerScene {
     this.renderer.setSize(this.canvas.width, this.canvas.height);
 
     //マウスイベントの取得開始
-    MouseEventManager.init(this.scene, this.camera, this.renderer);
+    this.manager = new MouseEventManager(this.scene, this.camera, this.renderer.domElement);
   }
 
   private getOffset(): Offset {
@@ -66,7 +67,7 @@ export class MouseEventManagerScene {
   public interval(ratio: number = 2.0): void {
     RAFTicker.emit(RAFTickerEventType.tick, {
       timestamp: 0,
-      delta: MouseEventManager.throttlingTime_ms * ratio,
+      delta: this.manager.throttlingTime_ms * ratio,
     });
     this.render();
   }
