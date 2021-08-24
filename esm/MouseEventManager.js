@@ -1,44 +1,104 @@
 import { RAFTicker, RAFTickerEventType } from "raf-ticker";
 import { Raycaster, Vector2, } from "three";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+import { ViewPortUtil } from "./ViewPortUtil";
 export class MouseEventManager {
-    static init(scene, camera, renderer, option) {
+    constructor(scene, camera, canvas, option) {
         var _a;
-        MouseEventManager.isInit = true;
-        MouseEventManager.camera = camera;
-        MouseEventManager.renderer = renderer;
-        MouseEventManager.scene = scene;
-        MouseEventManager.throttlingTime_ms = (_a = option === null || option === void 0 ? void 0 : option.throttlingTime_ms) !== null && _a !== void 0 ? _a : 33;
-        const canvas = renderer.domElement;
-        MouseEventManager.canvas = canvas;
-        canvas.addEventListener("mousemove", MouseEventManager.onDocumentMouseMove, false);
-        canvas.addEventListener("mousedown", MouseEventManager.onDocumentMouseUpDown, false);
-        canvas.addEventListener("mouseup", MouseEventManager.onDocumentMouseUpDown, false);
+        this.raycaster = new Raycaster();
+        this.mouse = new Vector2();
+        this.hasThrottled = false;
+        this.throttlingDelta = 0;
+        this.onTick = (e) => {
+            this.throttlingDelta += e.delta;
+            if (this.throttlingDelta < this.throttlingTime_ms) {
+                return;
+            }
+            this.hasThrottled = false;
+            this.throttlingDelta %= this.throttlingTime_ms;
+        };
+        this.onDocumentMouseMove = (event) => {
+            if (this.hasThrottled)
+                return;
+            this.hasThrottled = true;
+            event.preventDefault();
+            const intersects = this.getIntersects(event);
+            if (intersects.length === 0) {
+                this.clearOver();
+                return;
+            }
+            const beforeOver = this.currentOver;
+            this.currentOver = [];
+            for (let intersect of intersects) {
+                const checked = this.checkTarget(intersect.object, ThreeMouseEventType.OVER);
+                if (checked)
+                    break;
+            }
+            beforeOver === null || beforeOver === void 0 ? void 0 : beforeOver.forEach((btn) => {
+                if (!this.currentOver.includes(btn)) {
+                    MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
+                }
+            });
+        };
+        /**
+         * カンバス上でマウスダウンかマウスアップが行われた際のイベントハンドラー
+         * マウス座標から対象となるObject3Dを探し出して操作を行う。
+         * @param {MouseEvent} event
+         */
+        this.onDocumentMouseUpDown = (event) => {
+            let eventType = ThreeMouseEventType.DOWN;
+            switch (event.type) {
+                case "mousedown":
+                    eventType = ThreeMouseEventType.DOWN;
+                    break;
+                case "mouseup":
+                    eventType = ThreeMouseEventType.UP;
+                    break;
+            }
+            if (!ViewPortUtil.isContain(this.canvas, this.viewport, event) &&
+                eventType === ThreeMouseEventType.DOWN) {
+                return;
+            }
+            event.preventDefault();
+            const intersects = this.getIntersects(event);
+            this.checkIntersects(intersects, eventType);
+        };
+        this.camera = camera;
+        this.scene = scene;
+        this.throttlingTime_ms = (_a = option === null || option === void 0 ? void 0 : option.throttlingTime_ms) !== null && _a !== void 0 ? _a : 33;
+        this.viewport = option === null || option === void 0 ? void 0 : option.viewport;
+        this.canvas = canvas;
+        canvas.addEventListener("mousemove", this.onDocumentMouseMove, false);
+        canvas.addEventListener("mousedown", this.onDocumentMouseUpDown, false);
+        canvas.addEventListener("mouseup", this.onDocumentMouseUpDown, false);
         RAFTicker.on(RAFTickerEventType.tick, this.onTick);
     }
     /**
      * 現在マウスオーバーしている対象をなしにする。
      * もし、すでにマウスオーバー対象が存在するなら、マウスアウトハンドラーを呼び出した後にクリアする。
      */
-    static clearOver() {
+    clearOver() {
         var _a;
-        (_a = MouseEventManager.currentOver) === null || _a === void 0 ? void 0 : _a.forEach((over) => {
-            this.onButtonHandler(over, ThreeMouseEventType.OUT);
+        (_a = this.currentOver) === null || _a === void 0 ? void 0 : _a.forEach((over) => {
+            MouseEventManager.onButtonHandler(over, ThreeMouseEventType.OUT);
         });
-        MouseEventManager.currentOver = null;
+        this.currentOver = null;
     }
     /**
      * マウスの座標にかかっているオブジェクト一覧から、操作対象を検索し
      * 指定されたタイプのハンドラー関数を実行させる。
+     * 重なり合ったオブジェクトがある場合、最前面から検索を開始する。
+     * 操作対象が見つかった時点で処理は中断され、背面オブジェクトは操作対象にならない。
+     *
      * @param {Intersection[]} intersects
      * @param {ThreeMouseEventType} type
      */
-    static checkIntersects(intersects, type) {
+    checkIntersects(intersects, type) {
         const n = intersects.length;
         if (n === 0)
             return;
         for (let i = 0; i < n; i++) {
-            const checked = MouseEventManager.checkTarget(intersects[i].object, type);
+            const checked = this.checkTarget(intersects[i].object, type);
             if (checked) {
                 break;
             }
@@ -83,94 +143,40 @@ export class MouseEventManager {
             arg.model.mouseEnabled !== null &&
             typeof arg.model.mouseEnabled === "boolean");
     }
-    static checkTarget(target, type, hasTarget = false) {
+    /**
+     * 指定されたtargetオブジェクトから親方向に、クリッカブルインターフェースを継承しているオブジェクトを検索する。
+     * オブジェクトを発見した場合はtrueを、発見できない場合はfalseを返す。
+     *
+     * @param target
+     * @param type
+     * @param hasTarget
+     * @protected
+     */
+    checkTarget(target, type, hasTarget = false) {
         //クリッカブルインターフェースを継承しているなら判定OK
-        if (this.implementsIClickableObject3D(target) &&
+        if (MouseEventManager.implementsIClickableObject3D(target) &&
             target.model.mouseEnabled === true) {
             if (type === ThreeMouseEventType.OVER) {
-                MouseEventManager.currentOver.push(target);
+                this.currentOver.push(target);
             }
-            this.onButtonHandler(target, type);
+            MouseEventManager.onButtonHandler(target, type);
             return this.checkTarget(target.parent, type, true);
         }
         //継承していないならその親を探索継続。
         //ターゲットから上昇して探す。
         if (target.parent != null && target.parent.type !== "Scene") {
-            return MouseEventManager.checkTarget(target.parent, type, hasTarget);
+            return this.checkTarget(target.parent, type, hasTarget);
         }
         //親がシーンの場合は探索終了。
         return hasTarget;
     }
-    static updateMouse(event, mouse) {
-        mouse.x = (event.offsetX / MouseEventManager.canvas.clientWidth) * 2 - 1;
-        mouse.y = -(event.offsetY / MouseEventManager.canvas.clientHeight) * 2 + 1;
-        return mouse;
-    }
-    static getIntersects(event) {
-        MouseEventManager.mouse = MouseEventManager.updateMouse(event, MouseEventManager.mouse);
-        MouseEventManager.raycaster.setFromCamera(MouseEventManager.mouse, MouseEventManager.camera);
-        const intersects = MouseEventManager.raycaster.intersectObjects(MouseEventManager.scene.children, true);
+    getIntersects(event) {
+        ViewPortUtil.convertToMousePosition(this.canvas, event, this.viewport, this.mouse);
+        this.raycaster.setFromCamera(this.mouse, this.camera);
+        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
         return intersects;
     }
 }
-MouseEventManager.raycaster = new Raycaster();
-MouseEventManager.mouse = new Vector2();
-MouseEventManager.isInit = false;
-MouseEventManager.hasThrottled = false;
-MouseEventManager.throttlingDelta = 0;
-MouseEventManager.onTick = (e) => {
-    MouseEventManager.throttlingDelta += e.delta;
-    if (MouseEventManager.throttlingDelta < MouseEventManager.throttlingTime_ms) {
-        return;
-    }
-    MouseEventManager.hasThrottled = false;
-    MouseEventManager.throttlingDelta %= MouseEventManager.throttlingTime_ms;
-};
-MouseEventManager.onDocumentMouseMove = (event) => {
-    if (MouseEventManager.hasThrottled)
-        return;
-    MouseEventManager.hasThrottled = true;
-    if (event.type === "mousemove") {
-        event.preventDefault();
-    }
-    const intersects = MouseEventManager.getIntersects(event);
-    const n = intersects.length;
-    if (n === 0) {
-        MouseEventManager.clearOver();
-        return;
-    }
-    const beforeOver = MouseEventManager.currentOver;
-    MouseEventManager.currentOver = [];
-    for (let intersect of intersects) {
-        const checked = MouseEventManager.checkTarget(intersect.object, ThreeMouseEventType.OVER);
-        if (checked)
-            break;
-    }
-    beforeOver === null || beforeOver === void 0 ? void 0 : beforeOver.forEach((btn) => {
-        if (!MouseEventManager.currentOver.includes(btn)) {
-            MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
-        }
-    });
-};
-/**
- * カンバス上でマウスダウンかマウスアップが行われた際のイベントハンドラー
- * マウス座標から対象となるObject3Dを探し出して操作を行う。
- * @param {MouseEvent} event
- */
-MouseEventManager.onDocumentMouseUpDown = (event) => {
-    let eventType = ThreeMouseEventType.DOWN;
-    switch (event.type) {
-        case "mousedown":
-            eventType = ThreeMouseEventType.DOWN;
-            break;
-        case "mouseup":
-            eventType = ThreeMouseEventType.UP;
-            break;
-    }
-    event.preventDefault();
-    let intersects = MouseEventManager.getIntersects(event);
-    MouseEventManager.checkIntersects(intersects, eventType);
-};
 /**
  * IClickable3DObjectの現在状態を表す定数セット。
  * これとselectフラグを掛け合わせることで状態を判定する。

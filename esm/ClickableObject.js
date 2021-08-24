@@ -1,4 +1,4 @@
-import { ClickableState, MouseEventManager } from "./MouseEventManager";
+import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 /**
  * クリックに反応するObject。
@@ -17,9 +17,6 @@ export class ClickableObject {
         this.state = ClickableState.NORMAL;
         this._alpha = 1.0;
         this.view = parameters.view;
-        if (!MouseEventManager.isInit) {
-            console.warn("MouseEventManager の初期化前にインタラクティブメッシュを生成しています。MouseEventManager.initをインタラクティブオブジェクトの生成前に実行してください。");
-        }
         (_a = this._materialSet) !== null && _a !== void 0 ? _a : (this._materialSet = parameters.material);
         this.updateMaterial();
     }
