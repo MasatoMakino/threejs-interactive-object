@@ -23,6 +23,7 @@
     "@types/three": "^0.131.0",
     "canvas": "^2.8.0",
     "electron": "^13.2.1",
+    "fake-mouse-event": "MasatoMakino/fake-mouse-event",
     "gulp": "^4.0.2",
     "gulptask-demo-page": "https://github.com/MasatoMakino/gulptask-demo-page.git",
     "gulptask-dev-server": "https://github.com/MasatoMakino/gulptask-dev-server.git",
