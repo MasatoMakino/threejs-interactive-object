@@ -12,6 +12,26 @@ export interface Rectangle {
  */
 export class ViewPortUtil {
   /**
+   * canvasの高さを取得する。
+   *
+   * three.jsのWebGLRendererは、devicePixelRatioにあわせてcanvas.heightを変更する。
+   * ブラウザの拡大縮小を行うと、devicePixelRatioが変更されるためcanvas.heightを取得できない。
+   * そのためまずstyleから高さを取得し、styleがない場合はdevicePixelRatioを加味した高さを取得する。
+   *
+   * @param canvas
+   * @private
+   */
+  private static getCanvasHeight(canvas: HTMLCanvasElement): number {
+    const style = canvas.style;
+    if (style.width && style.height) {
+      return parseInt(style.height);
+    } else if (window.devicePixelRatio != null) {
+      return canvas.height / window.devicePixelRatio;
+    }
+    return canvas.height;
+  }
+
+  /**
    * ViewportをCanvas内のRectangleに変換する
    * @param canvas
    * @param viewport
@@ -20,11 +40,12 @@ export class ViewPortUtil {
     canvas: HTMLCanvasElement,
     viewport: Vector4
   ): Rectangle {
+    const height = this.getCanvasHeight(canvas);
     return {
       x1: viewport.x,
       x2: viewport.x + viewport.width,
-      y1: canvas.height - (viewport.y + viewport.height),
-      y2: canvas.height - viewport.y,
+      y1: height - (viewport.y + viewport.height),
+      y2: height - viewport.y,
     };
   }
 
@@ -56,6 +77,7 @@ export class ViewPortUtil {
    * マウスイベントをWebGL座標系に変換する
    * @param canvas
    * @param event
+   * @param viewport
    * @param mouse オプション 指定された場合、結果をこのVector2に上書きする
    */
   static convertToMousePosition(

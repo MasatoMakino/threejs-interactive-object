@@ -6,6 +6,8 @@ describe("ViewPortUtil", () => {
   const canvas = document.createElement("canvas");
   canvas.width = 640;
   canvas.height = 480;
+  canvas.style.width = "640px";
+  canvas.style.height = "480px";
   canvas.style.setProperty("margin", "0");
   canvas.style.setProperty("padding", "0");
   document.body.appendChild(canvas);
