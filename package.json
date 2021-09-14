@@ -18,12 +18,11 @@
     "three": ">=0.126.0 <1.0.0"
   },
   "devDependencies": {
-    "@jest-runner/electron": "^3.0.1",
     "@types/jest": "^26.0.24",
     "@types/three": "^0.131.0",
     "canvas": "^2.8.0",
-    "electron": "^13.2.1",
     "fake-mouse-event": "MasatoMakino/fake-mouse-event",
+    "gl": "^4.9.2",
     "gulp": "^4.0.2",
     "gulptask-demo-page": "https://github.com/MasatoMakino/gulptask-demo-page.git",
     "gulptask-dev-server": "https://github.com/MasatoMakino/gulptask-dev-server.git",

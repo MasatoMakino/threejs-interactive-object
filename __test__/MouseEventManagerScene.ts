@@ -7,54 +7,54 @@ interface Offset {
   y: number;
 }
 export class MouseEventManagerScene {
-  public canvas: HTMLCanvasElement;
   public scene: Scene;
   public renderer: WebGLRenderer;
   public camera: Camera;
-  public manager:MouseEventManager;
-
+  public manager: MouseEventManager;
   private offset: Offset;
 
+  public static readonly W = 1920;
+  public static readonly H = 1080;
+
   constructor() {
-    const W = 1920;
-    const H = 1080;
-
-    this.canvas = document.createElement("canvas");
-    this.canvas.width = W;
-    this.canvas.height = H;
-    this.canvas.style.setProperty("margin", "0");
-    this.canvas.style.setProperty("padding", "0");
-    document.body.appendChild(this.canvas);
-
-    this.offset = this.getOffset();
 
     this.scene = new Scene();
     this.camera = new PerspectiveCamera(
       45,
-      this.canvas.width / this.canvas.height,
+      MouseEventManagerScene.W / MouseEventManagerScene.H,
       1,
       400
     );
     this.camera.position.set(0, 0, 100);
     this.scene.add(this.camera);
 
+    const glContext = require("gl")(
+      MouseEventManagerScene.W,
+      MouseEventManagerScene.H
+    );
     const renderOption = {
-      antialias: false,
-      canvas: this.canvas,
+      context: glContext,
     };
     this.renderer = new WebGLRenderer(renderOption);
-    this.renderer.setSize(this.canvas.width, this.canvas.height);
+    this.renderer.setSize(MouseEventManagerScene.W, MouseEventManagerScene.H);
+    document.body.appendChild(this.renderer.domElement);
+
+    this.offset = this.getOffset();
 
     //マウスイベントの取得開始
-    this.manager = new MouseEventManager(this.scene, this.camera, this.renderer.domElement);
+    this.manager = new MouseEventManager(
+      this.scene,
+      this.camera,
+      this.renderer.domElement
+    );
   }
 
   private getOffset(): Offset {
     const spyClick = jest.fn((e) => e);
-    this.canvas.addEventListener("mouseleave", spyClick);
-    this.canvas.dispatchEvent(new MouseEvent("mouseleave"));
+    this.renderer.domElement.addEventListener("mouseleave", spyClick);
+    this.renderer.domElement.dispatchEvent(new MouseEvent("mouseleave"));
     const result = spyClick.mock.results[0].value;
-    this.canvas.removeEventListener("mouseleave", spyClick);
+    this.renderer.domElement.removeEventListener("mouseleave", spyClick);
     return {
       x: -result.offsetX,
       y: -result.offsetY,
@@ -74,7 +74,7 @@ export class MouseEventManagerScene {
 
   public reset() {
     const e = new MouseEvent("mouseup", { clientX: 0, clientY: 0 });
-    this.canvas.dispatchEvent(e);
+    this.renderer.domElement.dispatchEvent(e);
   }
 
   public dispatchMouseEvent(type: string, x: number, y: number): void {
@@ -82,6 +82,6 @@ export class MouseEventManagerScene {
       clientX: x + this.offset.x,
       clientY: y + this.offset.y,
     });
-    this.canvas.dispatchEvent(e);
+    this.renderer.domElement.dispatchEvent(e);
   }
 }

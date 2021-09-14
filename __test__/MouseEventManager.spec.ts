@@ -22,8 +22,8 @@ describe("MouseEventManager", () => {
   wrapperBackground.add(btnBackground.button);
   managerScene.scene.add(wrapperBackground);
 
-  const halfW = managerScene.canvas.width / 2;
-  const halfH = managerScene.canvas.height / 2;
+  const halfW = MouseEventManagerScene.W / 2;
+  const halfH = MouseEventManagerScene.H / 2;
 
   test("mouse move", () => {
     btn.checkMaterial(ClickableState.NORMAL);
