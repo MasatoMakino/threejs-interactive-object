@@ -5,7 +5,9 @@ language: node_js
 addons:
   apt:
     packages:
+      - libxi-dev
       - xvfb
+      - libgl1-mesa-dev
 node_js:
   - "12"
   - "14"
