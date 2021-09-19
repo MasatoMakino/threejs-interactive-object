@@ -1,16 +1,16 @@
 import { BoxBufferGeometry, MeshBasicMaterial } from "three";
 import { ClickableMesh, StateMaterialSet } from "../src/index";
-import { getMeshMaterialSet } from "../__test__/Materials";
+import { getMeshMaterialSet } from "./Materials";
 import {
-  testMouseOver,
+  testClick,
   testDisable,
-  testSwitch,
+  testFrozen,
+  testMouseOver,
   testMouseUP,
-  testClick
-} from "../__test__/MouseControl";
-import { testFrozen } from "../__test__/MouseControl";
+  testSwitch,
+} from "./MouseControl";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("ClickableMesh", () => {
   let clickable: ClickableMesh;
@@ -19,7 +19,7 @@ describe("ClickableMesh", () => {
   test("初期化", () => {
     clickable = new ClickableMesh({
       geo: new BoxBufferGeometry(3, 3, 3),
-      material: matSet
+      material: matSet,
     });
     expect(clickable.material).toBe(matSet.normal.material);
   });

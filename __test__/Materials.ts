@@ -13,7 +13,7 @@ export function getMeshMaterialSet(): StateMaterialSet {
     disable: getMeshMaterial(0.1),
     normalSelect: getMeshMaterial(0.6, 0xffff00),
     overSelect: getMeshMaterial(0.8, 0xffff00),
-    downSelect: getMeshMaterial(1.0, 0xffff00)
+    downSelect: getMeshMaterial(1.0, 0xffff00),
   });
 }
 
@@ -22,7 +22,7 @@ const getMeshMaterial = (opacity: number, color?: number) => {
   return new MeshBasicMaterial({
     color: color,
     opacity: opacity,
-    transparent: true
+    transparent: true,
   });
 };
 
@@ -37,7 +37,7 @@ export function getSpriteMaterialSet(): StateMaterialSet {
     disable: getSpriteMaterial(0.1),
     normalSelect: getSpriteMaterial(0.65),
     overSelect: getSpriteMaterial(0.85),
-    downSelect: getSpriteMaterial(0.95)
+    downSelect: getSpriteMaterial(0.95),
   });
 }
 
@@ -62,6 +62,6 @@ const getSpriteMaterial = (
     map: map,
     color: color,
     opacity: opacity,
-    transparent: true
+    transparent: true,
   });
 };

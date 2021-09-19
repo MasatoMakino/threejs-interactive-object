@@ -3,12 +3,12 @@ import {
   CheckBoxMesh,
   StateMaterialSet,
   ThreeMouseEvent,
-  ThreeMouseEventType
+  ThreeMouseEventType,
 } from "../src/index";
 import { getMeshMaterialSet } from "./Materials";
 import { changeMaterialState, clickButton } from "./MouseControl";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("CheckBoxMesh", () => {
   let checkbox: CheckBoxMesh;
@@ -19,7 +19,7 @@ describe("CheckBoxMesh", () => {
 
     checkbox = new CheckBoxMesh({
       geo: geometry,
-      material: matSet
+      material: matSet,
     });
 
     expect(checkbox.material).toBe(matSet.normal.material);

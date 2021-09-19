@@ -1,13 +1,9 @@
 import { BoxBufferGeometry } from "three";
 import { RadioButtonManager, RadioButtonMesh } from "../src/index";
-import { getMeshMaterialSet } from "../__test__/Materials";
-import {
-  testRadioSelection,
-  testRadioSelectionWithMouse,
-  testInitManager
-} from "../__test__/RadioObject";
+import { getMeshMaterialSet } from "./Materials";
+import { testInitManager, testRadioSelection, testRadioSelectionWithMouse } from "./RadioObject";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
  * テスト用のボタンを生成する関数。
@@ -17,7 +13,7 @@ const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
 const initButton = (buttonValue: any): RadioButtonMesh => {
   const button = new RadioButtonMesh({
     geo: new BoxBufferGeometry(3, 3, 3),
-    material: getMeshMaterialSet()
+    material: getMeshMaterialSet(),
   });
   button.model.value = buttonValue;
   return button;

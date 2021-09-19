@@ -2,12 +2,12 @@ import { Event } from "three";
 import {
   CheckBoxSprite,
   ThreeMouseEvent,
-  ThreeMouseEventType
+  ThreeMouseEventType,
 } from "../src/index";
-import { getSpriteMaterialSet } from "../__test__/Materials";
-import { clickButton } from "../__test__/MouseControl";
+import { getSpriteMaterialSet } from "./Materials";
+import { clickButton } from "./MouseControl";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
  * ボタンを生成する

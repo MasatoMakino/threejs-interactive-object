@@ -1,12 +1,12 @@
 import { RadioButtonManager, RadioButtonSprite } from "../src/index";
-import { getSpriteMaterialSet } from "../__test__/Materials";
+import { getSpriteMaterialSet } from "./Materials";
 import {
+  testInitManager,
   testRadioSelection,
   testRadioSelectionWithMouse,
-  testInitManager
-} from "../__test__/RadioObject";
+} from "./RadioObject";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
  * テスト用のボタンを生成する関数。

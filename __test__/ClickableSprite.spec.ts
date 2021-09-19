@@ -1,16 +1,16 @@
-import { ClickableSprite, StateMaterialSet } from "../src/index";
 import { SpriteMaterial } from "three";
-import { getSpriteMaterialSet } from "../__test__/Materials";
+import { ClickableSprite, StateMaterialSet } from "../src/index";
+import { getSpriteMaterialSet } from "./Materials";
 import {
-  testMouseOver,
+  testClick,
   testDisable,
-  testSwitch,
+  testFrozen,
+  testMouseOver,
   testMouseUP,
-  testClick
-} from "../__test__/MouseControl";
-import { testFrozen } from "../__test__/MouseControl";
+  testSwitch,
+} from "./MouseControl";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("ClickableSprite", () => {
   let sprite: ClickableSprite;
