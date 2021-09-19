@@ -5,6 +5,7 @@ language: node_js
 addons:
   apt:
     packages:
+      - libxi-dev
       - xvfb
 node_js:
   - "12"
