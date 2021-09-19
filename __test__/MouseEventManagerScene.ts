@@ -23,10 +23,7 @@ export class MouseEventManagerScene {
     this.camera.position.set(0, 0, 100);
     this.scene.add(this.camera);
 
-    const glContext = require("gl")(
-      MouseEventManagerScene.W,
-      MouseEventManagerScene.H
-    );
+    const glContext = require("gl")(1, 1);
     const renderOption = {
       context: glContext,
     };
