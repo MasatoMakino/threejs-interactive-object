@@ -1,23 +1,18 @@
 import { RAFTicker, RAFTickerEventType } from "raf-ticker";
 import { Camera, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import { MouseEventManager } from "../src";
+import { getMouseEvent } from "fake-mouse-event";
 
-interface Offset {
-  x: number;
-  y: number;
-}
 export class MouseEventManagerScene {
   public scene: Scene;
   public renderer: WebGLRenderer;
   public camera: Camera;
   public manager: MouseEventManager;
-  private offset: Offset;
 
   public static readonly W = 1920;
   public static readonly H = 1080;
 
   constructor() {
-
     this.scene = new Scene();
     this.camera = new PerspectiveCamera(
       45,
@@ -39,26 +34,12 @@ export class MouseEventManagerScene {
     this.renderer.setSize(MouseEventManagerScene.W, MouseEventManagerScene.H);
     document.body.appendChild(this.renderer.domElement);
 
-    this.offset = this.getOffset();
-
     //マウスイベントの取得開始
     this.manager = new MouseEventManager(
       this.scene,
       this.camera,
       this.renderer.domElement
     );
-  }
-
-  private getOffset(): Offset {
-    const spyClick = jest.fn((e) => e);
-    this.renderer.domElement.addEventListener("mouseleave", spyClick);
-    this.renderer.domElement.dispatchEvent(new MouseEvent("mouseleave"));
-    const result = spyClick.mock.results[0].value;
-    this.renderer.domElement.removeEventListener("mouseleave", spyClick);
-    return {
-      x: -result.offsetX,
-      y: -result.offsetY,
-    };
   }
 
   public render(): void {
@@ -73,14 +54,25 @@ export class MouseEventManagerScene {
   }
 
   public reset() {
-    const e = new MouseEvent("mouseup", { clientX: 0, clientY: 0 });
+    const e = getMouseEvent("mouseup", {
+      x: 0,
+      y: 0,
+      clientX: 0,
+      clientY: 0,
+      offsetX: 0,
+      offsetY: 0,
+    });
     this.renderer.domElement.dispatchEvent(e);
   }
 
   public dispatchMouseEvent(type: string, x: number, y: number): void {
-    const e = new MouseEvent(type, {
-      clientX: x + this.offset.x,
-      clientY: y + this.offset.y,
+    const e = getMouseEvent(type, {
+      x,
+      y,
+      clientX: x,
+      clientY: y,
+      offsetX: x,
+      offsetY: y,
     });
     this.renderer.domElement.dispatchEvent(e);
   }

@@ -31,6 +31,16 @@ export class ViewPortUtil {
     return canvas.height;
   }
 
+  private static getCanvasWidth(canvas: HTMLCanvasElement): number {
+    const style = canvas.style;
+    if (style.width && style.height) {
+      return parseInt(style.width);
+    } else if (window.devicePixelRatio != null) {
+      return canvas.width / window.devicePixelRatio;
+    }
+    return canvas.width;
+  }
+
   /**
    * ViewportをCanvas内のRectangleに変換する
    * @param canvas
@@ -110,8 +120,8 @@ export class ViewPortUtil {
     canvas: HTMLCanvasElement,
     event: MouseEvent
   ): { x: number; y: number } {
-    const x = (event.offsetX / canvas.clientWidth) * 2 - 1;
-    const y = -(event.offsetY / canvas.clientHeight) * 2 + 1;
+    const x = (event.offsetX / this.getCanvasWidth(canvas)) * 2 - 1;
+    const y = -(event.offsetY / this.getCanvasHeight(canvas)) * 2 + 1;
     return { x, y };
   }
 
