@@ -25,7 +25,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Reconfigure git to use HTTP authentication
-          run: git config --global url."https://github.com/".insteadOf ssh://git@github.com/
+        run: git config --global url."https://github.com/".insteadOf ssh://git@github.com/
       - name: install apt packages for headless-gl
         run: sudo apt-get install libxi-dev xvfb libgl1-mesa-dev
       - name: Use Node.js ${{ matrix.node-version }}
