@@ -3,7 +3,7 @@ import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 
-export class RadioButtonManager extends EventDispatcher {
+export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
   /**
    * このマネージャーの管理下のボタン
    * @type {any[]}
@@ -24,7 +24,7 @@ export class RadioButtonManager extends EventDispatcher {
 
   /**
    * このマネージャーの管理下にボタンを追加する
-   * @param {IRadioButtonObject3D[]} buttons
+   * @param {IClickableObject3D[]} buttons
    */
   public addButton(...buttons: IClickableObject3D[]): void {
     buttons.forEach((btn) => {
@@ -54,7 +54,7 @@ export class RadioButtonManager extends EventDispatcher {
   /**
    * ボタンを管理下から外す。
    * ボタン自体の削除は行わない。
-   * @param {IRadioButtonObject3D} button
+   * @param {IClickableObject3D} button
    */
   public removeButton(button: IClickableObject3D): void {
     this.removeModel(button.model as RadioButtonObject);
