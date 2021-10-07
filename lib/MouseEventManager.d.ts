@@ -1,4 +1,4 @@
-import { Camera, EventDispatcher, Intersection, Object3D, Raycaster, Scene, Vector2, Vector4 } from "three";
+import { Camera, Intersection, Object3D, Raycaster, Scene, Vector2, Vector4 } from "three";
 import { ClickableObject } from "./ClickableObject";
 import { ThreeMouseEventType } from "./ThreeMouseEvent";
 export declare class MouseEventManager {
@@ -62,7 +62,7 @@ export declare class MouseEventManager {
      * @protected
      */
     protected checkTarget(target: Object3D, type: ThreeMouseEventType, hasTarget?: boolean): boolean;
-    protected getIntersects(event: MouseEvent): Intersection[];
+    protected getIntersects(event: MouseEvent): Intersection<Object3D>[];
 }
 /**
  * IClickable3DObjectの現在状態を表す定数セット。
@@ -78,7 +78,7 @@ export declare enum ClickableState {
  * マウス操作可能な3Dオブジェクトのインターフェース
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
-export interface IClickableObject3D extends EventDispatcher {
+export interface IClickableObject3D {
     model: ClickableObject;
 }
 //# sourceMappingURL=MouseEventManager.d.ts.map

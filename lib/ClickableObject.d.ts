@@ -4,13 +4,18 @@ import { ClickableSprite } from "./InteractiveSprite";
 import { ClickableState } from "./MouseEventManager";
 import { StateMaterialSet } from "./StateMaterial";
 import { ThreeMouseEvent } from "./ThreeMouseEvent";
+/**
+ * クリックに反応する表示オブジェクトの型エイリアス
+ * ClickableObjectはこれらの表示オブジェクトを状態にあわせて操作する。
+ */
 export declare type ClickableView = ClickableMesh | ClickableSprite | ClickableGroup;
 export interface ClickableObjectParameters {
     view: ClickableView;
     material?: StateMaterialSet;
 }
 /**
- * クリックに反応するObject。
+ * クリックに反応するObject
+ * これ自体は表示オブジェクトではない。
  */
 export declare class ClickableObject {
     get materialSet(): StateMaterialSet;

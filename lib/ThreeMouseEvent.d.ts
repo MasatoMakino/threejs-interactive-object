@@ -1,6 +1,7 @@
+import { Event } from "three";
 import { ClickableObject } from "./ClickableObject";
 import { IClickableObject3D } from "./MouseEventManager";
-export declare class ThreeMouseEvent {
+export declare class ThreeMouseEvent implements Event {
     type: ThreeMouseEventType;
     model: ClickableObject;
     readonly isSelected: boolean;

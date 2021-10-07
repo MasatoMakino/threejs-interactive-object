@@ -20,6 +20,7 @@ export declare class ViewPortUtil {
      * @private
      */
     private static getCanvasHeight;
+    private static getCanvasWidth;
     /**
      * ViewportをCanvas内のRectangleに変換する
      * @param canvas

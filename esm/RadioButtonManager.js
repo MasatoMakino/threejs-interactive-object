@@ -25,7 +25,7 @@ export class RadioButtonManager extends EventDispatcher {
     }
     /**
      * このマネージャーの管理下にボタンを追加する
-     * @param {IRadioButtonObject3D[]} buttons
+     * @param {IClickableObject3D[]} buttons
      */
     addButton(...buttons) {
         buttons.forEach((btn) => {
@@ -39,7 +39,7 @@ export class RadioButtonManager extends EventDispatcher {
     /**
      * ボタンを管理下から外す。
      * ボタン自体の削除は行わない。
-     * @param {IRadioButtonObject3D} button
+     * @param {IClickableObject3D} button
      */
     removeButton(button) {
         this.removeModel(button.model);

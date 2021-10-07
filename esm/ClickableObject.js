@@ -1,7 +1,8 @@
 import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
 /**
- * クリックに反応するObject。
+ * クリックに反応するObject
+ * これ自体は表示オブジェクトではない。
  */
 export class ClickableObject {
     /**
