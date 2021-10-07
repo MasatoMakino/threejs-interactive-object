@@ -12,7 +12,7 @@ import {
 
 /**
  * 対象のボタンをクリックする
- * @param {IRadioButtonObject3D} button
+ * @param {IClickableObject3D} button
  */
 export function clickButton(button: IClickableObject3D) {
   button.model.onMouseOverHandler(

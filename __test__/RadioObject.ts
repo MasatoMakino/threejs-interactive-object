@@ -1,5 +1,6 @@
 import { Event } from "three";
 import {
+  ClickableView,
   IClickableObject3D,
   RadioButtonManager,
   RadioButtonMesh,
@@ -21,16 +22,16 @@ export function getButtonValues(): any[] {
  * マネージャーの初期化を行う。
  * 格納されたボタンが正常に呼び出せるかをテストする。
  * @param {RadioButtonManager} manager
- * @param {(value: any) => (RadioButtonMesh | RadioButtonSprite)} genarator
+ * @param {(value: any) => (RadioButtonMesh | RadioButtonSprite)} generator
  */
 export function testInitManager(
   manager: RadioButtonManager,
-  genarator: (value: any) => RadioButtonMesh | RadioButtonSprite
+  generator: (value: any) => RadioButtonMesh | RadioButtonSprite
 ) {
   const values = getButtonValues();
   const buttons = [];
   for (let value of values) {
-    buttons.push(genarator(value));
+    buttons.push(generator(value));
   }
 
   manager.addButton(...buttons);
@@ -90,11 +91,11 @@ export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
 /**
  * 二回目のクリックテスト
  * @param {RadioButtonManager} manager
- * @param {IRadioButtonObject3D} button
+ * @param {ClickableView} button
  */
 const onClickSecondTime = (
   manager: RadioButtonManager,
-  button: IClickableObject3D
+  button: ClickableView
 ) => {
   const spyButton = jest
     .spyOn(button, "dispatchEvent")

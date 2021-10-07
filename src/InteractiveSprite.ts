@@ -11,7 +11,8 @@ export interface TConstructor<T> {
 
 class InteractiveSprite<T extends ClickableObject>
   extends Sprite
-  implements IClickableObject3D {
+  implements IClickableObject3D
+{
   public model: T;
 
   constructor(material: StateMaterialSet, ctor: TConstructor<T>) {
@@ -21,7 +22,8 @@ class InteractiveSprite<T extends ClickableObject>
 }
 export class ClickableSprite
   extends InteractiveSprite<ClickableObject>
-  implements IClickableObject3D {
+  implements IClickableObject3D
+{
   constructor(material: StateMaterialSet) {
     super(material, ClickableObject);
   }
@@ -29,7 +31,8 @@ export class ClickableSprite
 
 export class CheckBoxSprite
   extends InteractiveSprite<CheckBoxObject>
-  implements IClickableObject3D {
+  implements IClickableObject3D
+{
   constructor(material: StateMaterialSet) {
     super(material, CheckBoxObject);
   }
@@ -37,7 +40,8 @@ export class CheckBoxSprite
 
 export class RadioButtonSprite
   extends InteractiveSprite<RadioButtonObject>
-  implements IClickableObject3D {
+  implements IClickableObject3D
+{
   constructor(material: StateMaterialSet) {
     super(material, RadioButtonObject);
   }

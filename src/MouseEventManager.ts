@@ -1,7 +1,6 @@
 import { RAFTicker, RAFTickerEvent, RAFTickerEventType } from "raf-ticker";
 import {
   Camera,
-  EventDispatcher,
   Intersection,
   Object3D,
   Raycaster,
@@ -137,7 +136,7 @@ export class MouseEventManager {
    * @param {ThreeMouseEventType} type
    */
   private checkIntersects(
-    intersects: Intersection[],
+    intersects: Intersection<Object3D>[],
     type: ThreeMouseEventType
   ): void {
     const n: number = intersects.length;
@@ -235,7 +234,7 @@ export class MouseEventManager {
     return hasTarget;
   }
 
-  protected getIntersects(event: MouseEvent): Intersection[] {
+  protected getIntersects(event: MouseEvent): Intersection<Object3D>[] {
     ViewPortUtil.convertToMousePosition(
       this.canvas,
       event,
@@ -243,7 +242,7 @@ export class MouseEventManager {
       this.mouse
     );
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects: Intersection[] = this.raycaster.intersectObjects(
+    const intersects: Intersection<Object3D>[] = this.raycaster.intersectObjects(
       this.scene.children,
       true
     );
@@ -267,6 +266,6 @@ export enum ClickableState {
  * マウス操作可能な3Dオブジェクトのインターフェース
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
-export interface IClickableObject3D extends EventDispatcher {
+export interface IClickableObject3D {
   model: ClickableObject;
 }
