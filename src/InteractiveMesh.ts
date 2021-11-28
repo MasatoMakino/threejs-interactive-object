@@ -13,7 +13,8 @@ interface InteractiveMeshParameters {
 
 class InteractiveMesh<T extends ClickableObject>
   extends Mesh
-  implements IClickableObject3D {
+  implements IClickableObject3D
+{
   public model: T;
 
   constructor(parameters: InteractiveMeshParameters, ctor: TConstructor<T>) {
@@ -24,7 +25,8 @@ class InteractiveMesh<T extends ClickableObject>
 
 export class ClickableMesh
   extends InteractiveMesh<ClickableObject>
-  implements IClickableObject3D {
+  implements IClickableObject3D
+{
   constructor(parameters: InteractiveMeshParameters) {
     super(parameters, ClickableObject);
   }
@@ -32,7 +34,8 @@ export class ClickableMesh
 
 export class CheckBoxMesh
   extends InteractiveMesh<CheckBoxObject>
-  implements IClickableObject3D {
+  implements IClickableObject3D
+{
   constructor(parameters: InteractiveMeshParameters) {
     super(parameters, CheckBoxObject);
   }
@@ -40,7 +43,8 @@ export class CheckBoxMesh
 
 export class RadioButtonMesh
   extends InteractiveMesh<RadioButtonObject>
-  implements IClickableObject3D {
+  implements IClickableObject3D
+{
   constructor(parameters: InteractiveMeshParameters) {
     super(parameters, RadioButtonObject);
   }

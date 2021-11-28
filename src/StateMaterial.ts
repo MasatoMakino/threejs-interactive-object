@@ -119,7 +119,7 @@ export class StateMaterialSet {
       this.overSelect,
       this.down,
       this.downSelect,
-      this.disable
+      this.disable,
     ];
   }
 
@@ -146,7 +146,7 @@ export class StateMaterialSet {
   }
 
   public setOpacity(opacity: number) {
-    this.materials.forEach(mat => {
+    this.materials.forEach((mat) => {
       mat.setOpacity(opacity);
     });
   }

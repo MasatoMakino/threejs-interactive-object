@@ -2,7 +2,7 @@ import { Event } from "three";
 import { ClickableObject } from "./ClickableObject";
 import { IClickableObject3D } from "./MouseEventManager";
 
-export class ThreeMouseEvent implements Event{
+export class ThreeMouseEvent implements Event {
   type: ThreeMouseEventType;
   public model: ClickableObject;
 
@@ -55,5 +55,5 @@ export enum ThreeMouseEventType {
   OUT = "THREE_MOUSE_EVENT_OUT",
   DOWN = "THREE_MOUSE_EVENT_DOWN",
   UP = "THREE_MOUSE_EVENT_UP",
-  SELECT = "THREE_MOUSE_EVENT_SELECT"
+  SELECT = "THREE_MOUSE_EVENT_SELECT",
 }
