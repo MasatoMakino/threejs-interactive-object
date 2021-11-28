@@ -68,7 +68,7 @@ export class StateMaterialSet {
             this.overSelect,
             this.down,
             this.downSelect,
-            this.disable
+            this.disable,
         ];
     }
     getMaterial(state, mouseEnabled, isSelected = false) {
@@ -87,7 +87,7 @@ export class StateMaterialSet {
         return this.normal;
     }
     setOpacity(opacity) {
-        this.materials.forEach(mat => {
+        this.materials.forEach((mat) => {
             mat.setOpacity(opacity);
         });
     }
