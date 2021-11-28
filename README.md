@@ -2,7 +2,7 @@
 
 > Mouse interactive objects for three.js
 
-[![Build Status](https://travis-ci.com/MasatoMakino/threejs-interactive-object.svg?branch=master)](https://travis-ci.com/MasatoMakino/threejs-interactive-object)
+[![CI_Main](https://github.com/MasatoMakino/threejs-interactive-object/actions/workflows/ci.yml/badge.svg)](https://github.com/MasatoMakino/threejs-interactive-object/actions/workflows/ci.yml)
 [![Maintainability](https://api.codeclimate.com/v1/badges/2c756ac812782947b080/maintainability)](https://codeclimate.com/github/MasatoMakino/threejs-interactive-object/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/2c756ac812782947b080/test_coverage)](https://codeclimate.com/github/MasatoMakino/threejs-interactive-object/test_coverage)
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
