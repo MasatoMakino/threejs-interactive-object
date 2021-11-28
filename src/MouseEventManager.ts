@@ -242,10 +242,8 @@ export class MouseEventManager {
       this.mouse
     );
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects: Intersection<Object3D>[] = this.raycaster.intersectObjects(
-      this.scene.children,
-      true
-    );
+    const intersects: Intersection<Object3D>[] =
+      this.raycaster.intersectObjects(this.scene.children, true);
     return intersects;
   }
 }
