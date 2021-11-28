@@ -3,3 +3,4 @@ exclude_paths:
   - esm/**/*
   - docs/**/*
   - __test__/**/*
+  - demoSrc/**/*
