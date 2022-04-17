@@ -35,6 +35,7 @@
     "typescript": "^4.5.2"
   },
   "scripts": {
+    "prepare": "husky install",
     "test": "jest",
     "coverage": "jest --coverage",
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",
@@ -45,11 +46,6 @@
     "server": "npx gulptask-dev-server -b ./docs/demo",
     "watch:demo": "npm run demo -- -W",
     "watch:tsc": "tsc -W --incremental --project tsconfig.cjs.json & tsc -W --incremental --project tsconfig.esm.json"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
   },
   "dependencies": {
     "raf-ticker": "github:MasatoMakino/raf-ticker"
