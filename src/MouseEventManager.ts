@@ -27,18 +27,34 @@ export class MouseEventManager {
   public throttlingTime_ms: number;
   protected throttlingDelta: number = 0;
   protected viewport?: Vector4;
+  protected recursive: boolean;
+  protected targets: Object3D[];
 
+  /**
+   *
+   * @param scene
+   * @param camera
+   * @param canvas
+   * @param option
+   */
   constructor(
     scene: Scene,
     camera: Camera,
     canvas: HTMLCanvasElement,
-    option?: { throttlingTime_ms?: number; viewport?: Vector4 }
+    option?: {
+      throttlingTime_ms?: number;
+      viewport?: Vector4;
+      targets?: Object3D[];
+      recursive?: boolean;
+    }
   ) {
     this.camera = camera;
     this.scene = scene;
 
     this.throttlingTime_ms = option?.throttlingTime_ms ?? 33;
     this.viewport = option?.viewport;
+    this.recursive = option?.recursive ?? true;
+    this.targets = option?.targets ?? this.scene.children;
 
     this.canvas = canvas;
 
@@ -234,7 +250,7 @@ export class MouseEventManager {
     return hasTarget;
   }
 
-  protected getIntersects(event: MouseEvent): Intersection<Object3D>[] {
+  protected getIntersects(event: MouseEvent): Intersection[] {
     ViewPortUtil.convertToMousePosition(
       this.canvas,
       event,
@@ -242,8 +258,10 @@ export class MouseEventManager {
       this.mouse
     );
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects: Intersection<Object3D>[] =
-      this.raycaster.intersectObjects(this.scene.children, true);
+    const intersects: Intersection[] = this.raycaster.intersectObjects(
+      this.targets,
+      this.recursive
+    );
     return intersects;
   }
 }
