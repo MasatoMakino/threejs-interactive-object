@@ -2,7 +2,7 @@ name: Coverage Report
 
 on:
   workflow_run:
-    workflows: ["CI_Main"]
+    workflows: ["CI"]
     branches: [main]
     types:
       - completed
@@ -18,9 +18,10 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: "16"
           cache: "npm"
       - run: npm ci
+      - run: npm run buildTS
       - name: Code Climate Coverage Action
         uses: paambaati/codeclimate-action@v2.7.5
         env:

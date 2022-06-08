@@ -1,6 +1,6 @@
-import { getMouseEvent } from "fake-mouse-event";
+import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 import { ViewPortUtil } from "../src/ViewPortUtil";
-import { Vector4 } from "three";
+import { Vector2, Vector4 } from "three";
 
 describe("ViewPortUtil", () => {
   const canvas = document.createElement("canvas");
@@ -67,5 +67,5 @@ function testPoint(
     viewport,
     undefined
   );
-  expect(pos).toEqual({ x: resultX, y: resultY });
+  expect(pos).toEqual(new Vector2(resultX, resultY));
 }
