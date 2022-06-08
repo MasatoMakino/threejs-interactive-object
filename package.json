@@ -1,10 +1,13 @@
 {
-  "name": "threejs-interactive-object",
+  "name": "@masatomakino/threejs-interactive-object",
   "version": "0.13.0",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "module": "./esm/index.js",
-  "repository": "https://MasatoMakino@github.com/MasatoMakino/threejs-interactive-object.git",
+  "repository": {
+    "type": "git",
+    "url": "git+https://MasatoMakino@github.com/MasatoMakino/threejs-interactive-object.git"
+  },
   "author": "MasatoMakino <unagiinu.g@gmail.com>",
   "license": "MIT",
   "files": [
@@ -50,5 +53,14 @@
     "server": "npx @masatomakino/gulptask-dev-server -b ./docs/demo",
     "watch:demo": "npm run demo -- -W",
     "watch:tsc": "npx tsc -W --incremental --project tsconfig.cjs.json & npx tsc -W --incremental --project tsconfig.esm.json"
+  },
+  "description": "Mouse interactive objects for three.js",
+  "bugs": {
+    "url": "https://github.com/MasatoMakino/threejs-interactive-object/issues"
+  },
+  "homepage": "https://github.com/MasatoMakino/threejs-interactive-object#readme",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib"
   }
 }
