@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, Event } from "three";
+import { BoxGeometry, Event } from "three";
 import {
   CheckBoxMesh,
   StateMaterialSet,
@@ -15,7 +15,7 @@ describe("CheckBoxMesh", () => {
   const matSet: StateMaterialSet = getMeshMaterialSet();
 
   test("初期化", () => {
-    const geometry = new BoxBufferGeometry(3, 3, 3);
+    const geometry = new BoxGeometry(3, 3, 3);
 
     checkbox = new CheckBoxMesh({
       geo: geometry,

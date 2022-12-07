@@ -1,28 +1,28 @@
-import { BoxBufferGeometry, MeshBasicMaterial } from "three";
+import { BoxGeometry, MeshBasicMaterial } from "three";
 import {
   CheckBoxMesh,
   ClickableMesh,
   StateMaterialSet,
   ThreeMouseEvent,
-  ThreeMouseEventType
+  ThreeMouseEventType,
 } from "../src/index";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("ThreeMouseEvent", () => {
   test("CheckBox以外でのイベント生成", () => {
-    const geometry = new BoxBufferGeometry(3, 3, 3);
+    const geometry = new BoxGeometry(3, 3, 3);
     const matSet = new StateMaterialSet({
       normal: new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.6,
-        transparent: true
-      })
+        transparent: true,
+      }),
     });
 
     const clickable = new ClickableMesh({
       geo: geometry,
-      material: matSet
+      material: matSet,
     });
 
     expect(() => {
@@ -31,18 +31,18 @@ describe("ThreeMouseEvent", () => {
   });
 
   test("clone", () => {
-    const geometry = new BoxBufferGeometry(3, 3, 3);
+    const geometry = new BoxGeometry(3, 3, 3);
     const matSet = new StateMaterialSet({
       normal: new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.6,
-        transparent: true
-      })
+        transparent: true,
+      }),
     });
 
     const clickable = new CheckBoxMesh({
       geo: geometry,
-      material: matSet
+      material: matSet,
     });
 
     const e = new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable);

@@ -36,7 +36,7 @@ export class ThreeMouseEvent implements Event {
    */
   private static getSelection(model: ClickableObject): boolean {
     if ("selection" in model) {
-      return model["selection"];
+      return !!model["selection"];
     } else {
       throw new Error(
         "選択可能なボタン以外を引数にして、SELECTイベントをインスタンス化しました。SELECTイベントはISelectableObject3Dを実装したクラスとともにインスタンス化してください。"
