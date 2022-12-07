@@ -6,18 +6,8 @@ name: CI
 on:
   push:
     branches: [main]
-    paths:
-      - "src/**"
-      - "__test__/**"
-      - "package.json"
-      - "tsconfig*.json"
   pull_request:
     branches: [main]
-    paths:
-      - "src/**"
-      - "__test__/**"
-      - "package.json"
-      - "tsconfig*.json"
 
 jobs:
   jest:
@@ -25,14 +15,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [16.x, 18.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: install apt packages for headless-gl
         run: sudo apt-get install libxi-dev xvfb libgl1-mesa-dev
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
