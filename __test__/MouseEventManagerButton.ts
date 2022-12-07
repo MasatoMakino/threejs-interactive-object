@@ -1,4 +1,4 @@
-import { BoxBufferGeometry } from "three";
+import { BoxGeometry } from "three";
 import { ClickableMesh, ClickableState, StateMaterialSet } from "../src";
 import { getMeshMaterialSet } from "./Materials";
 
@@ -9,7 +9,7 @@ export class MouseEventManagerButton {
   constructor() {
     this.materialSet = getMeshMaterialSet();
     this.button = new ClickableMesh({
-      geo: new BoxBufferGeometry(3, 3, 3),
+      geo: new BoxGeometry(3, 3, 3),
       material: this.materialSet,
     });
   }

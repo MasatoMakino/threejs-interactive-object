@@ -6,7 +6,7 @@ import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
 import { StateMaterialSet } from "./StateMaterial";
 
-interface InteractiveMeshParameters {
+export interface InteractiveMeshParameters {
   geo?: BufferGeometry;
   material: StateMaterialSet;
 }

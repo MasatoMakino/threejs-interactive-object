@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, MeshBasicMaterial } from "three";
+import { BoxGeometry, MeshBasicMaterial } from "three";
 import { ClickableMesh, StateMaterialSet } from "../src/index";
 import { getMeshMaterialSet } from "./Materials";
 import {
@@ -18,7 +18,7 @@ describe("ClickableMesh", () => {
 
   test("初期化", () => {
     clickable = new ClickableMesh({
-      geo: new BoxBufferGeometry(3, 3, 3),
+      geo: new BoxGeometry(3, 3, 3),
       material: matSet,
     });
     expect(clickable.material).toBe(matSet.normal.material);
