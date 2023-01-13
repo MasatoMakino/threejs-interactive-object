@@ -19,6 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - run: sudo apt-get update
       - name: install apt packages for headless-gl
         run: sudo apt-get install libxi-dev xvfb libgl1-mesa-dev
       - name: Use Node.js ${{ matrix.node-version }}
