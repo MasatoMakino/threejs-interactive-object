@@ -49,11 +49,11 @@
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",
     "build": "npm run buildTS && npm run demo && npm run typedocs",
     "demo": "npx @masatomakino/gulptask-demo-page --body '<canvas id=\"webgl-canvas\"></canvas>'",
-    "buildTS": "npx tsc --project tsconfig.cjs.json & npx tsc --project tsconfig.esm.json",
+    "buildTS": "tsc --project tsconfig.cjs.json & tsc --project tsconfig.esm.json",
     "typedocs": "npx typedoc --out ./docs/api src/index.ts",
     "server": "npx @masatomakino/gulptask-dev-server -b ./docs/demo",
     "watch:demo": "npm run demo -- -W",
-    "watch:tsc": "npx tsc -W --incremental --project tsconfig.cjs.json & npx tsc -W --incremental --project tsconfig.esm.json"
+    "watch:tsc": "tsc -W --incremental --project tsconfig.cjs.json & tsc -W --incremental --project tsconfig.esm.json"
   },
   "description": "Mouse interactive objects for three.js",
   "bugs": {
