@@ -3,7 +3,7 @@ import { ClickableObject, IClickableObject3D } from "./";
 
 export interface ThreeMouseEvent extends Event {
   type: ThreeMouseEventType;
-  model: ClickableObject;
+  model?: ClickableObject;
   isSelected?: boolean;
 }
 
