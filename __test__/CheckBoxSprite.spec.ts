@@ -39,12 +39,8 @@ describe("CheckBoxSprite", () => {
       .mockImplementation((e: Event) => null);
 
     clickButton(btn);
-    expect(spy).toHaveBeenCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.SELECT, btn)
-    );
-    expect(spy).toHaveBeenCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.CLICK, btn)
-    );
+    expect(spy).toHaveBeenCalledWith(new ThreeMouseEvent("select", btn));
+    expect(spy).toHaveBeenCalledWith(new ThreeMouseEvent("click", btn));
     expect(btn.material.opacity).toBe(0.85);
   });
 });

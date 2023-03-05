@@ -57,14 +57,14 @@ export function testRadioSelection(manager: RadioButtonManager) {
   expect(manager.selected.value).toEqual(values[index]);
 
   expect(spyManager).toHaveBeenCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
+    new ThreeMouseEvent("select", button)
   );
   expect(button.isFrozen).toBe(true);
 
   spyManager.mockClear();
   manager.select(button);
   expect(spyManager).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
+    new ThreeMouseEvent("select", button)
   );
   expect(button.isFrozen).toBe(true);
 }
@@ -103,9 +103,9 @@ const onClickSecondTime = (
 
   clickButton(button);
   expect(spyButton).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.SELECT, button)
+    new ThreeMouseEvent("select", button)
   );
   expect(spyButton).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.CLICK, button)
+    new ThreeMouseEvent("click", button)
   );
 };

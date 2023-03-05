@@ -164,8 +164,8 @@ describe("MouseEventManager", () => {
   test("click", () => {
     const spyClickButton = jest.fn((e) => e);
     const spyClickGroup = jest.fn((e) => e);
-    btn.button.addEventListener(ThreeMouseEventType.CLICK, spyClickButton);
-    wrapper.addEventListener(ThreeMouseEventType.CLICK, spyClickGroup);
+    btn.button.addEventListener("click", spyClickButton);
+    wrapper.addEventListener("click", spyClickGroup);
 
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
@@ -173,14 +173,14 @@ describe("MouseEventManager", () => {
     expect(spyClickButton).toHaveBeenCalledTimes(1);
     expect(spyClickGroup).toHaveBeenCalledTimes(1);
 
-    btn.button.removeEventListener(ThreeMouseEventType.CLICK, spyClickButton);
-    wrapper.removeEventListener(ThreeMouseEventType.CLICK, spyClickGroup);
+    btn.button.removeEventListener("click", spyClickButton);
+    wrapper.removeEventListener("click", spyClickGroup);
     managerScene.reset();
   });
 
   test("multiple over", () => {
     const spyOver = jest.fn((e) => e);
-    btn.button.addEventListener(ThreeMouseEventType.OVER, spyOver);
+    btn.button.addEventListener("over", spyOver);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
@@ -205,7 +205,7 @@ describe("MouseEventManager", () => {
     expect(spyOver).toBeCalled();
     spyOver.mockClear();
 
-    btn.button.removeEventListener(ThreeMouseEventType.OVER, spyOver);
+    btn.button.removeEventListener("over", spyOver);
     managerScene.reset();
   });
 });
