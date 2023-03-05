@@ -225,7 +225,7 @@ export class MouseEventManager {
    * @protected
    */
   protected checkTarget(
-    target: Object3D,
+    target: Object3D | undefined,
     type: ThreeMouseEventType,
     hasTarget: boolean = false
   ): boolean {
@@ -259,11 +259,7 @@ export class MouseEventManager {
       this.mouse
     );
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects: Intersection[] = this.raycaster.intersectObjects(
-      this.targets,
-      this.recursive
-    );
-    return intersects;
+    return this.raycaster.intersectObjects(this.targets, this.recursive);
   }
 }
 
