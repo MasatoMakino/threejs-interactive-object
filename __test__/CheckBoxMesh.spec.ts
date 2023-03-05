@@ -2,8 +2,7 @@ import { BoxGeometry, Event } from "three";
 import {
   CheckBoxMesh,
   StateMaterialSet,
-  ThreeMouseEvent,
-  ThreeMouseEventType,
+  ThreeMouseEventUtil,
 } from "../src/index";
 import { getMeshMaterialSet } from "./Materials";
 import { changeMaterialState, clickButton } from "./MouseControl";
@@ -45,14 +44,14 @@ describe("CheckBoxMesh", () => {
     //クリックして選択
     clickButton(checkbox);
     expect(spy).toHaveBeenLastCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.CLICK, checkbox)
+      ThreeMouseEventUtil.generate("click", checkbox)
     );
     expect(checkbox.model.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.overSelect.material);
 
     //クリックして選択解除
-    changeMaterialState(checkbox, ThreeMouseEventType.DOWN, matSet.downSelect);
-    changeMaterialState(checkbox, ThreeMouseEventType.UP, matSet.over);
+    changeMaterialState(checkbox, "down", matSet.downSelect);
+    changeMaterialState(checkbox, "up", matSet.over);
     expect(checkbox.model.selection).toBe(false);
   });
 });

@@ -1,9 +1,5 @@
 import { Event } from "three";
-import {
-  CheckBoxSprite,
-  ThreeMouseEvent,
-  ThreeMouseEventType,
-} from "../src/index";
+import { CheckBoxSprite, ThreeMouseEventUtil } from "../src/index";
 import { getSpriteMaterialSet } from "./Materials";
 import { clickButton } from "./MouseControl";
 
@@ -40,10 +36,10 @@ describe("CheckBoxSprite", () => {
 
     clickButton(btn);
     expect(spy).toHaveBeenCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.SELECT, btn)
+      ThreeMouseEventUtil.generate("select", btn)
     );
     expect(spy).toHaveBeenCalledWith(
-      new ThreeMouseEvent(ThreeMouseEventType.CLICK, btn)
+      ThreeMouseEventUtil.generate("click", btn)
     );
     expect(btn.material.opacity).toBe(0.85);
   });

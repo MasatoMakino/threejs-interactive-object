@@ -1,7 +1,7 @@
+import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 import { RAFTicker, RAFTickerEventType } from "@masatomakino/raf-ticker";
 import { Camera, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import { MouseEventManager } from "../src";
-import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 
 export class MouseEventManagerScene {
   public scene: Scene;

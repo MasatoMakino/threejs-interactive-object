@@ -12,9 +12,13 @@ import {
   Vector2,
   Vector4,
 } from "three";
-import { ClickableObject } from "./ClickableObject";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { ViewPortUtil } from "./ViewPortUtil";
+import {
+  ClickableObject,
+  ThreeMouseEvent,
+  ThreeMouseEventType,
+  ThreeMouseEventUtil,
+  ViewPortUtil,
+} from "./";
 
 export class MouseEventManager {
   protected camera: Camera;
@@ -93,16 +97,13 @@ export class MouseEventManager {
     this.currentOver = [];
 
     for (let intersect of intersects) {
-      const checked = this.checkTarget(
-        intersect.object,
-        ThreeMouseEventType.OVER
-      );
+      const checked = this.checkTarget(intersect.object, "over");
       if (checked) break;
     }
 
     beforeOver?.forEach((btn) => {
       if (!this.currentOver.includes(btn)) {
-        MouseEventManager.onButtonHandler(btn, ThreeMouseEventType.OUT);
+        MouseEventManager.onButtonHandler(btn, "out");
       }
     });
   };
@@ -113,7 +114,7 @@ export class MouseEventManager {
    */
   protected clearOver(): void {
     this.currentOver?.forEach((over) => {
-      MouseEventManager.onButtonHandler(over, ThreeMouseEventType.OUT);
+      MouseEventManager.onButtonHandler(over, "out");
     });
     this.currentOver = null;
   }
@@ -124,19 +125,19 @@ export class MouseEventManager {
    * @param {MouseEvent} event
    */
   protected onDocumentMouseUpDown = (event: MouseEvent) => {
-    let eventType: ThreeMouseEventType = ThreeMouseEventType.DOWN;
+    let eventType: ThreeMouseEventType = "down";
     switch (event.type) {
       case "mousedown":
-        eventType = ThreeMouseEventType.DOWN;
+        eventType = "down";
         break;
       case "mouseup":
-        eventType = ThreeMouseEventType.UP;
+        eventType = "up";
         break;
     }
 
     if (
       !ViewPortUtil.isContain(this.canvas, this.viewport, event) &&
-      eventType === ThreeMouseEventType.DOWN
+      eventType === "down"
     ) {
       return;
     }
@@ -180,20 +181,20 @@ export class MouseEventManager {
     type: ThreeMouseEventType
   ) {
     switch (type) {
-      case ThreeMouseEventType.DOWN:
-        btn.model.onMouseDownHandler(new ThreeMouseEvent(type, btn));
+      case "down":
+        btn.model.onMouseDownHandler(ThreeMouseEventUtil.generate(type, btn));
         return;
-      case ThreeMouseEventType.UP:
-        btn.model.onMouseUpHandler(new ThreeMouseEvent(type, btn));
+      case "up":
+        btn.model.onMouseUpHandler(ThreeMouseEventUtil.generate(type, btn));
         return;
-      case ThreeMouseEventType.OVER:
+      case "over":
         if (!btn.model.isOver) {
-          btn.model.onMouseOverHandler(new ThreeMouseEvent(type, btn));
+          btn.model.onMouseOverHandler(ThreeMouseEventUtil.generate(type, btn));
         }
         return;
-      case ThreeMouseEventType.OUT:
+      case "out":
         if (btn.model.isOver) {
-          btn.model.onMouseOutHandler(new ThreeMouseEvent(type, btn));
+          btn.model.onMouseOutHandler(ThreeMouseEventUtil.generate(type, btn));
         }
         return;
     }
@@ -228,7 +229,7 @@ export class MouseEventManager {
    * @protected
    */
   protected checkTarget(
-    target: Object3D,
+    target: Object3D | undefined,
     type: ThreeMouseEventType,
     hasTarget: boolean = false
   ): boolean {
@@ -237,7 +238,7 @@ export class MouseEventManager {
       MouseEventManager.implementsIClickableObject3D(target) &&
       target.model.mouseEnabled === true
     ) {
-      if (type === ThreeMouseEventType.OVER) {
+      if (type === "over") {
         this.currentOver.push(target);
       }
       MouseEventManager.onButtonHandler(target, type);
@@ -262,11 +263,7 @@ export class MouseEventManager {
       this.mouse
     );
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    const intersects: Intersection[] = this.raycaster.intersectObjects(
-      this.targets,
-      this.recursive
-    );
-    return intersects;
+    return this.raycaster.intersectObjects(this.targets, this.recursive);
   }
 }
 

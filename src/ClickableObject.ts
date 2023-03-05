@@ -1,9 +1,12 @@
-import { ClickableGroup } from "./ClickableGroup";
-import { ClickableMesh } from "./InteractiveMesh";
-import { ClickableSprite } from "./InteractiveSprite";
-import { ClickableState } from "./MouseEventManager";
-import { StateMaterialSet } from "./StateMaterial";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+import {
+  ClickableGroup,
+  ClickableMesh,
+  ClickableSprite,
+  ClickableState,
+  StateMaterialSet,
+  ThreeMouseEvent,
+  ThreeMouseEventUtil,
+} from "./";
 
 /**
  * クリックに反応する表示オブジェクトの型エイリアス
@@ -84,7 +87,7 @@ export class ClickableObject {
     if (this._isPress != currentPress) {
       this.onMouseClick();
 
-      let e = new ThreeMouseEvent(ThreeMouseEventType.CLICK, this);
+      const e = ThreeMouseEventUtil.generate("click", this);
       this.view.dispatchEvent(e);
     }
   }
@@ -102,7 +105,7 @@ export class ClickableObject {
   private onMouseOverOutHandler(event: ThreeMouseEvent): void {
     if (!this.checkActivity()) return;
 
-    this._isOver = event.type === ThreeMouseEventType.OVER;
+    this._isOver = event.type === "over";
     this.updateState(
       this._isOver ? ClickableState.OVER : ClickableState.NORMAL
     );
@@ -141,7 +144,6 @@ export class ClickableObject {
     if (!stateMat) return;
 
     switch (this.view.type) {
-      //TODO PR Mesh.d.ts
       case "Mesh":
       case "Sprite":
         this.view.material = stateMat.material;

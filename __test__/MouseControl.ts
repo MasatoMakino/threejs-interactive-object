@@ -6,8 +6,8 @@ import {
   MouseEventManager,
   StateMaterial,
   StateMaterialSet,
-  ThreeMouseEvent,
   ThreeMouseEventType,
+  ThreeMouseEventUtil,
 } from "../src/index";
 
 /**
@@ -15,15 +15,9 @@ import {
  * @param {IClickableObject3D} button
  */
 export function clickButton(button: IClickableObject3D) {
-  button.model.onMouseOverHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.OVER, button)
-  );
-  button.model.onMouseDownHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.DOWN, button)
-  );
-  button.model.onMouseUpHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.UP, button)
-  );
+  button.model.onMouseOverHandler(ThreeMouseEventUtil.generate("over", button));
+  button.model.onMouseDownHandler(ThreeMouseEventUtil.generate("down", button));
+  button.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", button));
 }
 
 /**
@@ -51,10 +45,10 @@ export function testMouseOver(
   target: ClickableMesh | ClickableSprite,
   matSet: StateMaterialSet
 ): void {
-  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
-  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
-  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
-  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+  changeMaterialState(target, "over", matSet.over);
+  changeMaterialState(target, "out", matSet.normal);
+  changeMaterialState(target, "over", matSet.over);
+  changeMaterialState(target, "out", matSet.normal);
 }
 
 /**
@@ -68,30 +62,30 @@ export function testDisable(
   matSet: StateMaterialSet
 ) {
   target.model.disable();
-  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.disable);
-  changeMaterialState(target, ThreeMouseEventType.DOWN, matSet.disable);
-  changeMaterialState(target, ThreeMouseEventType.UP, matSet.disable);
-  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.disable);
+  changeMaterialState(target, "over", matSet.disable);
+  changeMaterialState(target, "down", matSet.disable);
+  changeMaterialState(target, "up", matSet.disable);
+  changeMaterialState(target, "out", matSet.disable);
 
   target.model.enable();
-  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
-  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+  changeMaterialState(target, "over", matSet.over);
+  changeMaterialState(target, "out", matSet.normal);
 }
 
 export function testFrozen(
   target: ClickableMesh | ClickableSprite,
   matSet: StateMaterialSet
 ) {
-  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+  changeMaterialState(target, "out", matSet.normal);
   target.model.frozen = true;
-  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.normal);
-  changeMaterialState(target, ThreeMouseEventType.DOWN, matSet.normal);
-  changeMaterialState(target, ThreeMouseEventType.UP, matSet.normal);
-  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+  changeMaterialState(target, "over", matSet.normal);
+  changeMaterialState(target, "down", matSet.normal);
+  changeMaterialState(target, "up", matSet.normal);
+  changeMaterialState(target, "out", matSet.normal);
 
   target.model.frozen = false;
-  changeMaterialState(target, ThreeMouseEventType.OVER, matSet.over);
-  changeMaterialState(target, ThreeMouseEventType.OUT, matSet.normal);
+  changeMaterialState(target, "over", matSet.over);
+  changeMaterialState(target, "out", matSet.normal);
 }
 
 /**
@@ -119,11 +113,9 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
   const spy = jest
     .spyOn(target, "dispatchEvent")
     .mockImplementation((e: Event) => null);
-  target.model.onMouseUpHandler(
-    new ThreeMouseEvent(ThreeMouseEventType.UP, target)
-  );
+  target.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", target));
   expect(spy).toHaveBeenLastCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.UP, target)
+    ThreeMouseEventUtil.generate("up", target)
   );
 }
 
@@ -139,6 +131,6 @@ export function testClick(target: ClickableMesh | ClickableSprite) {
 
   clickButton(target);
   expect(spy).toHaveBeenLastCalledWith(
-    new ThreeMouseEvent(ThreeMouseEventType.CLICK, target)
+    ThreeMouseEventUtil.generate("click", target)
   );
 }

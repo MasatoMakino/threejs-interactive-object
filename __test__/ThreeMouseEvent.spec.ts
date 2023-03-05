@@ -4,7 +4,7 @@ import {
   ClickableMesh,
   StateMaterialSet,
   ThreeMouseEvent,
-  ThreeMouseEventType,
+  ThreeMouseEventUtil,
 } from "../src/index";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
@@ -26,7 +26,7 @@ describe("ThreeMouseEvent", () => {
     });
 
     expect(() => {
-      new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable);
+      ThreeMouseEventUtil.generate("select", clickable);
     }).toThrowError("選択可能なボタン以外を引数にして");
   });
 
@@ -45,8 +45,8 @@ describe("ThreeMouseEvent", () => {
       material: matSet,
     });
 
-    const e = new ThreeMouseEvent(ThreeMouseEventType.SELECT, clickable);
+    const e = ThreeMouseEventUtil.generate("select", clickable);
 
-    expect(e).toEqual(e.clone());
+    expect(e).toEqual(ThreeMouseEventUtil.clone(e));
   });
 });

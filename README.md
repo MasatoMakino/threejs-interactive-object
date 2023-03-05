@@ -71,7 +71,7 @@ scene.add(clickable);
 Add event listener.
 
 ```js
-clickable.addEventListener(ThreeMouseEventType.CLICK, (e) => {
+clickable.addEventListener("click", (e) => {
   cosole.log("CLICKED!");
 });
 ```

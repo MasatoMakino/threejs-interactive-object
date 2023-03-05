@@ -2,7 +2,7 @@ import { ClickableObject } from "./ClickableObject";
 import { CheckBoxMesh } from "./InteractiveMesh";
 import { CheckBoxSprite } from "./InteractiveSprite";
 import { ClickableState } from "./MouseEventManager";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+import { ThreeMouseEvent, ThreeMouseEventUtil } from "./ThreeMouseEvent";
 
 export class CheckBoxObject extends ClickableObject {
   public view: CheckBoxMesh | CheckBoxSprite;
@@ -17,10 +17,7 @@ export class CheckBoxObject extends ClickableObject {
   public onMouseClick(): void {
     this._isSelect = !this._isSelect;
 
-    const e: ThreeMouseEvent = new ThreeMouseEvent(
-      ThreeMouseEventType.SELECT,
-      this
-    );
+    const e: ThreeMouseEvent = ThreeMouseEventUtil.generate("select", this);
     this.view.dispatchEvent(e);
     this.updateMaterial();
   }

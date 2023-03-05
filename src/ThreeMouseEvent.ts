@@ -1,25 +1,26 @@
 import { Event } from "three";
-import { ClickableObject } from "./ClickableObject";
-import { IClickableObject3D } from "./MouseEventManager";
+import { ClickableObject, IClickableObject3D } from "./";
 
-export class ThreeMouseEvent implements Event {
+export interface ThreeMouseEvent extends Event {
   type: ThreeMouseEventType;
-  public model: ClickableObject;
+  model?: ClickableObject;
+  isSelected?: boolean;
+}
 
-  public readonly isSelected!: boolean;
-
-  constructor(
+export class ThreeMouseEventUtil {
+  static generate(
     type: ThreeMouseEventType,
     modelOrView: ClickableObject | IClickableObject3D
-  ) {
-    const model = ThreeMouseEvent.getModel(modelOrView);
+  ): ThreeMouseEvent {
+    const e: ThreeMouseEvent = {
+      type,
+      model: ThreeMouseEventUtil.getModel(modelOrView),
+    };
 
-    this.type = type;
-    this.model = model;
-
-    if (type === ThreeMouseEventType.SELECT) {
-      this.isSelected = ThreeMouseEvent.getSelection(model);
+    if (type === "select") {
+      e.isSelected = ThreeMouseEventUtil.getSelection(e.model);
     }
+    return e;
   }
 
   private static getModel(
@@ -30,11 +31,12 @@ export class ThreeMouseEvent implements Event {
     }
     return modelOrView;
   }
+
   /**
    * SELECTイベントの場合は、対象ボタンの選択状態を取得
    * @param model
    */
-  private static getSelection(model: ClickableObject): boolean {
+  static getSelection(model: ClickableObject): boolean {
     if ("selection" in model) {
       return !!model["selection"];
     } else {
@@ -44,16 +46,15 @@ export class ThreeMouseEvent implements Event {
     }
   }
 
-  public clone(): ThreeMouseEvent {
-    return new ThreeMouseEvent(this.type, this.model);
+  static clone(e: ThreeMouseEvent): ThreeMouseEvent {
+    return ThreeMouseEventUtil.generate(e.type, e.model);
   }
 }
 
-export enum ThreeMouseEventType {
-  CLICK = "THREE_MOUSE_EVENT_CLICK",
-  OVER = "THREE_MOUSE_EVENT_OVER",
-  OUT = "THREE_MOUSE_EVENT_OUT",
-  DOWN = "THREE_MOUSE_EVENT_DOWN",
-  UP = "THREE_MOUSE_EVENT_UP",
-  SELECT = "THREE_MOUSE_EVENT_SELECT",
-}
+export type ThreeMouseEventType =
+  | "click"
+  | "over"
+  | "out"
+  | "down"
+  | "up"
+  | "select";
