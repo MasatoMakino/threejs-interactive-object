@@ -1,5 +1,5 @@
 import { getMouseEvent } from "@masatomakino/fake-mouse-event";
-import { RAFTicker, RAFTickerEventType } from "@masatomakino/raf-ticker";
+import { RAFTicker } from "@masatomakino/raf-ticker";
 import { Camera, PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import { MouseEventManager } from "../src";
 
@@ -43,7 +43,7 @@ export class MouseEventManagerScene {
     this.renderer.render(this.scene, this.camera);
   }
   public interval(ratio: number = 2.0): void {
-    RAFTicker.emit(RAFTickerEventType.tick, {
+    RAFTicker.emit("tick", {
       timestamp: 0,
       delta: this.manager.throttlingTime_ms * ratio,
     });

@@ -1,8 +1,4 @@
-import {
-  RAFTicker,
-  RAFTickerEvent,
-  RAFTickerEventType,
-} from "@masatomakino/raf-ticker";
+import { RAFTicker, RAFTickerEventContext } from "@masatomakino/raf-ticker";
 import {
   Camera,
   Intersection,
@@ -70,10 +66,10 @@ export class MouseEventManager {
     canvas.addEventListener("mousedown", this.onDocumentMouseUpDown, false);
     canvas.addEventListener("mouseup", this.onDocumentMouseUpDown, false);
 
-    RAFTicker.on(RAFTickerEventType.tick, this.onTick);
+    RAFTicker.on("tick", this.onTick);
   }
 
-  private onTick = (e: RAFTickerEvent) => {
+  private onTick = (e: RAFTickerEventContext) => {
     this.throttlingDelta += e.delta;
     if (this.throttlingDelta < this.throttlingTime_ms) {
       return;
