@@ -1,7 +1,11 @@
 import { Event, EventDispatcher } from "three";
 import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
+import {
+  ThreeMouseEvent,
+  ThreeMouseEventType,
+  ThreeMouseEventUtil,
+} from "./ThreeMouseEvent";
 
 export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
   /**
@@ -87,7 +91,7 @@ export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
       mdl.selection = mdl.isFrozen = mdl === model;
     }
 
-    const evt = new ThreeMouseEvent("select", model);
+    const evt = ThreeMouseEventUtil.generate("select", model);
     this.dispatchEvent(evt);
   }
 

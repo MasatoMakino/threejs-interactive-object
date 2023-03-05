@@ -1,6 +1,6 @@
 import { getMouseEvent } from "@masatomakino/fake-mouse-event";
-import { ViewPortUtil } from "../src/ViewPortUtil";
 import { Vector2, Vector4 } from "three";
+import { ViewPortUtil } from "../src/ViewPortUtil";
 
 describe("ViewPortUtil", () => {
   const canvas = document.createElement("canvas");

@@ -1,24 +1,26 @@
 import { Event } from "three";
 import { ClickableObject, IClickableObject3D } from "./";
 
-export class ThreeMouseEvent implements Event {
+export interface ThreeMouseEvent extends Event {
   type: ThreeMouseEventType;
-  public model: ClickableObject;
+  model: ClickableObject;
+  isSelected?: boolean;
+}
 
-  public readonly isSelected!: boolean;
-
-  constructor(
+export class ThreeMouseEventUtil {
+  static generate(
     type: ThreeMouseEventType,
     modelOrView: ClickableObject | IClickableObject3D
-  ) {
-    const model = ThreeMouseEvent.getModel(modelOrView);
-
-    this.type = type;
-    this.model = model;
+  ): ThreeMouseEvent {
+    const e: ThreeMouseEvent = {
+      type,
+      model: ThreeMouseEventUtil.getModel(modelOrView),
+    };
 
     if (type === "select") {
-      this.isSelected = ThreeMouseEvent.getSelection(model);
+      e.isSelected = ThreeMouseEventUtil.getSelection(e.model);
     }
+    return e;
   }
 
   private static getModel(
@@ -29,11 +31,12 @@ export class ThreeMouseEvent implements Event {
     }
     return modelOrView;
   }
+
   /**
    * SELECTイベントの場合は、対象ボタンの選択状態を取得
    * @param model
    */
-  private static getSelection(model: ClickableObject): boolean {
+  static getSelection(model: ClickableObject): boolean {
     if ("selection" in model) {
       return !!model["selection"];
     } else {
@@ -43,8 +46,8 @@ export class ThreeMouseEvent implements Event {
     }
   }
 
-  public clone(): ThreeMouseEvent {
-    return new ThreeMouseEvent(this.type, this.model);
+  static clone(e: ThreeMouseEvent): ThreeMouseEvent {
+    return ThreeMouseEventUtil.generate(e.type, e.model);
   }
 }
 

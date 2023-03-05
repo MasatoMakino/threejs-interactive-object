@@ -5,6 +5,7 @@ import {
   ClickableState,
   StateMaterialSet,
   ThreeMouseEvent,
+  ThreeMouseEventUtil,
 } from "./";
 
 /**
@@ -86,7 +87,7 @@ export class ClickableObject {
     if (this._isPress != currentPress) {
       this.onMouseClick();
 
-      const e = new ThreeMouseEvent("click", this);
+      const e = ThreeMouseEventUtil.generate("click", this);
       this.view.dispatchEvent(e);
     }
   }

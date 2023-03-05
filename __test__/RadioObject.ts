@@ -1,12 +1,10 @@
 import { Event } from "three";
 import {
   ClickableView,
-  IClickableObject3D,
   RadioButtonManager,
   RadioButtonMesh,
   RadioButtonSprite,
-  ThreeMouseEvent,
-  ThreeMouseEventType,
+  ThreeMouseEventUtil,
 } from "../src/";
 import { clickButton } from "./MouseControl";
 
@@ -57,14 +55,14 @@ export function testRadioSelection(manager: RadioButtonManager) {
   expect(manager.selected.value).toEqual(values[index]);
 
   expect(spyManager).toHaveBeenCalledWith(
-    new ThreeMouseEvent("select", button)
+    ThreeMouseEventUtil.generate("select", button)
   );
   expect(button.isFrozen).toBe(true);
 
   spyManager.mockClear();
   manager.select(button);
   expect(spyManager).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent("select", button)
+    ThreeMouseEventUtil.generate("select", button)
   );
   expect(button.isFrozen).toBe(true);
 }
@@ -103,9 +101,9 @@ const onClickSecondTime = (
 
   clickButton(button);
   expect(spyButton).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent("select", button)
+    ThreeMouseEventUtil.generate("select", button)
   );
   expect(spyButton).not.toHaveBeenCalledWith(
-    new ThreeMouseEvent("click", button)
+    ThreeMouseEventUtil.generate("click", button)
   );
 };

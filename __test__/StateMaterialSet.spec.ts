@@ -1,7 +1,7 @@
-import { StateMaterial, StateMaterialSet, ClickableState } from "../src/index";
 import { Material, MeshBasicMaterial } from "three";
+import { ClickableState, StateMaterial, StateMaterialSet } from "../src/index";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation(x => x);
+const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("StateMaterial", () => {
   let mat: StateMaterial;
@@ -12,33 +12,33 @@ describe("StateMaterial", () => {
       new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.6,
-        transparent: true
+        transparent: true,
       }),
       new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.5,
-        transparent: true
+        transparent: true,
       }),
       new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.4,
-        transparent: true
+        transparent: true,
       }),
       new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.3,
-        transparent: true
+        transparent: true,
       }),
       new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.2,
-        transparent: true
+        transparent: true,
       }),
       new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.1,
-        transparent: true
-      })
+        transparent: true,
+      }),
     ];
     mat = new StateMaterial(matArray);
 
@@ -63,8 +63,8 @@ describe("StateMaterialSet", () => {
       normal: new MeshBasicMaterial({
         color: 0xffffff,
         opacity: 0.6,
-        transparent: true
-      })
+        transparent: true,
+      }),
     });
   };
   test("constructor : normalマテリアルのみ", () => {
@@ -78,7 +78,7 @@ describe("StateMaterialSet", () => {
       new MeshBasicMaterial({
         color: 0xff66ff,
         opacity: 0.6,
-        transparent: true
+        transparent: true,
       })
     );
 

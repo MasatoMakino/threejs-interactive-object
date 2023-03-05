@@ -6,8 +6,8 @@ import {
   MouseEventManager,
   StateMaterial,
   StateMaterialSet,
-  ThreeMouseEvent,
   ThreeMouseEventType,
+  ThreeMouseEventUtil,
 } from "../src/index";
 
 /**
@@ -15,9 +15,9 @@ import {
  * @param {IClickableObject3D} button
  */
 export function clickButton(button: IClickableObject3D) {
-  button.model.onMouseOverHandler(new ThreeMouseEvent("over", button));
-  button.model.onMouseDownHandler(new ThreeMouseEvent("down", button));
-  button.model.onMouseUpHandler(new ThreeMouseEvent("up", button));
+  button.model.onMouseOverHandler(ThreeMouseEventUtil.generate("over", button));
+  button.model.onMouseDownHandler(ThreeMouseEventUtil.generate("down", button));
+  button.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", button));
 }
 
 /**
@@ -113,8 +113,10 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
   const spy = jest
     .spyOn(target, "dispatchEvent")
     .mockImplementation((e: Event) => null);
-  target.model.onMouseUpHandler(new ThreeMouseEvent("up", target));
-  expect(spy).toHaveBeenLastCalledWith(new ThreeMouseEvent("up", target));
+  target.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", target));
+  expect(spy).toHaveBeenLastCalledWith(
+    ThreeMouseEventUtil.generate("up", target)
+  );
 }
 
 /**
@@ -128,5 +130,7 @@ export function testClick(target: ClickableMesh | ClickableSprite) {
     .mockImplementation((e: Event) => null);
 
   clickButton(target);
-  expect(spy).toHaveBeenLastCalledWith(new ThreeMouseEvent("click", target));
+  expect(spy).toHaveBeenLastCalledWith(
+    ThreeMouseEventUtil.generate("click", target)
+  );
 }

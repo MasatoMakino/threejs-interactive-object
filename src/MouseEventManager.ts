@@ -16,6 +16,7 @@ import {
   ClickableObject,
   ThreeMouseEvent,
   ThreeMouseEventType,
+  ThreeMouseEventUtil,
   ViewPortUtil,
 } from "./";
 
@@ -181,19 +182,19 @@ export class MouseEventManager {
   ) {
     switch (type) {
       case "down":
-        btn.model.onMouseDownHandler(new ThreeMouseEvent(type, btn));
+        btn.model.onMouseDownHandler(ThreeMouseEventUtil.generate(type, btn));
         return;
       case "up":
-        btn.model.onMouseUpHandler(new ThreeMouseEvent(type, btn));
+        btn.model.onMouseUpHandler(ThreeMouseEventUtil.generate(type, btn));
         return;
       case "over":
         if (!btn.model.isOver) {
-          btn.model.onMouseOverHandler(new ThreeMouseEvent(type, btn));
+          btn.model.onMouseOverHandler(ThreeMouseEventUtil.generate(type, btn));
         }
         return;
       case "out":
         if (btn.model.isOver) {
-          btn.model.onMouseOutHandler(new ThreeMouseEvent(type, btn));
+          btn.model.onMouseOutHandler(ThreeMouseEventUtil.generate(type, btn));
         }
         return;
     }

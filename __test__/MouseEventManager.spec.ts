@@ -1,10 +1,5 @@
 import { Group } from "three";
-import {
-  ClickableGroup,
-  ClickableState,
-  MouseEventManager,
-  ThreeMouseEvent,
-} from "../src";
+import { ClickableGroup, ClickableState, MouseEventManager } from "../src";
 import { MouseEventManagerButton } from "./MouseEventManagerButton";
 import { MouseEventManagerScene } from "./MouseEventManagerScene";
 
