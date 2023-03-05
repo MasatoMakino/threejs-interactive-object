@@ -1,11 +1,7 @@
 import { Event, EventDispatcher } from "three";
 import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
-import {
-  ThreeMouseEvent,
-  ThreeMouseEventType,
-  ThreeMouseEventUtil,
-} from "./ThreeMouseEvent";
+import { ThreeMouseEvent, ThreeMouseEventUtil } from "./ThreeMouseEvent";
 
 export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
   /**
