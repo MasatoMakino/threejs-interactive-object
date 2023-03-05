@@ -108,7 +108,7 @@ export class ViewPortUtil {
   private static getMousePosition(
     canvas: HTMLCanvasElement,
     event: MouseEvent,
-    viewport: Vector4
+    viewport?: Vector4
   ): { x: number; y: number } {
     if (viewport) {
       return this.getViewportMousePosition(canvas, event, viewport);
