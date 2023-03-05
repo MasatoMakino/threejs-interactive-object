@@ -12,9 +12,12 @@ import {
   Vector2,
   Vector4,
 } from "three";
-import { ClickableObject } from "./ClickableObject";
-import { ThreeMouseEvent, ThreeMouseEventType } from "./ThreeMouseEvent";
-import { ViewPortUtil } from "./ViewPortUtil";
+import {
+  ClickableObject,
+  ThreeMouseEvent,
+  ThreeMouseEventType,
+  ViewPortUtil,
+} from "./";
 
 export class MouseEventManager {
   protected camera: Camera;

@@ -12,3 +12,5 @@ export * from "./RadioButtonManager";
 export * from "./StateMaterial";
 export * from "./MouseEventManager";
 export * from "./ThreeMouseEvent";
+
+export * from "./ViewPortUtil";

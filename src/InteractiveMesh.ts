@@ -1,4 +1,4 @@
-import { BaseEvent, BufferGeometry, Mesh } from "three";
+import { BufferGeometry, Mesh } from "three";
 import {
   CheckBoxObject,
   ClickableObject,
@@ -6,7 +6,6 @@ import {
   RadioButtonObject,
   StateMaterialSet,
   TConstructor,
-  ThreeMouseEvent,
 } from "./";
 
 export interface InteractiveMeshParameters {
