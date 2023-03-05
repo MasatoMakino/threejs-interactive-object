@@ -7,11 +7,10 @@ import {
   RadioButtonManager,
   RadioButtonMesh,
   StateMaterialSet,
-  ThreeMouseEventType,
 } from "..";
 import {
   AmbientLight,
-  BoxBufferGeometry,
+  BoxGeometry,
   Color,
   MeshBasicMaterial,
   PerspectiveCamera,
@@ -115,7 +114,7 @@ const getSpriteMaterial = (img, opacity, color) => {
 };
 
 const testButton = () => {
-  const geometry = new BoxBufferGeometry(3, 3, 3);
+  const geometry = new BoxGeometry(3, 3, 3);
   const clickable = new ClickableMesh({
     geo: geometry,
     material: getMaterialSet(),
@@ -126,7 +125,7 @@ const testButton = () => {
 };
 
 const testCheckbox = () => {
-  const geometry = new BoxBufferGeometry(3, 3, 3);
+  const geometry = new BoxGeometry(3, 3, 3);
   const clickable = new CheckBoxMesh({
     geo: geometry,
     material: getMaterialSet(),
@@ -154,7 +153,7 @@ const alignSprite = (sprite, x) => {
 };
 
 const testRadio = () => {
-  const geometry = new BoxBufferGeometry(3, 3, 3);
+  const geometry = new BoxGeometry(3, 3, 3);
 
   const initButton = (x, buttonValue) => {
     const button = new RadioButtonMesh({
@@ -176,7 +175,7 @@ const testRadio = () => {
   );
   manager.addButton(initButton(20, undefined));
 
-  manager.addEventListener(ThreeMouseEventType.SELECT, (e) => {
+  manager.addEventListener("select", (e) => {
     console.log(e.model.value);
   });
 };
