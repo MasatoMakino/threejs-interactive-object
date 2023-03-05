@@ -34,10 +34,7 @@ export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
 
   public addModel(model: RadioButtonObject): void {
     this._models.push(model);
-    model.view.addEventListener(
-      ThreeMouseEventType.SELECT,
-      this.onSelectedButton
-    );
+    model.view.addEventListener("select", this.onSelectedButton);
   }
 
   /**
@@ -64,10 +61,7 @@ export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
     const index = this._models.indexOf(model);
     if (index > -1) {
       this._models.splice(index, 1);
-      model.view.removeEventListener(
-        ThreeMouseEventType.SELECT,
-        this.onSelectedButton
-      );
+      model.view.removeEventListener("select", this.onSelectedButton);
     }
     return model;
   }
@@ -93,7 +87,7 @@ export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
       mdl.selection = mdl.isFrozen = mdl === model;
     }
 
-    const evt = new ThreeMouseEvent(ThreeMouseEventType.SELECT, model);
+    const evt = new ThreeMouseEvent("select", model);
     this.dispatchEvent(evt);
   }
 

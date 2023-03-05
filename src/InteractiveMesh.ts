@@ -1,10 +1,13 @@
-import { BufferGeometry, Mesh } from "three";
-import { CheckBoxObject } from "./CheckBoxObject";
-import { ClickableObject } from "./ClickableObject";
-import { TConstructor } from "./InteractiveSprite";
-import { IClickableObject3D } from "./MouseEventManager";
-import { RadioButtonObject } from "./RadioButtonObject";
-import { StateMaterialSet } from "./StateMaterial";
+import { BaseEvent, BufferGeometry, Mesh } from "three";
+import {
+  CheckBoxObject,
+  ClickableObject,
+  IClickableObject3D,
+  RadioButtonObject,
+  StateMaterialSet,
+  TConstructor,
+  ThreeMouseEvent,
+} from "./";
 
 export interface InteractiveMeshParameters {
   geo?: BufferGeometry;

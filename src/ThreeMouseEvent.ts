@@ -17,7 +17,7 @@ export class ThreeMouseEvent implements Event {
     this.type = type;
     this.model = model;
 
-    if (type === ThreeMouseEventType.SELECT) {
+    if (type === "select") {
       this.isSelected = ThreeMouseEvent.getSelection(model);
     }
   }
@@ -49,11 +49,10 @@ export class ThreeMouseEvent implements Event {
   }
 }
 
-export enum ThreeMouseEventType {
-  CLICK = "THREE_MOUSE_EVENT_CLICK",
-  OVER = "THREE_MOUSE_EVENT_OVER",
-  OUT = "THREE_MOUSE_EVENT_OUT",
-  DOWN = "THREE_MOUSE_EVENT_DOWN",
-  UP = "THREE_MOUSE_EVENT_UP",
-  SELECT = "THREE_MOUSE_EVENT_SELECT",
-}
+export type ThreeMouseEventType =
+  | "click"
+  | "over"
+  | "out"
+  | "down"
+  | "up"
+  | "select";
