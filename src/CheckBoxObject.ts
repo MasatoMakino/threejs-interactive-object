@@ -5,7 +5,7 @@ import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventUtil } from "./ThreeMouseEvent";
 
 export class CheckBoxObject<T> extends ClickableObject<T> {
-  public view: CheckBoxMesh | CheckBoxSprite;
+  public view: CheckBoxMesh<T> | CheckBoxSprite<T>;
   protected _isSelect: boolean = false;
 
   /**

@@ -3,7 +3,7 @@ import { RadioButtonMesh } from "./InteractiveMesh";
 import { RadioButtonSprite } from "./InteractiveSprite";
 
 export class RadioButtonObject<T> extends CheckBoxObject<T> {
-  public view: RadioButtonMesh | RadioButtonSprite;
+  public view: RadioButtonMesh<T> | RadioButtonSprite<T>;
   protected _isFrozen: boolean = false;
 
   /**

@@ -3,9 +3,9 @@ import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
 import { ThreeMouseEvent, ThreeMouseEventUtil } from "./ThreeMouseEvent";
 
-export class RadioButtonManager<
-  T = any
-> extends EventDispatcher<ThreeMouseEvent> {
+export class RadioButtonManager<T = any> extends EventDispatcher<
+  ThreeMouseEvent<T>
+> {
   /**
    * このマネージャーの管理下のボタン
    * @type {any[]}

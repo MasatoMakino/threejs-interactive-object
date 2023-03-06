@@ -12,10 +12,13 @@ import {
  * クリックに反応する表示オブジェクトの型エイリアス
  * ClickableObjectはこれらの表示オブジェクトを状態にあわせて操作する。
  */
-export type ClickableView = ClickableMesh | ClickableSprite | ClickableGroup;
+export type ClickableView<ValueType> =
+  | ClickableMesh<ValueType>
+  | ClickableSprite<ValueType>
+  | ClickableGroup<ValueType>;
 
-export interface ClickableObjectParameters {
-  view: ClickableView;
+export interface ClickableObjectParameters<ValueType = any> {
+  view: ClickableView<ValueType>;
   material?: StateMaterialSet;
 }
 
@@ -45,7 +48,7 @@ export class ClickableObject<T> {
     return this._isPress;
   }
 
-  public view: ClickableView;
+  public view: ClickableView<T>;
   protected _isPress: boolean = false;
   protected _isOver: boolean = false;
   protected _enable: boolean = true;
