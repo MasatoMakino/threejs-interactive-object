@@ -8,7 +8,6 @@ export class RadioButtonManager<ValueType = any> extends EventDispatcher<
 > {
   /**
    * このマネージャーの管理下のボタン
-   * @type {any[]}
    * @private
    */
   protected _models: RadioButtonObject<ValueType>[] = [];
