@@ -3,13 +3,15 @@ import { IClickableObject3D } from "./MouseEventManager";
 import { RadioButtonObject } from "./RadioButtonObject";
 import { ThreeMouseEvent, ThreeMouseEventUtil } from "./ThreeMouseEvent";
 
-export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
+export class RadioButtonManager<
+  T = any
+> extends EventDispatcher<ThreeMouseEvent> {
   /**
    * このマネージャーの管理下のボタン
    * @type {any[]}
    * @private
    */
-  protected _models: RadioButtonObject[] = [];
+  protected _models: RadioButtonObject<T>[] = [];
   /**
    * 現状選択されているボタン。
    */

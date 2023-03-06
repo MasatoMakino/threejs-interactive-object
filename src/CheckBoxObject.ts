@@ -4,10 +4,10 @@ import { CheckBoxSprite } from "./InteractiveSprite";
 import { ClickableState } from "./MouseEventManager";
 import { ThreeMouseEvent, ThreeMouseEventUtil } from "./ThreeMouseEvent";
 
-export class CheckBoxObject extends ClickableObject {
+export class CheckBoxObject<T = any> extends ClickableObject<T> {
   public view: CheckBoxMesh | CheckBoxSprite;
   protected _isSelect: boolean = false;
-  public value: any;
+  public value: T;
 
   /**
    * クリックイベント時の処理
