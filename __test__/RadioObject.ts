@@ -91,9 +91,9 @@ export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
  * @param {RadioButtonManager} manager
  * @param {ClickableView} button
  */
-const onClickSecondTime = (
+const onClickSecondTime = <T>(
   manager: RadioButtonManager,
-  button: ClickableView
+  button: ClickableView<T>
 ) => {
   const spyButton = jest
     .spyOn(button, "dispatchEvent")

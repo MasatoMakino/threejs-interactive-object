@@ -26,8 +26,8 @@ export interface ClickableObjectParameters<ValueType = any> {
  * クリックに反応するObject
  * これ自体は表示オブジェクトではない。
  */
-export class ClickableObject<T> {
-  public value: T;
+export class ClickableObject<ValueType> {
+  public value: ValueType;
   get materialSet(): StateMaterialSet {
     return this._materialSet;
   }
@@ -48,7 +48,7 @@ export class ClickableObject<T> {
     return this._isPress;
   }
 
-  public view: ClickableView<T>;
+  public view: ClickableView<ValueType>;
   protected _isPress: boolean = false;
   protected _isOver: boolean = false;
   protected _enable: boolean = true;
