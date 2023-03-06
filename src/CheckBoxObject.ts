@@ -18,7 +18,7 @@ export class CheckBoxObject<ValueType> extends ClickableObject<ValueType> {
   public onMouseClick(): void {
     this._isSelect = !this._isSelect;
 
-    const e: ThreeMouseEvent = ThreeMouseEventUtil.generate("select", this);
+    const e = ThreeMouseEventUtil.generate("select", this);
     this.view.dispatchEvent(e);
     this.updateMaterial();
   }
