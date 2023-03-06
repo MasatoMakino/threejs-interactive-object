@@ -1,7 +1,5 @@
 import { Event } from "three";
 import { ClickableObject, IClickableObject3D } from "./";
-import any = jasmine.any;
-
 export interface ThreeMouseEvent<T = any> extends Event {
   type: ThreeMouseEventType;
   model?: ClickableObject<T>;
