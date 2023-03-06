@@ -274,6 +274,7 @@ export enum ClickableState {
   DOWN = "normal_down",
   DISABLE = "disable",
 }
+// TODO change to type
 
 /**
  * マウス操作可能な3Dオブジェクトのインターフェース

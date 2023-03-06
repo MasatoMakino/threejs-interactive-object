@@ -1,16 +1,17 @@
 import { Event } from "three";
 import { ClickableObject, IClickableObject3D } from "./";
+import any = jasmine.any;
 
-export interface ThreeMouseEvent extends Event {
+export interface ThreeMouseEvent<T = any> extends Event {
   type: ThreeMouseEventType;
-  model?: ClickableObject;
+  model?: ClickableObject<T>;
   isSelected?: boolean;
 }
 
 export class ThreeMouseEventUtil {
-  static generate(
+  static generate<T>(
     type: ThreeMouseEventType,
-    modelOrView: ClickableObject | IClickableObject3D
+    modelOrView: ClickableObject<T> | IClickableObject3D<T>
   ): ThreeMouseEvent {
     const e: ThreeMouseEvent = {
       type,
@@ -23,9 +24,9 @@ export class ThreeMouseEventUtil {
     return e;
   }
 
-  private static getModel(
-    modelOrView: ClickableObject | IClickableObject3D
-  ): ClickableObject {
+  private static getModel<T>(
+    modelOrView: ClickableObject<T> | IClickableObject3D<T>
+  ): ClickableObject<T> {
     if ("model" in modelOrView) {
       return modelOrView.model;
     }
@@ -36,7 +37,7 @@ export class ThreeMouseEventUtil {
    * SELECTイベントの場合は、対象ボタンの選択状態を取得
    * @param model
    */
-  static getSelection(model: ClickableObject): boolean {
+  static getSelection<T>(model: ClickableObject<T>): boolean {
     if ("selection" in model) {
       return !!model["selection"];
     } else {

@@ -9,7 +9,7 @@ export interface TConstructor<T> {
   new (param: ClickableObjectParameters): T;
 }
 
-class InteractiveSprite<T extends ClickableObject>
+class InteractiveSprite<ValueType, T extends ClickableObject<ValueType>>
   extends Sprite
   implements IClickableObject3D
 {
@@ -20,29 +20,29 @@ class InteractiveSprite<T extends ClickableObject>
     this.model = new ctor({ view: this, material: material });
   }
 }
-export class ClickableSprite
-  extends InteractiveSprite<ClickableObject>
+export class ClickableSprite<ValueType = any>
+  extends InteractiveSprite<ValueType, ClickableObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(material: StateMaterialSet) {
-    super(material, ClickableObject);
+    super(material, ClickableObject<ValueType>);
   }
 }
 
-export class CheckBoxSprite
-  extends InteractiveSprite<CheckBoxObject>
+export class CheckBoxSprite<ValueType = any>
+  extends InteractiveSprite<ValueType, CheckBoxObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(material: StateMaterialSet) {
-    super(material, CheckBoxObject);
+    super(material, CheckBoxObject<ValueType>);
   }
 }
 
-export class RadioButtonSprite
-  extends InteractiveSprite<RadioButtonObject>
+export class RadioButtonSprite<ValueType = any>
+  extends InteractiveSprite<ValueType, RadioButtonObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(material: StateMaterialSet) {
-    super(material, RadioButtonObject);
+    super(material, RadioButtonObject<ValueType>);
   }
 }

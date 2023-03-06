@@ -13,7 +13,7 @@ export interface InteractiveMeshParameters {
   material: StateMaterialSet;
 }
 
-class InteractiveMesh<T extends ClickableObject>
+class InteractiveMesh<ValueType, T extends ClickableObject<ValueType>>
   extends Mesh
   implements IClickableObject3D
 {
@@ -26,28 +26,28 @@ class InteractiveMesh<T extends ClickableObject>
 }
 
 export class ClickableMesh<ValueType = any>
-  extends InteractiveMesh<ClickableObject<ValueType>>
+  extends InteractiveMesh<ValueType, ClickableObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(parameters: InteractiveMeshParameters) {
-    super(parameters, ClickableObject);
+    super(parameters, ClickableObject<ValueType>);
   }
 }
 
 export class CheckBoxMesh<ValueType = any>
-  extends InteractiveMesh<CheckBoxObject<ValueType>>
+  extends InteractiveMesh<ValueType, CheckBoxObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(parameters: InteractiveMeshParameters) {
-    super(parameters, CheckBoxObject);
+    super(parameters, CheckBoxObject<ValueType>);
   }
 }
 
 export class RadioButtonMesh<ValueType = any>
-  extends InteractiveMesh<RadioButtonObject<ValueType>>
+  extends InteractiveMesh<ValueType, RadioButtonObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(parameters: InteractiveMeshParameters) {
-    super(parameters, RadioButtonObject);
+    super(parameters, RadioButtonObject<ValueType>);
   }
 }

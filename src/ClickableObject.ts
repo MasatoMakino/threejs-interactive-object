@@ -23,7 +23,7 @@ export interface ClickableObjectParameters {
  * クリックに反応するObject
  * これ自体は表示オブジェクトではない。
  */
-export class ClickableObject<T = any> {
+export class ClickableObject<T> {
   public value: T;
   get materialSet(): StateMaterialSet {
     return this._materialSet;
