@@ -78,7 +78,7 @@ export class MouseEventManager {
     this.throttlingDelta %= this.throttlingTime_ms;
   };
 
-  protected onDocumentMouseMove = (event: any) => {
+  protected onDocumentMouseMove = (event: MouseEvent) => {
     if (this.hasThrottled) return;
     this.hasThrottled = true;
 
