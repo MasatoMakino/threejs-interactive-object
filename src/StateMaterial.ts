@@ -1,5 +1,5 @@
 import { Material } from "three";
-import { ClickableState } from "./MouseEventManager";
+import { ClickableState } from "./";
 
 /**
  * IClickableObject3D用の各状態用マテリアル。

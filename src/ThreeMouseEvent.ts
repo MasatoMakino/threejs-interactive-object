@@ -1,5 +1,6 @@
 import { Event } from "three";
 import { ClickableObject, IClickableObject3D } from "./";
+
 export interface ThreeMouseEvent<ValueType = any> extends Event {
   type: ThreeMouseEventType;
   model?: ClickableObject<ValueType>;

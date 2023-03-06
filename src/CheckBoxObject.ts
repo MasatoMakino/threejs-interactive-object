@@ -1,8 +1,10 @@
-import { ClickableObject } from "./ClickableObject";
-import { CheckBoxMesh } from "./InteractiveMesh";
-import { CheckBoxSprite } from "./InteractiveSprite";
-import { ClickableState } from "./MouseEventManager";
-import { ThreeMouseEvent, ThreeMouseEventUtil } from "./ThreeMouseEvent";
+import {
+  CheckBoxMesh,
+  CheckBoxSprite,
+  ClickableObject,
+  ThreeMouseEvent,
+  ThreeMouseEventUtil,
+} from "./";
 
 export class CheckBoxObject<ValueType> extends ClickableObject<ValueType> {
   public view: CheckBoxMesh<ValueType> | CheckBoxSprite<ValueType>;

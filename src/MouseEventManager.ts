@@ -10,7 +10,6 @@ import {
 } from "three";
 import {
   ClickableObject,
-  ThreeMouseEvent,
   ThreeMouseEventType,
   ThreeMouseEventUtil,
   ViewPortUtil,

@@ -1,9 +1,12 @@
 import { Sprite } from "three";
-import { CheckBoxObject } from "./CheckBoxObject";
-import { ClickableObject, ClickableObjectParameters } from "./ClickableObject";
-import { IClickableObject3D } from "./MouseEventManager";
-import { RadioButtonObject } from "./RadioButtonObject";
-import { StateMaterialSet } from "./StateMaterial";
+import {
+  CheckBoxObject,
+  ClickableObject,
+  ClickableObjectParameters,
+  IClickableObject3D,
+  RadioButtonObject,
+  StateMaterialSet,
+} from "./";
 
 export interface TConstructor<T> {
   new (param: ClickableObjectParameters): T;

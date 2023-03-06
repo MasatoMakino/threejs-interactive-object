@@ -1,6 +1,5 @@
 import { Group } from "three";
-import { ClickableObject } from "./ClickableObject";
-import { IClickableObject3D } from "./MouseEventManager";
+import { ClickableObject, IClickableObject3D } from "./";
 
 export class ClickableGroup<ValueType = any>
   extends Group
