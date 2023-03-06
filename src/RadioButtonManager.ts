@@ -41,10 +41,9 @@ export class RadioButtonManager extends EventDispatcher<ThreeMouseEvent> {
    * 管理下のボタンが選択された場合の処理
    * @param {Event} e
    */
-  private onSelectedButton = (e: any) => {
-    const evt = e as ThreeMouseEvent;
-    if (evt.isSelected) {
-      this.select(evt.model as RadioButtonObject);
+  private onSelectedButton = (e: ThreeMouseEvent) => {
+    if (e.isSelected) {
+      this.select(e.model as RadioButtonObject);
     }
   };
 
