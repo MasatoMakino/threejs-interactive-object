@@ -25,8 +25,8 @@ class InteractiveMesh<T extends ClickableObject>
   }
 }
 
-export class ClickableMesh
-  extends InteractiveMesh<ClickableObject>
+export class ClickableMesh<ValueType = any>
+  extends InteractiveMesh<ClickableObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(parameters: InteractiveMeshParameters) {
@@ -34,8 +34,8 @@ export class ClickableMesh
   }
 }
 
-export class CheckBoxMesh
-  extends InteractiveMesh<CheckBoxObject>
+export class CheckBoxMesh<ValueType = any>
+  extends InteractiveMesh<CheckBoxObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(parameters: InteractiveMeshParameters) {
@@ -43,8 +43,8 @@ export class CheckBoxMesh
   }
 }
 
-export class RadioButtonMesh
-  extends InteractiveMesh<RadioButtonObject>
+export class RadioButtonMesh<ValueType = any>
+  extends InteractiveMesh<RadioButtonObject<ValueType>>
   implements IClickableObject3D
 {
   constructor(parameters: InteractiveMeshParameters) {

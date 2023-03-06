@@ -279,6 +279,6 @@ export enum ClickableState {
  * マウス操作可能な3Dオブジェクトのインターフェース
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
-export interface IClickableObject3D {
-  model: ClickableObject;
+export interface IClickableObject3D<T = any> {
+  model: ClickableObject<T>;
 }
