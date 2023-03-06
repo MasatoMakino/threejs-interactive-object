@@ -24,6 +24,7 @@ export interface ClickableObjectParameters {
  * これ自体は表示オブジェクトではない。
  */
 export class ClickableObject<T = any> {
+  public value: T;
   get materialSet(): StateMaterialSet {
     return this._materialSet;
   }
