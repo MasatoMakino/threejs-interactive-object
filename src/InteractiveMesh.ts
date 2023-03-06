@@ -15,7 +15,7 @@ export interface InteractiveMeshParameters {
 
 class InteractiveMesh<ValueType, T extends ClickableObject<ValueType>>
   extends Mesh
-  implements IClickableObject3D
+  implements IClickableObject3D<ValueType>
 {
   public model: T;
 
@@ -27,7 +27,7 @@ class InteractiveMesh<ValueType, T extends ClickableObject<ValueType>>
 
 export class ClickableMesh<ValueType = any>
   extends InteractiveMesh<ValueType, ClickableObject<ValueType>>
-  implements IClickableObject3D
+  implements IClickableObject3D<ValueType>
 {
   constructor(parameters: InteractiveMeshParameters) {
     super(parameters, ClickableObject<ValueType>);
@@ -36,7 +36,7 @@ export class ClickableMesh<ValueType = any>
 
 export class CheckBoxMesh<ValueType = any>
   extends InteractiveMesh<ValueType, CheckBoxObject<ValueType>>
-  implements IClickableObject3D
+  implements IClickableObject3D<ValueType>
 {
   constructor(parameters: InteractiveMeshParameters) {
     super(parameters, CheckBoxObject<ValueType>);
@@ -45,7 +45,7 @@ export class CheckBoxMesh<ValueType = any>
 
 export class RadioButtonMesh<ValueType = any>
   extends InteractiveMesh<ValueType, RadioButtonObject<ValueType>>
-  implements IClickableObject3D
+  implements IClickableObject3D<ValueType>
 {
   constructor(parameters: InteractiveMeshParameters) {
     super(parameters, RadioButtonObject<ValueType>);

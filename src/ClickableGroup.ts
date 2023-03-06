@@ -4,7 +4,7 @@ import { IClickableObject3D } from "./MouseEventManager";
 
 export class ClickableGroup<ValueType = any>
   extends Group
-  implements IClickableObject3D
+  implements IClickableObject3D<ValueType>
 {
   public model: ClickableObject<ValueType>;
 
