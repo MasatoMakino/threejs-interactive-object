@@ -134,11 +134,11 @@ export class StateMaterialSet {
     }
 
     switch (state) {
-      case ClickableState.NORMAL:
+      case "normal":
         return isSelected ? this.normalSelect : this.normal;
-      case ClickableState.DOWN:
+      case "down":
         return isSelected ? this.downSelect : this.down;
-      case ClickableState.OVER:
+      case "over":
         return isSelected ? this.overSelect : this.over;
     }
 

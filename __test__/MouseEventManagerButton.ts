@@ -21,7 +21,7 @@ export class MouseEventManagerButton {
   public checkMaterial(state: ClickableState): void {
     const setMat = this.materialSet.getMaterial(
       state,
-      state !== ClickableState.DISABLE
+      state !== "disable"
     ).material;
 
     expect(this.button.material).toBe(setMat);

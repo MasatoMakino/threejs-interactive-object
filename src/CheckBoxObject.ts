@@ -27,7 +27,7 @@ export class CheckBoxObject<ValueType> extends ClickableObject<ValueType> {
 
   public set selection(bool: boolean) {
     this._isSelect = bool;
-    this.updateState(ClickableState.NORMAL);
+    this.updateState("normal");
   }
 
   protected updateMaterial(): void {

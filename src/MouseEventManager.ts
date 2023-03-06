@@ -267,14 +267,9 @@ export class MouseEventManager {
  * IClickable3DObjectの現在状態を表す定数セット。
  * これとselectフラグを掛け合わせることで状態を判定する。
  */
-export enum ClickableState {
+export type ClickableState =
   //ボタンの状態を表す定数
-  NORMAL = "normal",
-  OVER = "normal_over",
-  DOWN = "normal_down",
-  DISABLE = "disable",
-}
-// TODO change to type
+  "normal" | "over" | "down" | "disable";
 
 /**
  * マウス操作可能な3Dオブジェクトのインターフェース
