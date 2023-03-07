@@ -14,7 +14,7 @@ import {
  * 対象のボタンをクリックする
  * @param {IClickableObject3D} button
  */
-export function clickButton(button: IClickableObject3D) {
+export function clickButton(button: IClickableObject3D<unknown>) {
   button.model.onMouseOverHandler(ThreeMouseEventUtil.generate("over", button));
   button.model.onMouseDownHandler(ThreeMouseEventUtil.generate("down", button));
   button.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", button));

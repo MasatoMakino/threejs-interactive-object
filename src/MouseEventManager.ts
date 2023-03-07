@@ -24,7 +24,7 @@ export class MouseEventManager {
   protected raycaster: Raycaster = new Raycaster();
   protected mouse: Vector2 = new Vector2();
 
-  protected currentOver: IClickableObject3D[] | null;
+  protected currentOver: IClickableObject3D<unknown>[] | null;
 
   protected hasThrottled: boolean = false;
   public throttlingTime_ms: number;
@@ -172,7 +172,7 @@ export class MouseEventManager {
    * @param {ThreeMouseEventType} type
    */
   public static onButtonHandler(
-    btn: IClickableObject3D,
+    btn: IClickableObject3D<unknown>,
     type: ThreeMouseEventType
   ) {
     switch (type) {
@@ -203,10 +203,10 @@ export class MouseEventManager {
    */
   private static implementsIClickableObject3D(
     arg: any
-  ): arg is IClickableObject3D {
+  ): arg is IClickableObject3D<unknown> {
     return (
       arg !== null &&
-      typeof arg === "object" &&
+      arg === "object" &&
       arg.model !== null &&
       typeof arg.model === "object" &&
       arg.model.mouseEnabled !== null &&
@@ -274,6 +274,6 @@ export type ClickableState =
  * マウス操作可能な3Dオブジェクトのインターフェース
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
-export interface IClickableObject3D<Value = any> {
+export interface IClickableObject3D<Value> {
   model: ClickableObject<Value>;
 }
