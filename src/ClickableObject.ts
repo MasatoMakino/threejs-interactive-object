@@ -69,14 +69,14 @@ export class ClickableObject<ValueType> {
     this.updateMaterial();
   }
 
-  public onMouseDownHandler(event: ThreeMouseEvent): void {
+  public onMouseDownHandler(event: ThreeMouseEvent<ValueType>): void {
     if (!this.checkActivity()) return;
     this._isPress = true;
     this.updateState("down");
     this.view.dispatchEvent(event);
   }
 
-  public onMouseUpHandler(event: ThreeMouseEvent): void {
+  public onMouseUpHandler(event: ThreeMouseEvent<ValueType>): void {
     if (!this.checkActivity()) return;
 
     const currentPress: boolean = this._isPress;
@@ -96,15 +96,15 @@ export class ClickableObject<ValueType> {
 
   public onMouseClick(): void {}
 
-  public onMouseOverHandler(event: ThreeMouseEvent): void {
+  public onMouseOverHandler(event: ThreeMouseEvent<ValueType>): void {
     this.onMouseOverOutHandler(event);
   }
 
-  public onMouseOutHandler(event: ThreeMouseEvent): void {
+  public onMouseOutHandler(event: ThreeMouseEvent<ValueType>): void {
     this.onMouseOverOutHandler(event);
   }
 
-  private onMouseOverOutHandler(event: ThreeMouseEvent): void {
+  private onMouseOverOutHandler(event: ThreeMouseEvent<ValueType>): void {
     if (!this.checkActivity()) return;
 
     this._isOver = event.type === "over";
