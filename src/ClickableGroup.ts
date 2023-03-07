@@ -1,15 +1,15 @@
 import { Group } from "three";
 import { ClickableObject, IClickableObject3D } from "./";
 
-export class ClickableGroup<ValueType = any>
+export class ClickableGroup<Value = any>
   extends Group
-  implements IClickableObject3D<ValueType>
+  implements IClickableObject3D<Value>
 {
-  public model: ClickableObject<ValueType>;
+  public model: ClickableObject<Value>;
 
   constructor() {
     super();
-    this.model = new ClickableObject<ValueType>({
+    this.model = new ClickableObject<Value>({
       view: this,
     });
   }

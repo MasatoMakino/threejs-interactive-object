@@ -12,13 +12,13 @@ import {
  * クリックに反応する表示オブジェクトの型エイリアス
  * ClickableObjectはこれらの表示オブジェクトを状態にあわせて操作する。
  */
-export type ClickableView<ValueType> =
-  | ClickableMesh<ValueType>
-  | ClickableSprite<ValueType>
-  | ClickableGroup<ValueType>;
+export type ClickableView<Value> =
+  | ClickableMesh<Value>
+  | ClickableSprite<Value>
+  | ClickableGroup<Value>;
 
-export interface ClickableObjectParameters<ValueType = any> {
-  view: ClickableView<ValueType>;
+export interface ClickableObjectParameters<Value> {
+  view: ClickableView<Value>;
   material?: StateMaterialSet;
 }
 
@@ -26,8 +26,8 @@ export interface ClickableObjectParameters<ValueType = any> {
  * クリックに反応するObject
  * これ自体は表示オブジェクトではない。
  */
-export class ClickableObject<ValueType> {
-  public value: ValueType;
+export class ClickableObject<Value> {
+  public value: Value;
   get materialSet(): StateMaterialSet {
     return this._materialSet;
   }
@@ -48,7 +48,7 @@ export class ClickableObject<ValueType> {
     return this._isPress;
   }
 
-  public view: ClickableView<ValueType>;
+  public view: ClickableView<Value>;
   protected _isPress: boolean = false;
   protected _isOver: boolean = false;
   protected _enable: boolean = true;
@@ -62,21 +62,21 @@ export class ClickableObject<ValueType> {
   /**
    * コンストラクタ
    */
-  constructor(parameters: ClickableObjectParameters) {
+  constructor(parameters: ClickableObjectParameters<Value>) {
     this.view = parameters.view;
 
     this._materialSet ??= parameters.material;
     this.updateMaterial();
   }
 
-  public onMouseDownHandler(event: ThreeMouseEvent): void {
+  public onMouseDownHandler(event: ThreeMouseEvent<Value>): void {
     if (!this.checkActivity()) return;
     this._isPress = true;
     this.updateState("down");
     this.view.dispatchEvent(event);
   }
 
-  public onMouseUpHandler(event: ThreeMouseEvent): void {
+  public onMouseUpHandler(event: ThreeMouseEvent<Value>): void {
     if (!this.checkActivity()) return;
 
     const currentPress: boolean = this._isPress;
@@ -96,15 +96,15 @@ export class ClickableObject<ValueType> {
 
   public onMouseClick(): void {}
 
-  public onMouseOverHandler(event: ThreeMouseEvent): void {
+  public onMouseOverHandler(event: ThreeMouseEvent<Value>): void {
     this.onMouseOverOutHandler(event);
   }
 
-  public onMouseOutHandler(event: ThreeMouseEvent): void {
+  public onMouseOutHandler(event: ThreeMouseEvent<Value>): void {
     this.onMouseOverOutHandler(event);
   }
 
-  private onMouseOverOutHandler(event: ThreeMouseEvent): void {
+  private onMouseOverOutHandler(event: ThreeMouseEvent<Value>): void {
     if (!this.checkActivity()) return;
 
     this._isOver = event.type === "over";

@@ -6,18 +6,18 @@ import {
   ThreeMouseEventUtil,
 } from "./";
 
-export class RadioButtonManager<ValueType = any> extends EventDispatcher<
-  ThreeMouseEvent<ValueType>
+export class RadioButtonManager<Value = any> extends EventDispatcher<
+  ThreeMouseEvent<Value>
 > {
   /**
    * このマネージャーの管理下のボタン
    * @private
    */
-  protected _models: RadioButtonObject<ValueType>[] = [];
+  protected _models: RadioButtonObject<Value>[] = [];
   /**
    * 現状選択されているボタン。
    */
-  protected _selected!: RadioButtonObject<ValueType>;
+  protected _selected!: RadioButtonObject<Value>;
 
   /**
    * コンストラクタ
@@ -30,13 +30,13 @@ export class RadioButtonManager<ValueType = any> extends EventDispatcher<
    * このマネージャーの管理下にボタンを追加する
    * @param {IClickableObject3D[]} buttons
    */
-  public addButton(...buttons: IClickableObject3D<ValueType>[]): void {
+  public addButton(...buttons: IClickableObject3D<Value>[]): void {
     buttons.forEach((btn) => {
-      this.addModel(btn.model as RadioButtonObject<ValueType>);
+      this.addModel(btn.model as RadioButtonObject<Value>);
     });
   }
 
-  public addModel(model: RadioButtonObject<ValueType>): void {
+  public addModel(model: RadioButtonObject<Value>): void {
     this._models.push(model);
     model.view.addEventListener("select", this.onSelectedButton);
   }
@@ -45,9 +45,9 @@ export class RadioButtonManager<ValueType = any> extends EventDispatcher<
    * 管理下のボタンが選択された場合の処理
    * @param {Event} e
    */
-  private onSelectedButton = (e: ThreeMouseEvent<ValueType>) => {
+  private onSelectedButton = (e: ThreeMouseEvent<Value>) => {
     if (e.isSelected) {
-      this.select(e.model as RadioButtonObject<ValueType>);
+      this.select(e.model as RadioButtonObject<Value>);
     }
   };
 
@@ -56,13 +56,13 @@ export class RadioButtonManager<ValueType = any> extends EventDispatcher<
    * ボタン自体の削除は行わない。
    * @param {IClickableObject3D} button
    */
-  public removeButton(button: IClickableObject3D<ValueType>): void {
-    this.removeModel(button.model as RadioButtonObject<ValueType>);
+  public removeButton(button: IClickableObject3D<Value>): void {
+    this.removeModel(button.model as RadioButtonObject<Value>);
   }
 
   public removeModel(
-    model: RadioButtonObject<ValueType>
-  ): RadioButtonObject<ValueType> {
+    model: RadioButtonObject<Value>
+  ): RadioButtonObject<Value> {
     const index = this._models.indexOf(model);
     if (index > -1) {
       this._models.splice(index, 1);
@@ -75,7 +75,7 @@ export class RadioButtonManager<ValueType = any> extends EventDispatcher<
    * 特定のボタンを選択する
    * @param {RadioButtonObject} model
    */
-  public select(model: RadioButtonObject<ValueType>): void {
+  public select(model: RadioButtonObject<Value>): void {
     const index = this._models.indexOf(model);
     if (index === -1) {
       console.warn("管理下でないボタンが選択処理されました。");
@@ -96,11 +96,11 @@ export class RadioButtonManager<ValueType = any> extends EventDispatcher<
     this.dispatchEvent(evt);
   }
 
-  get selected(): RadioButtonObject<ValueType> {
+  get selected(): RadioButtonObject<Value> {
     return this._selected;
   }
 
-  get models(): RadioButtonObject<ValueType>[] {
+  get models(): RadioButtonObject<Value>[] {
     return this._models;
   }
 }
