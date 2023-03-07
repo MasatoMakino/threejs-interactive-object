@@ -206,7 +206,7 @@ export class MouseEventManager {
   ): arg is IClickableObject3D<unknown> {
     return (
       arg !== null &&
-      arg === "object" &&
+      typeof arg === "object" &&
       arg.model !== null &&
       typeof arg.model === "object" &&
       arg.model.mouseEnabled !== null &&
