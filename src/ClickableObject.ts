@@ -17,7 +17,7 @@ export type ClickableView<ValueType> =
   | ClickableSprite<ValueType>
   | ClickableGroup<ValueType>;
 
-export interface ClickableObjectParameters<ValueType = any> {
+export interface ClickableObjectParameters<ValueType> {
   view: ClickableView<ValueType>;
   material?: StateMaterialSet;
 }
@@ -62,7 +62,7 @@ export class ClickableObject<ValueType> {
   /**
    * コンストラクタ
    */
-  constructor(parameters: ClickableObjectParameters) {
+  constructor(parameters: ClickableObjectParameters<ValueType>) {
     this.view = parameters.view;
 
     this._materialSet ??= parameters.material;

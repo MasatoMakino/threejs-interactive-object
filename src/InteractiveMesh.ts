@@ -20,7 +20,10 @@ class InteractiveMesh<ValueType, T extends ClickableObject<ValueType>>
 {
   public model: T;
 
-  constructor(parameters: InteractiveMeshParameters, ctor: TConstructor<T>) {
+  constructor(
+    parameters: InteractiveMeshParameters,
+    ctor: TConstructor<T, ValueType>
+  ) {
     super(parameters.geo);
     this.model = new ctor({ view: this, material: parameters.material });
   }

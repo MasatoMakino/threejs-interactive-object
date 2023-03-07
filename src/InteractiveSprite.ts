@@ -8,8 +8,8 @@ import {
   StateMaterialSet,
 } from "./";
 
-export interface TConstructor<T> {
-  new (param: ClickableObjectParameters): T;
+export interface TConstructor<T, ValueType> {
+  new (param: ClickableObjectParameters<ValueType>): T;
 }
 
 class InteractiveSprite<ValueType, T extends ClickableObject<ValueType>>
@@ -18,7 +18,7 @@ class InteractiveSprite<ValueType, T extends ClickableObject<ValueType>>
 {
   public model: T;
 
-  constructor(material: StateMaterialSet, ctor: TConstructor<T>) {
+  constructor(material: StateMaterialSet, ctor: TConstructor<T, ValueType>) {
     super();
     this.model = new ctor({ view: this, material: material });
   }
