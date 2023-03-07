@@ -13,7 +13,7 @@ import {
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("ClickableMesh", () => {
-  let clickable: ClickableMesh;
+  let clickable: ClickableMesh<string>;
   const matSet: StateMaterialSet = getMeshMaterialSet();
 
   test("初期化", () => {
@@ -21,6 +21,7 @@ describe("ClickableMesh", () => {
       geo: new BoxGeometry(3, 3, 3),
       material: matSet,
     });
+    clickable.model.value = "test button value.";
     expect(clickable.material).toBe(matSet.normal.material);
   });
 

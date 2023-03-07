@@ -10,7 +10,6 @@ import {
 } from "three";
 import {
   ClickableObject,
-  ThreeMouseEvent,
   ThreeMouseEventType,
   ThreeMouseEventUtil,
   ViewPortUtil,
@@ -78,7 +77,7 @@ export class MouseEventManager {
     this.throttlingDelta %= this.throttlingTime_ms;
   };
 
-  protected onDocumentMouseMove = (event: any) => {
+  protected onDocumentMouseMove = (event: MouseEvent) => {
     if (this.hasThrottled) return;
     this.hasThrottled = true;
 
@@ -267,18 +266,14 @@ export class MouseEventManager {
  * IClickable3DObjectの現在状態を表す定数セット。
  * これとselectフラグを掛け合わせることで状態を判定する。
  */
-export enum ClickableState {
+export type ClickableState =
   //ボタンの状態を表す定数
-  NORMAL = "normal",
-  OVER = "normal_over",
-  DOWN = "normal_down",
-  DISABLE = "disable",
-}
+  "normal" | "over" | "down" | "disable";
 
 /**
  * マウス操作可能な3Dオブジェクトのインターフェース
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
-export interface IClickableObject3D {
-  model: ClickableObject;
+export interface IClickableObject3D<ValueType = any> {
+  model: ClickableObject<ValueType>;
 }

@@ -21,51 +21,51 @@ describe("MouseEventManager", () => {
   const halfH = MouseEventManagerScene.H / 2;
 
   test("mouse move", () => {
-    btn.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
     managerScene.render();
 
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     managerScene.render();
     //スロットリングされるのでnormalのまま
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(false);
 
     //スロットリングされるのでnormalのまま
     managerScene.interval(0.1);
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
-    btn.checkMaterial(ClickableState.OVER);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("over");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(true);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.reset();
   });
 
   test("mouse down / mouse up", () => {
-    btn.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
     managerScene.render();
 
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
-    btn.checkMaterial(ClickableState.DOWN);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("down");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(true);
 
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
 
     managerScene.reset();
@@ -78,34 +78,34 @@ describe("MouseEventManager", () => {
     btn.button.model.disable();
     btn.button.model.mouseEnabled = true;
 
-    btn.checkMaterial(ClickableState.DISABLE);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("disable");
+    btnBackground.checkMaterial("normal");
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
-    btn.checkMaterial(ClickableState.DISABLE);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("disable");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(true);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
-    btn.checkMaterial(ClickableState.DISABLE);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("disable");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
-    btn.checkMaterial(ClickableState.DISABLE);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("disable");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(true);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
-    btn.checkMaterial(ClickableState.DISABLE);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("disable");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
@@ -120,34 +120,34 @@ describe("MouseEventManager", () => {
     btn.button.model.enable();
     btn.button.model.mouseEnabled = false;
     wrapper.model.mouseEnabled = false;
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("normal");
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.OVER);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("over");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.DOWN);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("down");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
-    btn.checkMaterial(ClickableState.NORMAL);
-    btnBackground.checkMaterial(ClickableState.NORMAL);
+    btn.checkMaterial("normal");
+    btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 

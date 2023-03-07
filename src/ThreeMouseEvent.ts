@@ -1,17 +1,18 @@
 import { Event } from "three";
 import { ClickableObject, IClickableObject3D } from "./";
 
-export interface ThreeMouseEvent extends Event {
+//TODO remove any
+export interface ThreeMouseEvent<ValueType = any> extends Event {
   type: ThreeMouseEventType;
-  model?: ClickableObject;
+  model?: ClickableObject<ValueType>;
   isSelected?: boolean;
 }
 
 export class ThreeMouseEventUtil {
-  static generate(
+  static generate<ValueType>(
     type: ThreeMouseEventType,
-    modelOrView: ClickableObject | IClickableObject3D
-  ): ThreeMouseEvent {
+    modelOrView: ClickableObject<ValueType> | IClickableObject3D<ValueType>
+  ): ThreeMouseEvent<ValueType> {
     const e: ThreeMouseEvent = {
       type,
       model: ThreeMouseEventUtil.getModel(modelOrView),
@@ -23,9 +24,9 @@ export class ThreeMouseEventUtil {
     return e;
   }
 
-  private static getModel(
-    modelOrView: ClickableObject | IClickableObject3D
-  ): ClickableObject {
+  private static getModel<ValueType>(
+    modelOrView: ClickableObject<ValueType> | IClickableObject3D<ValueType>
+  ): ClickableObject<ValueType> {
     if ("model" in modelOrView) {
       return modelOrView.model;
     }
@@ -36,7 +37,7 @@ export class ThreeMouseEventUtil {
    * SELECTイベントの場合は、対象ボタンの選択状態を取得
    * @param model
    */
-  static getSelection(model: ClickableObject): boolean {
+  static getSelection<ValueType>(model: ClickableObject<ValueType>): boolean {
     if ("selection" in model) {
       return !!model["selection"];
     } else {
@@ -46,7 +47,9 @@ export class ThreeMouseEventUtil {
     }
   }
 
-  static clone(e: ThreeMouseEvent): ThreeMouseEvent {
+  static clone<ValueType>(
+    e: ThreeMouseEvent<ValueType>
+  ): ThreeMouseEvent<ValueType> {
     return ThreeMouseEventUtil.generate(e.type, e.model);
   }
 }

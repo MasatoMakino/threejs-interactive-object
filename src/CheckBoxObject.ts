@@ -1,13 +1,14 @@
-import { ClickableObject } from "./ClickableObject";
-import { CheckBoxMesh } from "./InteractiveMesh";
-import { CheckBoxSprite } from "./InteractiveSprite";
-import { ClickableState } from "./MouseEventManager";
-import { ThreeMouseEvent, ThreeMouseEventUtil } from "./ThreeMouseEvent";
+import {
+  CheckBoxMesh,
+  CheckBoxSprite,
+  ClickableObject,
+  ThreeMouseEvent,
+  ThreeMouseEventUtil,
+} from "./";
 
-export class CheckBoxObject extends ClickableObject {
-  public view: CheckBoxMesh | CheckBoxSprite;
+export class CheckBoxObject<ValueType> extends ClickableObject<ValueType> {
+  public view: CheckBoxMesh<ValueType> | CheckBoxSprite<ValueType>;
   protected _isSelect: boolean = false;
-  public value: any;
 
   /**
    * クリックイベント時の処理
@@ -17,7 +18,7 @@ export class CheckBoxObject extends ClickableObject {
   public onMouseClick(): void {
     this._isSelect = !this._isSelect;
 
-    const e: ThreeMouseEvent = ThreeMouseEventUtil.generate("select", this);
+    const e = ThreeMouseEventUtil.generate("select", this);
     this.view.dispatchEvent(e);
     this.updateMaterial();
   }
@@ -28,7 +29,7 @@ export class CheckBoxObject extends ClickableObject {
 
   public set selection(bool: boolean) {
     this._isSelect = bool;
-    this.updateState(ClickableState.NORMAL);
+    this.updateState("normal");
   }
 
   protected updateMaterial(): void {

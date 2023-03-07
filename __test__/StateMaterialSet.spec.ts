@@ -82,7 +82,7 @@ describe("StateMaterialSet", () => {
       })
     );
 
-    const mat = matSet.getMaterial(ClickableState.OVER, true, true);
+    const mat = matSet.getMaterial("over", true, true);
 
     expect(mat).toBe(matSet.overSelect);
     expect(mat).not.toBe(matSet.over);
