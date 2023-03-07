@@ -5,7 +5,7 @@ import {
   IClickableObject3D,
   RadioButtonObject,
   StateMaterialSet,
-  TConstructor,
+  ModelConstructor,
 } from "./";
 
 export interface InteractiveMeshParameters {
@@ -13,45 +13,44 @@ export interface InteractiveMeshParameters {
   material: StateMaterialSet;
 }
 
-// TODO remove : InteractiveMesh IClickableObject3Dで十分に型定義の役割を果たすため。
-class InteractiveMesh<ValueType, T extends ClickableObject<ValueType>>
+class InteractiveMesh<Value, Model extends ClickableObject<Value>>
   extends Mesh
-  implements IClickableObject3D<ValueType>
+  implements IClickableObject3D<Value>
 {
-  public model: T;
+  public model: Model;
 
   constructor(
     parameters: InteractiveMeshParameters,
-    ctor: TConstructor<T, ValueType>
+    ctor: ModelConstructor<Model, Value>
   ) {
     super(parameters.geo);
     this.model = new ctor({ view: this, material: parameters.material });
   }
 }
 
-export class ClickableMesh<ValueType = any>
-  extends InteractiveMesh<ValueType, ClickableObject<ValueType>>
-  implements IClickableObject3D<ValueType>
+export class ClickableMesh<Value = any>
+  extends InteractiveMesh<Value, ClickableObject<Value>>
+  implements IClickableObject3D<Value>
 {
   constructor(parameters: InteractiveMeshParameters) {
-    super(parameters, ClickableObject<ValueType>);
+    super(parameters, ClickableObject<Value>);
   }
 }
 
-export class CheckBoxMesh<ValueType = any>
-  extends InteractiveMesh<ValueType, CheckBoxObject<ValueType>>
-  implements IClickableObject3D<ValueType>
+export class CheckBoxMesh<Value = any>
+  extends InteractiveMesh<Value, CheckBoxObject<Value>>
+  implements IClickableObject3D<Value>
 {
   constructor(parameters: InteractiveMeshParameters) {
-    super(parameters, CheckBoxObject<ValueType>);
+    super(parameters, CheckBoxObject<Value>);
   }
 }
 
-export class RadioButtonMesh<ValueType = any>
-  extends InteractiveMesh<ValueType, RadioButtonObject<ValueType>>
-  implements IClickableObject3D<ValueType>
+export class RadioButtonMesh<Value = any>
+  extends InteractiveMesh<Value, RadioButtonObject<Value>>
+  implements IClickableObject3D<Value>
 {
   constructor(parameters: InteractiveMeshParameters) {
-    super(parameters, RadioButtonObject<ValueType>);
+    super(parameters, RadioButtonObject<Value>);
   }
 }

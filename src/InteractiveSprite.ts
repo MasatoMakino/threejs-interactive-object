@@ -8,44 +8,47 @@ import {
   StateMaterialSet,
 } from "./";
 
-export interface TConstructor<T, ValueType> {
-  new (param: ClickableObjectParameters<ValueType>): T;
+export interface ModelConstructor<Model extends ClickableObject<Value>, Value> {
+  new (param: ClickableObjectParameters<Value>): Model;
 }
 
-class InteractiveSprite<ValueType, T extends ClickableObject<ValueType>>
+class InteractiveSprite<Value, Model extends ClickableObject<Value>>
   extends Sprite
-  implements IClickableObject3D<ValueType>
+  implements IClickableObject3D<Value>
 {
-  public model: T;
+  public model: Model;
 
-  constructor(material: StateMaterialSet, ctor: TConstructor<T, ValueType>) {
+  constructor(
+    material: StateMaterialSet,
+    ctor: ModelConstructor<Model, Value>
+  ) {
     super();
     this.model = new ctor({ view: this, material: material });
   }
 }
-export class ClickableSprite<ValueType = any>
-  extends InteractiveSprite<ValueType, ClickableObject<ValueType>>
-  implements IClickableObject3D<ValueType>
+export class ClickableSprite<Value = any>
+  extends InteractiveSprite<Value, ClickableObject<Value>>
+  implements IClickableObject3D<Value>
 {
   constructor(material: StateMaterialSet) {
-    super(material, ClickableObject<ValueType>);
+    super(material, ClickableObject<Value>);
   }
 }
 
-export class CheckBoxSprite<ValueType = any>
-  extends InteractiveSprite<ValueType, CheckBoxObject<ValueType>>
-  implements IClickableObject3D<ValueType>
+export class CheckBoxSprite<Value = any>
+  extends InteractiveSprite<Value, CheckBoxObject<Value>>
+  implements IClickableObject3D<Value>
 {
   constructor(material: StateMaterialSet) {
-    super(material, CheckBoxObject<ValueType>);
+    super(material, CheckBoxObject<Value>);
   }
 }
 
-export class RadioButtonSprite<ValueType = any>
-  extends InteractiveSprite<ValueType, RadioButtonObject<ValueType>>
-  implements IClickableObject3D<ValueType>
+export class RadioButtonSprite<Value = any>
+  extends InteractiveSprite<Value, RadioButtonObject<Value>>
+  implements IClickableObject3D<Value>
 {
   constructor(material: StateMaterialSet) {
-    super(material, RadioButtonObject<ValueType>);
+    super(material, RadioButtonObject<Value>);
   }
 }
