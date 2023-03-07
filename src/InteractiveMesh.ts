@@ -13,6 +13,7 @@ export interface InteractiveMeshParameters {
   material: StateMaterialSet;
 }
 
+// TODO remove : InteractiveMesh IClickableObject3Dで十分に型定義の役割を果たすため。
 class InteractiveMesh<ValueType, T extends ClickableObject<ValueType>>
   extends Mesh
   implements IClickableObject3D<ValueType>

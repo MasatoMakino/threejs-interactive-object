@@ -1,6 +1,7 @@
 import { Event } from "three";
 import { ClickableObject, IClickableObject3D } from "./";
 
+//TODO remove any
 export interface ThreeMouseEvent<ValueType = any> extends Event {
   type: ThreeMouseEventType;
   model?: ClickableObject<ValueType>;
@@ -11,7 +12,7 @@ export class ThreeMouseEventUtil {
   static generate<ValueType>(
     type: ThreeMouseEventType,
     modelOrView: ClickableObject<ValueType> | IClickableObject3D<ValueType>
-  ): ThreeMouseEvent {
+  ): ThreeMouseEvent<ValueType> {
     const e: ThreeMouseEvent = {
       type,
       model: ThreeMouseEventUtil.getModel(modelOrView),
