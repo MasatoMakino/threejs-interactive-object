@@ -22,23 +22,24 @@ export class ViewPortUtil {
    * @private
    */
   private static getCanvasHeight(canvas: HTMLCanvasElement): number {
-    const style = canvas.style;
-    if (style.width && style.height) {
-      return parseInt(style.height);
-    } else if (window.devicePixelRatio != null) {
-      return canvas.height / window.devicePixelRatio;
-    }
-    return canvas.height;
+    return this.getCanvasSize(canvas, "height");
   }
 
   private static getCanvasWidth(canvas: HTMLCanvasElement): number {
+    return this.getCanvasSize(canvas, "width");
+  }
+
+  private static getCanvasSize(
+    canvas: HTMLCanvasElement,
+    propName: "width" | "height"
+  ): number {
     const style = canvas.style;
     if (style.width && style.height) {
-      return parseInt(style.width);
+      return parseInt(style[propName]);
     } else if (window.devicePixelRatio != null) {
-      return canvas.width / window.devicePixelRatio;
+      return canvas[propName] / window.devicePixelRatio;
     }
-    return canvas.width;
+    return canvas[propName];
   }
 
   /**
