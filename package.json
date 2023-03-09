@@ -1,6 +1,6 @@
 {
   "name": "@masatomakino/threejs-interactive-object",
-  "version": "0.13.4",
+  "version": "0.14.0",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "module": "./esm/index.js",
