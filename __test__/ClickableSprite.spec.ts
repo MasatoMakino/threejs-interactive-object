@@ -48,9 +48,9 @@ describe("ClickableSprite", () => {
   test("alpha", () => {
     const matSet = sprite.model.materialSet;
     sprite.model.alpha = 0.5;
-    expect((matSet.normal.material as SpriteMaterial).opacity).toBe(0.3);
-    expect((matSet.over.material as SpriteMaterial).opacity).toBe(0.4);
-    expect((matSet.down.material as SpriteMaterial).opacity).toBe(0.5);
-    expect((matSet.disable.material as SpriteMaterial).opacity).toBe(0.05);
+    expect((matSet?.normal.material as SpriteMaterial).opacity).toBe(0.3);
+    expect((matSet?.over.material as SpriteMaterial).opacity).toBe(0.4);
+    expect((matSet?.down.material as SpriteMaterial).opacity).toBe(0.5);
+    expect((matSet?.disable.material as SpriteMaterial).opacity).toBe(0.05);
   });
 });
