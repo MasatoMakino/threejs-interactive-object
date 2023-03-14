@@ -68,7 +68,7 @@ export class ViewPortUtil {
    */
   static isContain(
     canvas: HTMLCanvasElement,
-    viewport: Vector4,
+    viewport: Vector4 | undefined,
     event: MouseEvent
   ): boolean {
     if (viewport == null) {
@@ -94,7 +94,7 @@ export class ViewPortUtil {
   static convertToMousePosition(
     canvas: HTMLCanvasElement,
     event: MouseEvent,
-    viewport: Vector4,
+    viewport: Vector4 | undefined,
     mouse?: Vector2
   ): Vector2 {
     const { x, y } = this.getMousePosition(canvas, event, viewport);
