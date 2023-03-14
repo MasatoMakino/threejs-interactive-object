@@ -24,7 +24,7 @@ export class MouseEventManager {
   protected raycaster: Raycaster = new Raycaster();
   protected mouse: Vector2 = new Vector2();
 
-  protected currentOver: IClickableObject3D<unknown>[] | null;
+  protected currentOver: IClickableObject3D<unknown>[] = [];
 
   protected hasThrottled: boolean = false;
   public throttlingTime_ms: number;
@@ -111,7 +111,7 @@ export class MouseEventManager {
     this.currentOver?.forEach((over) => {
       MouseEventManager.onButtonHandler(over, "out");
     });
-    this.currentOver = null;
+    this.currentOver = [];
   }
 
   /**
@@ -224,12 +224,13 @@ export class MouseEventManager {
    * @protected
    */
   protected checkTarget(
-    target: Object3D | undefined,
+    target: Object3D | undefined | null,
     type: ThreeMouseEventType,
     hasTarget: boolean = false
   ): boolean {
     //クリッカブルインターフェースを継承しているなら判定OK
     if (
+      target != null &&
       MouseEventManager.implementsIClickableObject3D(target) &&
       target.model.mouseEnabled === true
     ) {
@@ -242,7 +243,11 @@ export class MouseEventManager {
 
     //継承していないならその親を探索継続。
     //ターゲットから上昇して探す。
-    if (target.parent != null && target.parent.type !== "Scene") {
+    if (
+      target != null &&
+      target.parent != null &&
+      target.parent.type !== "Scene"
+    ) {
       return this.checkTarget(target.parent, type, hasTarget);
     }
 

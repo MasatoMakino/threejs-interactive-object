@@ -2,12 +2,11 @@ import {
   CheckBoxMesh,
   CheckBoxSprite,
   ClickableObject,
-  ThreeMouseEvent,
   ThreeMouseEventUtil,
 } from "./";
 
 export class CheckBoxObject<Value> extends ClickableObject<Value> {
-  public view: CheckBoxMesh<Value> | CheckBoxSprite<Value>;
+  declare view: CheckBoxMesh<Value> | CheckBoxSprite<Value>;
   protected _isSelect: boolean = false;
 
   /**
@@ -33,12 +32,14 @@ export class CheckBoxObject<Value> extends ClickableObject<Value> {
   }
 
   protected updateMaterial(): void {
-    this.materialSet.setOpacity(this._alpha);
-    const stateMat = this.materialSet.getMaterial(
+    this.materialSet?.setOpacity(this._alpha);
+    const stateMat = this.materialSet?.getMaterial(
       this.state,
       this._enable,
       this._isSelect
     );
-    this.view.material = stateMat.material;
+    if (stateMat?.material != null) {
+      this.view.material = stateMat.material;
+    }
   }
 }

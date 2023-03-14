@@ -10,7 +10,7 @@ export interface ThreeMouseEvent<Value> extends Event {
 export class ThreeMouseEventUtil {
   static generate<Value>(
     type: ThreeMouseEventType,
-    modelOrView: ClickableObject<Value> | IClickableObject3D<Value>
+    modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined
   ): ThreeMouseEvent<Value> {
     const e: ThreeMouseEvent<Value> = {
       type,
@@ -24,9 +24,9 @@ export class ThreeMouseEventUtil {
   }
 
   private static getModel<Value>(
-    modelOrView: ClickableObject<Value> | IClickableObject3D<Value>
-  ): ClickableObject<Value> {
-    if ("model" in modelOrView) {
+    modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined
+  ): ClickableObject<Value> | undefined {
+    if (modelOrView != null && "model" in modelOrView) {
       return modelOrView.model;
     }
     return modelOrView;
@@ -36,8 +36,10 @@ export class ThreeMouseEventUtil {
    * SELECTイベントの場合は、対象ボタンの選択状態を取得
    * @param model
    */
-  static getSelection<Value>(model: ClickableObject<Value>): boolean {
-    if ("selection" in model) {
+  static getSelection<Value>(
+    model: ClickableObject<Value> | undefined
+  ): boolean {
+    if (model != null && "selection" in model) {
       return !!model["selection"];
     } else {
       throw new Error(

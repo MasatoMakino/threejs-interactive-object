@@ -25,7 +25,11 @@ describe("ViewPortUtil", () => {
   });
 
   test("contain without viewport", () => {
-    expect(ViewPortUtil.isContain(canvas, undefined, undefined)).toBe(true);
+    const e = getMouseEvent("mousemove", {
+      offsetX: 16,
+      offsetY: 420,
+    });
+    expect(ViewPortUtil.isContain(canvas, undefined, e)).toBe(true);
   });
 
   test("contain with viewport", () => {

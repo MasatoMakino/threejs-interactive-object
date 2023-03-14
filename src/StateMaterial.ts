@@ -69,7 +69,7 @@ export class StateMaterialSet {
   normalSelect!: StateMaterial;
   overSelect!: StateMaterial;
   downSelect!: StateMaterial;
-  materials: StateMaterial[];
+  materials: StateMaterial[] = [];
   constructor(param: {
     normal: StateMaterialType;
     over?: StateMaterialType;
@@ -100,7 +100,7 @@ export class StateMaterialSet {
   }
 
   private static initMaterial(
-    value: StateMaterialType,
+    value: StateMaterialType | undefined,
     defaultMaterial: StateMaterial
   ): StateMaterial {
     if (value == null) return defaultMaterial;

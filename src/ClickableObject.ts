@@ -27,12 +27,12 @@ export interface ClickableObjectParameters<Value> {
  * これ自体は表示オブジェクトではない。
  */
 export class ClickableObject<Value> {
-  public value: Value;
-  get materialSet(): StateMaterialSet {
+  public value: Value | undefined;
+  get materialSet(): StateMaterialSet | undefined {
     return this._materialSet;
   }
 
-  set materialSet(value: StateMaterialSet) {
+  set materialSet(value: StateMaterialSet | undefined) {
     const isSame = value === this._materialSet;
     this._materialSet = value;
     if (!isSame) {
@@ -48,7 +48,7 @@ export class ClickableObject<Value> {
     return this._isPress;
   }
 
-  public view: ClickableView<Value>;
+  view: ClickableView<Value>;
   protected _isPress: boolean = false;
   protected _isOver: boolean = false;
   protected _enable: boolean = true;
@@ -56,7 +56,7 @@ export class ClickableObject<Value> {
   public frozen: boolean = false;
 
   public state: ClickableState = "normal";
-  protected _materialSet!: StateMaterialSet;
+  protected _materialSet?: StateMaterialSet;
   protected _alpha: number = 1.0;
 
   /**
@@ -64,7 +64,6 @@ export class ClickableObject<Value> {
    */
   constructor(parameters: ClickableObjectParameters<Value>) {
     this.view = parameters.view;
-
     this._materialSet ??= parameters.material;
     this.updateMaterial();
   }

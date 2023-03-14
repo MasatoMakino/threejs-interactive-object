@@ -52,13 +52,14 @@ describe("ClickableMesh", () => {
   test("alpha", () => {
     clickable.model.alpha = 0.5;
     expect(
-      (clickable.model.materialSet.normal.material as MeshBasicMaterial).opacity
+      (clickable.model.materialSet?.normal.material as MeshBasicMaterial)
+        .opacity
     ).toBe(0.3);
     expect(
-      (clickable.model.materialSet.over.material as MeshBasicMaterial).opacity
+      (clickable.model.materialSet?.over.material as MeshBasicMaterial).opacity
     ).toBe(0.4);
     expect(
-      (clickable.model.materialSet.down.material as MeshBasicMaterial).opacity
+      (clickable.model.materialSet?.down.material as MeshBasicMaterial).opacity
     ).toBe(0.5);
   });
 });
