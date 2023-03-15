@@ -42,7 +42,7 @@ describe("RadioButton", () => {
     );
 
     //管理外のボタンをremoveしてもエラーは発生しない。
-    const removedButton = manager.removeButton(notManagedButton);
+    expect(manager.removeButton(notManagedButton)).toBeUndefined();
   });
 
   test("ボタンを管理から外す", () => {
