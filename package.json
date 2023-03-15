@@ -48,6 +48,7 @@
     "prepare": "husky install",
     "test": "jest",
     "coverage": "jest --coverage",
+    "preversion": "git checkout main && git pull && npm run test",
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",
     "build": "npm run buildTS && npm run demo && npm run typedocs",
     "demo": "npx @masatomakino/gulptask-demo-page --body '<canvas id=\"webgl-canvas\"></canvas>'",
