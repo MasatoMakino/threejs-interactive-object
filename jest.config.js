@@ -1,5 +1,7 @@
 module.exports = {
-  preset: "ts-jest",
+  transform: {
+    "^.+\\.(t|j)sx?$": "@swc/jest",
+  },
   testEnvironment: "jsdom",
   collectCoverageFrom: ["**/src/*.ts"],
 };
