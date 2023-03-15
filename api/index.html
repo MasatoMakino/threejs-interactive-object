@@ -37,7 +37,7 @@
 <a href="#install" id="install" style="color: inherit; text-decoration: none;">
   <h3>Install</h3>
 </a>
-<pre><code class="language-bash"><span class="hl-0">npm install @masatomakino/threejs-interactive-object --save-dev</span>
+<pre><code class="language-bash"><span class="hl-0">npm </span><span class="hl-1">install</span><span class="hl-0"> </span><span class="hl-1">@masatomakino/threejs-interactive-object</span><span class="hl-0"> </span><span class="hl-1">--save-dev</span>
 </code></pre>
 
 <a href="#import" id="import" style="color: inherit; text-decoration: none;">
@@ -45,7 +45,7 @@
 </a>
 <p>threejs-interactive-object is composed of ES6 modules and TypeScript d.ts files.</p>
 <p>At first, import classes.</p>
-<pre><code class="language-js"><span class="hl-1">import</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-2">ClickableMesh</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-2">StateMaterialSet</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-2">StateMaterial</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-2">MouseEventManager</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-2">ThreeMouseEvent</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-2">ThreeMouseEventType</span><span class="hl-0">,</span><br/><span class="hl-0">} </span><span class="hl-1">from</span><span class="hl-0"> </span><span class="hl-3">&quot;@masatomakino/threejs-interactive-object&quot;</span><span class="hl-0">;</span>
+<pre><code class="language-js"><span class="hl-2">import</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-3">ClickableMesh</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-3">StateMaterialSet</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-3">StateMaterial</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-3">MouseEventManager</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-3">ThreeMouseEvent</span><span class="hl-0">,</span><br/><span class="hl-0">  </span><span class="hl-3">ThreeMouseEventType</span><span class="hl-0">,</span><br/><span class="hl-0">} </span><span class="hl-2">from</span><span class="hl-0"> </span><span class="hl-1">&quot;@masatomakino/threejs-interactive-object&quot;</span><span class="hl-0">;</span>
 </code></pre>
 
 <a href="#create-buttons" id="create-buttons" style="color: inherit; text-decoration: none;">
@@ -58,23 +58,23 @@
 </a>
 <p>MouseEventManager class watch MouseEvent on canvas element.</p>
 <p>initialize MouseEventManager before create a button.</p>
-<pre><code class="language-js"><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-5">manager</span><span class="hl-0"> = </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">MouseEventManager</span><span class="hl-0">(</span><span class="hl-2">scene</span><span class="hl-0">, </span><span class="hl-2">camera</span><span class="hl-0">, </span><span class="hl-2">renderer</span><span class="hl-0">);</span>
+<pre><code class="language-js"><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-5">manager</span><span class="hl-0"> = </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">MouseEventManager</span><span class="hl-0">(</span><span class="hl-3">scene</span><span class="hl-0">, </span><span class="hl-3">camera</span><span class="hl-0">, </span><span class="hl-3">renderer</span><span class="hl-0">);</span>
 </code></pre>
 
 <a href="#init-button" id="init-button" style="color: inherit; text-decoration: none;">
   <h4>init button</h4>
 </a>
 <p>Create buttons and add to scene.</p>
-<pre><code class="language-js"><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-5">clickable</span><span class="hl-0"> = </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">ClickableMesh</span><span class="hl-0">({</span><br/><span class="hl-0">  </span><span class="hl-2">geo:</span><span class="hl-0"> </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">BoxBufferGeometry</span><span class="hl-0">(</span><span class="hl-7">3</span><span class="hl-0">, </span><span class="hl-7">3</span><span class="hl-0">, </span><span class="hl-7">3</span><span class="hl-0">),</span><br/><span class="hl-0">  </span><span class="hl-2">material:</span><span class="hl-0"> </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">StateMaterialSet</span><span class="hl-0">({</span><br/><span class="hl-0">    </span><span class="hl-2">normal:</span><span class="hl-0"> </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">MeshBasicMaterial</span><span class="hl-0">({</span><br/><span class="hl-0">      </span><span class="hl-2">color:</span><span class="hl-0"> </span><span class="hl-7">0xffffff</span><span class="hl-0">,</span><br/><span class="hl-0">    }),</span><br/><span class="hl-0">  }),</span><br/><span class="hl-0">});</span><br/><span class="hl-2">scene</span><span class="hl-0">.</span><span class="hl-6">add</span><span class="hl-0">(</span><span class="hl-2">clickable</span><span class="hl-0">);</span>
+<pre><code class="language-js"><span class="hl-4">const</span><span class="hl-0"> </span><span class="hl-5">clickable</span><span class="hl-0"> = </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">ClickableMesh</span><span class="hl-0">({</span><br/><span class="hl-0">  </span><span class="hl-3">geo:</span><span class="hl-0"> </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">BoxBufferGeometry</span><span class="hl-0">(</span><span class="hl-7">3</span><span class="hl-0">, </span><span class="hl-7">3</span><span class="hl-0">, </span><span class="hl-7">3</span><span class="hl-0">),</span><br/><span class="hl-0">  </span><span class="hl-3">material:</span><span class="hl-0"> </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">StateMaterialSet</span><span class="hl-0">({</span><br/><span class="hl-0">    </span><span class="hl-3">normal:</span><span class="hl-0"> </span><span class="hl-4">new</span><span class="hl-0"> </span><span class="hl-6">MeshBasicMaterial</span><span class="hl-0">({</span><br/><span class="hl-0">      </span><span class="hl-3">color:</span><span class="hl-0"> </span><span class="hl-7">0xffffff</span><span class="hl-0">,</span><br/><span class="hl-0">    }),</span><br/><span class="hl-0">  }),</span><br/><span class="hl-0">});</span><br/><span class="hl-3">scene</span><span class="hl-0">.</span><span class="hl-6">add</span><span class="hl-0">(</span><span class="hl-3">clickable</span><span class="hl-0">);</span>
 </code></pre>
 <p>Add event listener.</p>
-<pre><code class="language-js"><span class="hl-2">clickable</span><span class="hl-0">.</span><span class="hl-6">addEventListener</span><span class="hl-0">(</span><span class="hl-3">&quot;click&quot;</span><span class="hl-0">, (</span><span class="hl-2">e</span><span class="hl-0">) </span><span class="hl-4">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-2">cosole</span><span class="hl-0">.</span><span class="hl-6">log</span><span class="hl-0">(</span><span class="hl-3">&quot;CLICKED!&quot;</span><span class="hl-0">);</span><br/><span class="hl-0">});</span>
+<pre><code class="language-js"><span class="hl-3">clickable</span><span class="hl-0">.</span><span class="hl-6">addEventListener</span><span class="hl-0">(</span><span class="hl-1">&quot;click&quot;</span><span class="hl-0">, (</span><span class="hl-3">e</span><span class="hl-0">) </span><span class="hl-4">=&gt;</span><span class="hl-0"> {</span><br/><span class="hl-0">  </span><span class="hl-3">cosole</span><span class="hl-0">.</span><span class="hl-6">log</span><span class="hl-0">(</span><span class="hl-1">&quot;CLICKED!&quot;</span><span class="hl-0">);</span><br/><span class="hl-0">});</span>
 </code></pre>
 
 <a href="#uninstall" id="uninstall" style="color: inherit; text-decoration: none;">
   <h2>Uninstall</h2>
 </a>
-<pre><code class="language-shell"><span class="hl-0">npm uninstall @masatomakino/threejs-interactive-object --save-dev</span>
+<pre><code class="language-shell"><span class="hl-0">npm </span><span class="hl-1">uninstall</span><span class="hl-0"> </span><span class="hl-1">@masatomakino/threejs-interactive-object</span><span class="hl-0"> </span><span class="hl-1">--save-dev</span>
 </code></pre>
 
 <a href="#license" id="license" style="color: inherit; text-decoration: none;">
