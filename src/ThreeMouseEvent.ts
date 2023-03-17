@@ -3,8 +3,8 @@ import { ClickableObject, IClickableObject3D } from "./";
 
 export interface ThreeMouseEvent<Value> extends Event {
   type: ThreeMouseEventType;
-  model?: ClickableObject<Value>;
-  isSelected?: boolean;
+  readonly model?: ClickableObject<Value>;
+  readonly isSelected?: boolean;
 }
 
 export class ThreeMouseEventUtil {
@@ -12,15 +12,19 @@ export class ThreeMouseEventUtil {
     type: ThreeMouseEventType,
     modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined
   ): ThreeMouseEvent<Value> {
-    const e: ThreeMouseEvent<Value> = {
-      type,
-      model: ThreeMouseEventUtil.getModel(modelOrView),
+    const model = ThreeMouseEventUtil.getModel(modelOrView);
+    const getSelection = () => {
+      if (type === "select") {
+        return ThreeMouseEventUtil.getSelection(model);
+      }
+      return undefined;
     };
 
-    if (type === "select") {
-      e.isSelected = ThreeMouseEventUtil.getSelection(e.model);
-    }
-    return e;
+    return {
+      type,
+      model,
+      isSelected: getSelection(),
+    };
   }
 
   private static getModel<Value>(
