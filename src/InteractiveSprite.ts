@@ -16,8 +16,7 @@ class InteractiveSprite<Value, Model extends ClickableObject<Value>>
   extends Sprite
   implements IClickableObject3D<Value>
 {
-  public model: Model;
-
+  readonly model: Model;
   constructor(
     material: StateMaterialSet,
     ctor: ModelConstructor<Model, Value>
