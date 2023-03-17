@@ -48,7 +48,7 @@ export class ClickableObject<Value> {
     return this._isPress;
   }
 
-  view: ClickableView<Value>;
+  readonly view: ClickableView<Value>;
   protected _isPress: boolean = false;
   protected _isOver: boolean = false;
   protected _enable: boolean = true;

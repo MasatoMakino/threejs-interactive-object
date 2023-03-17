@@ -17,7 +17,7 @@ class InteractiveMesh<Value, Model extends ClickableObject<Value>>
   extends Mesh
   implements IClickableObject3D<Value>
 {
-  public model: Model;
+  readonly model: Model;
 
   constructor(
     parameters: InteractiveMeshParameters,

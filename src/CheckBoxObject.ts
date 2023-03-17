@@ -6,7 +6,7 @@ import {
 } from "./";
 
 export class CheckBoxObject<Value> extends ClickableObject<Value> {
-  declare view: CheckBoxMesh<Value> | CheckBoxSprite<Value>;
+  declare readonly view: CheckBoxMesh<Value> | CheckBoxSprite<Value>;
   protected _isSelect: boolean = false;
 
   /**
