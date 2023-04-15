@@ -145,7 +145,8 @@ export class ClickableObject<Value> {
     switch (this.view.type) {
       case "Mesh":
       case "Sprite":
-        this.view.material = stateMat.material;
+        (this.view as ClickableMesh<Value> | ClickableSprite<Value>).material =
+          stateMat.material;
         break;
       case "Group":
       default:
