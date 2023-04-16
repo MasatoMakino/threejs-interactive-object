@@ -9,7 +9,7 @@ export class RadioButtonObject<Value> extends CheckBoxObject<Value> {
    * ラジオボタンは選択中は自身の状態を変更できない。
    * @return    ボタンが有効か否か
    */
-  protected checkActivity(): Boolean {
+  protected override checkActivity(): Boolean {
     return this._enable && !this._isFrozen;
   }
 
