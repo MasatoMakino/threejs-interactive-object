@@ -14,7 +14,7 @@ export class CheckBoxObject<Value> extends ClickableObject<Value> {
    * "click"イベントはマウスイベント類の必ず最後に発生するので
    * ここでisSelect状態を一括管理する。
    */
-  public onMouseClick(): void {
+  public override onMouseClick(): void {
     this._isSelect = !this._isSelect;
 
     const e = ThreeMouseEventUtil.generate("select", this);
@@ -31,7 +31,7 @@ export class CheckBoxObject<Value> extends ClickableObject<Value> {
     this.updateState("normal");
   }
 
-  protected updateMaterial(): void {
+  protected override updateMaterial(): void {
     this.materialSet?.setOpacity(this._alpha);
     const stateMat = this.materialSet?.getMaterial(
       this.state,
