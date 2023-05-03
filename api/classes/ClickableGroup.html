@@ -19,9 +19,9 @@
 <div class="tsd-comment tsd-typography"><p>マウス操作可能な3Dオブジェクトのインターフェース
 マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。</p>
 </div></section> 
-<section class="tsd-panel tsd-type-parameters">
+<section class="tsd-panel">
 <h4>Type Parameters</h4>
-<ul class="tsd-type-parameters">
+<ul class="tsd-type-parameter-list">
 <li>
 <h4><span class="tsd-kind-type-parameter">Value</span> = <span class="tsd-signature-type">any</span></h4></li></ul></section> 
 <section class="tsd-panel tsd-hierarchy">
@@ -35,7 +35,7 @@
 <ul class="tsd-hierarchy">
 <li><a href="../interfaces/IClickableObject3D.html" class="tsd-signature-type tsd-kind-interface">IClickableObject3D</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Value</span><span class="tsd-signature-symbol">&gt;</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/16a3798/src/ClickableGroup.ts#L4">src/ClickableGroup.ts:4</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5595321/src/ClickableGroup.ts#L4">src/ClickableGroup.ts:4</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -139,15 +139,15 @@
 <ul class="tsd-signatures">
 <li class="tsd-signature tsd-anchor-link" id="constructor.new_ClickableGroup"><span class="tsd-kind-constructor-signature">new <wbr/>Clickable<wbr/>Group</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Value</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ClickableGroup.html" class="tsd-signature-type tsd-kind-class">ClickableGroup</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Value</span><span class="tsd-signature-symbol">&gt;</span><a href="#constructor.new_ClickableGroup" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<section class="tsd-panel tsd-type-parameters">
+<section class="tsd-panel">
 <h4>Type Parameters</h4>
-<ul class="tsd-type-parameters">
+<ul class="tsd-type-parameter-list">
 <li>
 <h4><span class="tsd-kind-type-parameter">Value</span> = <span class="tsd-signature-type">any</span></h4></li></ul></section>
 <h4 class="tsd-returns-title">Returns <a href="ClickableGroup.html" class="tsd-signature-type tsd-kind-class">ClickableGroup</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Value</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides Group.constructor</p>
 <ul>
-<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/16a3798/src/ClickableGroup.ts#L10">src/ClickableGroup.ts:10</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5595321/src/ClickableGroup.ts#L10">src/ClickableGroup.ts:10</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-is-inherited tsd-is-external"><a id="animations" class="tsd-anchor"></a>
@@ -277,7 +277,7 @@ If set to <code>false</code> the object gets rendered every frame even if it is 
 <div class="tsd-comment tsd-typography"><p>When this is set, it calculates the matrix of position, (rotation or quaternion) and
 scale every frame and also recalculates the matrixWorld property.</p>
 
-<h3>Default Value</h3><p><a href="ClickableGroup.html#DEFAULT_MATRIX_AUTO_UPDATE" class="tsd-kind-property">DEFAULT_MATRIX_AUTO_UPDATE</a> - that is <code>(true)</code>.</p>
+<h3>Default Value</h3><p><a href="ClickableSprite.html#DEFAULT_MATRIX_AUTO_UPDATE" class="tsd-kind-property">DEFAULT_MATRIX_AUTO_UPDATE</a> - that is <code>(true)</code>.</p>
 </div><aside class="tsd-sources">
 <p>Inherited from Group.matrixAutoUpdate</p>
 <ul>
@@ -287,7 +287,7 @@ scale every frame and also recalculates the matrixWorld property.</p>
 <div class="tsd-signature"><span class="tsd-kind-property">matrix<wbr/>World</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type ">Matrix4</span></div>
 <div class="tsd-comment tsd-typography"><p>The global transform of the object.</p>
 
-<h3>Remarks</h3><p>If the Object3D has no parent, then it&#39;s identical to the local transform THREE.Object3D.matrix | .matrix.</p>
+<h3>Remarks</h3><p>If the Object3D has no parent, then it&#39;s identical to the local transform <a href="ClickableSprite.html#matrix" class="tsd-kind-property">.matrix</a>.</p>
 
 <h3>Default Value</h3><p><code>new THREE.Matrix4()</code></p>
 </div><aside class="tsd-sources">
@@ -300,7 +300,7 @@ scale every frame and also recalculates the matrixWorld property.</p>
 <div class="tsd-comment tsd-typography"><p>If set, then the renderer checks every frame if the object and its children need matrix updates.
 When it isn&#39;t, then you have to maintain all matrices in the object and its children yourself.</p>
 
-<h3>Default Value</h3><p><a href="ClickableGroup.html#DEFAULT_MATRIX_WORLD_AUTO_UPDATE" class="tsd-kind-property">DEFAULT_MATRIX_WORLD_AUTO_UPDATE</a> - that is <code>(true)</code>.</p>
+<h3>Default Value</h3><p><a href="ClickableSprite.html#DEFAULT_MATRIX_WORLD_AUTO_UPDATE" class="tsd-kind-property">DEFAULT_MATRIX_WORLD_AUTO_UPDATE</a> - that is <code>(true)</code>.</p>
 </div><aside class="tsd-sources">
 <p>Inherited from Group.matrixWorldAutoUpdate</p>
 <ul>
@@ -320,7 +320,7 @@ When it isn&#39;t, then you have to maintain all matrices in the object and its 
 <div class="tsd-signature"><span class="tsd-kind-property">model</span><span class="tsd-signature-symbol">:</span> <a href="ClickableObject.html" class="tsd-signature-type tsd-kind-class">ClickableObject</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type tsd-kind-type-parameter">Value</span><span class="tsd-signature-symbol">&gt;</span></div><aside class="tsd-sources">
 <p>Implementation of <a href="../interfaces/IClickableObject3D.html">IClickableObject3D</a>.<a href="../interfaces/IClickableObject3D.html#model">model</a></p>
 <ul>
-<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/16a3798/src/ClickableGroup.ts#L8">src/ClickableGroup.ts:8</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/MasatoMakino/threejs-interactive-object/blob/5595321/src/ClickableGroup.ts#L8">src/ClickableGroup.ts:8</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-is-inherited tsd-is-external"><a id="modelViewMatrix" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagReadonly">Readonly</code> <span>model<wbr/>View<wbr/>Matrix</span><a href="#modelViewMatrix" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature"><span class="tsd-kind-property">model<wbr/>View<wbr/>Matrix</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type ">Matrix4</span></div>
@@ -510,7 +510,7 @@ objects to be overridden although opaque and transparent objects remain sorted i
 <div class="tsd-signature"><span class="tsd-kind-property">up</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type ">Vector3</span></div>
 <div class="tsd-comment tsd-typography"><p>This is used by the <a href="ClickableSprite.html#lookAt" class="tsd-kind-method">lookAt</a> method, for example, to determine the orientation of the result.</p>
 
-<h3>Default Value</h3><p><a href="ClickableGroup.html#DEFAULT_UP" class="tsd-kind-property">Object3D.DEFAULT_UP</a> - that is <code>(0, 1, 0)</code>.</p>
+<h3>Default Value</h3><p><a href="ClickableSprite.html#DEFAULT_UP" class="tsd-kind-property">Object3D.DEFAULT_UP</a> - that is <code>(0, 1, 0)</code>.</p>
 </div><aside class="tsd-sources">
 <p>Inherited from Group.up</p>
 <ul>
@@ -595,7 +595,7 @@ THREE.HemisphereLight | HemisphereLight and THREE.Spotlight | Spotlight (which c
 <h3>Remarks</h3><p>An arbitrary number of objects may be added</p>
 
 <h3>See</h3><ul>
-<li><a href="ClickableGroup.html#attach" class="tsd-kind-method">attach</a></li>
+<li><a href="ClickableSprite.html#attach" class="tsd-kind-method">attach</a></li>
 <li>THREE.Group | Group for info on manually grouping objects.</li>
 </ul>
 </div>
@@ -615,9 +615,9 @@ THREE.HemisphereLight | HemisphereLight and THREE.Spotlight | Spotlight (which c
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Adds a listener to an event type.</p>
 </div>
-<section class="tsd-panel tsd-type-parameters">
+<section class="tsd-panel">
 <h4>Type Parameters</h4>
-<ul class="tsd-type-parameters">
+<ul class="tsd-type-parameter-list">
 <li>
 <h4><span class="tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">string</span></h4></li></ul></section>
 <div class="tsd-parameters">
@@ -676,7 +676,7 @@ THREE.HemisphereLight | HemisphereLight and THREE.Spotlight | Spotlight (which c
 
 <h3>Remarks</h3><p>Note: This method does not support scene graphs having non-uniformly-scaled nodes(s).</p>
 
-<h3>See</h3><p><a href="ClickableGroup.html#add" class="tsd-kind-method">add</a></p>
+<h3>See</h3><p><a href="ClickableSprite.html#add" class="tsd-kind-method">add</a></p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -723,7 +723,7 @@ THREE.HemisphereLight | HemisphereLight and THREE.Spotlight | Spotlight (which c
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Copy the given object into this object</p>
 
-<h3>Remarks</h3><p>Note: event listeners and user-defined callbacks (<a href="ClickableGroup.html#onAfterRender" class="tsd-kind-property">.onAfterRender</a> and <a href="ClickableGroup.html#onBeforeRender" class="tsd-kind-property">.onBeforeRender</a>) are not copied.</p>
+<h3>Remarks</h3><p>Note: event listeners and user-defined callbacks (<a href="ClickableSprite.html#onAfterRender" class="tsd-kind-property">.onAfterRender</a> and <a href="ClickableSprite.html#onBeforeRender" class="tsd-kind-property">.onBeforeRender</a>) are not copied.</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -765,7 +765,7 @@ THREE.HemisphereLight | HemisphereLight and THREE.Spotlight | Spotlight (which c
 
 <h3>Remarks</h3><p>Note that ids are assigned in chronological order: 1, 2, 3, ..., incrementing by one for each new object.</p>
 
-<h3>See</h3><p><a href="ClickableGroup.html#id" class="tsd-kind-property">id</a></p>
+<h3>See</h3><p>id</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
@@ -923,9 +923,9 @@ and returns the first with a property that matches the value given.</p>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Checks if listener is added to an event type.</p>
 </div>
-<section class="tsd-panel tsd-type-parameters">
+<section class="tsd-panel">
 <h4>Type Parameters</h4>
-<ul class="tsd-type-parameters">
+<ul class="tsd-type-parameter-list">
 <li>
 <h4><span class="tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">string</span></h4></li></ul></section>
 <div class="tsd-parameters">
@@ -1057,9 +1057,9 @@ and returns the first with a property that matches the value given.</p>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Removes a listener from an event type.</p>
 </div>
-<section class="tsd-panel tsd-type-parameters">
+<section class="tsd-panel">
 <h4>Type Parameters</h4>
-<ul class="tsd-type-parameters">
+<ul class="tsd-type-parameter-list">
 <li>
 <h4><span class="tsd-kind-type-parameter">T</span><span class="tsd-signature-symbol"> extends </span><span class="tsd-signature-type">string</span></h4></li></ul></section>
 <div class="tsd-parameters">
@@ -1484,8 +1484,8 @@ And will update the object descendants if <a href="ClickableSprite.html#matrixWo
 <ul class="tsd-parameter-list">
 <li>
 <h5><code class="tsd-tag ts-flagOptional">Optional</code> <span class="tsd-kind-parameter">force</span>: <span class="tsd-signature-type">boolean</span></h5>
-<div class="tsd-comment tsd-typography"><p>A boolean that can be used to bypass <a href="ClickableGroup.html#matrixWorldAutoUpdate" class="tsd-kind-property">.matrixWorldAutoUpdate</a>, to recalculate the world matrix of the object and descendants on the current frame.
-Useful if you cannot wait for the renderer to update it on the next frame, assuming <a href="ClickableGroup.html#matrixWorldAutoUpdate" class="tsd-kind-property">.matrixWorldAutoUpdate</a> set to <code>true</code>.</p>
+<div class="tsd-comment tsd-typography"><p>A boolean that can be used to bypass <a href="ClickableSprite.html#matrixWorldAutoUpdate" class="tsd-kind-property">.matrixWorldAutoUpdate</a>, to recalculate the world matrix of the object and descendants on the current frame.
+Useful if you cannot wait for the renderer to update it on the next frame, assuming <a href="ClickableSprite.html#matrixWorldAutoUpdate" class="tsd-kind-property">.matrixWorldAutoUpdate</a> set to <code>true</code>.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <p>Inherited from Group.updateMatrixWorld</p>
