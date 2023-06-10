@@ -18,7 +18,7 @@
     "threejs"
   ],
   "dependencies": {
-    "@masatomakino/raf-ticker": "^0.4.2"
+    "@masatomakino/raf-ticker": "^0.5.1"
   },
   "devDependencies": {
     "@masatomakino/fake-mouse-event": "^0.0.10",
