@@ -1,5 +1,5 @@
 import { Group } from "three";
-import { ClickableGroup, ClickableState, MouseEventManager } from "../src";
+import { ClickableGroup, MouseEventManager } from "../src";
 import { MouseEventManagerButton } from "./MouseEventManagerButton";
 import { MouseEventManagerScene } from "./MouseEventManagerScene";
 
@@ -22,11 +22,9 @@ describe("MouseEventManager", () => {
 
   test("mouse move", () => {
     btn.checkMaterial("normal");
-    managerScene.render();
-
     managerScene.dispatchMouseEvent("mousemove", 0, 0);
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
-    managerScene.render();
+
     //スロットリングされるのでnormalのまま
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
@@ -56,7 +54,6 @@ describe("MouseEventManager", () => {
 
   test("mouse down / mouse up", () => {
     btn.checkMaterial("normal");
-    managerScene.render();
 
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
     btn.checkMaterial("down");
