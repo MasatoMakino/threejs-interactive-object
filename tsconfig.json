@@ -6,12 +6,11 @@
     "moduleResolution": "node",
     "declaration": true,
     "declarationMap": true,
-    "rootDir": "src",
-    "outDir": "esm",
+    "outDir": "./esm",
     "esModuleInterop": true,
     "strict": true,
     "noImplicitOverride": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules", "__test__"]
 }
