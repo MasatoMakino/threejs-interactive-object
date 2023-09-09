@@ -6,7 +6,7 @@ import {
   RadioButtonObject,
   StateMaterialSet,
   ModelConstructor,
-} from "./";
+} from "./index.js";
 
 export interface InteractiveMeshParameters {
   geo?: BufferGeometry;
@@ -21,7 +21,7 @@ class InteractiveMesh<Value, Model extends ClickableObject<Value>>
 
   constructor(
     parameters: InteractiveMeshParameters,
-    ctor: ModelConstructor<Model, Value>
+    ctor: ModelConstructor<Model, Value>,
   ) {
     super(parameters.geo);
     this.model = new ctor({ view: this, material: parameters.material });

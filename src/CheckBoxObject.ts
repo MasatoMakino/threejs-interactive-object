@@ -3,7 +3,7 @@ import {
   CheckBoxSprite,
   ClickableObject,
   ThreeMouseEventUtil,
-} from "./";
+} from "./index.js";
 
 export class CheckBoxObject<Value> extends ClickableObject<Value> {
   declare readonly view: CheckBoxMesh<Value> | CheckBoxSprite<Value>;
@@ -36,7 +36,7 @@ export class CheckBoxObject<Value> extends ClickableObject<Value> {
     const stateMat = this.materialSet?.getMaterial(
       this.state,
       this._enable,
-      this._isSelect
+      this._isSelect,
     );
     if (stateMat?.material != null) {
       this.view.material = stateMat.material;

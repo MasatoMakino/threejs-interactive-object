@@ -6,7 +6,7 @@ import {
   StateMaterialSet,
   ThreeMouseEvent,
   ThreeMouseEventUtil,
-} from "./";
+} from "./index.js";
 
 /**
  * クリックに反応する表示オブジェクトの型エイリアス

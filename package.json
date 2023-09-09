@@ -1,9 +1,16 @@
 {
   "name": "@masatomakino/threejs-interactive-object",
   "version": "0.14.3",
-  "main": "./lib/index.js",
-  "types": "./lib/index.d.ts",
-  "module": "./esm/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./esm/index.d.ts",
+        "default": "./esm/index.js"
+      }
+    }
+  },
+  "types": "./esm/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://MasatoMakino@github.com/MasatoMakino/threejs-interactive-object.git"
@@ -11,24 +18,19 @@
   "author": "MasatoMakino <unagiinu.g@gmail.com>",
   "license": "MIT",
   "files": [
-    "lib",
     "esm"
   ],
   "keywords": [
     "threejs"
   ],
-  "dependencies": {
-    "@masatomakino/raf-ticker": "^0.5.1"
-  },
   "peerDependencies": {
+    "@masatomakino/raf-ticker": "^0.5.1",
     "three": ">=0.126.0 <1.0.0"
   },
   "devDependencies": {
     "@masatomakino/fake-mouse-event": "^0.0.12",
     "@masatomakino/gulptask-demo-page": "^0.7.0",
-    "@swc/core": "^1.3.50",
-    "@swc/jest": "^0.2.26",
-    "@types/jest": "^29.5.0",
+    "@types/jest": "^29.5.4",
     "@types/three": "^0.155.1",
     "browser-sync": "^2.29.1",
     "canvas": "^2.11.2",
@@ -37,6 +39,7 @@
     "jest-environment-jsdom": "^29.5.0",
     "lint-staged": "^14.0.0",
     "prettier": "^3.0.1",
+    "ts-jest": "^29.1.1",
     "typedoc": "^0.25.0",
     "typescript": "^5.0.4"
   },
@@ -48,12 +51,12 @@
     "postversion": "git add package.json package-lock.json && git checkout -b version/$(git describe --tags --abbrev=0)",
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",
     "build": "npm run buildTS && npm run demo && npm run typedocs",
-    "demo": "npx @masatomakino/gulptask-demo-page --body '<canvas id=\"webgl-canvas\"></canvas>'",
-    "buildTS": "tsc --project tsconfig.cjs.json & tsc --project tsconfig.esm.json",
+    "demo": "npx @masatomakino/gulptask-demo-page --body '<canvas id=\"webgl-canvas\"></canvas>' --compileModule es2020",
+    "buildTS": "tsc",
     "typedocs": "npx typedoc --out ./docs/api src/index.ts",
     "server": "browser-sync ./docs/demo -w",
     "watch:demo": "npm run demo -- -W",
-    "watch:tsc": "tsc -W --incremental --project tsconfig.cjs.json & tsc -W --incremental --project tsconfig.esm.json"
+    "watch:tsc": "tsc -W --incremental"
   },
   "description": "Mouse interactive objects for three.js",
   "bugs": {
@@ -62,7 +65,7 @@
   "homepage": "https://github.com/MasatoMakino/threejs-interactive-object#readme",
   "directories": {
     "doc": "docs",
-    "lib": "lib"
+    "lib": "esm"
   },
   "lint-staged": {
     "*.{js,ts,css,md}": "prettier --write"

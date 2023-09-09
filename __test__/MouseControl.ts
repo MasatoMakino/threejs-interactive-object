@@ -8,7 +8,7 @@ import {
   StateMaterialSet,
   ThreeMouseEventType,
   ThreeMouseEventUtil,
-} from "../src/index";
+} from "../src/index.js";
 
 /**
  * 対象のボタンをクリックする
@@ -30,7 +30,7 @@ export function clickButton(button: IClickableObject3D<unknown>) {
 export function changeMaterialState(
   target: ClickableMesh | ClickableSprite,
   type: ThreeMouseEventType,
-  mat: StateMaterial
+  mat: StateMaterial,
 ): void {
   MouseEventManager.onButtonHandler(target, type);
   expect(target.material).toBe(mat.material);
@@ -43,7 +43,7 @@ export function changeMaterialState(
  */
 export function testMouseOver(
   target: ClickableMesh | ClickableSprite,
-  matSet: StateMaterialSet
+  matSet: StateMaterialSet,
 ): void {
   changeMaterialState(target, "over", matSet.over);
   changeMaterialState(target, "out", matSet.normal);
@@ -59,7 +59,7 @@ export function testMouseOver(
  */
 export function testDisable(
   target: ClickableMesh | ClickableSprite,
-  matSet: StateMaterialSet
+  matSet: StateMaterialSet,
 ) {
   target.model.disable();
   changeMaterialState(target, "over", matSet.disable);
@@ -74,7 +74,7 @@ export function testDisable(
 
 export function testFrozen(
   target: ClickableMesh | ClickableSprite,
-  matSet: StateMaterialSet
+  matSet: StateMaterialSet,
 ) {
   changeMaterialState(target, "out", matSet.normal);
   target.model.frozen = true;
@@ -95,7 +95,7 @@ export function testFrozen(
  */
 export function testSwitch(
   target: ClickableMesh | ClickableSprite,
-  matSet: StateMaterialSet
+  matSet: StateMaterialSet,
 ) {
   target.model.switchEnable(false);
   expect(target.material).toBe(matSet.disable.material);
@@ -115,7 +115,7 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
     .mockImplementation((e: Event) => null);
   target.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", target));
   expect(spy).toHaveBeenLastCalledWith(
-    ThreeMouseEventUtil.generate("up", target)
+    ThreeMouseEventUtil.generate("up", target),
   );
 }
 
@@ -131,6 +131,6 @@ export function testClick(target: ClickableMesh | ClickableSprite) {
 
   clickButton(target);
   expect(spy).toHaveBeenLastCalledWith(
-    ThreeMouseEventUtil.generate("click", target)
+    ThreeMouseEventUtil.generate("click", target),
   );
 }

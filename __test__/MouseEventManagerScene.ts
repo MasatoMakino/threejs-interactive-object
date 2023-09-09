@@ -1,7 +1,7 @@
 import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 import { RAFTicker } from "@masatomakino/raf-ticker";
-import { Camera, PerspectiveCamera, Scene, WebGLRenderer } from "three";
-import { MouseEventManager } from "../src";
+import { Camera, PerspectiveCamera, Scene } from "three";
+import { MouseEventManager } from "../src/index.js";
 
 export class MouseEventManagerScene {
   public scene: Scene;
@@ -18,7 +18,7 @@ export class MouseEventManagerScene {
       45,
       MouseEventManagerScene.W / MouseEventManagerScene.H,
       1,
-      400
+      400,
     );
     this.camera.position.set(0, 0, 100);
     this.scene.add(this.camera);

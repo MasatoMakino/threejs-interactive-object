@@ -1,5 +1,5 @@
 import { MeshBasicMaterial, SpriteMaterial, TextureLoader } from "three";
-import { StateMaterialSet } from "../src/index";
+import { StateMaterialSet } from "../src/index.js";
 
 /**
  * Mesh用のマテリアルセットを新規に取得する。
@@ -51,7 +51,7 @@ export function getSpriteMaterialSet(): StateMaterialSet {
 const getSpriteMaterial = (
   opacity: number,
   imgURL?: string,
-  color?: number
+  color?: number,
 ) => {
   if (color == null) color = 0xffffff;
   let map;

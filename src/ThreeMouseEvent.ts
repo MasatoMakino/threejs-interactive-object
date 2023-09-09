@@ -1,5 +1,5 @@
 import { Event } from "three";
-import { ClickableObject, IClickableObject3D } from "./";
+import { ClickableObject, IClickableObject3D } from "./index.js";
 
 export interface ThreeMouseEvent<Value> extends Event {
   type: ThreeMouseEventType;
@@ -10,7 +10,7 @@ export interface ThreeMouseEvent<Value> extends Event {
 export class ThreeMouseEventUtil {
   static generate<Value>(
     type: ThreeMouseEventType,
-    modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined
+    modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined,
   ): ThreeMouseEvent<Value> {
     const model = ThreeMouseEventUtil.getModel(modelOrView);
     const getSelection = () => {
@@ -28,7 +28,7 @@ export class ThreeMouseEventUtil {
   }
 
   private static getModel<Value>(
-    modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined
+    modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined,
   ): ClickableObject<Value> | undefined {
     if (modelOrView != null && "model" in modelOrView) {
       return modelOrView.model;
@@ -41,13 +41,13 @@ export class ThreeMouseEventUtil {
    * @param model
    */
   static getSelection<Value>(
-    model: ClickableObject<Value> | undefined
+    model: ClickableObject<Value> | undefined,
   ): boolean {
     if (model != null && "selection" in model) {
       return !!model["selection"];
     } else {
       throw new Error(
-        "選択可能なボタン以外を引数にして、SELECTイベントをインスタンス化しました。SELECTイベントはISelectableObject3Dを実装したクラスとともにインスタンス化してください。"
+        "選択可能なボタン以外を引数にして、SELECTイベントをインスタンス化しました。SELECTイベントはISelectableObject3Dを実装したクラスとともにインスタンス化してください。",
       );
     }
   }
