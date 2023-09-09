@@ -1,4 +1,4 @@
-import { CheckBoxObject, RadioButtonMesh, RadioButtonSprite } from "./";
+import { CheckBoxObject, RadioButtonMesh, RadioButtonSprite } from "./index.js";
 
 export class RadioButtonObject<Value> extends CheckBoxObject<Value> {
   declare readonly view: RadioButtonMesh<Value> | RadioButtonSprite<Value>;

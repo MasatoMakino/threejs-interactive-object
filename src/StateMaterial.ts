@@ -1,5 +1,5 @@
 import { Material } from "three";
-import { ClickableState } from "./";
+import { ClickableState } from "./index.js";
 
 /**
  * IClickableObject3D用の各状態用マテリアル。
@@ -85,15 +85,15 @@ export class StateMaterialSet {
     this.disable = StateMaterialSet.initMaterial(param.disable, this.normal);
     this.normalSelect = StateMaterialSet.initMaterial(
       param.normalSelect,
-      this.normal
+      this.normal,
     );
     this.overSelect = StateMaterialSet.initMaterial(
       param.overSelect,
-      this.normal
+      this.normal,
     );
     this.downSelect = StateMaterialSet.initMaterial(
       param.downSelect,
-      this.normal
+      this.normal,
     );
 
     this.init();
@@ -101,7 +101,7 @@ export class StateMaterialSet {
 
   private static initMaterial(
     value: StateMaterialType | undefined,
-    defaultMaterial: StateMaterial
+    defaultMaterial: StateMaterial,
   ): StateMaterial {
     if (value == null) return defaultMaterial;
     return new StateMaterial(value);
@@ -126,7 +126,7 @@ export class StateMaterialSet {
   public getMaterial(
     state: ClickableState,
     mouseEnabled: boolean,
-    isSelected: boolean = false
+    isSelected: boolean = false,
   ): StateMaterial {
     //無効状態はstateよりも優先
     if (!mouseEnabled) {

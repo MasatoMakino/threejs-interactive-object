@@ -1,10 +1,10 @@
-import { Event, EventDispatcher } from "three";
+import { EventDispatcher } from "three";
 import {
   IClickableObject3D,
   RadioButtonObject,
   ThreeMouseEvent,
   ThreeMouseEventUtil,
-} from "./";
+} from "./index.js";
 
 export class RadioButtonManager<Value = any> extends EventDispatcher<
   ThreeMouseEvent<Value>
@@ -61,7 +61,7 @@ export class RadioButtonManager<Value = any> extends EventDispatcher<
   }
 
   public removeModel(
-    model: RadioButtonObject<Value>
+    model: RadioButtonObject<Value>,
   ): RadioButtonObject<Value> {
     const index = this._models.indexOf(model);
     if (index > -1) {
