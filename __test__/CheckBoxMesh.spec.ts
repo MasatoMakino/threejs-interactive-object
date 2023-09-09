@@ -3,9 +3,9 @@ import {
   CheckBoxMesh,
   StateMaterialSet,
   ThreeMouseEventUtil,
-} from "../src/index";
-import { getMeshMaterialSet } from "./Materials";
-import { changeMaterialState, clickButton } from "./MouseControl";
+} from "../src/index.js";
+import { getMeshMaterialSet } from "./Materials.js";
+import { changeMaterialState, clickButton } from "./MouseControl.js";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
@@ -44,7 +44,7 @@ describe("CheckBoxMesh", () => {
     //クリックして選択
     clickButton(checkbox);
     expect(spy).toHaveBeenLastCalledWith(
-      ThreeMouseEventUtil.generate("click", checkbox)
+      ThreeMouseEventUtil.generate("click", checkbox),
     );
     expect(checkbox.model.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.overSelect.material);

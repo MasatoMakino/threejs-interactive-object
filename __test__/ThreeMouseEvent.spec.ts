@@ -3,9 +3,8 @@ import {
   CheckBoxMesh,
   ClickableMesh,
   StateMaterialSet,
-  ThreeMouseEvent,
   ThreeMouseEventUtil,
-} from "../src/index";
+} from "../src/index.js";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 

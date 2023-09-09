@@ -1,6 +1,6 @@
 import { SpriteMaterial } from "three";
-import { ClickableSprite, StateMaterialSet } from "../src/index";
-import { getSpriteMaterialSet } from "./Materials";
+import { ClickableSprite, StateMaterialSet } from "../src/index.js";
+import { getSpriteMaterialSet } from "./Materials.js";
 import {
   testClick,
   testDisable,
@@ -8,7 +8,7 @@ import {
   testMouseOver,
   testMouseUP,
   testSwitch,
-} from "./MouseControl";
+} from "./MouseControl.js";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 

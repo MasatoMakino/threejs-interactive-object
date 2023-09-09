@@ -7,7 +7,7 @@ import {
   RadioButtonManager,
   RadioButtonMesh,
   StateMaterialSet,
-} from "..";
+} from "../esm/index.js";
 import {
   AmbientLight,
   BoxGeometry,
@@ -205,7 +205,7 @@ const testRadio = (scene) => {
   manager.addButton(
     initButton(-10, "button01"),
     initButton(0, Math.PI),
-    initButton(10, { value01: 1, value02: 2 })
+    initButton(10, { value01: 1, value02: 2 }),
   );
   manager.addButton(initButton(20, undefined));
 

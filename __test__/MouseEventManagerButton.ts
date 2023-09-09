@@ -1,6 +1,10 @@
 import { BoxGeometry } from "three";
-import { ClickableMesh, ClickableState, StateMaterialSet } from "../src";
-import { getMeshMaterialSet } from "./Materials";
+import {
+  ClickableMesh,
+  ClickableState,
+  StateMaterialSet,
+} from "../src/index.js";
+import { getMeshMaterialSet } from "./Materials.js";
 
 export class MouseEventManagerButton {
   public button: ClickableMesh;
@@ -21,7 +25,7 @@ export class MouseEventManagerButton {
   public checkMaterial(state: ClickableState): void {
     const setMat = this.materialSet.getMaterial(
       state,
-      state !== "disable"
+      state !== "disable",
     ).material;
 
     expect(this.button.material).toBe(setMat);
