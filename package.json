@@ -30,7 +30,7 @@
   "devDependencies": {
     "@masatomakino/fake-mouse-event": "^0.0.12",
     "@masatomakino/gulptask-demo-page": "^0.7.0",
-    "@types/jest": "^29.5.0",
+    "@types/jest": "^29.5.4",
     "@types/three": "^0.155.1",
     "browser-sync": "^2.29.1",
     "canvas": "^2.11.2",
@@ -39,6 +39,7 @@
     "jest-environment-jsdom": "^29.5.0",
     "lint-staged": "^14.0.0",
     "prettier": "^3.0.1",
+    "ts-jest": "^29.1.1",
     "typedoc": "^0.25.0",
     "typescript": "^5.0.4"
   },
