@@ -50,12 +50,12 @@
     "postversion": "git add package.json package-lock.json && git checkout -b version/$(git describe --tags --abbrev=0)",
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",
     "build": "npm run buildTS && npm run demo && npm run typedocs",
-    "demo": "npx @masatomakino/gulptask-demo-page --body '<canvas id=\"webgl-canvas\"></canvas>'",
-    "buildTS": "tsc --project tsconfig.cjs.json & tsc --project tsconfig.esm.json",
+    "demo": "npx @masatomakino/gulptask-demo-page --body '<canvas id=\"webgl-canvas\"></canvas>' --compileModule es2020",
+    "buildTS": "tsc",
     "typedocs": "npx typedoc --out ./docs/api src/index.ts",
     "server": "browser-sync ./docs/demo -w",
     "watch:demo": "npm run demo -- -W",
-    "watch:tsc": "tsc -W --incremental --project tsconfig.cjs.json & tsc -W --incremental --project tsconfig.esm.json"
+    "watch:tsc": "tsc -W --incremental"
   },
   "description": "Mouse interactive objects for three.js",
   "bugs": {
