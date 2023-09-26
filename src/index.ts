@@ -1,16 +1,16 @@
-export * from "./InteractiveSprite";
-export * from "./InteractiveMesh";
+export * from "./InteractiveSprite.js";
+export * from "./InteractiveMesh.js";
 
-export * from "./ClickableObject";
-export * from "./ClickableGroup";
+export * from "./ClickableObject.js";
+export * from "./ClickableGroup.js";
 
-export * from "./CheckBoxObject";
+export * from "./CheckBoxObject.js";
 
-export * from "./RadioButtonObject";
-export * from "./RadioButtonManager";
+export * from "./RadioButtonObject.js";
+export * from "./RadioButtonManager.js";
 
-export * from "./StateMaterial";
-export * from "./MouseEventManager";
-export * from "./ThreeMouseEvent";
+export * from "./StateMaterial.js";
+export * from "./MouseEventManager.js";
+export * from "./ThreeMouseEvent.js";
 
-export * from "./ViewPortUtil";
+export * from "./ViewPortUtil.js";

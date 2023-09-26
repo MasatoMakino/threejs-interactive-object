@@ -6,7 +6,7 @@ import {
   IClickableObject3D,
   RadioButtonObject,
   StateMaterialSet,
-} from "./";
+} from "./index.js";
 
 export interface ModelConstructor<Model extends ClickableObject<Value>, Value> {
   new (param: ClickableObjectParameters<Value>): Model;
@@ -19,7 +19,7 @@ class InteractiveSprite<Value, Model extends ClickableObject<Value>>
   readonly model: Model;
   constructor(
     material: StateMaterialSet,
-    ctor: ModelConstructor<Model, Value>
+    ctor: ModelConstructor<Model, Value>,
   ) {
     super();
     this.model = new ctor({ view: this, material: material });

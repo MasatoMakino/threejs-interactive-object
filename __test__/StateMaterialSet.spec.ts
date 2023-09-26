@@ -1,5 +1,5 @@
 import { Material, MeshBasicMaterial } from "three";
-import { ClickableState, StateMaterial, StateMaterialSet } from "../src/index";
+import { StateMaterial, StateMaterialSet } from "../src/index.js";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
@@ -79,7 +79,7 @@ describe("StateMaterialSet", () => {
         color: 0xff66ff,
         opacity: 0.6,
         transparent: true,
-      })
+      }),
     );
 
     const mat = matSet.getMaterial("over", true, true);

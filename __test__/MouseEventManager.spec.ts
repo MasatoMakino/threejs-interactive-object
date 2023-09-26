@@ -1,7 +1,7 @@
 import { Group } from "three";
-import { ClickableGroup, MouseEventManager } from "../src";
-import { MouseEventManagerButton } from "./MouseEventManagerButton";
-import { MouseEventManagerScene } from "./MouseEventManagerScene";
+import { ClickableGroup, MouseEventManager } from "../src/index.js";
+import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
+import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
 describe("MouseEventManager", () => {
   const managerScene = new MouseEventManagerScene();

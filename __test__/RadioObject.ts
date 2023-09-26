@@ -5,8 +5,8 @@ import {
   RadioButtonMesh,
   RadioButtonSprite,
   ThreeMouseEventUtil,
-} from "../src/";
-import { clickButton } from "./MouseControl";
+} from "../src/index.js";
+import { clickButton } from "./MouseControl.js";
 
 /**
  * テスト用のbuttonValueサンプルを生成する。
@@ -24,7 +24,7 @@ export function getButtonValues(): any[] {
  */
 export function testInitManager(
   manager: RadioButtonManager,
-  generator: (value: any) => RadioButtonMesh | RadioButtonSprite
+  generator: (value: any) => RadioButtonMesh | RadioButtonSprite,
 ) {
   const values = getButtonValues();
   const buttons = [];
@@ -55,14 +55,14 @@ export function testRadioSelection(manager: RadioButtonManager) {
   expect(manager.selected.value).toEqual(values[index]);
 
   expect(spyManager).toHaveBeenCalledWith(
-    ThreeMouseEventUtil.generate("select", button)
+    ThreeMouseEventUtil.generate("select", button),
   );
   expect(button.isFrozen).toBe(true);
 
   spyManager.mockClear();
   manager.select(button);
   expect(spyManager).not.toHaveBeenCalledWith(
-    ThreeMouseEventUtil.generate("select", button)
+    ThreeMouseEventUtil.generate("select", button),
   );
   expect(button.isFrozen).toBe(true);
 }
@@ -93,7 +93,7 @@ export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
  */
 const onClickSecondTime = <T>(
   manager: RadioButtonManager,
-  button: ClickableView<T>
+  button: ClickableView<T>,
 ) => {
   const spyButton = jest
     .spyOn(button, "dispatchEvent")
@@ -101,9 +101,9 @@ const onClickSecondTime = <T>(
 
   clickButton(button);
   expect(spyButton).not.toHaveBeenCalledWith(
-    ThreeMouseEventUtil.generate("select", button)
+    ThreeMouseEventUtil.generate("select", button),
   );
   expect(spyButton).not.toHaveBeenCalledWith(
-    ThreeMouseEventUtil.generate("click", button)
+    ThreeMouseEventUtil.generate("click", button),
   );
 };

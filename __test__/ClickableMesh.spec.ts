@@ -1,6 +1,6 @@
 import { BoxGeometry, MeshBasicMaterial } from "three";
-import { ClickableMesh, StateMaterialSet } from "../src/index";
-import { getMeshMaterialSet } from "./Materials";
+import { ClickableMesh, StateMaterialSet } from "../src/index.js";
+import { getMeshMaterialSet } from "./Materials.js";
 import {
   testClick,
   testDisable,
@@ -8,7 +8,7 @@ import {
   testMouseOver,
   testMouseUP,
   testSwitch,
-} from "./MouseControl";
+} from "./MouseControl.js";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
@@ -53,13 +53,13 @@ describe("ClickableMesh", () => {
     clickable.model.alpha = 0.5;
     expect(
       (clickable.model.materialSet?.normal.material as MeshBasicMaterial)
-        .opacity
+        .opacity,
     ).toBe(0.3);
     expect(
-      (clickable.model.materialSet?.over.material as MeshBasicMaterial).opacity
+      (clickable.model.materialSet?.over.material as MeshBasicMaterial).opacity,
     ).toBe(0.4);
     expect(
-      (clickable.model.materialSet?.down.material as MeshBasicMaterial).opacity
+      (clickable.model.materialSet?.down.material as MeshBasicMaterial).opacity,
     ).toBe(0.5);
   });
 });

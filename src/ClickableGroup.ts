@@ -1,5 +1,5 @@
 import { Group } from "three";
-import { ClickableObject, IClickableObject3D } from "./";
+import { ClickableObject, IClickableObject3D } from "./index.js";
 
 export class ClickableGroup<Value = any>
   extends Group

@@ -13,7 +13,7 @@ import {
   ThreeMouseEventType,
   ThreeMouseEventUtil,
   ViewPortUtil,
-} from "./";
+} from "./index.js";
 
 export class MouseEventManager {
   protected camera: Camera;
@@ -49,7 +49,7 @@ export class MouseEventManager {
       viewport?: Vector4;
       targets?: Object3D[];
       recursive?: boolean;
-    }
+    },
   ) {
     this.camera = camera;
     this.scene = scene;
@@ -153,7 +153,7 @@ export class MouseEventManager {
    */
   private checkIntersects(
     intersects: Intersection<Object3D>[],
-    type: ThreeMouseEventType
+    type: ThreeMouseEventType,
   ): void {
     const n: number = intersects.length;
     if (n === 0) return;
@@ -173,7 +173,7 @@ export class MouseEventManager {
    */
   public static onButtonHandler(
     btn: IClickableObject3D<unknown>,
-    type: ThreeMouseEventType
+    type: ThreeMouseEventType,
   ) {
     switch (type) {
       case "down":
@@ -202,7 +202,7 @@ export class MouseEventManager {
    * @private
    */
   private static implementsIClickableObject3D(
-    arg: any
+    arg: any,
   ): arg is IClickableObject3D<unknown> {
     return (
       arg !== null &&
@@ -226,7 +226,7 @@ export class MouseEventManager {
   protected checkTarget(
     target: Object3D | undefined | null,
     type: ThreeMouseEventType,
-    hasTarget: boolean = false
+    hasTarget: boolean = false,
   ): boolean {
     //クリッカブルインターフェースを継承しているなら判定OK
     if (
@@ -260,7 +260,7 @@ export class MouseEventManager {
       this.canvas,
       event,
       this.viewport,
-      this.mouse
+      this.mouse,
     );
     this.raycaster.setFromCamera(this.mouse, this.camera);
     return this.raycaster.intersectObjects(this.targets, this.recursive);

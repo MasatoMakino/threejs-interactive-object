@@ -1,10 +1,10 @@
-import { RadioButtonManager, RadioButtonSprite } from "../src/index";
-import { getSpriteMaterialSet } from "./Materials";
+import { RadioButtonManager, RadioButtonSprite } from "../src/index.js";
+import { getSpriteMaterialSet } from "./Materials.js";
 import {
   testInitManager,
   testRadioSelection,
   testRadioSelectionWithMouse,
-} from "./RadioObject";
+} from "./RadioObject.js";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 

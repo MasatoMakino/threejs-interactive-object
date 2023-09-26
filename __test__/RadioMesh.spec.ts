@@ -1,11 +1,11 @@
 import { BoxGeometry } from "three";
-import { RadioButtonManager, RadioButtonMesh } from "../src/index";
-import { getMeshMaterialSet } from "./Materials";
+import { RadioButtonManager, RadioButtonMesh } from "../src/index.js";
+import { getMeshMaterialSet } from "./Materials.js";
 import {
   testInitManager,
   testRadioSelection,
   testRadioSelectionWithMouse,
-} from "./RadioObject";
+} from "./RadioObject.js";
 
 const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
 
@@ -38,7 +38,7 @@ describe("RadioButton", () => {
     const notManagedButton = initButton("notManagedButton");
     manager.select(notManagedButton.model);
     expect(spyWarn).toHaveBeenCalledWith(
-      "管理下でないボタンが選択処理されました。"
+      "管理下でないボタンが選択処理されました。",
     );
 
     //管理外のボタンをremoveしてもエラーは発生しない。
