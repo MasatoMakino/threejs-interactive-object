@@ -9,7 +9,7 @@ export interface ThreeMouseEventMap<T = any> {
   select: (e: ThreeMouseEvent<T>) => void;
 }
 export interface ThreeMouseEvent<Value> {
-  type: keyof ThreeMouseEventMap<Value>;
+  readonly type: keyof ThreeMouseEventMap<Value>;
   readonly model?: ClickableObject<Value>;
   readonly isSelected?: boolean;
 }

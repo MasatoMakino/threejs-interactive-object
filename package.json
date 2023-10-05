@@ -7,6 +7,10 @@
       "import": {
         "types": "./esm/index.d.ts",
         "default": "./esm/index.js"
+      },
+      "default": {
+        "types": "./esm/index.d.ts",
+        "default": "./esm/index.js"
       }
     }
   },
