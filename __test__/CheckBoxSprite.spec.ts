@@ -1,5 +1,4 @@
-import { Event } from "three";
-import { CheckBoxSprite, ThreeMouseEventUtil } from "../src/index.js";
+import { CheckBoxSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
 import { clickButton } from "./MouseControl.js";
 
@@ -30,17 +29,15 @@ describe("CheckBoxSprite", () => {
 
   test("マウスクリックで選択", () => {
     const btn = initButton("button01");
-    const spy = jest
-      .spyOn(btn, "dispatchEvent")
-      .mockImplementation((e: Event) => null);
+
+    const spySelect = jest.fn((e) => {});
+    const spyClick = jest.fn((e) => {});
+    btn.model.on("click", spyClick);
+    btn.model.on("select", spySelect);
 
     clickButton(btn);
-    expect(spy).toHaveBeenCalledWith(
-      ThreeMouseEventUtil.generate("select", btn),
-    );
-    expect(spy).toHaveBeenCalledWith(
-      ThreeMouseEventUtil.generate("click", btn),
-    );
+    expect(spySelect).toBeCalled();
+    expect(spyClick).toBeCalled();
     expect(btn.material.opacity).toBe(0.85);
   });
 });

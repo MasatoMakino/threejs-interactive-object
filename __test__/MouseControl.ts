@@ -1,4 +1,3 @@
-import { Event } from "three";
 import {
   ClickableMesh,
   ClickableSprite,
@@ -6,7 +5,7 @@ import {
   MouseEventManager,
   StateMaterial,
   StateMaterialSet,
-  ThreeMouseEventType,
+  ThreeMouseEventMap,
   ThreeMouseEventUtil,
 } from "../src/index.js";
 
@@ -24,12 +23,12 @@ export function clickButton(button: IClickableObject3D<unknown>) {
  * イベントタイプを指定して、IClickableObject3Dの対応するマウスイベントハンドラーを呼び出す。
  * そのあと、マテリアル状態の評価を行う
  * @param {ClickableMesh | ClickableSprite} target
- * @param {ThreeMouseEventType} type
+ * @param {keyof ThreeMouseEventMap} type
  * @param {StateMaterial} mat
  */
 export function changeMaterialState(
   target: ClickableMesh | ClickableSprite,
-  type: ThreeMouseEventType,
+  type: keyof ThreeMouseEventMap,
   mat: StateMaterial,
 ): void {
   MouseEventManager.onButtonHandler(target, type);
@@ -110,13 +109,14 @@ export function testSwitch(
  * @param {ClickableMesh | ClickableSprite} target
  */
 export function testMouseUP(target: ClickableMesh | ClickableSprite) {
-  const spy = jest
-    .spyOn(target, "dispatchEvent")
-    .mockImplementation((e: Event) => null);
+  const spyUp = jest.fn((e) => {});
+  const spyClick = jest.fn((e) => {});
+  target.model.on("click", spyClick);
+  target.model.on("up", spyUp);
+
   target.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", target));
-  expect(spy).toHaveBeenLastCalledWith(
-    ThreeMouseEventUtil.generate("up", target),
-  );
+  expect(spyUp).toBeCalled();
+  expect(spyClick).not.toBeCalled();
 }
 
 /**
@@ -125,12 +125,8 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
  * @param target
  */
 export function testClick(target: ClickableMesh | ClickableSprite) {
-  const spy = jest
-    .spyOn(target, "dispatchEvent")
-    .mockImplementation((e: Event) => null);
-
+  const spyClick = jest.fn((e) => {});
+  target.model.on("click", spyClick);
   clickButton(target);
-  expect(spy).toHaveBeenLastCalledWith(
-    ThreeMouseEventUtil.generate("click", target),
-  );
+  expect(spyClick).toBeCalled();
 }
