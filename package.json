@@ -31,7 +31,7 @@
     "@masatomakino/fake-mouse-event": "^0.0.12",
     "@masatomakino/gulptask-demo-page": "^0.7.0",
     "@types/jest": "^29.5.4",
-    "@types/three": "^0.155.1",
+    "@types/three": "^0.156.0",
     "browser-sync": "^2.29.1",
     "canvas": "^2.11.2",
     "husky": "^8.0.3",
@@ -69,5 +69,8 @@
   },
   "lint-staged": {
     "*.{js,ts,css,md}": "prettier --write"
+  },
+  "dependencies": {
+    "eventemitter3": "^5.0.1"
   }
 }

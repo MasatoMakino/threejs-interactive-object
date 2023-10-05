@@ -1,3 +1,4 @@
+import EventEmitter from "eventemitter3";
 import {
   ClickableGroup,
   ClickableMesh,
@@ -5,6 +6,7 @@ import {
   ClickableState,
   StateMaterialSet,
   ThreeMouseEvent,
+  ThreeMouseEventMap,
   ThreeMouseEventUtil,
 } from "./index.js";
 
@@ -26,7 +28,9 @@ export interface ClickableObjectParameters<Value> {
  * クリックに反応するObject
  * これ自体は表示オブジェクトではない。
  */
-export class ClickableObject<Value> {
+export class ClickableObject<Value> extends EventEmitter<
+  ThreeMouseEventMap<Value>
+> {
   public value: Value | undefined;
   get materialSet(): StateMaterialSet | undefined {
     return this._materialSet;
@@ -63,6 +67,7 @@ export class ClickableObject<Value> {
    * コンストラクタ
    */
   constructor(parameters: ClickableObjectParameters<Value>) {
+    super();
     this.view = parameters.view;
     this._materialSet ??= parameters.material;
     this.updateMaterial();
@@ -72,7 +77,7 @@ export class ClickableObject<Value> {
     if (!this.checkActivity()) return;
     this._isPress = true;
     this.updateState("down");
-    this.view.dispatchEvent(event);
+    this.emit(event.type, event);
   }
 
   public onMouseUpHandler(event: ThreeMouseEvent<Value>): void {
@@ -83,13 +88,13 @@ export class ClickableObject<Value> {
 
     const nextState: ClickableState = this._isOver ? "over" : "normal";
     this.updateState(nextState);
-    this.view.dispatchEvent(event);
+    this.emit(event.type, event);
 
     if (this._isPress != currentPress) {
       this.onMouseClick();
 
       const e = ThreeMouseEventUtil.generate("click", this);
-      this.view.dispatchEvent(e);
+      this.emit(e.type, event);
     }
   }
 
@@ -108,7 +113,7 @@ export class ClickableObject<Value> {
 
     this._isOver = event.type === "over";
     this.updateState(this._isOver ? "over" : "normal");
-    this.view.dispatchEvent(event);
+    this.emit(event.type, event);
   }
 
   public set alpha(number: number) {
