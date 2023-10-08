@@ -1,13 +1,14 @@
-import { EventDispatcher } from "three";
+import EventEmitter from "eventemitter3";
 import {
   IClickableObject3D,
   RadioButtonObject,
   ThreeMouseEvent,
+  ThreeMouseEventMap,
   ThreeMouseEventUtil,
 } from "./index.js";
 
-export class RadioButtonManager<Value = any> extends EventDispatcher<
-  ThreeMouseEvent<Value>
+export class RadioButtonManager<Value = any> extends EventEmitter<
+  ThreeMouseEventMap<Value>
 > {
   /**
    * このマネージャーの管理下のボタン
@@ -38,7 +39,7 @@ export class RadioButtonManager<Value = any> extends EventDispatcher<
 
   public addModel(model: RadioButtonObject<Value>): void {
     this._models.push(model);
-    model.view.addEventListener("select", this.onSelectedButton);
+    model.on("select", this.onSelectedButton);
   }
 
   /**
@@ -66,7 +67,7 @@ export class RadioButtonManager<Value = any> extends EventDispatcher<
     const index = this._models.indexOf(model);
     if (index > -1) {
       this._models.splice(index, 1);
-      model.view.removeEventListener("select", this.onSelectedButton);
+      model.off("select", this.onSelectedButton);
     }
     return model;
   }
@@ -93,7 +94,7 @@ export class RadioButtonManager<Value = any> extends EventDispatcher<
     }
 
     const evt = ThreeMouseEventUtil.generate("select", model);
-    this.dispatchEvent(evt);
+    this.emit(evt.type, evt);
   }
 
   get selected(): RadioButtonObject<Value> {

@@ -1,10 +1,12 @@
-import { Event } from "three";
 import {
   ClickableView,
   RadioButtonManager,
   RadioButtonMesh,
   RadioButtonSprite,
   ThreeMouseEventUtil,
+  ClickableObject,
+  ThreeMouseEvent,
+  ThreeMouseEventMap,
 } from "../src/index.js";
 import { clickButton } from "./MouseControl.js";
 
@@ -43,9 +45,9 @@ export function testInitManager(
  */
 export function testRadioSelection(manager: RadioButtonManager) {
   const values = getButtonValues();
-  const spyManager = jest
-    .spyOn(manager, "dispatchEvent")
-    .mockImplementation((e: Event) => null);
+
+  const spySelect = jest.fn((e) => {});
+  manager.on("select", spySelect);
 
   const index = 0;
   const button = manager.models[index];
@@ -53,17 +55,13 @@ export function testRadioSelection(manager: RadioButtonManager) {
   expect(button.isFrozen).toBe(false);
   manager.select(button);
   expect(manager.selected.value).toEqual(values[index]);
+  expect(spySelect).toBeCalled();
 
-  expect(spyManager).toHaveBeenCalledWith(
-    ThreeMouseEventUtil.generate("select", button),
-  );
   expect(button.isFrozen).toBe(true);
 
-  spyManager.mockClear();
+  spySelect.mockClear();
   manager.select(button);
-  expect(spyManager).not.toHaveBeenCalledWith(
-    ThreeMouseEventUtil.generate("select", button),
-  );
+  expect(spySelect).not.toBeCalled();
   expect(button.isFrozen).toBe(true);
 }
 
@@ -95,15 +93,14 @@ const onClickSecondTime = <T>(
   manager: RadioButtonManager,
   button: ClickableView<T>,
 ) => {
-  const spyButton = jest
-    .spyOn(button, "dispatchEvent")
-    .mockImplementation((e: Event) => null);
+  const spyClick = jest.fn((e) => {});
+  const spySelect = jest.fn((e) => {});
+
+  button.model.on("click", spyClick);
+  button.model.on("select", spySelect);
 
   clickButton(button);
-  expect(spyButton).not.toHaveBeenCalledWith(
-    ThreeMouseEventUtil.generate("select", button),
-  );
-  expect(spyButton).not.toHaveBeenCalledWith(
-    ThreeMouseEventUtil.generate("click", button),
-  );
+
+  expect(spyClick).not.toBeCalled();
+  expect(spySelect).not.toBeCalled();
 };

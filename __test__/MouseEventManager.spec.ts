@@ -153,11 +153,62 @@ describe("MouseEventManager", () => {
     managerScene.reset();
   });
 
+  /**
+   * マウスオーバー中にdisableに変更された場合、マウスアウト / マウスオーバー判定だけは続行される
+   */
+  test("disable in over", () => {
+    const spyOverButton = jest.fn((e) => true);
+    const spyOutButton = jest.fn((e) => true);
+
+    btn.button.model.enable();
+    btn.button.model.on("over", spyOverButton);
+    btn.button.model.on("out", spyOutButton);
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    expect(spyOverButton).toBeCalled();
+    expect(btn.button.model.isOver).toBe(true);
+    spyOverButton.mockClear();
+
+    //マウスオーバーのままdisableに変更すると、イベントは発行されないがポインターオーバー状態は変化する。
+    btn.button.model.disable();
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    expect(spyOutButton).not.toBeCalled();
+    expect(btn.button.model.isOver).toBe(false);
+    spyOutButton.mockClear();
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    expect(spyOverButton).not.toBeCalled();
+    expect(btn.button.model.isOver).toBe(true);
+    spyOverButton.mockClear();
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    expect(btn.button.model.isOver).toBe(false);
+    spyOutButton.mockClear();
+    spyOverButton.mockClear();
+
+    //ボタンの再活性化直後にoverしても反応する。
+    btn.button.model.enable();
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    expect(spyOverButton).toBeCalled();
+
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    btn.button.model.off("over", spyOverButton);
+    btn.button.model.off("out", spyOutButton);
+    managerScene.reset();
+  });
+
   test("click", () => {
-    const spyClickButton = jest.fn((e) => e);
-    const spyClickGroup = jest.fn((e) => e);
-    btn.button.addEventListener("click", spyClickButton);
-    wrapper.addEventListener("click", spyClickGroup);
+    const spyClickButton = jest.fn((e) => true);
+    const spyClickGroup = jest.fn((e) => true);
+
+    btn.button.model.on("click", spyClickButton);
+    wrapper.model.on("click", spyClickGroup);
 
     managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
     managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
@@ -165,15 +216,18 @@ describe("MouseEventManager", () => {
     expect(spyClickButton).toHaveBeenCalledTimes(1);
     expect(spyClickGroup).toHaveBeenCalledTimes(1);
 
-    btn.button.removeEventListener("click", spyClickButton);
-    wrapper.removeEventListener("click", spyClickGroup);
+    btn.button.model.off("click", spyClickButton);
+    wrapper.model.off("click", spyClickGroup);
+
     managerScene.reset();
   });
 
   test("multiple over", () => {
-    const spyOver = jest.fn((e) => e);
-    btn.button.addEventListener("over", spyOver);
+    const spyOver = jest.fn((e) => true);
+    btn.button.model.on("over", spyOver);
 
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     expect(spyOver).toBeCalled();
@@ -197,7 +251,7 @@ describe("MouseEventManager", () => {
     expect(spyOver).toBeCalled();
     spyOver.mockClear();
 
-    btn.button.removeEventListener("over", spyOver);
+    btn.button.model.off("over", spyOver);
     managerScene.reset();
   });
 });

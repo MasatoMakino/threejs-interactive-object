@@ -1,15 +1,22 @@
-import { Event } from "three";
 import { ClickableObject, IClickableObject3D } from "./index.js";
 
-export interface ThreeMouseEvent<Value> extends Event {
-  type: ThreeMouseEventType;
+export interface ThreeMouseEventMap<T = any> {
+  click: (e: ThreeMouseEvent<T>) => void;
+  over: (e: ThreeMouseEvent<T>) => void;
+  out: (e: ThreeMouseEvent<T>) => void;
+  down: (e: ThreeMouseEvent<T>) => void;
+  up: (e: ThreeMouseEvent<T>) => void;
+  select: (e: ThreeMouseEvent<T>) => void;
+}
+export interface ThreeMouseEvent<Value> {
+  readonly type: keyof ThreeMouseEventMap<Value>;
   readonly model?: ClickableObject<Value>;
   readonly isSelected?: boolean;
 }
 
 export class ThreeMouseEventUtil {
   static generate<Value>(
-    type: ThreeMouseEventType,
+    type: keyof ThreeMouseEventMap<Value>,
     modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined,
   ): ThreeMouseEvent<Value> {
     const model = ThreeMouseEventUtil.getModel(modelOrView);
@@ -56,11 +63,3 @@ export class ThreeMouseEventUtil {
     return ThreeMouseEventUtil.generate(e.type, e.model);
   }
 }
-
-export type ThreeMouseEventType =
-  | "click"
-  | "over"
-  | "out"
-  | "down"
-  | "up"
-  | "select";

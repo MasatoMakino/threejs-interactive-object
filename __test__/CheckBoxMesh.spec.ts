@@ -37,15 +37,13 @@ describe("CheckBoxMesh", () => {
   });
 
   test("click", () => {
-    const spy = jest
-      .spyOn(checkbox, "dispatchEvent")
-      .mockImplementation((e: Event) => null);
+    const spyClick = jest.fn((e) => {});
+    checkbox.model.on("click", spyClick);
 
     //クリックして選択
     clickButton(checkbox);
-    expect(spy).toHaveBeenLastCalledWith(
-      ThreeMouseEventUtil.generate("click", checkbox),
-    );
+    expect(spyClick).toBeCalled();
+
     expect(checkbox.model.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.overSelect.material);
 

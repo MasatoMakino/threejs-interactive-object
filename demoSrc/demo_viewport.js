@@ -209,7 +209,7 @@ const testRadio = (scene) => {
   );
   manager.addButton(initButton(20, undefined));
 
-  manager.addEventListener("select", (e) => {
+  manager.on("select", (e) => {
     console.log(e.model.value);
   });
 };

@@ -10,7 +10,7 @@ import {
 } from "three";
 import {
   ClickableObject,
-  ThreeMouseEventType,
+  ThreeMouseEventMap,
   ThreeMouseEventUtil,
   ViewPortUtil,
 } from "./index.js";
@@ -120,7 +120,7 @@ export class MouseEventManager {
    * @param {MouseEvent} event
    */
   protected onDocumentMouseUpDown = (event: MouseEvent) => {
-    let eventType: ThreeMouseEventType = "down";
+    let eventType: keyof ThreeMouseEventMap = "down";
     switch (event.type) {
       case "mousedown":
         eventType = "down";
@@ -149,11 +149,11 @@ export class MouseEventManager {
    * 操作対象が見つかった時点で処理は中断され、背面オブジェクトは操作対象にならない。
    *
    * @param {Intersection[]} intersects
-   * @param {ThreeMouseEventType} type
+   * @param {keyof ThreeMouseEventMap} type
    */
   private checkIntersects(
     intersects: Intersection<Object3D>[],
-    type: ThreeMouseEventType,
+    type: keyof ThreeMouseEventMap,
   ): void {
     const n: number = intersects.length;
     if (n === 0) return;
@@ -169,11 +169,11 @@ export class MouseEventManager {
   /**
    * ボタンの各種イベントハンドラーメソッドを、typeにしたがって実行する。
    * @param {IClickableObject3D} btn
-   * @param {ThreeMouseEventType} type
+   * @param {keyof ThreeMouseEventMap} type
    */
   public static onButtonHandler(
     btn: IClickableObject3D<unknown>,
-    type: ThreeMouseEventType,
+    type: keyof ThreeMouseEventMap,
   ) {
     switch (type) {
       case "down":
@@ -225,14 +225,14 @@ export class MouseEventManager {
    */
   protected checkTarget(
     target: Object3D | undefined | null,
-    type: ThreeMouseEventType,
+    type: keyof ThreeMouseEventMap,
     hasTarget: boolean = false,
   ): boolean {
     //クリッカブルインターフェースを継承しているなら判定OK
     if (
       target != null &&
       MouseEventManager.implementsIClickableObject3D(target) &&
-      target.model.mouseEnabled === true
+      target.model.mouseEnabled
     ) {
       if (type === "over") {
         this.currentOver.push(target);
