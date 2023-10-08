@@ -52,7 +52,7 @@ initialize MouseEventManager before create a button.
 const manager = new MouseEventManager(scene, camera, renderer);
 ```
 
-#### init button
+#### Init button
 
 Create buttons and add to scene.
 
@@ -71,9 +71,17 @@ scene.add(clickable);
 Add event listener.
 
 ```js
-clickable.addEventListener("click", (e) => {
-  cosole.log("CLICKED!");
+clickable.model.on("click", (e) => {
+  console.log("CLICKED!");
 });
+```
+
+#### Convert Mesh to Interactive
+
+MouseEventManager identifies an Object3D instance with a member named `model` as interactive. If you want to convert your loaded model to interactive, add a `model` member.
+
+```js
+mesh["model"] = new ClickableObject({ view: mesh });
 ```
 
 ## Uninstall
