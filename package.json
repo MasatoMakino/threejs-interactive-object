@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@masatomakino/fake-mouse-event": "^0.0.12",
-    "@masatomakino/gulptask-demo-page": "^0.7.0",
+    "@masatomakino/gulptask-demo-page": "0.7.4",
     "@types/jest": "^29.5.4",
     "@types/three": "^0.156.0",
     "browser-sync": "^2.29.1",
