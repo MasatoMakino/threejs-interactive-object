@@ -197,8 +197,7 @@ describe("MouseEventManager", () => {
     expect(spyOverButton).toBeCalled();
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
-
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
     btn.button.model.off("over", spyOverButton);
     btn.button.model.off("out", spyOutButton);
     managerScene.reset();
