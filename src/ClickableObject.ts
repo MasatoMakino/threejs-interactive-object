@@ -109,9 +109,9 @@ export class ClickableObject<Value> extends EventEmitter<
   }
 
   private onMouseOverOutHandler(event: ThreeMouseEvent<Value>): void {
+    this._isOver = event.type === "over"; //マウスオーバーの判定はdisable状態でも行う。
     if (!this.checkActivity()) return;
 
-    this._isOver = event.type === "over";
     this.updateState(this._isOver ? "over" : "normal");
     this.emit(event.type, event);
   }
