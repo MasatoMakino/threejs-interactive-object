@@ -196,6 +196,11 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     expect(spyOverButton).toBeCalled();
 
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+
+    btn.button.model.off("over", spyOverButton);
+    btn.button.model.off("out", spyOutButton);
     managerScene.reset();
   });
 
@@ -220,9 +225,10 @@ describe("MouseEventManager", () => {
 
   test("multiple over", () => {
     const spyOver = jest.fn((e) => true);
-
     btn.button.model.on("over", spyOver);
 
+    managerScene.interval();
+    managerScene.dispatchMouseEvent("mousemove", 0, 0);
     managerScene.interval();
     managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
     expect(spyOver).toBeCalled();
