@@ -1,4 +1,5 @@
 import { BoxGeometry } from "three";
+import { describe, expect, test, vi } from "vitest";
 import { RadioButtonManager, RadioButtonMesh } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import {
@@ -7,7 +8,7 @@ import {
   testRadioSelectionWithMouse,
 } from "./RadioObject.js";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
+const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
  * テスト用のボタンを生成する関数。

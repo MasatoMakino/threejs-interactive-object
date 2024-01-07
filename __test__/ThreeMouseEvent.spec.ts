@@ -1,3 +1,4 @@
+import { describe, expect, test, vi } from "vitest";
 import { BoxGeometry, MeshBasicMaterial } from "three";
 import {
   CheckBoxMesh,
@@ -6,7 +7,7 @@ import {
   ThreeMouseEventUtil,
 } from "../src/index.js";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
+const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("ThreeMouseEvent", () => {
   test("CheckBox以外でのイベント生成", () => {

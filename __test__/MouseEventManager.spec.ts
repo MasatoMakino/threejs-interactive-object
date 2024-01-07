@@ -1,5 +1,6 @@
 import { Group } from "three";
-import { ClickableGroup, MouseEventManager } from "../src/index.js";
+import { describe, expect, test, vi } from "vitest";
+import { ClickableGroup } from "../src/index.js";
 import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
@@ -157,8 +158,8 @@ describe("MouseEventManager", () => {
    * マウスオーバー中にdisableに変更された場合、マウスアウト / マウスオーバー判定だけは続行される
    */
   test("disable in over", () => {
-    const spyOverButton = jest.fn((e) => true);
-    const spyOutButton = jest.fn((e) => true);
+    const spyOverButton = vi.fn((e) => true);
+    const spyOutButton = vi.fn((e) => true);
 
     btn.button.model.enable();
     btn.button.model.on("over", spyOverButton);
@@ -204,8 +205,8 @@ describe("MouseEventManager", () => {
   });
 
   test("click", () => {
-    const spyClickButton = jest.fn((e) => true);
-    const spyClickGroup = jest.fn((e) => true);
+    const spyClickButton = vi.fn((e) => true);
+    const spyClickGroup = vi.fn((e) => true);
 
     btn.button.model.on("click", spyClickButton);
     wrapper.model.on("click", spyClickGroup);
@@ -223,7 +224,7 @@ describe("MouseEventManager", () => {
   });
 
   test("multiple over", () => {
-    const spyOver = jest.fn((e) => true);
+    const spyOver = vi.fn((e) => true);
     btn.button.model.on("over", spyOver);
 
     managerScene.interval();

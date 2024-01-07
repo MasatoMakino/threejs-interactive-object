@@ -1,4 +1,5 @@
 import { BoxGeometry } from "three";
+import { expect } from "vitest";
 import {
   ClickableMesh,
   ClickableState,

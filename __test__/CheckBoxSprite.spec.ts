@@ -1,8 +1,9 @@
+import { describe, expect, test, vi } from "vitest";
 import { CheckBoxSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
 import { clickButton } from "./MouseControl.js";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
+const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
  * ボタンを生成する
@@ -30,8 +31,8 @@ describe("CheckBoxSprite", () => {
   test("マウスクリックで選択", () => {
     const btn = initButton("button01");
 
-    const spySelect = jest.fn((e) => {});
-    const spyClick = jest.fn((e) => {});
+    const spySelect = vi.fn((e) => {});
+    const spyClick = vi.fn((e) => {});
     btn.model.on("click", spyClick);
     btn.model.on("select", spySelect);
 

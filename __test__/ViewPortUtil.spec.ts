@@ -1,5 +1,6 @@
 import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 import { Vector2, Vector4 } from "three";
+import { describe, expect, test } from "vitest";
 import { ViewPortUtil } from "../src/index.js";
 
 describe("ViewPortUtil", () => {

@@ -1,3 +1,4 @@
+import { expect, vi } from "vitest";
 import {
   ClickableMesh,
   ClickableSprite,
@@ -109,8 +110,8 @@ export function testSwitch(
  * @param {ClickableMesh | ClickableSprite} target
  */
 export function testMouseUP(target: ClickableMesh | ClickableSprite) {
-  const spyUp = jest.fn((e) => {});
-  const spyClick = jest.fn((e) => {});
+  const spyUp = vi.fn((e) => {});
+  const spyClick = vi.fn((e) => {});
   target.model.on("click", spyClick);
   target.model.on("up", spyUp);
 
@@ -125,7 +126,7 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
  * @param target
  */
 export function testClick(target: ClickableMesh | ClickableSprite) {
-  const spyClick = jest.fn((e) => {});
+  const spyClick = vi.fn((e) => {});
   target.model.on("click", spyClick);
   clickButton(target);
   expect(spyClick).toBeCalled();

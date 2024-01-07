@@ -1,13 +1,10 @@
-import { BoxGeometry, Event } from "three";
-import {
-  CheckBoxMesh,
-  StateMaterialSet,
-  ThreeMouseEventUtil,
-} from "../src/index.js";
+import { BoxGeometry } from "three";
+import { describe, expect, test, vi } from "vitest";
+import { CheckBoxMesh, StateMaterialSet } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import { changeMaterialState, clickButton } from "./MouseControl.js";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
+const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("CheckBoxMesh", () => {
   let checkbox: CheckBoxMesh;
@@ -37,7 +34,7 @@ describe("CheckBoxMesh", () => {
   });
 
   test("click", () => {
-    const spyClick = jest.fn((e) => {});
+    const spyClick = vi.fn((e) => {});
     checkbox.model.on("click", spyClick);
 
     //クリックして選択
