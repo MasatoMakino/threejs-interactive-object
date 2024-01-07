@@ -28,12 +28,12 @@
     "threejs"
   ],
   "peerDependencies": {
-    "@masatomakino/raf-ticker": "^0.5.1",
+    "@masatomakino/raf-ticker": "0.5.1 - 0.6.x",
     "three": ">=0.126.0 <1.0.0"
   },
   "devDependencies": {
     "@masatomakino/fake-mouse-event": "^0.0.12",
-    "@masatomakino/gulptask-demo-page": "0.8.0",
+    "@masatomakino/gulptask-demo-page": "^0.8.0",
     "@types/jest": "^29.5.4",
     "@types/three": "^0.160.0",
     "browser-sync": "^3.0.2",
