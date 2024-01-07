@@ -18,6 +18,7 @@ import {
   SpriteMaterial,
   TextureLoader,
   WebGLRenderer,
+  REVISION,
 } from "three";
 
 const W = 1280;
@@ -27,6 +28,7 @@ let scene;
 let camera;
 
 const onDomContentsLoaded = () => {
+  console.log(`Three.js r${REVISION}`);
   // シーンを作成
   scene = new Scene();
   camera = new PerspectiveCamera(45, W / H, 1, 400);

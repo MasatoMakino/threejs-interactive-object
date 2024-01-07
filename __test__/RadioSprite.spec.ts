@@ -1,3 +1,4 @@
+import { describe, test, vi } from "vitest";
 import { RadioButtonManager, RadioButtonSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
 import {
@@ -6,7 +7,7 @@ import {
   testRadioSelectionWithMouse,
 } from "./RadioObject.js";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
+const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
  * テスト用のボタンを生成する関数。

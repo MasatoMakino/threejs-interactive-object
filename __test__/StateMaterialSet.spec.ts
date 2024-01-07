@@ -1,7 +1,8 @@
 import { Material, MeshBasicMaterial } from "three";
+import { describe, expect, test, vi } from "vitest";
 import { StateMaterial, StateMaterialSet } from "../src/index.js";
 
-const spyWarn = jest.spyOn(console, "warn").mockImplementation((x) => x);
+const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("StateMaterial", () => {
   let mat: StateMaterial;

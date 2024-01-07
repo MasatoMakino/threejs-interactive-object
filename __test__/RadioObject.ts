@@ -1,12 +1,9 @@
+import { expect, vi } from "vitest";
 import {
   ClickableView,
   RadioButtonManager,
   RadioButtonMesh,
   RadioButtonSprite,
-  ThreeMouseEventUtil,
-  ClickableObject,
-  ThreeMouseEvent,
-  ThreeMouseEventMap,
 } from "../src/index.js";
 import { clickButton } from "./MouseControl.js";
 
@@ -29,12 +26,9 @@ export function testInitManager(
   generator: (value: any) => RadioButtonMesh | RadioButtonSprite,
 ) {
   const values = getButtonValues();
-  const buttons = [];
   for (let value of values) {
-    buttons.push(generator(value));
+    manager.addButton(generator(value));
   }
-
-  manager.addButton(...buttons);
   expect(manager.models[2].value).toBe(values[2]);
 }
 
@@ -46,7 +40,7 @@ export function testInitManager(
 export function testRadioSelection(manager: RadioButtonManager) {
   const values = getButtonValues();
 
-  const spySelect = jest.fn((e) => {});
+  const spySelect = vi.fn((e) => {});
   manager.on("select", spySelect);
 
   const index = 0;
@@ -93,8 +87,8 @@ const onClickSecondTime = <T>(
   manager: RadioButtonManager,
   button: ClickableView<T>,
 ) => {
-  const spyClick = jest.fn((e) => {});
-  const spySelect = jest.fn((e) => {});
+  const spyClick = vi.fn((e) => {});
+  const spySelect = vi.fn((e) => {});
 
   button.model.on("click", spyClick);
   button.model.on("select", spySelect);
