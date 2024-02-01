@@ -34,7 +34,7 @@
   "devDependencies": {
     "@masatomakino/fake-mouse-event": "^0.0.12",
     "@masatomakino/gulptask-demo-page": "^0.8.0",
-    "@types/three": "^0.160.0",
+    "@types/three": "^0.161.1",
     "@vitest/coverage-istanbul": "^1.1.3",
     "browser-sync": "^3.0.2",
     "canvas": "^2.11.2",
