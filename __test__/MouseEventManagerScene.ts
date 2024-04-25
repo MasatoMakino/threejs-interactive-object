@@ -42,7 +42,7 @@ export class MouseEventManagerScene {
   }
 
   public reset() {
-    const e = getMouseEvent("mouseup", {
+    const e = getMouseEvent("pointerup", {
       x: 0,
       y: 0,
       clientX: 0,
