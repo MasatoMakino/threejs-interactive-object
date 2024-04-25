@@ -61,9 +61,9 @@ export class MouseEventManager {
 
     this.canvas = canvas;
 
-    canvas.addEventListener("mousemove", this.onDocumentMouseMove, false);
-    canvas.addEventListener("mousedown", this.onDocumentMouseUpDown, false);
-    canvas.addEventListener("mouseup", this.onDocumentMouseUpDown, false);
+    canvas.addEventListener("pointermove", this.onDocumentMouseMove, false);
+    canvas.addEventListener("pointerdown", this.onDocumentMouseUpDown, false);
+    canvas.addEventListener("pointerup", this.onDocumentMouseUpDown, false);
 
     RAFTicker.on("tick", this.onTick);
   }
@@ -77,7 +77,7 @@ export class MouseEventManager {
     this.throttlingDelta %= this.throttlingTime_ms;
   };
 
-  protected onDocumentMouseMove = (event: MouseEvent) => {
+  protected onDocumentMouseMove = (event: PointerEvent) => {
     if (this.hasThrottled) return;
     this.hasThrottled = true;
 
@@ -119,13 +119,13 @@ export class MouseEventManager {
    * マウス座標から対象となるObject3Dを探し出して操作を行う。
    * @param {MouseEvent} event
    */
-  protected onDocumentMouseUpDown = (event: MouseEvent) => {
+  protected onDocumentMouseUpDown = (event: PointerEvent) => {
     let eventType: keyof ThreeMouseEventMap = "down";
     switch (event.type) {
-      case "mousedown":
+      case "pointerdown":
         eventType = "down";
         break;
-      case "mouseup":
+      case "pointerup":
         eventType = "up";
         break;
     }
@@ -255,7 +255,7 @@ export class MouseEventManager {
     return hasTarget;
   }
 
-  protected getIntersects(event: MouseEvent): Intersection[] {
+  protected getIntersects(event: PointerEvent): Intersection[] {
     ViewPortUtil.convertToMousePosition(
       this.canvas,
       event,

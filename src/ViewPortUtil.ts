@@ -31,7 +31,7 @@ export class ViewPortUtil {
 
   private static getCanvasSize(
     canvas: HTMLCanvasElement,
-    propName: "width" | "height"
+    propName: "width" | "height",
   ): number {
     const style = canvas.style;
     if (style.width && style.height) {
@@ -49,7 +49,7 @@ export class ViewPortUtil {
    */
   static convertToRectangle(
     canvas: HTMLCanvasElement,
-    viewport: Vector4
+    viewport: Vector4,
   ): Rectangle {
     const height = this.getCanvasHeight(canvas);
     return {
@@ -69,7 +69,7 @@ export class ViewPortUtil {
   static isContain(
     canvas: HTMLCanvasElement,
     viewport: Vector4 | undefined,
-    event: MouseEvent
+    event: PointerEvent,
   ): boolean {
     if (viewport == null) {
       return true;
@@ -93,9 +93,9 @@ export class ViewPortUtil {
    */
   static convertToMousePosition(
     canvas: HTMLCanvasElement,
-    event: MouseEvent,
+    event: PointerEvent,
     viewport: Vector4 | undefined,
-    mouse?: Vector2
+    mouse?: Vector2,
   ): Vector2 {
     const { x, y } = this.getMousePosition(canvas, event, viewport);
 
@@ -108,8 +108,8 @@ export class ViewPortUtil {
 
   private static getMousePosition(
     canvas: HTMLCanvasElement,
-    event: MouseEvent,
-    viewport?: Vector4
+    event: PointerEvent,
+    viewport?: Vector4,
   ): { x: number; y: number } {
     if (viewport) {
       return this.getViewportMousePosition(canvas, event, viewport);
@@ -119,7 +119,7 @@ export class ViewPortUtil {
 
   private static getCanvasMousePosition(
     canvas: HTMLCanvasElement,
-    event: MouseEvent
+    event: PointerEvent,
   ): { x: number; y: number } {
     const x = (event.offsetX / this.getCanvasWidth(canvas)) * 2 - 1;
     const y = -(event.offsetY / this.getCanvasHeight(canvas)) * 2 + 1;
@@ -128,8 +128,8 @@ export class ViewPortUtil {
 
   private static getViewportMousePosition(
     canvas: HTMLCanvasElement,
-    event: MouseEvent,
-    viewport: Vector4
+    event: PointerEvent,
+    viewport: Vector4,
   ): { x: number; y: number } {
     const rect = this.convertToRectangle(canvas, viewport);
 
