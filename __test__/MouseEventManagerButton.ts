@@ -23,12 +23,12 @@ export class MouseEventManagerButton {
    * マテリアルの状態を比較する
    * @param state
    */
-  public checkMaterial(state: ClickableState): void {
+  public checkMaterial(state: ClickableState, message: string = ""): void {
     const setMat = this.materialSet.getMaterial(
       state,
       state !== "disable",
     ).material;
 
-    expect(this.button.material).toBe(setMat);
+    expect(this.button.material, message).toBe(setMat);
   }
 }

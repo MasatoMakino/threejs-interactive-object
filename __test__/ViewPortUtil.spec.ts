@@ -1,4 +1,4 @@
-import { getMouseEvent } from "@masatomakino/fake-mouse-event";
+import { getPointerEvent } from "@masatomakino/fake-mouse-event";
 import { Vector2, Vector4 } from "three";
 import { describe, expect, test } from "vitest";
 import { ViewPortUtil } from "../src/index.js";
@@ -26,18 +26,18 @@ describe("ViewPortUtil", () => {
   });
 
   test("contain without viewport", () => {
-    const e = getMouseEvent("mousemove", {
+    const e = getPointerEvent("pointermove", {
       offsetX: 16,
       offsetY: 420,
-    });
+    }) as unknown as PointerEvent;
     expect(ViewPortUtil.isContain(canvas, undefined, e)).toBe(true);
   });
 
   test("contain with viewport", () => {
-    const e = getMouseEvent("mousemove", {
+    const e = getPointerEvent("pointermove", {
       offsetX: 16,
       offsetY: 420,
-    });
+    }) as unknown as PointerEvent;
     expect(ViewPortUtil.isContain(canvas, viewport, e)).toBe(true);
   });
 
@@ -62,10 +62,10 @@ function testPoint(
   canvas: HTMLCanvasElement,
   viewport?: Vector4,
 ): void {
-  const e = getMouseEvent("mousemove", {
+  const e = getPointerEvent("pointermove", {
     offsetX,
     offsetY,
-  });
+  }) as unknown as PointerEvent;
   const pos = ViewPortUtil.convertToMousePosition(
     canvas,
     e,

@@ -23,8 +23,8 @@ describe("MouseEventManager", () => {
 
   test("mouse move", () => {
     btn.checkMaterial("normal");
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
 
     //スロットリングされるのでnormalのまま
     btn.checkMaterial("normal");
@@ -33,19 +33,19 @@ describe("MouseEventManager", () => {
 
     //スロットリングされるのでnormalのまま
     managerScene.interval(0.1);
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     btn.checkMaterial("over");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(true);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(false);
@@ -54,14 +54,17 @@ describe("MouseEventManager", () => {
   });
 
   test("mouse down / mouse up", () => {
-    btn.checkMaterial("normal");
+    btn.checkMaterial(
+      "normal",
+      "マテリアルの初期状態はnormal。それ以外なら初期化かリセットに失敗している。",
+    );
 
-    managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
     btn.checkMaterial("down");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(true);
 
-    managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
@@ -80,28 +83,28 @@ describe("MouseEventManager", () => {
     btnBackground.checkMaterial("normal");
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(true);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(true);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
@@ -122,28 +125,28 @@ describe("MouseEventManager", () => {
     btnBackground.checkMaterial("normal");
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("over");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("down");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
@@ -166,7 +169,7 @@ describe("MouseEventManager", () => {
     btn.button.model.on("out", spyOutButton);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     expect(spyOverButton).toBeCalled();
     expect(btn.button.model.isOver).toBe(true);
     spyOverButton.mockClear();
@@ -174,19 +177,19 @@ describe("MouseEventManager", () => {
     //マウスオーバーのままdisableに変更すると、イベントは発行されないがポインターオーバー状態は変化する。
     btn.button.model.disable();
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
     expect(spyOutButton).not.toBeCalled();
     expect(btn.button.model.isOver).toBe(false);
     spyOutButton.mockClear();
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     expect(spyOverButton).not.toBeCalled();
     expect(btn.button.model.isOver).toBe(true);
     spyOverButton.mockClear();
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
     expect(btn.button.model.isOver).toBe(false);
     spyOutButton.mockClear();
     spyOverButton.mockClear();
@@ -194,11 +197,11 @@ describe("MouseEventManager", () => {
     //ボタンの再活性化直後にoverしても反応する。
     btn.button.model.enable();
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     expect(spyOverButton).toBeCalled();
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
     btn.button.model.off("over", spyOverButton);
     btn.button.model.off("out", spyOutButton);
     managerScene.reset();
@@ -211,8 +214,8 @@ describe("MouseEventManager", () => {
     btn.button.model.on("click", spyClickButton);
     wrapper.model.on("click", spyClickGroup);
 
-    managerScene.dispatchMouseEvent("mousedown", halfW, halfH);
-    managerScene.dispatchMouseEvent("mouseup", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
 
     expect(spyClickButton).toHaveBeenCalledTimes(1);
     expect(spyClickGroup).toHaveBeenCalledTimes(1);
@@ -228,27 +231,27 @@ describe("MouseEventManager", () => {
     btn.button.model.on("over", spyOver);
 
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     expect(spyOver).toBeCalled();
     spyOver.mockClear();
 
     //2度目はoverが呼び出されない
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW + 1, halfH + 1);
+    managerScene.dispatchMouseEvent("pointermove", halfW + 1, halfH + 1);
     expect(spyOver).not.toBeCalled();
     spyOver.mockClear();
 
     //一度outする
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", 0, 0);
+    managerScene.dispatchMouseEvent("pointermove", 0, 0);
     expect(spyOver).not.toBeCalled();
     spyOver.mockClear();
 
     //再度overすると呼び出される
     managerScene.interval();
-    managerScene.dispatchMouseEvent("mousemove", halfW, halfH);
+    managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     expect(spyOver).toBeCalled();
     spyOver.mockClear();
 
