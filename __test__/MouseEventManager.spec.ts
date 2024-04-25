@@ -1,5 +1,5 @@
 import { Group } from "three";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test, vi, beforeEach } from "vitest";
 import { ClickableGroup } from "../src/index.js";
 import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
@@ -20,6 +20,10 @@ describe("MouseEventManager", () => {
 
   const halfW = MouseEventManagerScene.W / 2;
   const halfH = MouseEventManagerScene.H / 2;
+
+  beforeEach(() => {
+    managerScene.reset();
+  });
 
   test("mouse move", () => {
     btn.checkMaterial(
@@ -52,8 +56,6 @@ describe("MouseEventManager", () => {
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(false);
-
-    managerScene.reset();
   });
 
   test("mouse down / mouse up", () => {
@@ -71,8 +73,6 @@ describe("MouseEventManager", () => {
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
-
-    managerScene.reset();
   });
 
   /**
@@ -112,8 +112,6 @@ describe("MouseEventManager", () => {
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isPress).toBe(false);
     expect(wrapper.model.isOver).toBe(false);
-
-    managerScene.reset();
   });
 
   /**
@@ -157,7 +155,6 @@ describe("MouseEventManager", () => {
 
     btn.button.model.mouseEnabled = true;
     wrapper.model.mouseEnabled = true;
-    managerScene.reset();
   });
 
   /**
@@ -207,7 +204,6 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
     btn.button.model.off("over", spyOverButton);
     btn.button.model.off("out", spyOutButton);
-    managerScene.reset();
   });
 
   test("click", () => {
@@ -225,8 +221,6 @@ describe("MouseEventManager", () => {
 
     btn.button.model.off("click", spyClickButton);
     wrapper.model.off("click", spyClickGroup);
-
-    managerScene.reset();
   });
 
   test("multiple over", () => {
@@ -259,6 +253,5 @@ describe("MouseEventManager", () => {
     spyOver.mockClear();
 
     btn.button.model.off("over", spyOver);
-    managerScene.reset();
   });
 });
