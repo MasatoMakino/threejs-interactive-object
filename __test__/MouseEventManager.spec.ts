@@ -22,7 +22,10 @@ describe("MouseEventManager", () => {
   const halfH = MouseEventManagerScene.H / 2;
 
   test("mouse move", () => {
-    btn.checkMaterial("normal");
+    btn.checkMaterial(
+      "normal",
+      "マテリアルの初期状態はnormal。それ以外なら初期化かリセットに失敗している。",
+    );
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
 
@@ -34,7 +37,7 @@ describe("MouseEventManager", () => {
     //スロットリングされるのでnormalのまま
     managerScene.interval(0.1);
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-    btn.checkMaterial("normal");
+    btn.checkMaterial("normal", "スロットリングされるのでnormalのまま");
     btnBackground.checkMaterial("normal");
     expect(wrapper.model.isOver).toBe(false);
 
