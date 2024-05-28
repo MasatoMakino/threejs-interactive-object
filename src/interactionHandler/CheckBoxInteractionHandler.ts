@@ -1,11 +1,15 @@
-import {
-  CheckBoxMesh,
-  CheckBoxSprite,
-  ButtonInteractionHandler,
-  ThreeMouseEventUtil,
-} from "./index.js";
+import { CheckBoxMesh, CheckBoxSprite, ThreeMouseEventUtil } from "../index.js";
+import { ButtonInteractionHandler } from "./index.js";
 
-export class CheckBoxObject<Value> extends ButtonInteractionHandler<Value> {
+/**
+ * The `CheckBoxInteractionHandler` class extends the `ButtonInteractionHandler` class to manage interactions with checkbox-like objects.
+ * In addition to handling interaction events, this class also maintains the selection state of the checkbox-like object.
+ *
+ * The generic parameter `Value` represents the type of the `value` property associated with this checkbox.
+ */
+export class CheckBoxInteractionHandler<
+  Value,
+> extends ButtonInteractionHandler<Value> {
   declare readonly view: CheckBoxMesh<Value> | CheckBoxSprite<Value>;
   protected _isSelect: boolean = false;
 

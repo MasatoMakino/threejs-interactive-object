@@ -1,6 +1,6 @@
 import { Sprite } from "three";
 import {
-  CheckBoxObject,
+  CheckBoxInteractionHandler,
   ButtonInteractionHandler,
   ButtonInteractionHandlerParameters,
   IClickableObject3D,
@@ -38,11 +38,11 @@ export class ClickableSprite<Value = any>
 }
 
 export class CheckBoxSprite<Value = any>
-  extends InteractiveSprite<Value, CheckBoxObject<Value>>
+  extends InteractiveSprite<Value, CheckBoxInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
   constructor(material: StateMaterialSet) {
-    super(material, CheckBoxObject<Value>);
+    super(material, CheckBoxInteractionHandler<Value>);
   }
 }
 

@@ -1,6 +1,6 @@
 import { BufferGeometry, Mesh } from "three";
 import {
-  CheckBoxObject,
+  CheckBoxInteractionHandler,
   ButtonInteractionHandler,
   IClickableObject3D,
   RadioButtonObject,
@@ -38,11 +38,11 @@ export class ClickableMesh<Value = any>
 }
 
 export class CheckBoxMesh<Value = any>
-  extends InteractiveMesh<Value, CheckBoxObject<Value>>
+  extends InteractiveMesh<Value, CheckBoxInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
   constructor(parameters: InteractiveMeshParameters) {
-    super(parameters, CheckBoxObject<Value>);
+    super(parameters, CheckBoxInteractionHandler<Value>);
   }
 }
 
