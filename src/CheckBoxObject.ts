@@ -1,11 +1,11 @@
 import {
   CheckBoxMesh,
   CheckBoxSprite,
-  ClickableObject,
+  ButtonInteractionHandler,
   ThreeMouseEventUtil,
 } from "./index.js";
 
-export class CheckBoxObject<Value> extends ClickableObject<Value> {
+export class CheckBoxObject<Value> extends ButtonInteractionHandler<Value> {
   declare readonly view: CheckBoxMesh<Value> | CheckBoxSprite<Value>;
   protected _isSelect: boolean = false;
 

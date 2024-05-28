@@ -1,18 +1,21 @@
 import { Sprite } from "three";
 import {
   CheckBoxObject,
-  ClickableObject,
-  ClickableObjectParameters,
+  ButtonInteractionHandler,
+  ButtonInteractionHandlerParameters,
   IClickableObject3D,
   RadioButtonObject,
   StateMaterialSet,
 } from "./index.js";
 
-export interface ModelConstructor<Model extends ClickableObject<Value>, Value> {
-  new (param: ClickableObjectParameters<Value>): Model;
+export interface ModelConstructor<
+  Model extends ButtonInteractionHandler<Value>,
+  Value,
+> {
+  new (param: ButtonInteractionHandlerParameters<Value>): Model;
 }
 
-class InteractiveSprite<Value, Model extends ClickableObject<Value>>
+class InteractiveSprite<Value, Model extends ButtonInteractionHandler<Value>>
   extends Sprite
   implements IClickableObject3D<Value>
 {
@@ -26,11 +29,11 @@ class InteractiveSprite<Value, Model extends ClickableObject<Value>>
   }
 }
 export class ClickableSprite<Value = any>
-  extends InteractiveSprite<Value, ClickableObject<Value>>
+  extends InteractiveSprite<Value, ButtonInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
   constructor(material: StateMaterialSet) {
-    super(material, ClickableObject<Value>);
+    super(material, ButtonInteractionHandler<Value>);
   }
 }
 

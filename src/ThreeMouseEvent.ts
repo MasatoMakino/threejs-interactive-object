@@ -1,4 +1,4 @@
-import { ClickableObject, IClickableObject3D } from "./index.js";
+import { ButtonInteractionHandler, IClickableObject3D } from "./index.js";
 
 export interface ThreeMouseEventMap<T = any> {
   click: (e: ThreeMouseEvent<T>) => void;
@@ -10,14 +10,17 @@ export interface ThreeMouseEventMap<T = any> {
 }
 export interface ThreeMouseEvent<Value> {
   readonly type: keyof ThreeMouseEventMap<Value>;
-  readonly model?: ClickableObject<Value>;
+  readonly model?: ButtonInteractionHandler<Value>;
   readonly isSelected?: boolean;
 }
 
 export class ThreeMouseEventUtil {
   static generate<Value>(
     type: keyof ThreeMouseEventMap<Value>,
-    modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined,
+    modelOrView:
+      | ButtonInteractionHandler<Value>
+      | IClickableObject3D<Value>
+      | undefined,
   ): ThreeMouseEvent<Value> {
     const model = ThreeMouseEventUtil.getModel(modelOrView);
     const getSelection = () => {
@@ -35,8 +38,11 @@ export class ThreeMouseEventUtil {
   }
 
   private static getModel<Value>(
-    modelOrView: ClickableObject<Value> | IClickableObject3D<Value> | undefined,
-  ): ClickableObject<Value> | undefined {
+    modelOrView:
+      | ButtonInteractionHandler<Value>
+      | IClickableObject3D<Value>
+      | undefined,
+  ): ButtonInteractionHandler<Value> | undefined {
     if (modelOrView != null && "model" in modelOrView) {
       return modelOrView.model;
     }
@@ -48,7 +54,7 @@ export class ThreeMouseEventUtil {
    * @param model
    */
   static getSelection<Value>(
-    model: ClickableObject<Value> | undefined,
+    model: ButtonInteractionHandler<Value> | undefined,
   ): boolean {
     if (model != null && "selection" in model) {
       return !!model["selection"];

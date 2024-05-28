@@ -9,7 +9,7 @@ import {
   Vector4,
 } from "three";
 import {
-  ClickableObject,
+  ButtonInteractionHandler,
   ThreeMouseEventMap,
   ThreeMouseEventUtil,
   ViewPortUtil,
@@ -280,5 +280,5 @@ export type ClickableState =
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
 export interface IClickableObject3D<Value> {
-  model: ClickableObject<Value>;
+  model: ButtonInteractionHandler<Value>;
 }
