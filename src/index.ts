@@ -1,7 +1,7 @@
 export * from "./InteractiveSprite.js";
 export * from "./InteractiveMesh.js";
 
-export * from "./interactionHandler/ButtonInteractionHandler.js";
+export * from "./interactionHandler/index.js";
 export * from "./ClickableGroup.js";
 
 export * from "./CheckBoxObject.js";
