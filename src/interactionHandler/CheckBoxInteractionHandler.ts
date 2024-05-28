@@ -1,5 +1,8 @@
 import { CheckBoxMesh, CheckBoxSprite, ThreeMouseEventUtil } from "../index.js";
-import { ButtonInteractionHandler } from "./index.js";
+import {
+  ButtonInteractionHandler,
+  ButtonInteractionHandlerParameters,
+} from "./index.js";
 
 /**
  * The `CheckBoxInteractionHandler` class extends the `ButtonInteractionHandler` class to manage interactions with checkbox-like objects.
@@ -45,5 +48,17 @@ export class CheckBoxInteractionHandler<
     if (stateMat?.material != null) {
       this.view.material = stateMat.material;
     }
+  }
+}
+
+/**
+ * @deprecated Use CheckBoxInteractionHandler instead. This class will be removed in next minor version.
+ */
+export class CheckBoxObject<Value> extends CheckBoxInteractionHandler<Value> {
+  constructor(parameters: ButtonInteractionHandlerParameters<Value>) {
+    console.warn(
+      "This class is deprecated. Use CheckBoxInteractionHandler instead.",
+    );
+    super(parameters);
   }
 }
