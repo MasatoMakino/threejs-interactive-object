@@ -8,7 +8,7 @@ import {
   ThreeMouseEvent,
   ThreeMouseEventMap,
   ThreeMouseEventUtil,
-} from "./index.js";
+} from "../index.js";
 
 /**
  * クリックに反応する表示オブジェクトの型エイリアス
@@ -170,5 +170,17 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     this._enable = bool;
     this.state = bool ? "normal" : "disable";
     this.updateMaterial();
+  }
+}
+
+/**
+ * @deprecated Use ButtonInteractionHandler instead. This class will be removed in next minor version.
+ */
+export class ClickableObject<Value> extends ButtonInteractionHandler<Value> {
+  constructor(parameters: ButtonInteractionHandlerParameters<Value>) {
+    console.warn(
+      "This class is deprecated. Use ButtonInteractionHandler instead.",
+    );
+    super(parameters);
   }
 }
