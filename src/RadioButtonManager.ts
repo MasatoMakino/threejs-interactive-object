@@ -12,9 +12,8 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
 > {
   /**
    * このマネージャーの管理下のボタン
-   * @private
    */
-  protected _models: RadioButtonInteractionHandler<Value>[] = [];
+  protected _interactionHandlers: RadioButtonInteractionHandler<Value>[] = [];
   /**
    * 現状選択されているボタン。
    */
@@ -33,15 +32,17 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    */
   public addButton(...buttons: IClickableObject3D<Value>[]): void {
     buttons.forEach((btn) => {
-      this.addModel(
+      this.addInteractionHandler(
         btn.interactionHandler as RadioButtonInteractionHandler<Value>,
       );
     });
   }
 
-  public addModel(model: RadioButtonInteractionHandler<Value>): void {
-    this._models.push(model);
-    model.on("select", this.onSelectedButton);
+  public addInteractionHandler(
+    interactionHandler: RadioButtonInteractionHandler<Value>,
+  ): void {
+    this._interactionHandlers.push(interactionHandler);
+    interactionHandler.on("select", this.onSelectedButton);
   }
 
   /**
@@ -60,44 +61,46 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    * @param {IClickableObject3D} button
    */
   public removeButton(button: IClickableObject3D<Value>): void {
-    this.removeModel(
+    this.removeInteractionHandler(
       button.interactionHandler as RadioButtonInteractionHandler<Value>,
     );
   }
 
-  public removeModel(
-    model: RadioButtonInteractionHandler<Value>,
+  public removeInteractionHandler(
+    interactionHandler: RadioButtonInteractionHandler<Value>,
   ): RadioButtonInteractionHandler<Value> {
-    const index = this._models.indexOf(model);
+    const index = this._interactionHandlers.indexOf(interactionHandler);
     if (index > -1) {
-      this._models.splice(index, 1);
-      model.off("select", this.onSelectedButton);
+      this._interactionHandlers.splice(index, 1);
+      interactionHandler.off("select", this.onSelectedButton);
     }
-    return model;
+    return interactionHandler;
   }
 
   /**
    * 特定のボタンを選択する
-   * @param {RadioButtonInteractionHandler} model
+   * @param {RadioButtonInteractionHandler} interactionHandler
    */
-  public select(model: RadioButtonInteractionHandler<Value>): void {
-    const index = this._models.indexOf(model);
+  public select(
+    interactionHandler: RadioButtonInteractionHandler<Value>,
+  ): void {
+    const index = this._interactionHandlers.indexOf(interactionHandler);
     if (index === -1) {
       console.warn("管理下でないボタンが選択処理されました。");
       return;
     }
 
     //選択済みのボタンを再度渡されても反応しない。
-    if (model === this._selected && model.isFrozen) {
+    if (interactionHandler === this._selected && interactionHandler.isFrozen) {
       return;
     }
 
-    this._selected = model;
-    for (let mdl of this._models) {
-      mdl.selection = mdl.isFrozen = mdl === model;
+    this._selected = interactionHandler;
+    for (let mdl of this._interactionHandlers) {
+      mdl.selection = mdl.isFrozen = mdl === interactionHandler;
     }
 
-    const evt = ThreeMouseEventUtil.generate("select", model);
+    const evt = ThreeMouseEventUtil.generate("select", interactionHandler);
     this.emit(evt.type, evt);
   }
 
@@ -105,7 +108,7 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
     return this._selected;
   }
 
-  get models(): RadioButtonInteractionHandler<Value>[] {
-    return this._models;
+  get interactionHandlers(): RadioButtonInteractionHandler<Value>[] {
+    return this._interactionHandlers;
   }
 }

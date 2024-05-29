@@ -29,7 +29,7 @@ export function testInitManager(
   for (let value of values) {
     manager.addButton(generator(value));
   }
-  expect(manager.models[2].value).toBe(values[2]);
+  expect(manager.interactionHandlers[2].value).toBe(values[2]);
 }
 
 /**
@@ -44,19 +44,19 @@ export function testRadioSelection(manager: RadioButtonManager) {
   manager.on("select", spySelect);
 
   const index = 0;
-  const button = manager.models[index];
+  const handler = manager.interactionHandlers[index];
 
-  expect(button.isFrozen).toBe(false);
-  manager.select(button);
+  expect(handler.isFrozen).toBe(false);
+  manager.select(handler);
   expect(manager.selected.value).toEqual(values[index]);
   expect(spySelect).toBeCalled();
 
-  expect(button.isFrozen).toBe(true);
+  expect(handler.isFrozen).toBe(true);
 
   spySelect.mockClear();
-  manager.select(button);
+  manager.select(handler);
   expect(spySelect).not.toBeCalled();
-  expect(button.isFrozen).toBe(true);
+  expect(handler.isFrozen).toBe(true);
 }
 
 /**
@@ -64,18 +64,18 @@ export function testRadioSelection(manager: RadioButtonManager) {
  * @param {RadioButtonManager} manager
  */
 export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
-  manager.select(manager.models[0]);
+  manager.select(manager.interactionHandlers[0]);
 
   const index = 2;
 
-  const model = manager.models[index];
+  const handler = manager.interactionHandlers[index];
 
-  expect(model.isFrozen).toBe(false);
-  clickButton(model.view);
-  expect(model.isFrozen).toBe(true);
-  expect(manager.selected.value).toEqual(model.value);
+  expect(handler.isFrozen).toBe(false);
+  clickButton(handler.view);
+  expect(handler.isFrozen).toBe(true);
+  expect(manager.selected.value).toEqual(handler.value);
 
-  onClickSecondTime(manager, model.view);
+  onClickSecondTime(manager, handler.view);
 }
 
 /**

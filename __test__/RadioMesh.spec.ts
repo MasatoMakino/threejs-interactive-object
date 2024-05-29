@@ -48,9 +48,9 @@ describe("RadioButton", () => {
 
   test("ボタンを管理から外す", () => {
     const index = 4;
-    const model = manager.models[index];
-    manager.removeModel(model);
-    expect(manager.models.length).toEqual(4);
+    const handler = manager.interactionHandlers[index];
+    manager.removeInteractionHandler(handler);
+    expect(manager.interactionHandlers.length).toEqual(4);
   });
 
   test("マウスで選択変更", () => {
