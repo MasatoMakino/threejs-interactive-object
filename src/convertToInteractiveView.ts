@@ -10,7 +10,7 @@ import {
   RadioButtonInteractionHandler,
 } from "./index.js";
 
-export function convertToClickableMesh<V>(view: Mesh): ClickableMesh<V> {
+export function convertToClickableMesh<V = any>(view: Mesh): ClickableMesh<V> {
   const anyView = view as any;
   anyView["interactionHandler"] = new ButtonInteractionHandler<V>({
     view: anyView,
@@ -18,7 +18,7 @@ export function convertToClickableMesh<V>(view: Mesh): ClickableMesh<V> {
   return view as ClickableMesh<V>;
 }
 
-export function convertToCheckboxMesh<V>(view: Mesh): CheckBoxMesh<V> {
+export function convertToCheckboxMesh<V = any>(view: Mesh): CheckBoxMesh<V> {
   const anyView = view as any;
   anyView["interactionHandler"] = new CheckBoxInteractionHandler<V>({
     view: anyView,
@@ -26,7 +26,9 @@ export function convertToCheckboxMesh<V>(view: Mesh): CheckBoxMesh<V> {
   return view as CheckBoxMesh<V>;
 }
 
-export function convertToRadioButtonMesh<V>(view: Mesh): RadioButtonMesh<V> {
+export function convertToRadioButtonMesh<V = any>(
+  view: Mesh,
+): RadioButtonMesh<V> {
   const anyView = view as any;
   anyView["interactionHandler"] = new RadioButtonInteractionHandler<V>({
     view: anyView,
