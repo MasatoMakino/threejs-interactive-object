@@ -10,7 +10,7 @@ export interface ThreeMouseEventMap<T = any> {
 }
 export interface ThreeMouseEvent<Value> {
   readonly type: keyof ThreeMouseEventMap<Value>;
-  readonly model?: ButtonInteractionHandler<Value>;
+  readonly interactionHandler?: ButtonInteractionHandler<Value>;
   readonly isSelected?: boolean;
 }
 
@@ -22,42 +22,43 @@ export class ThreeMouseEventUtil {
       | IClickableObject3D<Value>
       | undefined,
   ): ThreeMouseEvent<Value> {
-    const model = ThreeMouseEventUtil.getModel(modelOrView);
+    const interactionHandler =
+      ThreeMouseEventUtil.getInteractionHandler(modelOrView);
     const getSelection = () => {
       if (type === "select") {
-        return ThreeMouseEventUtil.getSelection(model);
+        return ThreeMouseEventUtil.getSelection(interactionHandler);
       }
       return undefined;
     };
 
     return {
       type,
-      model,
+      interactionHandler,
       isSelected: getSelection(),
     };
   }
 
-  private static getModel<Value>(
+  private static getInteractionHandler<Value>(
     modelOrView:
       | ButtonInteractionHandler<Value>
       | IClickableObject3D<Value>
       | undefined,
   ): ButtonInteractionHandler<Value> | undefined {
-    if (modelOrView != null && "model" in modelOrView) {
-      return modelOrView.model;
+    if (modelOrView != null && "interactionHandler" in modelOrView) {
+      return modelOrView.interactionHandler;
     }
     return modelOrView;
   }
 
   /**
    * SELECTイベントの場合は、対象ボタンの選択状態を取得
-   * @param model
+   * @param interactionHandler
    */
   static getSelection<Value>(
-    model: ButtonInteractionHandler<Value> | undefined,
+    interactionHandler: ButtonInteractionHandler<Value> | undefined,
   ): boolean {
-    if (model != null && "selection" in model) {
-      return !!model["selection"];
+    if (interactionHandler != null && "selection" in interactionHandler) {
+      return !!interactionHandler["selection"];
     } else {
       throw new Error(
         "選択可能なボタン以外を引数にして、SELECTイベントをインスタンス化しました。SELECTイベントはISelectableObject3Dを実装したクラスとともにインスタンス化してください。",
@@ -66,6 +67,6 @@ export class ThreeMouseEventUtil {
   }
 
   static clone<Value>(e: ThreeMouseEvent<Value>): ThreeMouseEvent<Value> {
-    return ThreeMouseEventUtil.generate(e.type, e.model);
+    return ThreeMouseEventUtil.generate(e.type, e.interactionHandler);
   }
 }

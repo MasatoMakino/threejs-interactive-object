@@ -90,8 +90,8 @@ const onClickSecondTime = <T>(
   const spyClick = vi.fn((e) => {});
   const spySelect = vi.fn((e) => {});
 
-  button.model.on("click", spyClick);
-  button.model.on("select", spySelect);
+  button.interactionHandler.on("click", spyClick);
+  button.interactionHandler.on("select", spySelect);
 
   clickButton(button);
 

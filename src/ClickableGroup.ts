@@ -5,11 +5,11 @@ export class ClickableGroup<Value = any>
   extends Group
   implements IClickableObject3D<Value>
 {
-  public model: ButtonInteractionHandler<Value>;
+  public interactionHandler: ButtonInteractionHandler<Value>;
 
   constructor() {
     super();
-    this.model = new ButtonInteractionHandler<Value>({
+    this.interactionHandler = new ButtonInteractionHandler<Value>({
       view: this,
     });
   }

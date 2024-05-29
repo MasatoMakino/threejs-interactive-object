@@ -20,7 +20,7 @@ const initButton = (buttonValue: any): RadioButtonMesh => {
     geo: new BoxGeometry(3, 3, 3),
     material: getMeshMaterialSet(),
   });
-  button.model.value = buttonValue;
+  button.interactionHandler.value = buttonValue;
   return button;
 };
 
@@ -37,7 +37,7 @@ describe("RadioButton", () => {
 
   test("管理外のボタンを選択", () => {
     const notManagedButton = initButton("notManagedButton");
-    manager.select(notManagedButton.model);
+    manager.select(notManagedButton.interactionHandler);
     expect(spyWarn).toHaveBeenCalledWith(
       "管理下でないボタンが選択処理されました。",
     );

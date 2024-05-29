@@ -22,7 +22,7 @@ describe("ClickableMesh", () => {
       geo: new BoxGeometry(3, 3, 3),
       material: matSet,
     });
-    clickable.model.value = "test button value.";
+    clickable.interactionHandler.value = "test button value.";
     expect(clickable.material).toBe(matSet.normal.material);
   });
 
@@ -51,16 +51,24 @@ describe("ClickableMesh", () => {
   });
 
   test("alpha", () => {
-    clickable.model.alpha = 0.5;
+    clickable.interactionHandler.alpha = 0.5;
     expect(
-      (clickable.model.materialSet?.normal.material as MeshBasicMaterial)
-        .opacity,
+      (
+        clickable.interactionHandler.materialSet?.normal
+          .material as MeshBasicMaterial
+      ).opacity,
     ).toBe(0.3);
     expect(
-      (clickable.model.materialSet?.over.material as MeshBasicMaterial).opacity,
+      (
+        clickable.interactionHandler.materialSet?.over
+          .material as MeshBasicMaterial
+      ).opacity,
     ).toBe(0.4);
     expect(
-      (clickable.model.materialSet?.down.material as MeshBasicMaterial).opacity,
+      (
+        clickable.interactionHandler.materialSet?.down
+          .material as MeshBasicMaterial
+      ).opacity,
     ).toBe(0.5);
   });
 });

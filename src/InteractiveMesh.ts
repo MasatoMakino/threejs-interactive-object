@@ -3,9 +3,9 @@ import {
   CheckBoxInteractionHandler,
   ButtonInteractionHandler,
   IClickableObject3D,
-  RadioButtonObject,
+  RadioButtonInteractionHandler,
   StateMaterialSet,
-  ModelConstructor,
+  InteractionHandlerConstructor,
 } from "./index.js";
 
 export interface InteractiveMeshParameters {
@@ -13,18 +13,24 @@ export interface InteractiveMeshParameters {
   material: StateMaterialSet;
 }
 
-class InteractiveMesh<Value, Model extends ButtonInteractionHandler<Value>>
+class InteractiveMesh<
+    Value,
+    InteractionHandler extends ButtonInteractionHandler<Value>,
+  >
   extends Mesh
   implements IClickableObject3D<Value>
 {
-  readonly model: Model;
+  readonly interactionHandler: InteractionHandler;
 
   constructor(
     parameters: InteractiveMeshParameters,
-    ctor: ModelConstructor<Model, Value>,
+    ctor: InteractionHandlerConstructor<InteractionHandler, Value>,
   ) {
     super(parameters.geo);
-    this.model = new ctor({ view: this, material: parameters.material });
+    this.interactionHandler = new ctor({
+      view: this,
+      material: parameters.material,
+    });
   }
 }
 
@@ -47,10 +53,10 @@ export class CheckBoxMesh<Value = any>
 }
 
 export class RadioButtonMesh<Value = any>
-  extends InteractiveMesh<Value, RadioButtonObject<Value>>
+  extends InteractiveMesh<Value, RadioButtonInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
   constructor(parameters: InteractiveMeshParameters) {
-    super(parameters, RadioButtonObject<Value>);
+    super(parameters, RadioButtonInteractionHandler<Value>);
   }
 }

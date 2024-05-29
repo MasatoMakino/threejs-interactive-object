@@ -33,7 +33,9 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    */
   public addButton(...buttons: IClickableObject3D<Value>[]): void {
     buttons.forEach((btn) => {
-      this.addModel(btn.model as RadioButtonInteractionHandler<Value>);
+      this.addModel(
+        btn.interactionHandler as RadioButtonInteractionHandler<Value>,
+      );
     });
   }
 
@@ -48,7 +50,7 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    */
   private onSelectedButton = (e: ThreeMouseEvent<Value>) => {
     if (e.isSelected) {
-      this.select(e.model as RadioButtonInteractionHandler<Value>);
+      this.select(e.interactionHandler as RadioButtonInteractionHandler<Value>);
     }
   };
 
@@ -58,7 +60,9 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    * @param {IClickableObject3D} button
    */
   public removeButton(button: IClickableObject3D<Value>): void {
-    this.removeModel(button.model as RadioButtonInteractionHandler<Value>);
+    this.removeModel(
+      button.interactionHandler as RadioButtonInteractionHandler<Value>,
+    );
   }
 
   public removeModel(
