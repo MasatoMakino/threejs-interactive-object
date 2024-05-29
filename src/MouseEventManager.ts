@@ -223,13 +223,10 @@ export class MouseEventManager {
   }
 
   /**
-   *
+   * 非推奨になったIClickableObject3Dインターフェースのmodelプロパティを実装しているか否かを判定する。
    * @param arg
-   * @returns
    */
-  private static implementsDepartedIClickableObject3D(
-    arg: any,
-  ): arg is IClickableObject3D<unknown> {
+  private static implementsDepartedIClickableObject3D(arg: any): boolean {
     return (
       arg !== null &&
       typeof arg === "object" &&

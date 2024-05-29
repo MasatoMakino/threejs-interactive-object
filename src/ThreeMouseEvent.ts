@@ -17,13 +17,13 @@ export interface ThreeMouseEvent<Value> {
 export class ThreeMouseEventUtil {
   static generate<Value>(
     type: keyof ThreeMouseEventMap<Value>,
-    modelOrView:
+    handlerOrView:
       | ButtonInteractionHandler<Value>
       | IClickableObject3D<Value>
       | undefined,
   ): ThreeMouseEvent<Value> {
     const interactionHandler =
-      ThreeMouseEventUtil.getInteractionHandler(modelOrView);
+      ThreeMouseEventUtil.getInteractionHandler(handlerOrView);
     const getSelection = () => {
       if (type === "select") {
         return ThreeMouseEventUtil.getSelection(interactionHandler);
@@ -39,15 +39,15 @@ export class ThreeMouseEventUtil {
   }
 
   private static getInteractionHandler<Value>(
-    modelOrView:
+    handlerOrView:
       | ButtonInteractionHandler<Value>
       | IClickableObject3D<Value>
       | undefined,
   ): ButtonInteractionHandler<Value> | undefined {
-    if (modelOrView != null && "interactionHandler" in modelOrView) {
-      return modelOrView.interactionHandler;
+    if (handlerOrView != null && "interactionHandler" in handlerOrView) {
+      return handlerOrView.interactionHandler;
     }
-    return modelOrView;
+    return handlerOrView;
   }
 
   /**
