@@ -1,10 +1,7 @@
-import {
-  CheckBoxInteractionHandler,
-  RadioButtonMesh,
-  RadioButtonSprite,
-} from "./index.js";
+import { RadioButtonMesh, RadioButtonSprite } from "../index.js";
+import { CheckBoxInteractionHandler } from "./index.js";
 
-export class RadioButtonObject<
+export class RadioButtonInteractionHandler<
   Value,
 > extends CheckBoxInteractionHandler<Value> {
   declare readonly view: RadioButtonMesh<Value> | RadioButtonSprite<Value>;

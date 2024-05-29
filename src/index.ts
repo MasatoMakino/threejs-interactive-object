@@ -4,7 +4,6 @@ export * from "./InteractiveMesh.js";
 export * from "./interactionHandler/index.js";
 export * from "./ClickableGroup.js";
 
-export * from "./RadioButtonObject.js";
 export * from "./RadioButtonManager.js";
 
 export * from "./StateMaterial.js";

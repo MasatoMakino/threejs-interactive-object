@@ -1,7 +1,7 @@
 import EventEmitter from "eventemitter3";
 import {
   IClickableObject3D,
-  RadioButtonObject,
+  RadioButtonInteractionHandler,
   ThreeMouseEvent,
   ThreeMouseEventMap,
   ThreeMouseEventUtil,
@@ -14,11 +14,11 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    * このマネージャーの管理下のボタン
    * @private
    */
-  protected _models: RadioButtonObject<Value>[] = [];
+  protected _models: RadioButtonInteractionHandler<Value>[] = [];
   /**
    * 現状選択されているボタン。
    */
-  protected _selected!: RadioButtonObject<Value>;
+  protected _selected!: RadioButtonInteractionHandler<Value>;
 
   /**
    * コンストラクタ
@@ -33,11 +33,11 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    */
   public addButton(...buttons: IClickableObject3D<Value>[]): void {
     buttons.forEach((btn) => {
-      this.addModel(btn.model as RadioButtonObject<Value>);
+      this.addModel(btn.model as RadioButtonInteractionHandler<Value>);
     });
   }
 
-  public addModel(model: RadioButtonObject<Value>): void {
+  public addModel(model: RadioButtonInteractionHandler<Value>): void {
     this._models.push(model);
     model.on("select", this.onSelectedButton);
   }
@@ -48,7 +48,7 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    */
   private onSelectedButton = (e: ThreeMouseEvent<Value>) => {
     if (e.isSelected) {
-      this.select(e.model as RadioButtonObject<Value>);
+      this.select(e.model as RadioButtonInteractionHandler<Value>);
     }
   };
 
@@ -58,12 +58,12 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    * @param {IClickableObject3D} button
    */
   public removeButton(button: IClickableObject3D<Value>): void {
-    this.removeModel(button.model as RadioButtonObject<Value>);
+    this.removeModel(button.model as RadioButtonInteractionHandler<Value>);
   }
 
   public removeModel(
-    model: RadioButtonObject<Value>,
-  ): RadioButtonObject<Value> {
+    model: RadioButtonInteractionHandler<Value>,
+  ): RadioButtonInteractionHandler<Value> {
     const index = this._models.indexOf(model);
     if (index > -1) {
       this._models.splice(index, 1);
@@ -74,9 +74,9 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
 
   /**
    * 特定のボタンを選択する
-   * @param {RadioButtonObject} model
+   * @param {RadioButtonInteractionHandler} model
    */
-  public select(model: RadioButtonObject<Value>): void {
+  public select(model: RadioButtonInteractionHandler<Value>): void {
     const index = this._models.indexOf(model);
     if (index === -1) {
       console.warn("管理下でないボタンが選択処理されました。");
@@ -97,11 +97,11 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
     this.emit(evt.type, evt);
   }
 
-  get selected(): RadioButtonObject<Value> {
+  get selected(): RadioButtonInteractionHandler<Value> {
     return this._selected;
   }
 
-  get models(): RadioButtonObject<Value>[] {
+  get models(): RadioButtonInteractionHandler<Value>[] {
     return this._models;
   }
 }
