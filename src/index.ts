@@ -11,3 +11,4 @@ export * from "./MouseEventManager.js";
 export * from "./ThreeMouseEvent.js";
 
 export * from "./ViewPortUtil.js";
+export * from "./convertToInteractiveView.js";
