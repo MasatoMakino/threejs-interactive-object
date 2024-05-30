@@ -163,7 +163,7 @@ const testRadio = () => {
       material: getMaterialSet(),
     });
     button.position.set(x, -10, 0);
-    button.model.value = buttonValue;
+    button.interactionHandler.value = buttonValue;
     scene.add(button);
     return button;
   };
@@ -178,7 +178,7 @@ const testRadio = () => {
   manager.addButton(initButton(20, undefined));
 
   manager.on("select", (e) => {
-    console.log(e.model.value);
+    console.log(e.interactionHandler.value);
   });
 };
 

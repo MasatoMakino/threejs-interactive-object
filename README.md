@@ -78,10 +78,10 @@ clickable.model.on("click", (e) => {
 
 #### Convert Mesh to Interactive
 
-MouseEventManager identifies an Object3D instance with a member named `model` as interactive. If you want to convert your loaded model to interactive, add a `model` member.
+The `MouseEventManager` identifies an Object3D instance with a member named `interactionHandler` as interactive. If you want to convert your loaded model to be interactive, you can use the `convertToClickableMesh`, `convertToCheckboxMesh`, `convertToRadioButtonMesh` function.
 
 ```js
-mesh["model"] = new ClickableObject({ view: mesh });
+const interactiveMesh = convertToClickableMesh(mesh);
 ```
 
 ## Uninstall

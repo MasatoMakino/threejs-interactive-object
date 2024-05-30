@@ -8,7 +8,7 @@ import {
   ThreeMouseEvent,
   ThreeMouseEventMap,
   ThreeMouseEventUtil,
-} from "./index.js";
+} from "../index.js";
 
 /**
  * クリックに反応する表示オブジェクトの型エイリアス
@@ -19,18 +19,25 @@ export type ClickableView<Value> =
   | ClickableSprite<Value>
   | ClickableGroup<Value>;
 
-export interface ClickableObjectParameters<Value> {
+export interface ButtonInteractionHandlerParameters<Value> {
   view: ClickableView<Value>;
   material?: StateMaterialSet;
 }
 
 /**
- * クリックに反応するObject
- * これ自体は表示オブジェクトではない。
+ * The `ButtonInteractionHandler` class is responsible for managing the interactions with button-like objects.
+ * Each button-like object can be represented as a `ClickableMesh`, `ClickableSprite`, or `ClickableGroup`, and can have an associated value.
+ * The `ButtonInteractionHandler` class  handle the interaction events and update the state of the button-like object accordingly.
+ *
+ * The generic parameter `Value` represents the type of the `value` property associated with this button.
  */
-export class ClickableObject<Value> extends EventEmitter<
+export class ButtonInteractionHandler<Value> extends EventEmitter<
   ThreeMouseEventMap<Value>
 > {
+  /**
+   * The `value` property represents an arbitrary value associated with this button.
+   * This value can be used by classes listening to events from multiple buttons to differentiate the operations based on this value.
+   */
   public value: Value | undefined;
   get materialSet(): StateMaterialSet | undefined {
     return this._materialSet;
@@ -66,7 +73,7 @@ export class ClickableObject<Value> extends EventEmitter<
   /**
    * コンストラクタ
    */
-  constructor(parameters: ClickableObjectParameters<Value>) {
+  constructor(parameters: ButtonInteractionHandlerParameters<Value>) {
     super();
     this.view = parameters.view;
     this._materialSet ??= parameters.material;
@@ -163,5 +170,17 @@ export class ClickableObject<Value> extends EventEmitter<
     this._enable = bool;
     this.state = bool ? "normal" : "disable";
     this.updateMaterial();
+  }
+}
+
+/**
+ * @deprecated Use ButtonInteractionHandler instead. This class will be removed in next minor version.
+ */
+export class ClickableObject<Value> extends ButtonInteractionHandler<Value> {
+  constructor(parameters: ButtonInteractionHandlerParameters<Value>) {
+    console.warn(
+      "This class is deprecated. Use ButtonInteractionHandler instead.",
+    );
+    super(parameters);
   }
 }

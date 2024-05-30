@@ -1,53 +1,57 @@
 import { Sprite } from "three";
 import {
-  CheckBoxObject,
-  ClickableObject,
-  ClickableObjectParameters,
+  CheckBoxInteractionHandler,
+  ButtonInteractionHandler,
+  ButtonInteractionHandlerParameters,
   IClickableObject3D,
-  RadioButtonObject,
+  RadioButtonInteractionHandler,
   StateMaterialSet,
 } from "./index.js";
 
-export interface ModelConstructor<Model extends ClickableObject<Value>, Value> {
-  new (param: ClickableObjectParameters<Value>): Model;
+export interface InteractionHandlerConstructor<
+  InteractionHandler extends ButtonInteractionHandler<Value>,
+  Value,
+> {
+  new (param: ButtonInteractionHandlerParameters<Value>): InteractionHandler;
 }
 
-class InteractiveSprite<Value, Model extends ClickableObject<Value>>
+class InteractiveSprite<Value, Handler extends ButtonInteractionHandler<Value>>
   extends Sprite
   implements IClickableObject3D<Value>
 {
-  readonly model: Model;
+  readonly interactionHandler: Handler;
+
   constructor(
     material: StateMaterialSet,
-    ctor: ModelConstructor<Model, Value>,
+    ctor: InteractionHandlerConstructor<Handler, Value>,
   ) {
     super();
-    this.model = new ctor({ view: this, material: material });
+    this.interactionHandler = new ctor({ view: this, material: material });
   }
 }
 export class ClickableSprite<Value = any>
-  extends InteractiveSprite<Value, ClickableObject<Value>>
+  extends InteractiveSprite<Value, ButtonInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
   constructor(material: StateMaterialSet) {
-    super(material, ClickableObject<Value>);
+    super(material, ButtonInteractionHandler<Value>);
   }
 }
 
 export class CheckBoxSprite<Value = any>
-  extends InteractiveSprite<Value, CheckBoxObject<Value>>
+  extends InteractiveSprite<Value, CheckBoxInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
   constructor(material: StateMaterialSet) {
-    super(material, CheckBoxObject<Value>);
+    super(material, CheckBoxInteractionHandler<Value>);
   }
 }
 
 export class RadioButtonSprite<Value = any>
-  extends InteractiveSprite<Value, RadioButtonObject<Value>>
+  extends InteractiveSprite<Value, RadioButtonInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
   constructor(material: StateMaterialSet) {
-    super(material, RadioButtonObject<Value>);
+    super(material, RadioButtonInteractionHandler<Value>);
   }
 }

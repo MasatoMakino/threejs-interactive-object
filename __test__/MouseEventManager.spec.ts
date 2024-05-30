@@ -36,26 +36,26 @@ describe("MouseEventManager", () => {
     //スロットリングされるのでnormalのまま
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
 
     //スロットリングされるのでnormalのまま
     managerScene.interval(0.1);
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     btn.checkMaterial("normal", "スロットリングされるのでnormalのまま");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     btn.checkMaterial("over");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isOver).toBe(true);
+    expect(wrapper.interactionHandler.isOver).toBe(true);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
   });
 
   test("mouse down / mouse up", () => {
@@ -67,20 +67,20 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
     btn.checkMaterial("down");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isPress).toBe(true);
+    expect(wrapper.interactionHandler.isPress).toBe(true);
 
     managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isPress).toBe(false);
+    expect(wrapper.interactionHandler.isPress).toBe(false);
   });
 
   /**
    * disableボタンの背面のオブジェクトは、すべて操作が遮られる
    */
   test("disable and overlap", () => {
-    btn.button.model.disable();
-    btn.button.model.mouseEnabled = true;
+    btn.button.interactionHandler.disable();
+    btn.button.interactionHandler.mouseEnabled = true;
 
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
@@ -89,29 +89,29 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isPress).toBe(false);
-    expect(wrapper.model.isOver).toBe(true);
+    expect(wrapper.interactionHandler.isPress).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(true);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isPress).toBe(false);
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isPress).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isPress).toBe(true);
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isPress).toBe(true);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isPress).toBe(false);
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isPress).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
   });
 
   /**
@@ -119,9 +119,9 @@ describe("MouseEventManager", () => {
    * 操作は背面に透過する。
    */
   test("mouseEnabled : false and overlap", () => {
-    btn.button.model.enable();
-    btn.button.model.mouseEnabled = false;
-    wrapper.model.mouseEnabled = false;
+    btn.button.interactionHandler.enable();
+    btn.button.interactionHandler.mouseEnabled = false;
+    wrapper.interactionHandler.mouseEnabled = false;
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
 
@@ -129,32 +129,32 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("over");
-    expect(wrapper.model.isPress).toBe(false);
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isPress).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isPress).toBe(false);
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isPress).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("down");
-    expect(wrapper.model.isPress).toBe(false);
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isPress).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
-    expect(wrapper.model.isPress).toBe(false);
-    expect(wrapper.model.isOver).toBe(false);
+    expect(wrapper.interactionHandler.isPress).toBe(false);
+    expect(wrapper.interactionHandler.isOver).toBe(false);
 
-    btn.button.model.mouseEnabled = true;
-    wrapper.model.mouseEnabled = true;
+    btn.button.interactionHandler.mouseEnabled = true;
+    wrapper.interactionHandler.mouseEnabled = true;
   });
 
   /**
@@ -164,54 +164,54 @@ describe("MouseEventManager", () => {
     const spyOverButton = vi.fn((e) => true);
     const spyOutButton = vi.fn((e) => true);
 
-    btn.button.model.enable();
-    btn.button.model.on("over", spyOverButton);
-    btn.button.model.on("out", spyOutButton);
+    btn.button.interactionHandler.enable();
+    btn.button.interactionHandler.on("over", spyOverButton);
+    btn.button.interactionHandler.on("out", spyOutButton);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     expect(spyOverButton).toBeCalled();
-    expect(btn.button.model.isOver).toBe(true);
+    expect(btn.button.interactionHandler.isOver).toBe(true);
     spyOverButton.mockClear();
 
     //マウスオーバーのままdisableに変更すると、イベントは発行されないがポインターオーバー状態は変化する。
-    btn.button.model.disable();
+    btn.button.interactionHandler.disable();
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
     expect(spyOutButton).not.toBeCalled();
-    expect(btn.button.model.isOver).toBe(false);
+    expect(btn.button.interactionHandler.isOver).toBe(false);
     spyOutButton.mockClear();
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     expect(spyOverButton).not.toBeCalled();
-    expect(btn.button.model.isOver).toBe(true);
+    expect(btn.button.interactionHandler.isOver).toBe(true);
     spyOverButton.mockClear();
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
-    expect(btn.button.model.isOver).toBe(false);
+    expect(btn.button.interactionHandler.isOver).toBe(false);
     spyOutButton.mockClear();
     spyOverButton.mockClear();
 
     //ボタンの再活性化直後にoverしても反応する。
-    btn.button.model.enable();
+    btn.button.interactionHandler.enable();
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
     expect(spyOverButton).toBeCalled();
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
-    btn.button.model.off("over", spyOverButton);
-    btn.button.model.off("out", spyOutButton);
+    btn.button.interactionHandler.off("over", spyOverButton);
+    btn.button.interactionHandler.off("out", spyOutButton);
   });
 
   test("click", () => {
     const spyClickButton = vi.fn((e) => true);
     const spyClickGroup = vi.fn((e) => true);
 
-    btn.button.model.on("click", spyClickButton);
-    wrapper.model.on("click", spyClickGroup);
+    btn.button.interactionHandler.on("click", spyClickButton);
+    wrapper.interactionHandler.on("click", spyClickGroup);
 
     managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
     managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
@@ -219,13 +219,13 @@ describe("MouseEventManager", () => {
     expect(spyClickButton).toHaveBeenCalledTimes(1);
     expect(spyClickGroup).toHaveBeenCalledTimes(1);
 
-    btn.button.model.off("click", spyClickButton);
-    wrapper.model.off("click", spyClickGroup);
+    btn.button.interactionHandler.off("click", spyClickButton);
+    wrapper.interactionHandler.off("click", spyClickGroup);
   });
 
   test("multiple over", () => {
     const spyOver = vi.fn((e) => true);
-    btn.button.model.on("over", spyOver);
+    btn.button.interactionHandler.on("over", spyOver);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
@@ -252,6 +252,6 @@ describe("MouseEventManager", () => {
     expect(spyOver).toBeCalled();
     spyOver.mockClear();
 
-    btn.button.model.off("over", spyOver);
+    btn.button.interactionHandler.off("over", spyOver);
   });
 });

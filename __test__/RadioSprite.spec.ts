@@ -16,7 +16,7 @@ const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
  */
 const initButton = (buttonValue: any): RadioButtonSprite => {
   const button = new RadioButtonSprite(getSpriteMaterialSet());
-  button.model.value = buttonValue;
+  button.interactionHandler.value = buttonValue;
   return button;
 };
 

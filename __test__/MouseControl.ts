@@ -15,9 +15,15 @@ import {
  * @param {IClickableObject3D} button
  */
 export function clickButton(button: IClickableObject3D<unknown>) {
-  button.model.onMouseOverHandler(ThreeMouseEventUtil.generate("over", button));
-  button.model.onMouseDownHandler(ThreeMouseEventUtil.generate("down", button));
-  button.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", button));
+  button.interactionHandler.onMouseOverHandler(
+    ThreeMouseEventUtil.generate("over", button),
+  );
+  button.interactionHandler.onMouseDownHandler(
+    ThreeMouseEventUtil.generate("down", button),
+  );
+  button.interactionHandler.onMouseUpHandler(
+    ThreeMouseEventUtil.generate("up", button),
+  );
 }
 
 /**
@@ -61,13 +67,13 @@ export function testDisable(
   target: ClickableMesh | ClickableSprite,
   matSet: StateMaterialSet,
 ) {
-  target.model.disable();
+  target.interactionHandler.disable();
   changeMaterialState(target, "over", matSet.disable);
   changeMaterialState(target, "down", matSet.disable);
   changeMaterialState(target, "up", matSet.disable);
   changeMaterialState(target, "out", matSet.disable);
 
-  target.model.enable();
+  target.interactionHandler.enable();
   changeMaterialState(target, "over", matSet.over);
   changeMaterialState(target, "out", matSet.normal);
 }
@@ -77,13 +83,13 @@ export function testFrozen(
   matSet: StateMaterialSet,
 ) {
   changeMaterialState(target, "out", matSet.normal);
-  target.model.frozen = true;
+  target.interactionHandler.frozen = true;
   changeMaterialState(target, "over", matSet.normal);
   changeMaterialState(target, "down", matSet.normal);
   changeMaterialState(target, "up", matSet.normal);
   changeMaterialState(target, "out", matSet.normal);
 
-  target.model.frozen = false;
+  target.interactionHandler.frozen = false;
   changeMaterialState(target, "over", matSet.over);
   changeMaterialState(target, "out", matSet.normal);
 }
@@ -97,10 +103,10 @@ export function testSwitch(
   target: ClickableMesh | ClickableSprite,
   matSet: StateMaterialSet,
 ) {
-  target.model.switchEnable(false);
+  target.interactionHandler.switchEnable(false);
   expect(target.material).toBe(matSet.disable.material);
 
-  target.model.switchEnable(true);
+  target.interactionHandler.switchEnable(true);
   expect(target.material).toBe(matSet.normal.material);
 }
 
@@ -112,10 +118,12 @@ export function testSwitch(
 export function testMouseUP(target: ClickableMesh | ClickableSprite) {
   const spyUp = vi.fn((e) => {});
   const spyClick = vi.fn((e) => {});
-  target.model.on("click", spyClick);
-  target.model.on("up", spyUp);
+  target.interactionHandler.on("click", spyClick);
+  target.interactionHandler.on("up", spyUp);
 
-  target.model.onMouseUpHandler(ThreeMouseEventUtil.generate("up", target));
+  target.interactionHandler.onMouseUpHandler(
+    ThreeMouseEventUtil.generate("up", target),
+  );
   expect(spyUp).toBeCalled();
   expect(spyClick).not.toBeCalled();
 }
@@ -127,7 +135,7 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
  */
 export function testClick(target: ClickableMesh | ClickableSprite) {
   const spyClick = vi.fn((e) => {});
-  target.model.on("click", spyClick);
+  target.interactionHandler.on("click", spyClick);
   clickButton(target);
   expect(spyClick).toBeCalled();
 }

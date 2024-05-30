@@ -22,31 +22,31 @@ describe("CheckBoxMesh", () => {
   });
 
   test("set / get selection", () => {
-    expect(checkbox.model.selection).toBe(false);
+    expect(checkbox.interactionHandler.selection).toBe(false);
 
-    checkbox.model.selection = true;
-    expect(checkbox.model.selection).toBe(true);
+    checkbox.interactionHandler.selection = true;
+    expect(checkbox.interactionHandler.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.normalSelect.material);
 
-    checkbox.model.selection = false;
-    expect(checkbox.model.selection).toBe(false);
+    checkbox.interactionHandler.selection = false;
+    expect(checkbox.interactionHandler.selection).toBe(false);
     expect(checkbox.material).toBe(matSet.normal.material);
   });
 
   test("click", () => {
     const spyClick = vi.fn((e) => {});
-    checkbox.model.on("click", spyClick);
+    checkbox.interactionHandler.on("click", spyClick);
 
     //クリックして選択
     clickButton(checkbox);
     expect(spyClick).toBeCalled();
 
-    expect(checkbox.model.selection).toBe(true);
+    expect(checkbox.interactionHandler.selection).toBe(true);
     expect(checkbox.material).toBe(matSet.overSelect.material);
 
     //クリックして選択解除
     changeMaterialState(checkbox, "down", matSet.downSelect);
     changeMaterialState(checkbox, "up", matSet.over);
-    expect(checkbox.model.selection).toBe(false);
+    expect(checkbox.interactionHandler.selection).toBe(false);
   });
 });

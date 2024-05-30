@@ -1,15 +1,15 @@
 import { Group } from "three";
-import { ClickableObject, IClickableObject3D } from "./index.js";
+import { ButtonInteractionHandler, IClickableObject3D } from "./index.js";
 
 export class ClickableGroup<Value = any>
   extends Group
   implements IClickableObject3D<Value>
 {
-  public model: ClickableObject<Value>;
+  public interactionHandler: ButtonInteractionHandler<Value>;
 
   constructor() {
     super();
-    this.model = new ClickableObject<Value>({
+    this.interactionHandler = new ButtonInteractionHandler<Value>({
       view: this,
     });
   }

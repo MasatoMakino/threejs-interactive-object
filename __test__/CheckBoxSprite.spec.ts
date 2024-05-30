@@ -12,20 +12,20 @@ const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
  */
 const initButton = (value: any): CheckBoxSprite => {
   const button = new CheckBoxSprite(getSpriteMaterialSet());
-  button.model.value = value;
+  button.interactionHandler.value = value;
   return button;
 };
 
 describe("CheckBoxSprite", () => {
   test("初期化", () => {
     const btn = initButton("button01");
-    expect(btn.model.selection).toBe(false);
+    expect(btn.interactionHandler.selection).toBe(false);
   });
 
   test("選択", () => {
     const btn = initButton("button01");
-    btn.model.selection = true;
-    expect(btn.model.selection).toBe(true);
+    btn.interactionHandler.selection = true;
+    expect(btn.interactionHandler.selection).toBe(true);
   });
 
   test("マウスクリックで選択", () => {
@@ -33,8 +33,8 @@ describe("CheckBoxSprite", () => {
 
     const spySelect = vi.fn((e) => {});
     const spyClick = vi.fn((e) => {});
-    btn.model.on("click", spyClick);
-    btn.model.on("select", spySelect);
+    btn.interactionHandler.on("click", spyClick);
+    btn.interactionHandler.on("select", spySelect);
 
     clickButton(btn);
     expect(spySelect).toBeCalled();

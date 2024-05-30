@@ -9,7 +9,7 @@ import {
   Vector4,
 } from "three";
 import {
-  ClickableObject,
+  ButtonInteractionHandler,
   ThreeMouseEventMap,
   ThreeMouseEventUtil,
   ViewPortUtil,
@@ -177,19 +177,27 @@ export class MouseEventManager {
   ) {
     switch (type) {
       case "down":
-        btn.model.onMouseDownHandler(ThreeMouseEventUtil.generate(type, btn));
+        btn.interactionHandler.onMouseDownHandler(
+          ThreeMouseEventUtil.generate(type, btn),
+        );
         return;
       case "up":
-        btn.model.onMouseUpHandler(ThreeMouseEventUtil.generate(type, btn));
+        btn.interactionHandler.onMouseUpHandler(
+          ThreeMouseEventUtil.generate(type, btn),
+        );
         return;
       case "over":
-        if (!btn.model.isOver) {
-          btn.model.onMouseOverHandler(ThreeMouseEventUtil.generate(type, btn));
+        if (!btn.interactionHandler.isOver) {
+          btn.interactionHandler.onMouseOverHandler(
+            ThreeMouseEventUtil.generate(type, btn),
+          );
         }
         return;
       case "out":
-        if (btn.model.isOver) {
-          btn.model.onMouseOutHandler(ThreeMouseEventUtil.generate(type, btn));
+        if (btn.interactionHandler.isOver) {
+          btn.interactionHandler.onMouseOutHandler(
+            ThreeMouseEventUtil.generate(type, btn),
+          );
         }
         return;
     }
@@ -207,10 +215,23 @@ export class MouseEventManager {
     return (
       arg !== null &&
       typeof arg === "object" &&
+      arg.interactionHandler !== null &&
+      typeof arg.interactionHandler === "object" &&
+      arg.interactionHandler.mouseEnabled !== null &&
+      typeof arg.interactionHandler.mouseEnabled === "boolean"
+    );
+  }
+
+  /**
+   * 非推奨になったIClickableObject3Dインターフェースのmodelプロパティを実装しているか否かを判定する。
+   * @param arg
+   */
+  private static implementsDepartedIClickableObject3D(arg: any): boolean {
+    return (
+      arg !== null &&
+      typeof arg === "object" &&
       arg.model !== null &&
-      typeof arg.model === "object" &&
-      arg.model.mouseEnabled !== null &&
-      typeof arg.model.mouseEnabled === "boolean"
+      typeof arg.model === "object"
     );
   }
 
@@ -228,11 +249,17 @@ export class MouseEventManager {
     type: keyof ThreeMouseEventMap,
     hasTarget: boolean = false,
   ): boolean {
+    if (MouseEventManager.implementsDepartedIClickableObject3D(target)) {
+      console.warn(
+        "Deprecated: IClickableObject3D.model is deprecated. Please use IClickableObject3D.interactionHandler.",
+      );
+    }
+
     //クリッカブルインターフェースを継承しているなら判定OK
     if (
       target != null &&
       MouseEventManager.implementsIClickableObject3D(target) &&
-      target.model.mouseEnabled
+      target.interactionHandler.mouseEnabled
     ) {
       if (type === "over") {
         this.currentOver.push(target);
@@ -280,5 +307,5 @@ export type ClickableState =
  * マウス操作可能なクラスを実装する場合、このインターフェースを継承すること。
  */
 export interface IClickableObject3D<Value> {
-  model: ClickableObject<Value>;
+  interactionHandler: ButtonInteractionHandler<Value>;
 }
