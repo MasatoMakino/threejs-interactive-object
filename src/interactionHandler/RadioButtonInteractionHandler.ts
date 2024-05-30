@@ -1,5 +1,8 @@
 import { RadioButtonMesh, RadioButtonSprite } from "../index.js";
-import { CheckBoxInteractionHandler } from "./index.js";
+import {
+  ButtonInteractionHandlerParameters,
+  CheckBoxInteractionHandler,
+} from "./index.js";
 
 export class RadioButtonInteractionHandler<
   Value,
@@ -21,5 +24,19 @@ export class RadioButtonInteractionHandler<
   }
   set isFrozen(bool: boolean) {
     this._isFrozen = bool;
+  }
+}
+
+/**
+ * @deprecated Use RadioButtonInteractionHandler instead. This class will be removed in next minor version.
+ */
+export class RadioButtonObject<
+  Value,
+> extends RadioButtonInteractionHandler<Value> {
+  constructor(parameters: ButtonInteractionHandlerParameters<Value>) {
+    console.warn(
+      "This class is deprecated. Use RadioButtonInteractionHandler instead.",
+    );
+    super(parameters);
   }
 }
