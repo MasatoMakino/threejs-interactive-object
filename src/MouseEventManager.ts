@@ -231,9 +231,7 @@ export class MouseEventManager {
       arg !== null &&
       typeof arg === "object" &&
       arg.model !== null &&
-      typeof arg.model === "object" &&
-      arg.model.mouseEnabled !== null &&
-      typeof arg.model.mouseEnabled === "boolean"
+      typeof arg.model === "object"
     );
   }
 
