@@ -290,7 +290,22 @@ export class MouseEventManager {
       this.mouse,
     );
     this.raycaster.setFromCamera(this.mouse, this.camera);
-    return this.raycaster.intersectObjects(this.targets, this.recursive);
+    const intersects = this.raycaster.intersectObjects(
+      this.targets,
+      this.recursive,
+    );
+
+    //同一のオブジェクトが複数のFaceで交差した場合、最初に交差したものだけを取り出す。
+    const uuidSet = new Set<string>();
+    const filteredIntersects = intersects.filter((intersect) => {
+      if (uuidSet.has(intersect.object.uuid)) {
+        return false;
+      }
+      uuidSet.add(intersect.object.uuid);
+      return true;
+    });
+
+    return filteredIntersects;
   }
 }
 
