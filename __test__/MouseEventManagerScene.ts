@@ -8,6 +8,7 @@ export class MouseEventManagerScene {
   public canvas: HTMLCanvasElement;
   public camera: Camera;
   public manager: MouseEventManager;
+  private time: number = 0;
 
   public static readonly W = 1920;
   public static readonly H = 1080;
@@ -34,23 +35,20 @@ export class MouseEventManagerScene {
   }
 
   public interval(ratio: number = 2.0): void {
+    const delta = this.manager.throttlingTime_ms * ratio;
+    this.time += delta;
     RAFTicker.emit("tick", {
-      timestamp: 0,
-      delta: this.manager.throttlingTime_ms * ratio,
+      timestamp: this.time,
+      delta,
     });
     this.scene.updateMatrixWorld();
   }
 
   public reset() {
-    const e = getMouseEvent("pointerup", {
-      x: 0,
-      y: 0,
-      clientX: 0,
-      clientY: 0,
-      offsetX: 0,
-      offsetY: 0,
-    });
-    this.canvas.dispatchEvent(e);
+    this.interval();
+    this.dispatchMouseEvent("pointermove", 0, 0);
+    this.dispatchMouseEvent("pointerup", 0, 0);
+    this.time = 0;
   }
 
   public dispatchMouseEvent(type: string, x: number, y: number): void {
