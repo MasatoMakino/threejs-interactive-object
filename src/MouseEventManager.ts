@@ -69,7 +69,7 @@ export class MouseEventManager {
   }
 
   private onTick = (e: RAFTickerEventContext) => {
-    this.throttlingDelta += e.delta;
+    this.throttlingDelta += Math.max(e.delta, 0); //経過時間がマイナスになることはありえないので、0未満の場合は0をセットする。
     if (this.throttlingDelta < this.throttlingTime_ms) {
       return;
     }
