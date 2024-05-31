@@ -1,9 +1,5 @@
 import { Mesh } from "three";
-import {
-  CheckBoxMesh,
-  ClickableMesh,
-  RadioButtonMesh,
-} from "./InteractiveMesh";
+import { CheckBoxMesh, ClickableMesh, RadioButtonMesh } from "./view/index.js";
 import {
   ButtonInteractionHandler,
   CheckBoxInteractionHandler,

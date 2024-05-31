@@ -6,7 +6,7 @@ import {
   RadioButtonInteractionHandler,
   StateMaterialSet,
   InteractionHandlerConstructor,
-} from "./index.js";
+} from "../index.js";
 
 export interface InteractiveMeshParameters {
   geo?: BufferGeometry;
