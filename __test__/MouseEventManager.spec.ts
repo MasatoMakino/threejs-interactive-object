@@ -170,7 +170,7 @@ describe("MouseEventManager", () => {
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-    expect(spyOverButton).toBeCalled();
+    expect(spyOverButton).toBeCalledTimes(1);
     expect(btn.button.interactionHandler.isOver).toBe(true);
     spyOverButton.mockClear();
 
@@ -198,7 +198,7 @@ describe("MouseEventManager", () => {
     btn.button.interactionHandler.enable();
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-    expect(spyOverButton).toBeCalled();
+    expect(spyOverButton).toBeCalledTimes(1);
 
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
@@ -231,7 +231,7 @@ describe("MouseEventManager", () => {
     managerScene.dispatchMouseEvent("pointermove", 0, 0);
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-    expect(spyOver).toBeCalled();
+    expect(spyOver).toBeCalledTimes(1);
     spyOver.mockClear();
 
     //2度目はoverが呼び出されない
@@ -249,7 +249,7 @@ describe("MouseEventManager", () => {
     //再度overすると呼び出される
     managerScene.interval();
     managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-    expect(spyOver).toBeCalled();
+    expect(spyOver).toBeCalledTimes(1);
     spyOver.mockClear();
 
     btn.button.interactionHandler.off("over", spyOver);
