@@ -6,7 +6,7 @@ import {
   IClickableObject3D,
   RadioButtonInteractionHandler,
   StateMaterialSet,
-} from "./index.js";
+} from "../index.js";
 
 export interface InteractionHandlerConstructor<
   InteractionHandler extends ButtonInteractionHandler<Value>,

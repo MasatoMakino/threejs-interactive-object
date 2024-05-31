@@ -1,8 +1,5 @@
-export * from "./InteractiveSprite.js";
-export * from "./InteractiveMesh.js";
-
+export * from "./view/index.js";
 export * from "./interactionHandler/index.js";
-export * from "./ClickableGroup.js";
 
 export * from "./RadioButtonManager.js";
 
