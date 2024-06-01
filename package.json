@@ -34,7 +34,7 @@
   "devDependencies": {
     "@masatomakino/fake-mouse-event": "^0.1.0",
     "@masatomakino/gulptask-demo-page": "^0.8.0",
-    "@types/three": "^0.164.0",
+    "@types/three": "^0.165.0",
     "@vitest/coverage-istanbul": "^1.6.0",
     "browser-sync": "^3.0.2",
     "canvas": "^2.11.2",
@@ -42,7 +42,7 @@
     "jsdom": "^24.0.0",
     "lint-staged": "^15.0.2",
     "prettier": "^3.0.1",
-    "three": "^0.164.1",
+    "three": "^0.165.0",
     "typedoc": "^0.25.4",
     "typescript": "^5.3.3"
   },
