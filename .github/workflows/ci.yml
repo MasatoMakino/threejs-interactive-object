@@ -25,4 +25,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm ci
+      - run: npx tsc --noEmit
       - run: xvfb-run --auto-servernum npm test
