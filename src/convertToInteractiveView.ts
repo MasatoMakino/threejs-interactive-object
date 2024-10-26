@@ -1,3 +1,8 @@
+/**
+ * すでに存在するMeshをClickableMeshに変換するユーティリティ関数。
+ * gltfなどで読み込んだMeshをClickableMeshに変換する際に使用する。
+ */
+
 import { Mesh } from "three";
 import { CheckBoxMesh, ClickableMesh, RadioButtonMesh } from "./view/index.js";
 import {
