@@ -1,4 +1,3 @@
-import { contain } from "three/src/extras/TextureUtils.js";
 import {
   CheckBoxMesh,
   CheckBoxSprite,
