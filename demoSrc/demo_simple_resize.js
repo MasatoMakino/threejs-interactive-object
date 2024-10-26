@@ -7,6 +7,7 @@ import {
   RadioButtonManager,
   RadioButtonMesh,
   StateMaterialSet,
+  resizeCanvasStyle,
 } from "../esm/index.js";
 import {
   AmbientLight,
@@ -45,21 +46,10 @@ const onDomContentsLoaded = () => {
   containerDiv.style.alignItems = "center";
   containerDiv.style.justifyContent = "center";
 
-  const aspectRatio = W / H;
   canvas.style.maxWidth = "100%";
   canvas.style.maxHeight = "100%";
-
   const resizeCanvas = () => {
-    const containerWidth = containerDiv.clientWidth;
-    const containerHeight = containerDiv.clientHeight;
-
-    if (containerWidth / containerHeight > aspectRatio) {
-      canvas.style.width = `${containerHeight * aspectRatio}px`;
-      canvas.style.height = `${containerHeight}px`;
-    } else {
-      canvas.style.width = `${containerWidth}px`;
-      canvas.style.height = `${containerWidth / aspectRatio}px`;
-    }
+    resizeCanvasStyle(containerDiv, canvas, W, H);
   };
 
   resizeCanvas();
