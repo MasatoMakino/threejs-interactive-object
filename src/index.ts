@@ -9,3 +9,4 @@ export * from "./ThreeMouseEvent.js";
 
 export * from "./ViewPortUtil.js";
 export * from "./convertToInteractiveView.js";
+export * from "./resizeCanvasStyle.js";
