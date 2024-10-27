@@ -10,34 +10,36 @@ import {
 import { Mesh } from "three";
 
 describe("convertToInteractiveView", () => {
+  function expectInteractiveView<T>(
+    interactiveView: T,
+    originalView: T,
+    handlerClass: new (...args: any[]) => any,
+  ) {
+    expect(interactiveView).toBe(originalView);
+    expect((interactiveView as any).interactionHandler).toBeDefined();
+    expect(
+      (interactiveView as any).interactionHandler instanceof handlerClass,
+    ).toBe(true);
+  }
+
   it("convertToClickableMesh", () => {
     const mesh = new Mesh();
     const clickableMesh = convertToClickableMesh(mesh);
-    expect(clickableMesh).toBe(mesh);
-    expect(clickableMesh.interactionHandler).toBeDefined();
-    expect(
-      clickableMesh.interactionHandler instanceof ButtonInteractionHandler,
-    ).toBe(true);
+
+    expectInteractiveView(clickableMesh, mesh, ButtonInteractionHandler);
   });
 
   it("convertToCheckboxMesh", () => {
     const mesh = new Mesh();
     const checkboxMesh = convertToCheckboxMesh(mesh);
-    expect(checkboxMesh).toBe(mesh);
-    expect(checkboxMesh.interactionHandler).toBeDefined();
-    expect(
-      checkboxMesh.interactionHandler instanceof CheckBoxInteractionHandler,
-    ).toBe(true);
+
+    expectInteractiveView(checkboxMesh, mesh, CheckBoxInteractionHandler);
   });
 
   it("convertToRadioButtonMesh", () => {
     const mesh = new Mesh();
     const radioButtonMesh = convertToRadioButtonMesh(mesh);
-    expect(radioButtonMesh).toBe(mesh);
-    expect(radioButtonMesh.interactionHandler).toBeDefined();
-    expect(
-      radioButtonMesh.interactionHandler instanceof
-        RadioButtonInteractionHandler,
-    ).toBe(true);
+
+    expectInteractiveView(radioButtonMesh, mesh, RadioButtonInteractionHandler);
   });
 });
