@@ -35,7 +35,7 @@
     "@masatomakino/fake-mouse-event": "^0.1.0",
     "@masatomakino/gulptask-demo-page": "^0.8.0",
     "@types/three": "^0.171.0",
-    "@vitest/browser": "^2.0.5",
+    "@vitest/browser": "*",
     "@vitest/coverage-istanbul": "^2.0.5",
     "browser-sync": "^3.0.2",
     "husky": "^9.0.11",
