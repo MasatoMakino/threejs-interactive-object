@@ -34,6 +34,7 @@
   "devDependencies": {
     "@masatomakino/fake-mouse-event": "^0.1.0",
     "@masatomakino/gulptask-demo-page": "^0.8.0",
+    "@masatomakino/release-helper": "^0.1.6",
     "@types/three": "^0.171.0",
     "@vitest/browser": "*",
     "@vitest/coverage-istanbul": "^2.0.5",
@@ -51,8 +52,8 @@
     "test": "vitest --run",
     "coverage": "vitest --coverage --run",
     "test:watch": "vitest",
-    "preversion": "git checkout main && git pull && npm ci && npm test",
-    "postversion": "git add package.json package-lock.json && git checkout -b version/$(git describe --tags --abbrev=0)",
+    "preversion": "npx @masatomakino/release-helper preversion",
+    "postversion": "npx @masatomakino/release-helper postversion",
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",
     "build": "npm run buildTS && npm run demo && npm run typedocs",
     "demo": "npx @masatomakino/gulptask-demo-page --body '<canvas id=\"webgl-canvas\"></canvas>' --compileModule es2020",
