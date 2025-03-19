@@ -35,14 +35,17 @@ const onDomContentsLoaded = () => {
   camera.position.set(0, 0, 100);
   scene.add(camera);
 
+  const canvas = document.getElementById("webgl-canvas");
   const renderOption = {
-    canvas: document.getElementById("webgl-canvas"),
+    canvas,
     antialias: true,
   };
   renderer = new WebGLRenderer(renderOption);
   renderer.setClearColor(new Color(0x000000));
   renderer.setSize(W, H);
   renderer.setPixelRatio(window.devicePixelRatio);
+  canvas.style.width = `${W}px`;
+  canvas.style.height = `${H}px`;
 
   //平行光源オブジェクト(light)の設定
   const ambientLight = new AmbientLight(0xffffff, 1.0);
