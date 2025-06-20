@@ -1,14 +1,4 @@
 import {
-  CheckBoxMesh,
-  CheckBoxSprite,
-  ClickableMesh,
-  ClickableSprite,
-  MouseEventManager,
-  RadioButtonManager,
-  RadioButtonMesh,
-  StateMaterialSet,
-} from "../esm/index.js";
-import {
   AmbientLight,
   BoxGeometry,
   MeshBasicMaterial,
@@ -19,6 +9,16 @@ import {
   Vector4,
   WebGLRenderer,
 } from "three";
+import {
+  CheckBoxMesh,
+  CheckBoxSprite,
+  ClickableMesh,
+  ClickableSprite,
+  MouseEventManager,
+  RadioButtonManager,
+  RadioButtonMesh,
+  StateMaterialSet,
+} from "../esm/index.js";
 
 const W = 1280;
 const H = 900;

@@ -1,5 +1,5 @@
 import { BoxGeometry, Mesh, MeshBasicMaterial } from "three";
-import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
@@ -57,7 +57,7 @@ describe("MouseEventManager : Ensure front-facing general Mesh does not obstruct
   });
 
   test("click", () => {
-    const spyClickButton = vi.fn((e) => true);
+    const spyClickButton = vi.fn(() => true);
 
     btn.button.interactionHandler.on("click", spyClickButton);
 

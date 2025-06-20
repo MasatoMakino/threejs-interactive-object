@@ -1,11 +1,11 @@
 import { Sprite } from "three";
 import {
-  CheckBoxInteractionHandler,
   ButtonInteractionHandler,
-  ButtonInteractionHandlerParameters,
-  IClickableObject3D,
+  type ButtonInteractionHandlerParameters,
+  CheckBoxInteractionHandler,
+  type IClickableObject3D,
   RadioButtonInteractionHandler,
-  StateMaterialSet,
+  type StateMaterialSet,
 } from "../index.js";
 
 export interface InteractionHandlerConstructor<
@@ -29,7 +29,7 @@ class InteractiveSprite<Value, Handler extends ButtonInteractionHandler<Value>>
     this.interactionHandler = new ctor({ view: this, material: material });
   }
 }
-export class ClickableSprite<Value = any>
+export class ClickableSprite<Value = unknown>
   extends InteractiveSprite<Value, ButtonInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
@@ -38,7 +38,7 @@ export class ClickableSprite<Value = any>
   }
 }
 
-export class CheckBoxSprite<Value = any>
+export class CheckBoxSprite<Value = unknown>
   extends InteractiveSprite<Value, CheckBoxInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
@@ -47,7 +47,7 @@ export class CheckBoxSprite<Value = any>
   }
 }
 
-export class RadioButtonSprite<Value = any>
+export class RadioButtonSprite<Value = unknown>
   extends InteractiveSprite<Value, RadioButtonInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {

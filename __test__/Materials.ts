@@ -1,4 +1,9 @@
-import { MeshBasicMaterial, SpriteMaterial, TextureLoader } from "three";
+import {
+  MeshBasicMaterial,
+  SpriteMaterial,
+  type Texture,
+  TextureLoader,
+} from "three";
 import { StateMaterialSet } from "../src/index.js";
 
 /**
@@ -54,7 +59,7 @@ const getSpriteMaterial = (
   color?: number,
 ) => {
   if (color == null) color = 0xffffff;
-  let map;
+  let map: Texture | null = null;
   if (imgURL != null) {
     map = new TextureLoader().load(imgURL);
   }

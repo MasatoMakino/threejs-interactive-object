@@ -7,14 +7,14 @@ import {
   testRadioSelectionWithMouse,
 } from "./RadioObject.js";
 
-const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
  * テスト用のボタンを生成する関数。
  * @param buttonValue
  * @returns {RadioButtonSprite}
  */
-const initButton = (buttonValue: any): RadioButtonSprite => {
+const initButton = (buttonValue): RadioButtonSprite => {
   const button = new RadioButtonSprite(getSpriteMaterialSet());
   button.interactionHandler.value = buttonValue;
   return button;

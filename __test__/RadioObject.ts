@@ -1,5 +1,5 @@
 import { expect, vi } from "vitest";
-import {
+import type {
   ClickableView,
   RadioButtonManager,
   RadioButtonMesh,
@@ -9,9 +9,9 @@ import { clickButton } from "./MouseControl.js";
 
 /**
  * テスト用のbuttonValueサンプルを生成する。
- * @returns {any[]}
+ * @returns {unknown[]}
  */
-export function getButtonValues(): any[] {
+export function getButtonValues(): unknown[] {
   return ["button01", 2, { value: "button03" }, undefined, undefined];
 }
 
@@ -19,14 +19,14 @@ export function getButtonValues(): any[] {
  * マネージャーの初期化を行う。
  * 格納されたボタンが正常に呼び出せるかをテストする。
  * @param {RadioButtonManager} manager
- * @param {(value: any) => (RadioButtonMesh | RadioButtonSprite)} generator
+ * @param {(value) => (RadioButtonMesh | RadioButtonSprite)} generator
  */
 export function testInitManager(
   manager: RadioButtonManager,
-  generator: (value: any) => RadioButtonMesh | RadioButtonSprite,
+  generator: (value) => RadioButtonMesh | RadioButtonSprite,
 ) {
   const values = getButtonValues();
-  for (let value of values) {
+  for (const value of values) {
     manager.addButton(generator(value));
   }
   expect(manager.interactionHandlers[2].value).toBe(values[2]);
@@ -40,7 +40,7 @@ export function testInitManager(
 export function testRadioSelection(manager: RadioButtonManager) {
   const values = getButtonValues();
 
-  const spySelect = vi.fn((e) => {});
+  const spySelect = vi.fn(() => {});
   manager.on("select", spySelect);
 
   const index = 0;
@@ -75,20 +75,16 @@ export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
   expect(handler.isFrozen).toBe(true);
   expect(manager.selected.value).toEqual(handler.value);
 
-  onClickSecondTime(manager, handler.view);
+  onClickSecondTime(handler.view);
 }
 
 /**
  * 二回目のクリックテスト
- * @param {RadioButtonManager} manager
  * @param {ClickableView} button
  */
-const onClickSecondTime = <T>(
-  manager: RadioButtonManager,
-  button: ClickableView<T>,
-) => {
-  const spyClick = vi.fn((e) => {});
-  const spySelect = vi.fn((e) => {});
+const onClickSecondTime = <T>(button: ClickableView<T>) => {
+  const spyClick = vi.fn(() => {});
+  const spySelect = vi.fn(() => {});
 
   button.interactionHandler.on("click", spyClick);
   button.interactionHandler.on("select", spySelect);

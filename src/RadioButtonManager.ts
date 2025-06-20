@@ -1,13 +1,13 @@
 import EventEmitter from "eventemitter3";
 import {
-  IClickableObject3D,
-  RadioButtonInteractionHandler,
-  ThreeMouseEvent,
-  ThreeMouseEventMap,
+  type IClickableObject3D,
+  type RadioButtonInteractionHandler,
+  type ThreeMouseEvent,
+  type ThreeMouseEventMap,
   ThreeMouseEventUtil,
 } from "./index.js";
 
-export class RadioButtonManager<Value = any> extends EventEmitter<
+export class RadioButtonManager<Value = unknown> extends EventEmitter<
   ThreeMouseEventMap<Value>
 > {
   /**
@@ -18,13 +18,6 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
    * 現状選択されているボタン。
    */
   protected _selected!: RadioButtonInteractionHandler<Value>;
-
-  /**
-   * コンストラクタ
-   */
-  constructor() {
-    super();
-  }
 
   /**
    * このマネージャーの管理下にボタンを追加する
@@ -96,7 +89,7 @@ export class RadioButtonManager<Value = any> extends EventEmitter<
     }
 
     this._selected = interactionHandler;
-    for (let mdl of this._interactionHandlers) {
+    for (const mdl of this._interactionHandlers) {
       mdl.selection = mdl.isFrozen = mdl === interactionHandler;
     }
 

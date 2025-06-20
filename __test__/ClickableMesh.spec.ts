@@ -1,6 +1,6 @@
-import { BoxGeometry, MeshBasicMaterial } from "three";
+import { BoxGeometry, type MeshBasicMaterial } from "three";
 import { describe, expect, test, vi } from "vitest";
-import { ClickableMesh, StateMaterialSet } from "../src/index.js";
+import { ClickableMesh, type StateMaterialSet } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import {
   testClick,
@@ -11,7 +11,7 @@ import {
   testSwitch,
 } from "./MouseControl.js";
 
-const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("ClickableMesh", () => {
   let clickable: ClickableMesh<string>;

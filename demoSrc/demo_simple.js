@@ -1,4 +1,16 @@
 import {
+  AmbientLight,
+  BoxGeometry,
+  Color,
+  MeshBasicMaterial,
+  PerspectiveCamera,
+  REVISION,
+  Scene,
+  SpriteMaterial,
+  TextureLoader,
+  WebGLRenderer,
+} from "three";
+import {
   CheckBoxMesh,
   CheckBoxSprite,
   ClickableMesh,
@@ -8,18 +20,6 @@ import {
   RadioButtonMesh,
   StateMaterialSet,
 } from "../esm/index.js";
-import {
-  AmbientLight,
-  BoxGeometry,
-  Color,
-  MeshBasicMaterial,
-  PerspectiveCamera,
-  Scene,
-  SpriteMaterial,
-  TextureLoader,
-  WebGLRenderer,
-  REVISION,
-} from "three";
 
 const W = 1280;
 const H = 900;
@@ -52,7 +52,7 @@ const onDomContentsLoaded = () => {
   scene.add(ambientLight);
 
   //マウスイベントの取得開始
-  const manager = new MouseEventManager(scene, camera, renderer.domElement);
+  new MouseEventManager(scene, camera, renderer.domElement);
 
   testButton();
   testCheckbox();

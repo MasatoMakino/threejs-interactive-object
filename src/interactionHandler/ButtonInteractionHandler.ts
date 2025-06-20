@@ -1,12 +1,12 @@
 import EventEmitter from "eventemitter3";
 import {
-  ClickableGroup,
-  ClickableMesh,
-  ClickableSprite,
-  ClickableState,
-  StateMaterialSet,
-  ThreeMouseEvent,
-  ThreeMouseEventMap,
+  type ClickableGroup,
+  type ClickableMesh,
+  type ClickableSprite,
+  type ClickableState,
+  type StateMaterialSet,
+  type ThreeMouseEvent,
+  type ThreeMouseEventMap,
   ThreeMouseEventUtil,
 } from "../index.js";
 
@@ -97,7 +97,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     this.updateState(nextState);
     this.emit(event.type, event);
 
-    if (this._isPress != currentPress) {
+    if (this._isPress !== currentPress) {
       this.onMouseClick();
 
       const e = ThreeMouseEventUtil.generate("click", this);
@@ -137,7 +137,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * 現在のボタンの有効、無効状態を取得する
    * @return    ボタンが有効か否か
    */
-  protected checkActivity(): Boolean {
+  protected checkActivity(): boolean {
     return this._enable && !this.frozen;
   }
 
@@ -160,7 +160,6 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
         (this.view as ClickableMesh<Value> | ClickableSprite<Value>).material =
           stateMat.material;
         break;
-      case "Group":
       default:
         break;
     }
