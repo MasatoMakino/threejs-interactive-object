@@ -32,6 +32,7 @@
     "three": ">=0.126.0 <1.0.0"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.0.0",
     "@masatomakino/fake-mouse-event": "^0.2.0",
     "@masatomakino/gulptask-demo-page": "^0.10.0",
     "@masatomakino/release-helper": "^0.2.0",
@@ -41,7 +42,6 @@
     "browser-sync": "^3.0.2",
     "husky": "^9.0.11",
     "lint-staged": "^16.1.0",
-    "prettier": "^3.0.1",
     "three": "^0.177.0",
     "typedoc": "^0.28.0",
     "typescript": "^5.3.3",
@@ -73,7 +73,7 @@
     "lib": "esm"
   },
   "lint-staged": {
-    "*.{js,ts,css,md}": "prettier --write"
+    "*.{js,ts,css,md}": "npx biome check --write"
   },
   "dependencies": {
     "eventemitter3": "^5.0.1"
