@@ -15,35 +15,35 @@ import type {
   RadioButtonMesh,
 } from "./view/index.js";
 
+// 一時的にreadonly を剥がす型
+type Writable<T> = { -readonly [P in keyof T]: T[P] };
+
 export function convertToClickableMesh<V = unknown>(
   view: Mesh,
 ): ClickableMesh<V> {
-  // biome-ignore lint/suspicious/noExplicitAny: cast Mesh to ClickableMesh
-  const anyView = view as any;
-  anyView.interactionHandler = new ButtonInteractionHandler<V>({
-    view: anyView,
+  const writableView = view as Writable<Mesh & ClickableMesh<V>>;
+  writableView.interactionHandler = new ButtonInteractionHandler<V>({
+    view: writableView,
   });
-  return view as ClickableMesh<V>;
+  return writableView as ClickableMesh<V>;
 }
 
 export function convertToCheckboxMesh<V = unknown>(
   view: Mesh,
 ): CheckBoxMesh<V> {
-  // biome-ignore lint/suspicious/noExplicitAny: cast Mesh to CheckBoxMesh
-  const anyView = view as any;
-  anyView.interactionHandler = new CheckBoxInteractionHandler<V>({
-    view: anyView,
+  const writableView = view as Writable<Mesh & CheckBoxMesh<V>>;
+  writableView.interactionHandler = new CheckBoxInteractionHandler<V>({
+    view: writableView,
   });
-  return view as CheckBoxMesh<V>;
+  return writableView as CheckBoxMesh<V>;
 }
 
 export function convertToRadioButtonMesh<V = unknown>(
   view: Mesh,
 ): RadioButtonMesh<V> {
-  // biome-ignore lint/suspicious/noExplicitAny: cast Mesh to RadioButtonMesh
-  const anyView = view as any;
-  anyView.interactionHandler = new RadioButtonInteractionHandler<V>({
-    view: anyView,
+  const writableView = view as Writable<Mesh & RadioButtonMesh<V>>;
+  writableView.interactionHandler = new RadioButtonInteractionHandler<V>({
+    view: writableView,
   });
-  return view as RadioButtonMesh<V>;
+  return writableView as RadioButtonMesh<V>;
 }
