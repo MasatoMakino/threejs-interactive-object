@@ -4,9 +4,13 @@ export default defineConfig({
   test: {
     browser: {
       enabled: true,
-      name: "chrome",
       provider: "webdriverio",
       headless: true,
+      instances: [
+        {
+          browser: "chrome",
+        },
+      ],
     },
     poolOptions: {
       threads: {
