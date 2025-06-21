@@ -1,12 +1,13 @@
-import { describe, test, beforeEach, afterEach, vi, expect } from "vitest";
-import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 import { BoxGeometry, Mesh, MeshBasicMaterial } from "three";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
 describe("MouseEventManager.implementsDepartedIClickableObject3D", () => {
   const managerScene = new MouseEventManagerScene();
 
   const btn = new Mesh(new BoxGeometry(3, 3, 3), new MeshBasicMaterial());
-  (btn as any)["model"] = {};
+  // biome-ignore lint/suspicious/noExplicitAny: Test for deprecated property
+  (btn as any).model = {};
   managerScene.scene.add(btn);
 
   const halfW = MouseEventManagerScene.W / 2;

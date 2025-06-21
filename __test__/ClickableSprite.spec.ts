@@ -1,6 +1,6 @@
-import { SpriteMaterial } from "three";
+import type { SpriteMaterial } from "three";
 import { describe, expect, test, vi } from "vitest";
-import { ClickableSprite, StateMaterialSet } from "../src/index.js";
+import { ClickableSprite, type StateMaterialSet } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
 import {
   testClick,
@@ -11,7 +11,7 @@ import {
   testSwitch,
 } from "./MouseControl.js";
 
-const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("ClickableSprite", () => {
   let sprite: ClickableSprite;

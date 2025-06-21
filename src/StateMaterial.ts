@@ -1,5 +1,5 @@
-import { Material } from "three";
-import { ClickableState } from "./index.js";
+import type { Material } from "three";
+import type { ClickableState } from "./index.js";
 
 /**
  * IClickableObject3D用の各状態用マテリアル。
@@ -21,7 +21,7 @@ export class StateMaterial {
   }
 
   private updateAlpha(): void {
-    if (this._material instanceof Array) {
+    if (Array.isArray(this._material)) {
       this.alphaArray = this.getAlphaArray();
     } else {
       this.alpha = this._material.opacity;
@@ -49,7 +49,7 @@ export class StateMaterial {
   }
 
   public setOpacity(opacity: number): void {
-    if (this._material instanceof Array) {
+    if (Array.isArray(this._material)) {
       const n = this._material.length;
       for (let i = 0; i < n; i++) {
         const material = this._material[i];

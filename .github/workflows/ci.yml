@@ -26,4 +26,6 @@ jobs:
           cache: "npm"
       - run: npm ci
       - run: npx tsc --noEmit
+      - name: Run Biome
+        run: npx biome ci .
       - run: xvfb-run --auto-servernum npm test

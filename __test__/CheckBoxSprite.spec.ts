@@ -3,14 +3,14 @@ import { CheckBoxSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
 import { clickButton } from "./MouseControl.js";
 
-const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
  * ボタンを生成する
  * @param value
  * @returns {CheckBoxSprite}
  */
-const initButton = (value: any): CheckBoxSprite => {
+const initButton = (value: string): CheckBoxSprite => {
   const button = new CheckBoxSprite(getSpriteMaterialSet());
   button.interactionHandler.value = value;
   return button;
@@ -31,8 +31,8 @@ describe("CheckBoxSprite", () => {
   test("マウスクリックで選択", () => {
     const btn = initButton("button01");
 
-    const spySelect = vi.fn((e) => {});
-    const spyClick = vi.fn((e) => {});
+    const spySelect = vi.fn(() => {});
+    const spyClick = vi.fn(() => {});
     btn.interactionHandler.on("click", spyClick);
     btn.interactionHandler.on("select", spySelect);
 

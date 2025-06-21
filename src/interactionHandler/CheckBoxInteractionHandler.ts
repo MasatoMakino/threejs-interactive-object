@@ -1,7 +1,11 @@
-import { CheckBoxMesh, CheckBoxSprite, ThreeMouseEventUtil } from "../index.js";
+import {
+  type CheckBoxMesh,
+  type CheckBoxSprite,
+  ThreeMouseEventUtil,
+} from "../index.js";
 import {
   ButtonInteractionHandler,
-  ButtonInteractionHandlerParameters,
+  type ButtonInteractionHandlerParameters,
 } from "./index.js";
 
 /**

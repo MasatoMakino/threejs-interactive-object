@@ -1,6 +1,6 @@
 import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 import { RAFTicker } from "@masatomakino/raf-ticker";
-import { Camera, PerspectiveCamera, Scene } from "three";
+import { type Camera, PerspectiveCamera, Scene } from "three";
 import { MouseEventManager } from "../src/index.js";
 
 export class MouseEventManagerScene {

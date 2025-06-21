@@ -1,12 +1,12 @@
 import { expect, vi } from "vitest";
 import {
-  ClickableMesh,
-  ClickableSprite,
-  IClickableObject3D,
+  type ClickableMesh,
+  type ClickableSprite,
+  type IClickableObject3D,
   MouseEventManager,
-  StateMaterial,
-  StateMaterialSet,
-  ThreeMouseEventMap,
+  type StateMaterial,
+  type StateMaterialSet,
+  type ThreeMouseEventMap,
   ThreeMouseEventUtil,
 } from "../src/index.js";
 
@@ -116,8 +116,8 @@ export function testSwitch(
  * @param {ClickableMesh | ClickableSprite} target
  */
 export function testMouseUP(target: ClickableMesh | ClickableSprite) {
-  const spyUp = vi.fn((e) => {});
-  const spyClick = vi.fn((e) => {});
+  const spyUp = vi.fn(() => {});
+  const spyClick = vi.fn(() => {});
   target.interactionHandler.on("click", spyClick);
   target.interactionHandler.on("up", spyUp);
 
@@ -134,7 +134,7 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
  * @param target
  */
 export function testClick(target: ClickableMesh | ClickableSprite) {
-  const spyClick = vi.fn((e) => {});
+  const spyClick = vi.fn(() => {});
   target.interactionHandler.on("click", spyClick);
   clickButton(target);
   expect(spyClick).toBeCalled();

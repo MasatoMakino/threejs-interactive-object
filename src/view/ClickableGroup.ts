@@ -1,7 +1,7 @@
 import { Group } from "three";
-import { ButtonInteractionHandler, IClickableObject3D } from "../index.js";
+import { ButtonInteractionHandler, type IClickableObject3D } from "../index.js";
 
-export class ClickableGroup<Value = any>
+export class ClickableGroup<Value = unknown>
   extends Group
   implements IClickableObject3D<Value>
 {

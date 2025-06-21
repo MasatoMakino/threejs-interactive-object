@@ -1,10 +1,10 @@
 import { BoxGeometry } from "three";
 import { describe, expect, test, vi } from "vitest";
-import { CheckBoxMesh, StateMaterialSet } from "../src/index.js";
+import { CheckBoxMesh, type StateMaterialSet } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import { changeMaterialState, clickButton } from "./MouseControl.js";
 
-const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("CheckBoxMesh", () => {
   let checkbox: CheckBoxMesh;
@@ -34,7 +34,7 @@ describe("CheckBoxMesh", () => {
   });
 
   test("click", () => {
-    const spyClick = vi.fn((e) => {});
+    const spyClick = vi.fn(() => {});
     checkbox.interactionHandler.on("click", spyClick);
 
     //クリックして選択

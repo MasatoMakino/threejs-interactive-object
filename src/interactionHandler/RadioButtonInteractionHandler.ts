@@ -1,6 +1,6 @@
-import { RadioButtonMesh, RadioButtonSprite } from "../index.js";
+import type { RadioButtonMesh, RadioButtonSprite } from "../index.js";
 import {
-  ButtonInteractionHandlerParameters,
+  type ButtonInteractionHandlerParameters,
   CheckBoxInteractionHandler,
 } from "./index.js";
 
@@ -15,7 +15,7 @@ export class RadioButtonInteractionHandler<
    * ラジオボタンは選択中は自身の状態を変更できない。
    * @return    ボタンが有効か否か
    */
-  protected override checkActivity(): Boolean {
+  protected override checkActivity(): boolean {
     return this._enable && !this._isFrozen;
   }
 

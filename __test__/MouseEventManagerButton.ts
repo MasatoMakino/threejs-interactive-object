@@ -2,8 +2,8 @@ import { BoxGeometry } from "three";
 import { expect } from "vitest";
 import {
   ClickableMesh,
-  ClickableState,
-  StateMaterialSet,
+  type ClickableState,
+  type StateMaterialSet,
 } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 

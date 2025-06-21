@@ -15,7 +15,7 @@ const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
  * @param buttonValue
  * @returns {RadioButtonMesh}
  */
-const initButton = (buttonValue: any): RadioButtonMesh => {
+const initButton = (buttonValue: unknown): RadioButtonMesh => {
   const button = new RadioButtonMesh({
     geo: new BoxGeometry(3, 3, 3),
     material: getMeshMaterialSet(),

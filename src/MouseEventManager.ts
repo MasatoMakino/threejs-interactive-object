@@ -1,16 +1,19 @@
-import { RAFTicker, RAFTickerEventContext } from "@masatomakino/raf-ticker";
 import {
-  Camera,
-  Intersection,
-  Object3D,
+  RAFTicker,
+  type RAFTickerEventContext,
+} from "@masatomakino/raf-ticker";
+import {
+  type Camera,
+  type Intersection,
+  type Object3D,
   Raycaster,
-  Scene,
+  type Scene,
   Vector2,
-  Vector4,
+  type Vector4,
 } from "three";
 import {
-  ButtonInteractionHandler,
-  ThreeMouseEventMap,
+  type ButtonInteractionHandler,
+  type ThreeMouseEventMap,
   ThreeMouseEventUtil,
   ViewPortUtil,
 } from "./index.js";
@@ -34,6 +37,7 @@ export class MouseEventManager {
   protected targets: Object3D[];
 
   /**
+   * Constructor for MouseEventManager.
    *
    * @param scene
    * @param camera
@@ -91,7 +95,7 @@ export class MouseEventManager {
     const beforeOver = this.currentOver;
     this.currentOver = [];
 
-    for (let intersect of intersects) {
+    for (const intersect of intersects) {
       const checked = this.checkTarget(intersect.object, "over");
       if (checked) break;
     }
@@ -210,13 +214,15 @@ export class MouseEventManager {
    * @private
    */
   private static implementsIClickableObject3D(
-    arg: any,
+    arg: unknown,
   ): arg is IClickableObject3D<unknown> {
     return (
       arg !== null &&
       typeof arg === "object" &&
+      "interactionHandler" in arg &&
       arg.interactionHandler !== null &&
       typeof arg.interactionHandler === "object" &&
+      "mouseEnabled" in arg.interactionHandler &&
       arg.interactionHandler.mouseEnabled !== null &&
       typeof arg.interactionHandler.mouseEnabled === "boolean"
     );
@@ -226,10 +232,11 @@ export class MouseEventManager {
    * 非推奨になったIClickableObject3Dインターフェースのmodelプロパティを実装しているか否かを判定する。
    * @param arg
    */
-  private static implementsDepartedIClickableObject3D(arg: any): boolean {
+  private static implementsDepartedIClickableObject3D(arg: unknown): boolean {
     return (
       arg !== null &&
       typeof arg === "object" &&
+      "model" in arg &&
       arg.model !== null &&
       typeof arg.model === "object"
     );

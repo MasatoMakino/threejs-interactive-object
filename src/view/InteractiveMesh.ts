@@ -1,11 +1,11 @@
-import { BufferGeometry, Mesh } from "three";
+import { type BufferGeometry, Mesh } from "three";
 import {
-  CheckBoxInteractionHandler,
   ButtonInteractionHandler,
-  IClickableObject3D,
+  CheckBoxInteractionHandler,
+  type IClickableObject3D,
+  type InteractionHandlerConstructor,
   RadioButtonInteractionHandler,
-  StateMaterialSet,
-  InteractionHandlerConstructor,
+  type StateMaterialSet,
 } from "../index.js";
 
 export interface InteractiveMeshParameters {
@@ -34,7 +34,7 @@ class InteractiveMesh<
   }
 }
 
-export class ClickableMesh<Value = any>
+export class ClickableMesh<Value = unknown>
   extends InteractiveMesh<Value, ButtonInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
@@ -43,7 +43,7 @@ export class ClickableMesh<Value = any>
   }
 }
 
-export class CheckBoxMesh<Value = any>
+export class CheckBoxMesh<Value = unknown>
   extends InteractiveMesh<Value, CheckBoxInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {
@@ -52,7 +52,7 @@ export class CheckBoxMesh<Value = any>
   }
 }
 
-export class RadioButtonMesh<Value = any>
+export class RadioButtonMesh<Value = unknown>
   extends InteractiveMesh<Value, RadioButtonInteractionHandler<Value>>
   implements IClickableObject3D<Value>
 {

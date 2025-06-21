@@ -1,8 +1,8 @@
-import { Material, MeshBasicMaterial } from "three";
+import { type Material, MeshBasicMaterial } from "three";
 import { describe, expect, test, vi } from "vitest";
 import { StateMaterial, StateMaterialSet } from "../src/index.js";
 
-const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("StateMaterial", () => {
   let mat: StateMaterial;
