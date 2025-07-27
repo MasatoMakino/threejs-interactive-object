@@ -13,19 +13,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js 20.x
         uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Run tests with coverage
         run: xvfb-run --auto-servernum npm run coverage
-        
+
       - name: Report Coverage
         uses: davelosert/vitest-coverage-report-action@v2
         if: always()
