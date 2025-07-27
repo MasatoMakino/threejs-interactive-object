@@ -73,7 +73,7 @@
     "lib": "esm"
   },
   "lint-staged": {
-    "*.{js,ts,css,md}": "npx biome check --write"
+    "*.{js,ts,css,md}": "biome format --write --no-errors-on-unmatched"
   },
   "dependencies": {
     "eventemitter3": "^5.0.1"
