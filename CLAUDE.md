@@ -133,3 +133,37 @@ This project follows [GitHub Flow](https://docs.github.com/en/get-started/using-
 - **Short-lived branches**: Keep branches focused and merge quickly
 - **Continuous integration**: All changes go through pull request review
 - **Main branch stability**: `main` branch should always be deployable
+
+## Local Work Notes Strategy
+
+This project uses a local note system for personal thought organization and work efficiency improvement.
+
+### Directory Structure
+
+**`.local-note/`** - Personal work notes directory (not shared with team)
+- Git-ignored for privacy
+- Individual developer workspace for ideas and investigation notes
+
+### Usage Workflow
+
+1. **Create Work Notes**
+   - File naming: `YYYY-MM-DD-brief-description.md`
+   - Store ideas, investigation notes, and work-in-progress thoughts
+   - Use `/new-note` command (future implementation) or manual creation
+
+2. **Note Escalation to Issues**
+   - When a problem requires team attention, create GitHub Issue
+   - Transfer note content to Issue description
+   - Delete original work note file
+
+3. **Work Completion**
+   - Include note content in PR description when completing work
+   - Delete work note file after PR creation
+   - Maintains clean local workspace
+
+### Benefits
+
+- **Privacy**: Individual thinking space without team exposure
+- **Efficiency**: Quick note-taking without formal Issue overhead
+- **Organization**: Structured approach to personal task management
+- **Quality**: Thoughtful preparation before creating Issues/PRs
