@@ -64,3 +64,9 @@ typings/
 docs/
 lib/
 esm/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Local work notes (not shared with team)
+.local-note/
