@@ -2,20 +2,81 @@ import type { Material } from "three";
 import type { ClickableState } from "./index.js";
 
 /**
- * IClickableObject3D用の各状態用マテリアル。
- * マテリアルと固定値のalphaプロパティで構成される。
- *
- * alphaプロパティはコンストラクタ引数のmaterial.opacityを引き継ぐ。
- * StateMaterialのopacityは、StateMaterialのalpha * StateMaterialSetのalphaで設定される。
- * これはStateMaterialSetの各状態のopacityがアニメーションで同期するため。
- * （StateMaterialSetのalphaが0になると全て非表示、1.0になるとマテリアル本来のopacityに戻る）
+ * Defines the material type used in StateMaterial - can be a single Material or an array of Materials.
+ * @public
  */
 export type StateMaterialType = Material | Material[];
+
+/**
+ * An opacity management class for Three.js materials in interactive states.
+ *
+ * @description
+ * StateMaterial manages the opacity of Three.js Material objects for interactive states.
+ * It preserves the original opacity values of materials and enables synchronized opacity control
+ * across multiple materials through StateMaterialSet, allowing coordinated transparency animations
+ * for all interactive states.
+ *
+ * @remarks
+ * - The alpha property preserves the material's original opacity value at construction time
+ * - Final material.opacity = setOpacity() parameter × original material.opacity
+ * - Supports both single materials and material arrays for multi-material objects
+ * - StateMaterialSet calls setOpacity() to control transparency across all interactive states
+ * - When setOpacity(0) is called, materials become completely transparent
+ * - When setOpacity(1.0) is called, materials return to their original opacity values
+ *
+ * @example
+ * ```typescript
+ * import { StateMaterial } from '@masatomakino/threejs-interactive-object';
+ * import { MeshBasicMaterial } from 'three';
+ *
+ * // Single material
+ * const material = new MeshBasicMaterial({ color: 0xff0000, opacity: 0.8 });
+ * const stateMaterial = new StateMaterial(material);
+ *
+ * // Multi-material array (e.g., for BoxGeometry with different materials per face)
+ * const materials = [
+ *   new MeshBasicMaterial({ color: 0xff0000 }), // +X face
+ *   new MeshBasicMaterial({ color: 0x00ff00 }), // -X face
+ *   new MeshBasicMaterial({ color: 0x0000ff }), // +Y face
+ *   new MeshBasicMaterial({ color: 0xffff00 }), // -Y face
+ *   new MeshBasicMaterial({ color: 0xff00ff }), // +Z face
+ *   new MeshBasicMaterial({ color: 0x00ffff })  // -Z face
+ * ];
+ * const stateMultiMaterial = new StateMaterial(materials);
+ *
+ * // Control opacity
+ * stateMaterial.setOpacity(0.5); // Sets to 50% of original opacity
+ * ```
+ *
+ * @see {@link StateMaterialSet} - Container class that manages multiple StateMaterial instances
+ *
+ * @public
+ */
 export class StateMaterial {
   private _material!: StateMaterialType;
   private alpha: number = 1.0;
   private alphaArray!: number[];
 
+  /**
+   * Creates a new StateMaterial instance.
+   *
+   * @param material - The Three.js material or array of materials to manage
+   *
+   * @example
+   * ```typescript
+   * // Single material
+   * const material = new MeshBasicMaterial({ color: 0xff0000 });
+   * const stateMaterial = new StateMaterial(material);
+   *
+   * // Material array (for multi-face geometries like BoxGeometry)
+   * const materials = [
+   *   new MeshBasicMaterial({ color: 0xff0000 }), // Face 1
+   *   new MeshBasicMaterial({ color: 0x00ff00 }), // Face 2
+   *   new MeshBasicMaterial({ color: 0x0000ff })  // Face 3...
+   * ];
+   * const stateMultiMaterial = new StateMaterial(materials);
+   * ```
+   */
   constructor(material: StateMaterialType) {
     this.material = material;
   }
@@ -39,15 +100,50 @@ export class StateMaterial {
     return array;
   }
 
+  /**
+   * Sets the material and updates internal alpha values.
+   *
+   * @param value - The Three.js material or array of materials to set
+   *
+   * @remarks
+   * Automatically preserves the original opacity values of the provided materials
+   * for later use in opacity calculations.
+   */
   set material(value: StateMaterialType) {
     this._material = value;
     this.updateAlpha();
   }
 
+  /**
+   * Gets the current material.
+   *
+   * @returns The managed Three.js material or array of materials
+   */
   get material(): StateMaterialType {
     return this._material;
   }
 
+  /**
+   * Sets the opacity of the managed material(s).
+   *
+   * @param opacity - The opacity multiplier (0.0 to 1.0)
+   *
+   * @remarks
+   * The final opacity is calculated as: setOpacity() parameter × original material opacity.
+   * Original opacity values are preserved from construction time to enable proportional scaling.
+   *
+   * @example
+   * ```typescript
+   * // Set to 50% of original opacity
+   * stateMaterial.setOpacity(0.5);
+   *
+   * // Make completely transparent
+   * stateMaterial.setOpacity(0.0);
+   *
+   * // Restore original opacity
+   * stateMaterial.setOpacity(1.0);
+   * ```
+   */
   public setOpacity(opacity: number): void {
     if (Array.isArray(this._material)) {
       const n = this._material.length;
