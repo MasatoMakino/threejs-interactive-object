@@ -100,7 +100,7 @@ Functions like `convertToClickableMesh()` allow converting existing Three.js mes
 **To update documentation:**
 - **API documentation**: Edit JSDoc comments in source files, then run `npm run typedocs`
 - **Demo pages**: Edit files in `demoSrc/`, then run `npm run demo`
-- **Never** directly edit anything in `docs/` directory
+- **Do not** directly edit anything in the `docs/` directory
 
 ## Testing Strategy
 
