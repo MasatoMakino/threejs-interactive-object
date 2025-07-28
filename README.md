@@ -1,6 +1,6 @@
 # threejs-interactive-object
 
-> Pointer interactive objects for three.js
+Pointer interactive objects for three.js
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 [![CI](https://github.com/MasatoMakino/threejs-interactive-object/actions/workflows/ci.yml/badge.svg)](https://github.com/MasatoMakino/threejs-interactive-object/actions/workflows/ci.yml)
@@ -37,7 +37,7 @@ The library offers two search modes for performance optimization:
 ### Cross-platform Support
 - Works on any platform where Three.js operates
 - Supports desktop browsers and mobile touch devices
-- Single-touch interaction support (multi-touch and gestures not supported)
+- Single-touch interaction support (multi-touch and gestures are currently not supported)
 
 ## Demo
 
@@ -127,8 +127,6 @@ This module is designed for Object3D-level control with material-based state man
 - Pointing to individual parts of merged geometries
 - Dynamic material value control in response to pointer events
 - Shader material state management
-- Multi-touch interactions
-- Touch gestures (pinch, swipe, rotation)
 
 ## Uninstall
 
