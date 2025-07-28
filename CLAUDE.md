@@ -142,10 +142,7 @@ This project follows [GitHub Flow](https://docs.github.com/en/get-started/using-
    - Collaborate through line-specific or general comments
 
 5. **Merge Pull Request**
-   - **Branch Protection Enforcement**: GitHub branch protection rules are enabled for `main` branch
-   - **Required Status Checks**: All CI workflows must pass (lint, test, build)
-   - **Required Reviews**: Pull request requires approval from code owners
-   - **Direct Push Prevention**: Direct commits to `main` branch are blocked
+   - Must satisfy all branch protection requirements (see [Branch Protection Rules](#branch-protection-rules) below)
    - Use "Squash and merge" for cleaner history when appropriate
    - Automatically integrates branch into `main` only after all requirements are met
 
