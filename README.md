@@ -1,11 +1,43 @@
 # threejs-interactive-object
 
-> Mouse interactive objects for three.js
+> Pointer interactive objects for three.js
 
 [![MIT License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](LICENSE)
 [![CI](https://github.com/MasatoMakino/threejs-interactive-object/actions/workflows/ci.yml/badge.svg)](https://github.com/MasatoMakino/threejs-interactive-object/actions/workflows/ci.yml)
 
 [![ReadMe Card](https://github-readme-stats.vercel.app/api/pin/?username=MasatoMakino&repo=threejs-interactive-object)](https://github.com/MasatoMakino/threejs-interactive-object)
+
+## Overview
+
+This library provides interactive objects for Three.js applications, removing the need for manual Raycaster implementation. Three.js focuses on 3D rendering and leaves interactive object implementation to developers. To create interactive objects, developers typically need to control Raycaster directly to identify pointer events and match them with display objects.
+
+This module enables the creation of interactive objects by simply specifying an Object3D and a material set that corresponds to pointer events. The library handles Raycaster control, event management, and state transitions automatically.
+
+## Features
+
+### Interactive Object Types
+- `ClickableMesh` / `ClickableSprite` - Simple button functionality responding to taps and clicks
+- `CheckBoxMesh` / `CheckBoxSprite` - Toggle objects with individual selection states
+- `RadioButtonMesh` / `RadioButtonSprite` - Mutually exclusive selection within groups
+- `ClickableGroup` - Container class for monitoring child object interactions
+
+### State-based Material Management
+`StateMaterialSet` provides comprehensive material management for interactive states:
+- **Seven interaction states**: normal, over, down, disable, normalSelect, overSelect, downSelect
+- **Automatic state switching**: Materials change automatically based on pointer interactions
+- **Fallback support**: Unspecified states automatically use normal material
+- **Unified opacity control**: Global opacity adjustment across all state materials
+- **Multi-material support**: Handles both single materials and material arrays
+
+### Performance Optimization
+The library offers two search modes for performance optimization:
+- **Auto-detection mode**: Searches all Object3D instances in the scene (easier management)
+- **Registration mode**: Searches only user-registered objects (optimized performance for fixed UI elements)
+
+### Cross-platform Support
+- Works on any platform where Three.js operates
+- Supports desktop browsers and mobile touch devices
+- Single-touch interaction support (multi-touch and gestures not supported)
 
 ## Demo
 
@@ -81,6 +113,22 @@ The `MouseEventManager` identifies an Object3D instance with a member named `int
 ```js
 const interactiveMesh = convertToClickableMesh(mesh);
 ```
+
+## Requirements
+
+- Three.js (>= 0.126.0)
+- WebGL-capable browser
+- For TypeScript projects: ES2022 or later
+
+## Limitations
+
+This module is designed for Object3D-level control with material-based state management. The following features are outside the scope of this library:
+
+- Pointing to individual parts of merged geometries
+- Dynamic material value control in response to pointer events
+- Shader material state management
+- Multi-touch interactions
+- Touch gestures (pinch, swipe, rotation)
 
 ## Uninstall
 
