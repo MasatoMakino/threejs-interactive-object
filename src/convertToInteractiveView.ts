@@ -36,7 +36,7 @@ import type {
   RadioButtonMesh,
 } from "./view/index.js";
 
-// 一時的にreadonly を剥がす型
+// Utility type to temporarily strip readonly modifiers
 type Writable<T> = { -readonly [P in keyof T]: T[P] };
 
 /**
@@ -189,7 +189,7 @@ export function convertToCheckboxMesh<V = unknown>(
  * // Handle selection events from manager
  * radioManager.on('select', (e) => {
  *   console.log(`Selected: ${e.interactionHandler?.value}`);
- *   // Material changes are handled automatically by ButtonInteractionHandler.updateMaterial()
+ *   // Material changes are handled automatically by RadioButtonInteractionHandler.updateMaterial()
  * });
  * ```
  *
