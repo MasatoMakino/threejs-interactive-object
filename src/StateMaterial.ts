@@ -28,17 +28,17 @@ export type StateMaterialType = Material | Material[];
  * import { MeshBasicMaterial } from 'three';
  *
  * // Single material
- * const material = new MeshBasicMaterial({ color: 0xff0000, opacity: 0.8 });
+ * const material = new MeshBasicMaterial({ color: 0xff0000, opacity: 0.8, transparent: true });
  * const stateMaterial = new StateMaterial(material);
  *
  * // Multi-material array (e.g., for BoxGeometry with different materials per face)
  * const materials = [
- *   new MeshBasicMaterial({ color: 0xff0000 }), // +X face
- *   new MeshBasicMaterial({ color: 0x00ff00 }), // -X face
- *   new MeshBasicMaterial({ color: 0x0000ff }), // +Y face
- *   new MeshBasicMaterial({ color: 0xffff00 }), // -Y face
- *   new MeshBasicMaterial({ color: 0xff00ff }), // +Z face
- *   new MeshBasicMaterial({ color: 0x00ffff })  // -Z face
+ *   new MeshBasicMaterial({ color: 0xff0000, transparent: true }), // +X face
+ *   new MeshBasicMaterial({ color: 0x00ff00, transparent: true }), // -X face
+ *   new MeshBasicMaterial({ color: 0x0000ff, transparent: true }), // +Y face
+ *   new MeshBasicMaterial({ color: 0xffff00, transparent: true }), // -Y face
+ *   new MeshBasicMaterial({ color: 0xff00ff, transparent: true }), // +Z face
+ *   new MeshBasicMaterial({ color: 0x00ffff, transparent: true })  // -Z face
  * ];
  * const stateMultiMaterial = new StateMaterial(materials);
  *
