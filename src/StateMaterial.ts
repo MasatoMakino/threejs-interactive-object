@@ -17,12 +17,10 @@ export type StateMaterialType = Material | Material[];
  * for all interactive states.
  *
  * @remarks
- * - The alpha property preserves the material's original opacity value at construction time
- * - Final material.opacity = setOpacity() parameter × original material.opacity
+ * - Preserves original opacity values at construction time for proportional scaling
+ * - Final opacity = setOpacity() parameter × original material opacity
  * - Supports both single materials and material arrays for multi-material objects
- * - StateMaterialSet calls setOpacity() to control transparency across all interactive states
- * - When setOpacity(0) is called, materials become completely transparent
- * - When setOpacity(1.0) is called, materials return to their original opacity values
+ * - Controlled by StateMaterialSet for synchronized transparency across interactive states
  *
  * @example
  * ```typescript
@@ -61,21 +59,6 @@ export class StateMaterial {
    * Creates a new StateMaterial instance.
    *
    * @param material - The Three.js material or array of materials to manage
-   *
-   * @example
-   * ```typescript
-   * // Single material
-   * const material = new MeshBasicMaterial({ color: 0xff0000 });
-   * const stateMaterial = new StateMaterial(material);
-   *
-   * // Material array (for multi-face geometries like BoxGeometry)
-   * const materials = [
-   *   new MeshBasicMaterial({ color: 0xff0000 }), // Face 1
-   *   new MeshBasicMaterial({ color: 0x00ff00 }), // Face 2
-   *   new MeshBasicMaterial({ color: 0x0000ff })  // Face 3...
-   * ];
-   * const stateMultiMaterial = new StateMaterial(materials);
-   * ```
    */
   constructor(material: StateMaterialType) {
     this.material = material;
@@ -106,8 +89,7 @@ export class StateMaterial {
    * @param value - The Three.js material or array of materials to set
    *
    * @remarks
-   * Automatically preserves the original opacity values of the provided materials
-   * for later use in opacity calculations.
+   * Automatically captures original opacity values for proportional calculations.
    */
   set material(value: StateMaterialType) {
     this._material = value;
@@ -129,8 +111,7 @@ export class StateMaterial {
    * @param opacity - The opacity multiplier (0.0 to 1.0)
    *
    * @remarks
-   * The final opacity is calculated as: setOpacity() parameter × original material opacity.
-   * Original opacity values are preserved from construction time to enable proportional scaling.
+   * Uses preserved original opacity values for proportional scaling.
    *
    * @example
    * ```typescript
@@ -157,6 +138,43 @@ export class StateMaterial {
   }
 }
 
+/**
+ * A comprehensive material manager for interactive object states.
+ *
+ * @description
+ * StateMaterialSet manages multiple StateMaterial instances for different interactive states
+ * including normal, hover, down, disable, and their selected variants. It provides intelligent
+ * state-based material selection with priority logic and unified opacity control across all
+ * managed materials for coordinated visual feedback.
+ *
+ * @remarks
+ * - Only `normal` material is required; unspecified states automatically use the normal material
+ * - `disable` state has priority over interaction states (normal, over, down)
+ * - Supports both regular and selected variants for each interaction state
+ * - Provides unified opacity control across all managed materials
+ * - Handles state transitions with appropriate material switching
+ *
+ * @example
+ * ```typescript
+ * // Minimal setup with only normal material
+ * const materialSet = new StateMaterialSet({
+ *   normal: new MeshBasicMaterial({ color: 0x888888 })
+ * });
+ *
+ * // Complete setup with hover, disable, and selected states
+ * const fullMaterialSet = new StateMaterialSet({
+ *   normal: new MeshBasicMaterial({ color: 0x888888 }),
+ *   over: new MeshBasicMaterial({ color: 0xaaaaaa }),
+ *   disable: new MeshBasicMaterial({ color: 0x444444 }),
+ *   normalSelect: new MeshBasicMaterial({ color: 0x0088ff })
+ * });
+ * ```
+ *
+ * @see {@link StateMaterial} - Individual material manager managed by this class
+ * @see {@link ClickableState} - Enumeration of available interactive states
+ *
+ * @public
+ */
 export class StateMaterialSet {
   normal!: StateMaterial;
   over!: StateMaterial;
@@ -166,6 +184,30 @@ export class StateMaterialSet {
   overSelect!: StateMaterial;
   downSelect!: StateMaterial;
   materials: StateMaterial[] = [];
+
+  /**
+   * Creates a new StateMaterialSet with the specified materials for different states.
+   *
+   * @param param - Configuration object containing materials for each state
+   * @param param.normal - Material for normal state (required)
+   * @param param.over - Material for hover state (optional, fallback to normal)
+   * @param param.down - Material for pressed state (optional, fallback to normal)
+   * @param param.disable - Material for disabled state (optional, fallback to normal)
+   * @param param.normalSelect - Material for normal selected state (optional, fallback to normal)
+   * @param param.overSelect - Material for hover selected state (optional, fallback to normal)
+   * @param param.downSelect - Material for pressed selected state (optional, fallback to normal)
+   *
+   * @example
+   * ```typescript
+   * // Basic usage
+   * const materialSet = new StateMaterialSet({
+   *   normal: new MeshBasicMaterial({ color: 0x888888 }),
+   *   over: new MeshBasicMaterial({ color: 0xaaaaaa })
+   * });
+   * ```
+   *
+   * @throws {Error} When normal material is not provided
+   */
   constructor(param: {
     normal: StateMaterialType;
     over?: StateMaterialType;
@@ -219,12 +261,48 @@ export class StateMaterialSet {
     ];
   }
 
+  /**
+   * Gets the appropriate StateMaterial for the given interaction state and conditions.
+   *
+   * @param state - The current interaction state (normal, over, down)
+   * @param mouseEnabled - Whether mouse interaction is enabled for the object
+   * @param isSelected - Whether the object is in selected state (default: false)
+   * @returns The StateMaterial instance for the specified conditions
+   *
+   * @remarks
+   * State selection priority:
+   * 1. If mouseEnabled is false, always returns disable material
+   * 2. Otherwise, returns the appropriate material based on state and selection:
+   *    - normal + selected = normalSelect
+   *    - over + selected = overSelect
+   *    - down + selected = downSelect
+   *    - normal = normal
+   *    - over = over
+   *    - down = down
+   *
+   * @example
+   * ```typescript
+   * const materialSet = new StateMaterialSet({
+   *   normal: normalMat,
+   *   over: hoverMat,
+   *   disable: disabledMat
+   * });
+   *
+   * // Get normal material
+   * const normal = materialSet.getMaterial("normal", true, false);
+   *
+   * // Get hover material for selected object
+   * const hoverSelected = materialSet.getMaterial("over", true, true);
+   *
+   * // Get disabled material (ignores state and selection)
+   * const disabled = materialSet.getMaterial("over", false, true);
+   * ```
+   */
   public getMaterial(
     state: ClickableState,
     mouseEnabled: boolean,
     isSelected: boolean = false,
   ): StateMaterial {
-    //無効状態はstateよりも優先
     if (!mouseEnabled) {
       return this.disable;
     }
@@ -241,6 +319,24 @@ export class StateMaterialSet {
     return this.normal;
   }
 
+  /**
+   * Sets the opacity for all managed materials simultaneously.
+   *
+   * @param opacity - The opacity multiplier to apply (0.0 to 1.0)
+   *
+   * @remarks
+   * Applies the opacity multiplier to all managed StateMaterial instances simultaneously.
+   *
+   * @example
+   * ```typescript
+   * // Set all materials to 50% of their original opacity
+   * materialSet.setOpacity(0.5);
+   *
+   * // Make invisible or restore original opacity
+   * materialSet.setOpacity(0.0); // invisible
+   * materialSet.setOpacity(1.0); // original
+   * ```
+   */
   public setOpacity(opacity: number) {
     this.materials.forEach((mat) => {
       mat.setOpacity(opacity);
