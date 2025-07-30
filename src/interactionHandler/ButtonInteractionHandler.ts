@@ -398,13 +398,24 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    *
    * @description
    * Manages hover state tracking and visual state transitions for both over and out events.
-   * Hover detection occurs even when the object is disabled, but state changes only
-   * occur when the object is active.
+   * Hover state tracking occurs unconditionally (even when disabled/frozen) to ensure
+   * proper visual updates when the object transitions back to an active state while
+   * the pointer is still hovering over it.
+   *
+   * @remarks
+   * The hover state must be tracked before checking activity status because:
+   * - If the object becomes active while the pointer is already over it,
+   *   the visual state needs to immediately reflect the hover condition
+   * - Without this tracking, the object would remain in "normal" state until
+   *   the next pointer movement, causing visual inconsistency
    *
    * @internal
    */
   private onMouseOverOutHandler(event: ThreeMouseEvent<Value>): void {
-    this._isOver = event.type === "over"; // Hover detection works even in disabled state
+    // Track hover state regardless of activity status to ensure proper visual updates
+    // when transitioning from disabled/frozen to active state while pointer is over
+    this._isOver = event.type === "over";
+
     if (!this.checkActivity()) return;
 
     this.updateState(this._isOver ? "over" : "normal");
