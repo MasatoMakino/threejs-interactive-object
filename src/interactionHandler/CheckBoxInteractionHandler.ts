@@ -163,9 +163,8 @@ export class CheckBoxInteractionHandler<
  * @deprecated Use CheckBoxInteractionHandler instead. This class will be removed in next minor version.
  *
  * @description
- * Backward compatibility alias for CheckBoxInteractionHandler. Emits console warning
- * to encourage migration. Renamed to clarify purpose - "InteractionHandler" suffix
- * distinguishes this from Three.js display objects (Object3D derivatives).
+ * This class exists solely for backward compatibility. All functionality is identical to
+ * CheckBoxInteractionHandler. See {@link ClickableObject} for details on the renaming rationale.
  *
  * @template Value - Type of value associated with the checkbox
  *

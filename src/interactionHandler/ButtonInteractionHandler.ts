@@ -596,8 +596,16 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
  * @deprecated Use ButtonInteractionHandler instead. This class will be removed in next minor version.
  *
  * @description
- * This class exists solely for backward compatibility. All new code should use
- * ButtonInteractionHandler directly. The class emits a console warning when instantiated.
+ * This class exists solely for backward compatibility with existing codebases that may
+ * be using the old ClickableObject class name. All functionality is identical to
+ * ButtonInteractionHandler, but the class emits a console warning when instantiated
+ * to encourage migration to the new class name.
+ *
+ * The class was renamed to improve clarity about its purpose. The original "Object" suffix
+ * was ambiguous in the Three.js ecosystem where Object3D serves as the base class for
+ * display objects. The "InteractionHandler" suffix clearly indicates that this class
+ * specializes in pointer event handling and state management rather than being a display
+ * object itself.
  *
  * @template Value - Type of value associated with the interactive object
  *
