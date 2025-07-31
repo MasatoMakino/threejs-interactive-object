@@ -283,13 +283,50 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * Initializes the interaction handler with the specified display object and optional
    * material set. The handler immediately applies the initial material state upon creation.
    *
+   * This constructor is typically not called directly by end users. Instead, it is invoked
+   * internally by display object constructors (ClickableMesh, ClickableSprite) or conversion
+   * utility functions (convertToClickableMesh, convertToClickableSprite).
+   *
    * @example
    * ```typescript
-   * const handler = new ButtonInteractionHandler({
-   *   view: myMesh,
-   *   material: myMaterialSet
+   * // Example 1: Creating clickable object from geometry and materials using ClickableMesh constructor
+   * import { ClickableMesh, StateMaterialSet } from '@masatomakino/threejs-interactive-object';
+   * import { BoxGeometry, MeshBasicMaterial } from 'three';
+   *
+   * const materials = new StateMaterialSet({
+   *   normal: new MeshBasicMaterial({ color: 0x0000ff }),
+   *   over: new MeshBasicMaterial({ color: 0x00ff00 }),
+   *   down: new MeshBasicMaterial({ color: 0xff0000 })
+   * });
+   *
+   * const clickableMesh = new ClickableMesh({
+   *   geo: new BoxGeometry(1, 1, 1),
+   *   material: materials
+   * });
+   *
+   * clickableMesh.interactionHandler.value = { id: 'button1', action: 'save' };
+   *
+   * // Example 2: Converting existing Mesh to clickable using convertToClickableMesh
+   * import { convertToClickableMesh } from '@masatomakino/threejs-interactive-object';
+   * import { Mesh } from 'three';
+   *
+   * const existingMesh = new Mesh(new BoxGeometry(1, 1, 1), new MeshBasicMaterial());
+   * const convertedClickable = convertToClickableMesh<string>(existingMesh);
+   * convertedClickable.interactionHandler.value = 'converted-button';
+   *
+   * // Listen for click events
+   * convertedClickable.interactionHandler.on('click', (event) => {
+   *   console.log('Button clicked:', convertedClickable.interactionHandler.value);
    * });
    * ```
+   *
+   * @remarks
+   * For most use cases, prefer using ClickableMesh/ClickableSprite constructors for new objects
+   * or convertToClickable* utility functions for existing objects, rather than instantiating
+   * ButtonInteractionHandler directly.
+   *
+   * @see {@link ClickableMesh} - Recommended for creating new clickable mesh objects
+   * @see {@link convertToClickableMesh} - Recommended for converting existing Mesh objects
    */
   constructor(parameters: ButtonInteractionHandlerParameters<Value>) {
     super();
@@ -559,8 +596,16 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
  * @deprecated Use ButtonInteractionHandler instead. This class will be removed in next minor version.
  *
  * @description
- * This class exists solely for backward compatibility. All new code should use
- * ButtonInteractionHandler directly. The class emits a console warning when instantiated.
+ * This class exists solely for backward compatibility with existing codebases that may
+ * be using the old ClickableObject class name. All functionality is identical to
+ * ButtonInteractionHandler, but the class emits a console warning when instantiated
+ * to encourage migration to the new class name.
+ *
+ * The class was renamed to improve clarity about its purpose. The original "Object" suffix
+ * was ambiguous in the Three.js ecosystem where Object3D serves as the base class for
+ * display objects. The "InteractionHandler" suffix clearly indicates that this class
+ * specializes in pointer event handling and state management rather than being a display
+ * object itself.
  *
  * @template Value - Type of value associated with the interactive object
  *
