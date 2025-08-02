@@ -66,7 +66,7 @@ export interface InteractiveMeshParameters {
  * @template InteractionHandler - The specific interaction handler type that manages
  *                                 this mesh's pointer interaction behavior.
  *
- * @public
+ * @internal
  */
 class InteractiveMesh<
     Value,
