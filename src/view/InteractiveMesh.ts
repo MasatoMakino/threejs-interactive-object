@@ -17,6 +17,7 @@
  * @see {@link StateMaterialSet} - Material state management system
  * @see {@link MouseEventManager} - Event processing and raycasting system
  * @see {@link ButtonInteractionHandler} - Base interaction logic
+ * @see {@link ThreeMouseEvent} - Event objects emitted by interaction handlers
  */
 
 import { type BufferGeometry, Mesh } from "three";
@@ -55,11 +56,18 @@ export interface InteractiveMeshParameters {
  * pattern where interaction logic is delegated to specialized handler classes rather
  * than implementing interaction behavior directly.
  *
+ * **Event Architecture**: This class does NOT extend EventEmitter directly. Instead, it uses
+ * a delegation pattern where the `interactionHandler` property (which extends EventEmitter3)
+ * manages all event emission. Events are accessed via `mesh.interactionHandler.on('event', ...)`,
+ * not directly on the mesh object. This design separates rendering concerns (Three.js Mesh)
+ * from interaction concerns (EventEmitter3 + ThreeMouseEvent).
+ *
  * This design allows:
  * - Shared interaction logic across different object types (Mesh, Sprite, Group)
- * - Type-safe event emission through handler delegation
+ * - Type-safe event emission through handler delegation with ThreeMouseEvent objects
  * - Flexible handler substitution for different interaction behaviors
  * - Clean separation between rendering (Three.js) and interaction concerns
+ * - Avoidance of EventEmitter3 inheritance limitations
  *
  * @template Value - Type of arbitrary data associated with this interactive object.
  *                   Used for identifying specific objects in multi-object scenarios.
@@ -104,8 +112,9 @@ class InteractiveMesh<
  * behavior. It responds to pointer events (click, mousedown, mouseup, mouseover, mouseout)
  * and manages visual states through StateMaterialSet integration.
  *
- * The mesh emits interaction events that can be handled to trigger application logic,
- * making it suitable for buttons, interactive objects, and UI elements in 3D scenes.
+ * **Event Handling**: Events are emitted via the `interactionHandler` property, not directly
+ * from the mesh. Use `mesh.interactionHandler.on('click', callback)` to listen for
+ * ThreeMouseEvent objects. This delegation pattern separates rendering from event logic.
  *
  * @template Value - Type of arbitrary data associated with this clickable mesh.
  *                   Defaults to unknown if not specified.
@@ -140,6 +149,7 @@ class InteractiveMesh<
  * @see {@link ButtonInteractionHandler} - The interaction handler that manages events
  * @see {@link StateMaterialSet} - Required for material state management
  * @see {@link MouseEventManager} - Required for processing pointer events
+ * @see {@link ThreeMouseEvent} - Event objects emitted by the interaction handler
  *
  * @public
  */
@@ -166,8 +176,10 @@ export class ClickableMesh<Value = unknown>
  * and integrates with StateMaterialSet to display selection-aware visual states
  * (normal, over, down, normalSelect, overSelect, downSelect).
  *
- * The mesh emits a 'select' event when the selection state changes, in addition
- * to standard pointer interaction events.
+ * **Event Handling**: Events are emitted via the `interactionHandler` property, not directly
+ * from the mesh. Use `mesh.interactionHandler.on('select', callback)` to listen for
+ * selection changes and other ThreeMouseEvent objects. The 'select' event is emitted when
+ * the selection state changes, in addition to standard pointer interaction events.
  *
  * @template Value - Type of arbitrary data associated with this checkbox mesh.
  *                   Defaults to unknown if not specified.
@@ -201,6 +213,7 @@ export class ClickableMesh<Value = unknown>
  * @see {@link CheckBoxInteractionHandler} - The interaction handler that manages selection
  * @see {@link StateMaterialSet} - Required for selection-aware material states
  * @see {@link convertToCheckboxMesh} - Alternative creation method for existing meshes
+ * @see {@link ThreeMouseEvent} - Event objects emitted by the interaction handler
  *
  * @public
  */
@@ -226,6 +239,10 @@ export class CheckBoxMesh<Value = unknown>
  * behavior. When used with RadioButtonManager, only one radio button in a group can
  * be selected at a time. Clicking a radio button selects it and automatically
  * deselects other radio buttons in the same group.
+ *
+ * **Event Handling**: Events are emitted via the `interactionHandler` property, not directly
+ * from the mesh. Use `mesh.interactionHandler.on('click', callback)` or listen to
+ * RadioButtonManager events for group selection changes. All events are ThreeMouseEvent objects.
  *
  * Individual radio buttons can be frozen to prevent deselection, ensuring at least
  * one option remains selected in the group.
@@ -266,6 +283,7 @@ export class CheckBoxMesh<Value = unknown>
  * @see {@link RadioButtonInteractionHandler} - The interaction handler that manages exclusive selection
  * @see {@link RadioButtonManager} - Manages groups of radio buttons for exclusive selection
  * @see {@link convertToRadioButtonMesh} - Alternative creation method for existing meshes
+ * @see {@link ThreeMouseEvent} - Event objects emitted by the interaction handler
  *
  * @public
  */

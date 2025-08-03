@@ -17,6 +17,7 @@
  * @see {@link StateMaterialSet} - Material state management system
  * @see {@link MouseEventManager} - Event processing and raycasting system
  * @see {@link ButtonInteractionHandler} - Base interaction logic
+ * @see {@link ThreeMouseEvent} - Event objects emitted by interaction handlers
  */
 
 import { Sprite } from "three";
@@ -38,11 +39,18 @@ import type { InteractionHandlerConstructor } from "./InteractionHandlerConstruc
  * pattern where interaction logic is delegated to specialized handler classes rather
  * than implementing interaction behavior directly.
  *
+ * **Event Architecture**: This class does NOT extend EventEmitter directly. Instead, it uses
+ * a delegation pattern where the `interactionHandler` property (which extends EventEmitter3)
+ * manages all event emission. Events are accessed via `sprite.interactionHandler.on('event', ...)`,
+ * not directly on the sprite object. This design separates rendering concerns (Three.js Sprite)
+ * from interaction concerns (EventEmitter3 + ThreeMouseEvent).
+ *
  * This design allows:
  * - Shared interaction logic across different object types (Mesh, Sprite, Group)
- * - Type-safe event emission through handler delegation
+ * - Type-safe event emission through handler delegation with ThreeMouseEvent objects
  * - Flexible handler substitution for different interaction behaviors
  * - Clean separation between rendering (Three.js) and interaction concerns
+ * - Avoidance of EventEmitter3 inheritance limitations
  *
  * @template Value - Type of arbitrary data associated with this interactive object.
  *                   Used for identifying specific objects in multi-object scenarios.
@@ -80,8 +88,9 @@ class InteractiveSprite<Value, Handler extends ButtonInteractionHandler<Value>>
  * behavior. It responds to pointer events (click, mousedown, mouseup, mouseover, mouseout)
  * and manages visual states through StateMaterialSet integration.
  *
- * The sprite emits interaction events that can be handled to trigger application logic,
- * making it suitable for buttons, interactive objects, and UI elements in 2D overlay scenes.
+ * **Event Handling**: Events are emitted via the `interactionHandler` property, not directly
+ * from the sprite. Use `sprite.interactionHandler.on('click', callback)` to listen for
+ * ThreeMouseEvent objects. This delegation pattern separates rendering from event logic.
  *
  * @template Value - Type of arbitrary data associated with this clickable sprite.
  *                   Defaults to unknown if not specified.
@@ -118,6 +127,7 @@ class InteractiveSprite<Value, Handler extends ButtonInteractionHandler<Value>>
  * @see {@link ButtonInteractionHandler} - The interaction handler that manages events
  * @see {@link StateMaterialSet} - Required for material state management
  * @see {@link MouseEventManager} - Required for processing pointer events
+ * @see {@link ThreeMouseEvent} - Event objects emitted by the interaction handler
  * @see {@link https://threejs.org/docs/#api/en/loaders/TextureLoader.load} - TextureLoader.load documentation
  *
  * @public
@@ -145,8 +155,10 @@ export class ClickableSprite<Value = unknown>
  * and integrates with StateMaterialSet to display selection-aware visual states
  * (normal, over, down, normalSelect, overSelect, downSelect).
  *
- * The sprite emits a 'select' event when the selection state changes, in addition
- * to standard pointer interaction events.
+ * **Event Handling**: Events are emitted via the `interactionHandler` property, not directly
+ * from the sprite. Use `sprite.interactionHandler.on('select', callback)` to listen for
+ * selection changes and other ThreeMouseEvent objects. The 'select' event is emitted when
+ * the selection state changes, in addition to standard pointer interaction events.
  *
  * @template Value - Type of arbitrary data associated with this checkbox sprite.
  *                   Defaults to unknown if not specified.
@@ -184,6 +196,7 @@ export class ClickableSprite<Value = unknown>
  *
  * @see {@link CheckBoxInteractionHandler} - The interaction handler that manages selection
  * @see {@link StateMaterialSet} - Required for selection-aware material states
+ * @see {@link ThreeMouseEvent} - Event objects emitted by the interaction handler
  * @see {@link https://threejs.org/docs/#api/en/loaders/TextureLoader.load} - TextureLoader.load documentation
  *
  * @public
@@ -210,6 +223,10 @@ export class CheckBoxSprite<Value = unknown>
  * behavior. When used with RadioButtonManager, only one radio button in a group can
  * be selected at a time. Clicking a radio button selects it and automatically
  * deselects other radio buttons in the same group.
+ *
+ * **Event Handling**: Events are emitted via the `interactionHandler` property, not directly
+ * from the sprite. Use `sprite.interactionHandler.on('click', callback)` or listen to
+ * RadioButtonManager events for group selection changes. All events are ThreeMouseEvent objects.
  *
  * Individual radio buttons can be frozen to prevent deselection, ensuring at least
  * one option remains selected in the group.
@@ -257,6 +274,7 @@ export class CheckBoxSprite<Value = unknown>
  * @see {@link RadioButtonInteractionHandler} - The interaction handler that manages exclusive selection
  * @see {@link RadioButtonManager} - Manages groups of radio buttons for exclusive selection
  * @see {@link StateMaterialSet} - Required for selection-aware material states
+ * @see {@link ThreeMouseEvent} - Event objects emitted by the interaction handler
  * @see {@link https://threejs.org/docs/#api/en/loaders/TextureLoader.load} - TextureLoader.load documentation
  *
  * @public
