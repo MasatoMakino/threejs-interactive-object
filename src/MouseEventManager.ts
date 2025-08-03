@@ -143,7 +143,7 @@ export class MouseEventManager {
    * @param option.throttlingTime_ms - Throttling interval in milliseconds (default: 33ms for ~30fps)
    * @param option.viewport - Viewport region for multi-viewport applications (Vector4: x, y, width, height)
    * @param option.targets - Array of specific objects to test for intersections (default: scene.children)
-   * @param option.recursive - Whether to recursively search object hierarchies (default: true)
+   * @param option.recursive - Whether to recursively search object hierarchies during raycasting (default: true)
    *
    * @description
    * Initializes the interaction management system by setting up pointer event listeners
@@ -155,6 +155,19 @@ export class MouseEventManager {
    * - Set `recursive: false` when using pre-registered `targets` array for optimization
    * - Specify `viewport` for applications using WebGLRenderer.setViewport()
    * - Limit `targets` to known interactive objects to reduce intersection testing overhead
+   *
+   * **Recursive Flag Behavior:**
+   * The `recursive` parameter is passed directly to Three.js Raycaster.intersectObjects() and only
+   * affects raycasting intersection detection. It does NOT affect the parent hierarchy traversal
+   * performed by checkTarget(). This means:
+   *
+   * - `recursive: true` (default): Raycaster tests all descendants of target objects
+   * - `recursive: false`: Raycaster tests only the direct target objects specified
+   * - **Important**: Even with `recursive: false`, if a child object is hit during raycasting,
+   *   checkTarget() will still traverse upward to find parent ClickableGroup objects
+   * - **Limitation**: When using a custom `targets` array with `recursive: false`, child objects
+   *   not in the targets array will not be detected by raycasting, preventing parent ClickableGroups
+   *   from receiving events even if they would be found during hierarchy traversal
    *
    * @example
    * ```typescript
@@ -538,8 +551,23 @@ export class MouseEventManager {
   }
 
   /**
-   * 非推奨になったIClickableObject3Dインターフェースのmodelプロパティを実装しているか否かを判定する。
-   * @param arg
+   * Detects objects using the deprecated IClickableObject3D.model interface.
+   *
+   * @param arg - The object to test for deprecated interface usage
+   * @returns True if the object uses the deprecated model property, false otherwise
+   *
+   * @description
+   * Identifies objects still using the legacy IClickableObject3D.model interface
+   * to trigger deprecation warnings. Used by checkTarget() to maintain backward
+   * compatibility while encouraging migration to the current interactionHandler pattern.
+   *
+   * @remarks
+   * This detection enables graceful deprecation warnings without breaking existing code.
+   *
+   * @see {@link checkTarget} - Primary usage location for deprecation warnings
+   *
+   * @static
+   * @private
    */
   private static implementsDepartedIClickableObject3D(arg: unknown): boolean {
     return (
@@ -552,12 +580,53 @@ export class MouseEventManager {
   }
 
   /**
-   * 指定されたtargetオブジェクトから親方向に、クリッカブルインターフェースを継承しているオブジェクトを検索する。
-   * オブジェクトを発見した場合はtrueを、発見できない場合はfalseを返す。
+   * Searches for interactive objects by traversing up the parent hierarchy from a target object.
    *
-   * @param target
-   * @param type
-   * @param hasTarget
+   * @param target - The Three.js Object3D to start searching from (may be null/undefined)
+   * @param type - The type of interaction event to process ("down", "up", "over", "out")
+   * @param hasTarget - Whether any interactive target has been found in the current search chain
+   * @returns True if an interactive object was found and processed, false otherwise
+   *
+   * @description
+   * Performs upward traversal through the Three.js object hierarchy to locate objects
+   * implementing the IClickableObject3D interface. When an interactive object is found,
+   * it processes the specified event type and may continue searching parent objects
+   * for additional interactive targets.
+   *
+   * **Hierarchy Traversal Process:**
+   * 1. Check for deprecated interface usage and emit warnings
+   * 2. Validate if current object implements IClickableObject3D interface
+   * 3. If interactive and enabled, process the event and continue to parent
+   * 4. If not interactive, continue searching up the parent chain
+   * 5. Stop when reaching Scene level or null parent
+   *
+   * **Independence from Raycasting Recursive Flag:**
+   * This hierarchy traversal operates independently of the constructor's `recursive` flag.
+   * Even when `recursive: false` is set for raycasting optimization, this method will
+   * still traverse upward to find parent ClickableGroup objects once an initial
+   * intersection is detected.
+   *
+   * **Event Processing:**
+   * When an interactive object is found, the method delegates to onButtonHandler()
+   * for actual event processing. For "over" events, it also maintains the currentOver
+   * array to track hover state across multiple objects.
+   *
+   * **Recursive Search:**
+   * The method can find multiple interactive objects in a single parent chain,
+   * allowing nested interactive elements where both child and parent respond
+   * to the same pointer event.
+   *
+   * @remarks
+   * - Supports nested interactive objects within the same hierarchy
+   * - Emits deprecation warnings for legacy interface usage
+   * - Stops traversal at Scene level to prevent unnecessary searches
+   * - The hasTarget parameter tracks whether any target was found across the chain
+   *
+   * @see {@link implementsIClickableObject3D} - Interface validation
+   * @see {@link implementsDepartedIClickableObject3D} - Deprecated interface detection
+   * @see {@link onButtonHandler} - Event processing delegation
+   * @see {@link currentOver} - Hover state tracking array
+   *
    * @protected
    */
   protected checkTarget(
@@ -623,6 +692,7 @@ export class MouseEventManager {
    *
    * @remarks
    * - Uses the configured targets array and recursive flag from constructor options
+   * - The recursive flag is passed directly to Three.js Raycaster.intersectObjects()
    * - Filtering preserves Z-order (closest to farthest) for proper event processing
    * - ViewPortUtil handles multi-viewport coordinate transformations when applicable
    *
