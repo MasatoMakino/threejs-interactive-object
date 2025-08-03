@@ -21,11 +21,9 @@
  * instances.
  *
  * **Performance Considerations:**
- * - Throttling prevents excessive raycasting during rapid pointer movements
- * - Configurable target arrays reduce intersection testing overhead
- * - Recursive search can be disabled when using pre-registered target arrays
- * - Viewport-aware processing supports multiple rendering regions on single canvas
+ * Performance-optimized with configurable throttling and target filtering.
  *
+ * @see {@link MouseEventManager} - Detailed performance optimization information
  * @see {@link ButtonInteractionHandler} - Handles individual object interactions
  * @see {@link ThreeMouseEvent} - Event payload type system
  * @see {@link ViewPortUtil} - Coordinate transformation utilities
@@ -100,7 +98,6 @@ import {
  *
  * @remarks
  * - The manager automatically handles both mouse and touch interactions through PointerEvent API
- * - Object intersection is processed in Z-order (front to back) with early termination
  * - Parent hierarchy traversal allows nested objects to inherit interactivity
  * - Deprecated IClickableObject3D.model interface usage triggers console warnings
  *
@@ -108,6 +105,7 @@ import {
  * @see {@link IClickableObject3D} - Interface contract for interactive objects
  * @see {@link ThreeMouseEvent} - Event payload structure
  * @see {@link ViewPortUtil} - Coordinate transformation utilities
+ * @see {@link checkIntersects} - Z-order intersection processing and early termination
  *
  * @public
  */
@@ -188,6 +186,9 @@ export class MouseEventManager {
    * - RAFTicker integration ensures throttling works with animation frame timing
    * - The manager does not automatically remove event listeners; dispose() method needed
    * - Canvas should be properly sized before creating the manager for accurate coordinate conversion
+   *
+   * @see {@link onDocumentMouseUpDown} - Viewport boundary validation implementation
+   * @see {@link ViewPortUtil.isContain} - Viewport containment checking logic
    */
   constructor(
     scene: Scene,
