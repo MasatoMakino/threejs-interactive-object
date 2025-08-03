@@ -1,13 +1,13 @@
 /**
  * @fileoverview Central event management system for pointer-interactive Three.js objects.
  *
- * This module provides the core MouseEventManager class, which serves as the central
- * event dispatcher for handling pointer interactions (mouse, touch, pen) within Three.js
- * scenes. The system uses raycasting for precise object detection and implements
- * performance optimizations including 33ms throttling and intelligent object filtering.
+ * This module provides the core MouseEventManager class, the central event dispatcher
+ * for handling pointer interactions (mouse, touch, pen) within Three.js scenes.
+ * The system uses raycasting for precise object detection with performance optimizations
+ * including 33ms throttling and intelligent object filtering.
  *
  * **Key Features:**
- * - Unified pointer event handling across input types (mouse, touch, pen)
+ * - Unified pointer interaction handling (mouse, touch, pen)
  * - Raycasting-based intersection detection with Z-order processing
  * - Performance-optimized with RAFTicker-based throttling (33ms default)
  * - Flexible target selection (scene-wide scanning vs. registered objects)
@@ -57,27 +57,23 @@ import {
  *
  * @description
  * MouseEventManager serves as the core interaction management system for Three.js applications,
- * providing unified pointer event handling across mouse, touch, and pen input devices. It uses
+ * providing unified pointer interaction handling across mouse, touch, and pen input devices. It uses
  * raycasting to detect object intersections and manages event distribution to interactive objects
  * through a performance-optimized pipeline.
  *
- * The manager operates by:
- * 1. Listening to DOM pointer events on the canvas element
- * 2. Converting screen coordinates to normalized device coordinates
- * 3. Performing raycasting to identify intersected objects
- * 4. Traversing parent hierarchies to find IClickableObject3D implementations
- * 5. Delegating events to appropriate ButtonInteractionHandler instances
+ * The manager listens to DOM pointer events, performs raycasting to identify intersected objects,
+ * traverses parent hierarchies to find IClickableObject3D implementations, and delegates events
+ * to appropriate ButtonInteractionHandler instances.
  *
  * **Performance Optimizations:**
- * - **Throttling**: Events are throttled using RAFTicker to prevent excessive raycasting (33ms default)
+ * - **Throttling**: RAFTicker-based throttling prevents excessive raycasting (33ms default)
  * - **Target Filtering**: Configurable target arrays limit intersection testing scope
  * - **Recursive Control**: Hierarchy traversal can be disabled for pre-registered objects
  *
  * **Multi-Viewport Support:**
- * Compatible with Three.js WebGLRenderer.setViewport() for applications that render
- * multiple scenes or cameras to different regions of the same canvas element. The manager
- * determines which viewport corresponds to each pointer event and processes only relevant
- * interactive objects within that region.
+ * Compatible with Three.js WebGLRenderer.setViewport() for applications rendering
+ * multiple scenes or cameras to different canvas regions. The manager determines
+ * the corresponding viewport for each pointer event and processes only relevant objects.
  *
  * @example
  * ```typescript
@@ -147,8 +143,8 @@ export class MouseEventManager {
    *
    * @description
    * Initializes the interaction management system by setting up pointer event listeners
-   * on the canvas element and registering with RAFTicker for throttled updates. The manager
-   * immediately begins processing pointer events according to the specified configuration.
+   * and registering with RAFTicker for throttled updates. The manager immediately begins
+   * processing pointer interactions according to the specified configuration.
    *
    * **Configuration Guidelines:**
    * - Use shorter `throttlingTime_ms` (16ms) for responsive interactions at cost of performance
@@ -222,7 +218,7 @@ export class MouseEventManager {
   }
 
   /**
-   * RAF ticker callback that manages throttling state for pointer event processing.
+   * RAF ticker callback that manages throttling state for pointer interaction processing.
    *
    * @param e - RAF ticker event context containing frame timing information
    *
@@ -270,18 +266,11 @@ export class MouseEventManager {
    * excessive raycasting during rapid pointer movements, which significantly improves
    * performance in complex scenes.
    *
-   * **Processing Flow:**
-   * 1. Check throttling status to limit update frequency
-   * 2. Perform raycasting to find intersected objects
-   * 3. Process intersections in Z-order (front to back)
-   * 4. Update current hover targets (currentOver array)
-   * 5. Emit "out" events for objects no longer hovered
-   * 6. Emit "over" events for newly hovered objects
+   * The method checks throttling status, performs raycasting, processes intersections
+   * in Z-order, updates hover targets, and emits "out"/"over" events as needed.
    *
-   * **State Management:**
-   * The method maintains a currentOver array to track which objects are currently
-   * being hovered. When the pointer moves, it compares the new intersection results
-   * with the previous state to determine which objects need "over" or "out" events.
+   * The method maintains a currentOver array to track hovered objects and compares
+   * new intersection results with the previous state to determine event needs.
    *
    * @remarks
    * - Throttling is controlled by the throttlingTime_ms constructor parameter
@@ -350,21 +339,13 @@ export class MouseEventManager {
    * to their interaction handlers. The method includes viewport boundary checking
    * for multi-viewport applications.
    *
-   * **Event Type Detection:**
-   * The method automatically determines the event type based on the DOM event:
-   * - "pointerdown" events are mapped to "down" interaction events
-   * - "pointerup" events are mapped to "up" interaction events
+   * The method maps "pointerdown" to "down" and "pointerup" to "up" interaction events.
    *
-   * **Viewport Validation:**
-   * For "down" events, the method validates that the pointer position is within
-   * the configured viewport boundaries (if specified). This ensures that interactions
-   * only occur within the designated rendering region for multi-viewport applications.
+   * For "down" events, validates pointer position within configured viewport boundaries
+   * to ensure interactions only occur within the designated rendering region.
    *
-   * **Processing Flow:**
-   * 1. Determine event type from DOM event
-   * 2. Validate viewport boundaries for down events
-   * 3. Perform raycasting to find intersected objects
-   * 4. Process intersections in Z-order with early termination
+   * The method determines event type, validates viewport boundaries for down events,
+   * performs raycasting, and processes intersections in Z-order with early termination.
    *
    * @remarks
    * - Viewport checking is only performed for "down" events to allow "up" events
@@ -411,15 +392,8 @@ export class MouseEventManager {
    * interaction handler. Processing terminates immediately when an interactive
    * object is found, ensuring that only the frontmost object receives the event.
    *
-   * **Z-Order Processing:**
-   * The intersects array is provided by Three.js raycasting in distance order
-   * (closest to farthest). This method processes objects from front to back,
-   * stopping at the first interactive object to respect visual layering expectations.
-   *
-   * **Early Termination:**
-   * When checkTarget() returns true (indicating an interactive object was found
-   * and processed), the loop breaks to prevent background objects from receiving
-   * the same event, maintaining intuitive interaction behavior.
+   * Processes intersections in Z-order (closest to farthest) and stops at the first
+   * interactive object to prevent background objects from receiving the same event.
    *
    * @remarks
    * - Empty intersection arrays are handled gracefully with early return
