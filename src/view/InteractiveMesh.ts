@@ -24,10 +24,10 @@ import {
   ButtonInteractionHandler,
   CheckBoxInteractionHandler,
   type IClickableObject3D,
-  type InteractionHandlerConstructor,
   RadioButtonInteractionHandler,
   type StateMaterialSet,
 } from "../index.js";
+import type { InteractionHandlerConstructor } from "./InteractionHandlerConstructor.js";
 
 /**
  * Configuration parameters for creating interactive mesh objects.

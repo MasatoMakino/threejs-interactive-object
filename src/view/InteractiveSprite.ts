@@ -1,19 +1,12 @@
 import { Sprite } from "three";
 import {
   ButtonInteractionHandler,
-  type ButtonInteractionHandlerParameters,
   CheckBoxInteractionHandler,
   type IClickableObject3D,
   RadioButtonInteractionHandler,
   type StateMaterialSet,
 } from "../index.js";
-
-export interface InteractionHandlerConstructor<
-  InteractionHandler extends ButtonInteractionHandler<Value>,
-  Value,
-> {
-  new (param: ButtonInteractionHandlerParameters<Value>): InteractionHandler;
-}
+import type { InteractionHandlerConstructor } from "./InteractionHandlerConstructor.js";
 
 class InteractiveSprite<Value, Handler extends ButtonInteractionHandler<Value>>
   extends Sprite
