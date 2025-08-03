@@ -184,9 +184,10 @@ export class MouseEventManager {
    * @remarks
    * - Pointer event listeners are attached using passive: false to allow preventDefault()
    * - RAFTicker integration ensures throttling works with animation frame timing
-   * - The manager does not automatically remove event listeners; dispose() method needed
+   * - The manager does not automatically remove event listeners; call dispose() when no longer needed
    * - Canvas should be properly sized before creating the manager for accurate coordinate conversion
    *
+   * @see {@link dispose} - Cleanup method to prevent memory leaks
    * @see {@link onDocumentMouseUpDown} - Viewport boundary validation implementation
    * @see {@link ViewPortUtil.isContain} - Viewport containment checking logic
    */
@@ -701,6 +702,78 @@ export class MouseEventManager {
     });
 
     return filteredIntersects;
+  }
+
+  /**
+   * Cleans up DOM event listeners and RAF ticker subscriptions.
+   *
+   * @description
+   * Removes all event listeners attached to the canvas element and unsubscribes from
+   * RAFTicker to prevent memory leaks. Call this method when the MouseEventManager
+   * is no longer needed, especially in long-running applications that recreate
+   * managers (e.g., during scene rebuilds).
+   *
+   * The method performs comprehensive cleanup by:
+   * - Clearing current hover state to emit proper "out" events
+   * - Removing all three pointer event listeners from the canvas
+   * - Unsubscribing from RAFTicker to stop throttling callbacks
+   * - Resetting internal throttling state
+   *
+   * @remarks
+   * - After calling dispose(), the manager will no longer respond to pointer events
+   * - The manager cannot be reused after disposal; create a new instance if needed
+   * - Failure to call dispose() may result in memory leaks in long-lived applications
+   * - This method is safe to call multiple times
+   *
+   * @example
+   * ```typescript
+   * // Clean up before recreating the manager
+   * manager.dispose();
+   * manager = new MouseEventManager(newScene, newCamera, canvas);
+   *
+   * // In a React component unmount
+   * useEffect(() => {
+   *   const manager = new MouseEventManager(scene, camera, canvas);
+   *   return () => manager.dispose(); // Cleanup on unmount
+   * }, []);
+   *
+   * // When switching scenes
+   * oldManager.dispose();
+   * const newManager = new MouseEventManager(newScene, newCamera, canvas);
+   * ```
+   *
+   * @see {@link constructor} - Initial setup of listeners and subscriptions
+   * @see {@link clearOver} - Hover state cleanup method used internally
+   *
+   * @public
+   */
+  public dispose(): void {
+    // Clear current hover state to emit proper "out" events
+    this.clearOver();
+
+    // Remove DOM event listeners
+    this.canvas.removeEventListener(
+      "pointermove",
+      this.onDocumentMouseMove,
+      false,
+    );
+    this.canvas.removeEventListener(
+      "pointerdown",
+      this.onDocumentMouseUpDown,
+      false,
+    );
+    this.canvas.removeEventListener(
+      "pointerup",
+      this.onDocumentMouseUpDown,
+      false,
+    );
+
+    // Unsubscribe from RAF ticker
+    RAFTicker.off("tick", this.onTick);
+
+    // Reset internal state
+    this.hasThrottled = false;
+    this.throttlingDelta = 0;
   }
 }
 
