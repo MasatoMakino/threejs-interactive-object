@@ -208,8 +208,37 @@ export class MouseEventManager {
     RAFTicker.on("tick", this.onTick);
   }
 
+  /**
+   * RAF ticker callback that manages throttling state for pointer event processing.
+   *
+   * @param e - RAF ticker event context containing frame timing information
+   *
+   * @description
+   * This method is called on every animation frame to manage the throttling mechanism
+   * that prevents excessive raycasting during rapid pointer movements. It accumulates
+   * frame delta time and resets the throttling flag when enough time has passed.
+   *
+   * **Throttling Logic:**
+   * 1. Accumulate delta time from animation frames
+   * 2. Reset hasThrottled flag when throttling interval expires
+   * 3. Use modulo operation to maintain accurate timing across intervals
+   *
+   * **Delta Time Safety:**
+   * The method ensures delta time is never negative by using Math.max(e.delta, 0),
+   * protecting against edge cases where timing calculations might produce invalid values.
+   *
+   * @remarks
+   * - This callback is registered with RAFTicker during constructor initialization
+   * - The throttling interval is configurable via throttlingTime_ms (default: 33ms)
+   * - Modulo operation prevents accumulated timing drift over long sessions
+   *
+   * @see {@link throttlingTime_ms} - Configurable throttling interval
+   * @see {@link hasThrottled} - Flag controlling event processing
+   *
+   * @private
+   */
   private onTick = (e: RAFTickerEventContext) => {
-    this.throttlingDelta += Math.max(e.delta, 0); //経過時間がマイナスになることはありえないので、0未満の場合は0をセットする。
+    this.throttlingDelta += Math.max(e.delta, 0); // Ensure delta time is never negative by setting 0 for values below 0
     if (this.throttlingDelta < this.throttlingTime_ms) {
       return;
     }
@@ -473,9 +502,24 @@ export class MouseEventManager {
   }
 
   /**
-   * IClickableObject3Dインターフェースを実装しているか否かを判定する。
-   * ユーザー定義Type Guard
-   * @param arg
+   * Type guard that validates whether an object implements the IClickableObject3D interface.
+   *
+   * @param arg - The object to test for IClickableObject3D interface compliance
+   * @returns True if the object implements IClickableObject3D, false otherwise
+   *
+   * @description
+   * Performs runtime validation to determine if an object conforms to the IClickableObject3D
+   * interface structure. Validates the presence and type of required properties including
+   * the interactionHandler and its mouseEnabled property.
+   *
+   * @remarks
+   * Used internally by checkTarget() during object hierarchy traversal to identify
+   * interactive objects among regular Three.js display objects.
+   *
+   * @see {@link IClickableObject3D} - Interface definition
+   * @see {@link checkTarget} - Primary usage location
+   *
+   * @static
    * @private
    */
   private static implementsIClickableObject3D(
@@ -527,7 +571,7 @@ export class MouseEventManager {
       );
     }
 
-    //クリッカブルインターフェースを継承しているなら判定OK
+    // If the object implements the clickable interface, validation OK
     if (
       target != null &&
       MouseEventManager.implementsIClickableObject3D(target) &&
@@ -540,8 +584,8 @@ export class MouseEventManager {
       return this.checkTarget(target.parent, type, true);
     }
 
-    //継承していないならその親を探索継続。
-    //ターゲットから上昇して探す。
+    // If not implementing the interface, continue searching the parent.
+    // Search upward from the target.
     if (
       target != null &&
       target.parent != null &&
@@ -550,10 +594,44 @@ export class MouseEventManager {
       return this.checkTarget(target.parent, type, hasTarget);
     }
 
-    //親がシーンの場合は探索終了。
+    // End search when parent is Scene.
     return hasTarget;
   }
 
+  /**
+   * Performs raycasting to detect object intersections and filters duplicate results.
+   *
+   * @param event - The pointer event containing screen coordinates
+   * @returns Array of intersection results filtered by unique Object3D instances
+   *
+   * @description
+   * Wraps Three.js raycasting functionality to detect objects intersected by the pointer.
+   * Converts screen coordinates to normalized device coordinates, performs raycasting
+   * against configured targets, and filters results to prevent duplicate detections
+   * from multi-face geometry intersections.
+   *
+   * **Processing Steps:**
+   * 1. Convert pointer coordinates to normalized device coordinates using ViewPortUtil
+   * 2. Configure raycaster with camera and normalized coordinates
+   * 3. Perform intersection testing against target objects
+   * 4. Filter results by Object3D UUID to eliminate duplicate face intersections
+   *
+   * **Duplicate Filtering:**
+   * Single Mesh objects with complex geometry can generate multiple intersection
+   * results when the ray hits multiple faces. UUID-based filtering ensures each
+   * Object3D appears only once in the results, using the closest intersection.
+   *
+   * @remarks
+   * - Uses the configured targets array and recursive flag from constructor options
+   * - Filtering preserves Z-order (closest to farthest) for proper event processing
+   * - ViewPortUtil handles multi-viewport coordinate transformations when applicable
+   *
+   * @see {@link ViewPortUtil.convertToMousePosition} - Coordinate conversion
+   * @see {@link targets} - Configured objects for intersection testing
+   * @see {@link recursive} - Hierarchy traversal flag
+   *
+   * @protected
+   */
   protected getIntersects(event: PointerEvent): Intersection[] {
     ViewPortUtil.convertToMousePosition(
       this.canvas,
@@ -567,7 +645,7 @@ export class MouseEventManager {
       this.recursive,
     );
 
-    //同一のオブジェクトが複数のFaceで交差した場合、最初に交差したものだけを取り出す。
+    // When the same object intersects multiple faces, extract only the first intersection
     const uuidSet = new Set<string>();
     const filteredIntersects = intersects.filter((intersect) => {
       if (uuidSet.has(intersect.object.uuid)) {
