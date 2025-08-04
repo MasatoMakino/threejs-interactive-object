@@ -74,7 +74,7 @@ export function getSelection<Value>(
     return !!interactionHandler.selection;
   } else {
     throw new Error(
-      "Cannot get selection state from non-selectable handler. Selection state requires handlers implementing ISelectableObject3D interface.",
+      "選択可能なボタン以外を引数にして、SELECTイベントをインスタンス化しました。SELECTイベントはISelectableObject3Dを実装したクラスとともにインスタンス化してください。",
     );
   }
 }
