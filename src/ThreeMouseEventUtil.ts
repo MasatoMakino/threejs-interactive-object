@@ -1,4 +1,5 @@
 /**
+ * @packageDocumentation
  * @fileoverview ThreeMouseEvent utility functions for event creation and manipulation.
  *
  * This module provides utility functions for creating, cloning, and manipulating
