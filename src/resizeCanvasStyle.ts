@@ -13,7 +13,7 @@
  * while maintaining original aspect ratio through letterboxing or pillarboxing.
  * Canvas pixel dimensions and rendering performance remain unchanged.
  *
- * @param container - Parent HTML element that defines available space for the canvas
+ * @param container - Reference HTML element that defines available space for the canvas
  * @param canvas - Three.js canvas element to fit within the container
  * @param canvasWidth - Original canvas width for aspect ratio calculation
  * @param canvasHeight - Original canvas height for aspect ratio calculation
@@ -48,7 +48,6 @@
  * - Maintains aspect ratio through proportional scaling
  * - Works with any HTML element as container
  *
- * @public
  */
 export function resizeCanvasStyle(
   container: HTMLElement,
