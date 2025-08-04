@@ -67,7 +67,7 @@ export class RadioButtonManager<Value = unknown> extends EventEmitter<
    * Currently selected radio button interaction handler.
    * @internal
    */
-  protected _selected!: RadioButtonInteractionHandler<Value>;
+  protected _selected: RadioButtonInteractionHandler<Value> | undefined;
 
   /**
    * Adds radio button interactive objects to the managed group.
@@ -234,7 +234,7 @@ export class RadioButtonManager<Value = unknown> extends EventEmitter<
    * console.log(radioManager.selected.value); // "test"
    * ```
    */
-  get selected(): RadioButtonInteractionHandler<Value> {
+  get selected(): RadioButtonInteractionHandler<Value> | undefined {
     return this._selected;
   }
 
