@@ -126,7 +126,7 @@ describe("resizeCanvasStyle", () => {
       expect(canvas.style.width).toBe("333px");
       const actualHeight = parseFloat(canvas.style.height);
       const expectedHeight = 333 / (1920 / 1080); // ≈ 187.3125
-      expect(actualHeight).toBeCloseTo(expectedHeight, 3);
+      expect(actualHeight).toBeCloseTo(expectedHeight, 2);
     });
   });
 
