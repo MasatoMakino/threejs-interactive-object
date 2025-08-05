@@ -51,6 +51,8 @@ The library offers two search modes for performance optimization:
 npm install @masatomakino/threejs-interactive-object --save-dev
 ```
 
+This library is bundled into your application at build time through module bundlers like webpack, Rollup, or Vite. Use `--save-dev` since it's processed during development, not loaded at runtime.
+
 ### Basic Usage
 
 This library provides interactive objects for Three.js applications without requiring manual Raycaster implementation. Here's how to create your first interactive button:
