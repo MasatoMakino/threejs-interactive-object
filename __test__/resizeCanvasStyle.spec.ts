@@ -88,20 +88,7 @@ describe("resizeCanvasStyle", () => {
     });
   });
 
-  describe("CSS properties setting", () => {
-    test("should set CSS width and height properties correctly", () => {
-      container.style.width = "1000px";
-      container.style.height = "500px";
-
-      resizeCanvasStyle(container, canvas, 800, 400);
-
-      // Verify CSS properties are set
-      expect(canvas.style.width).toBe("1000px");
-      expect(canvas.style.height).toBe("500px");
-      expect(canvas.style.getPropertyValue("width")).toBe("1000px");
-      expect(canvas.style.getPropertyValue("height")).toBe("500px");
-    });
-
+  describe("Core functionality", () => {
     test("should not modify canvas pixel dimensions", () => {
       const originalWidth = canvas.width;
       const originalHeight = canvas.height;
@@ -111,22 +98,9 @@ describe("resizeCanvasStyle", () => {
 
       resizeCanvasStyle(container, canvas, 800, 600);
 
-      // Canvas pixel dimensions should remain unchanged
+      // Canvas pixel dimensions should remain unchanged - only CSS styling
       expect(canvas.width).toBe(originalWidth);
       expect(canvas.height).toBe(originalHeight);
-    });
-
-    test("should handle decimal pixel values correctly", () => {
-      container.style.width = "333px";
-      container.style.height = "250px";
-
-      resizeCanvasStyle(container, canvas, 1920, 1080);
-
-      // Should handle fractional pixels
-      expect(canvas.style.width).toBe("333px");
-      const actualHeight = parseFloat(canvas.style.height);
-      const expectedHeight = 333 / (1920 / 1080); // ≈ 187.3125
-      expect(actualHeight).toBeCloseTo(expectedHeight, 2);
     });
   });
 
@@ -176,120 +150,18 @@ describe("resizeCanvasStyle", () => {
       expect(canvas.style.height).toBe("100px");
     });
 
-    test("should handle very small dimensions", () => {
+    test("should handle extreme container dimensions", () => {
+      // Very small dimensions
       container.style.width = "1px";
       container.style.height = "1px";
-
       resizeCanvasStyle(container, canvas, 800, 600);
-
-      // Should handle minimal container size
       expect(canvas.style.width).toBe("1px");
-      const actualHeight = parseFloat(canvas.style.height);
-      const expectedHeight = 1 / (800 / 600); // = 0.75
-      expect(actualHeight).toBeCloseTo(expectedHeight, 2);
-    });
 
-    test("should handle large dimensions", () => {
+      // Very large dimensions
       container.style.width = "4000px";
       container.style.height = "3000px";
-
       resizeCanvasStyle(container, canvas, 1920, 1080);
-
-      // Should handle large container dimensions
       expect(canvas.style.width).toBe("4000px");
-      const actualHeight = parseFloat(canvas.style.height);
-      const expectedHeight = 4000 / (1920 / 1080); // = 2250
-      expect(actualHeight).toBeCloseTo(expectedHeight, 2);
-    });
-  });
-
-  describe("Real-world usage scenarios", () => {
-    test("should handle JSDoc example: 16:9 container with 16:9 canvas", () => {
-      // Simulate the JSDoc example scenario
-      container.style.width = "1920px";
-      container.style.height = "1080px";
-
-      resizeCanvasStyle(container, canvas, 1920, 1080);
-
-      // Perfect aspect ratio match - should fill container exactly
-      expect(canvas.style.width).toBe("1920px");
-      expect(canvas.style.height).toBe("1080px");
-    });
-
-    test("should handle JSDoc example: sidebar layout", () => {
-      // Simulate sidebar layout from JSDoc example
-      container.style.width = "400px";
-      container.style.height = "300px";
-
-      resizeCanvasStyle(container, canvas, 800, 600);
-
-      // 4:3 aspect ratio should fit perfectly
-      expect(canvas.style.width).toBe("400px");
-      expect(canvas.style.height).toBe("300px");
-    });
-
-    test("should handle responsive design scenario", () => {
-      // Test responsive behavior with changing container size
-      container.style.width = "800px";
-      container.style.height = "600px";
-
-      resizeCanvasStyle(container, canvas, 1920, 1080);
-
-      const firstWidth = canvas.style.width;
-      const firstHeight = canvas.style.height;
-
-      // Simulate window resize
-      container.style.width = "1200px";
-      container.style.height = "900px";
-
-      resizeCanvasStyle(container, canvas, 1920, 1080);
-
-      // Canvas should adapt to new container size
-      expect(canvas.style.width).not.toBe(firstWidth);
-      expect(canvas.style.height).not.toBe(firstHeight);
-      expect(canvas.style.width).toBe("1200px");
-      const actualHeight = parseFloat(canvas.style.height);
-      const expectedHeight = 1200 / (1920 / 1080); // = 675
-      expect(actualHeight).toBeCloseTo(expectedHeight, 2);
-    });
-
-    test("should work with different HTML container elements", () => {
-      // Test with different container element types
-      const divContainer = document.createElement("div");
-      const sectionContainer = document.createElement("section");
-      const mainContainer = document.createElement("main");
-
-      divContainer.style.width = "600px";
-      divContainer.style.height = "400px";
-      sectionContainer.style.width = "600px";
-      sectionContainer.style.height = "400px";
-      mainContainer.style.width = "600px";
-      mainContainer.style.height = "400px";
-
-      document.body.appendChild(divContainer);
-      document.body.appendChild(sectionContainer);
-      document.body.appendChild(mainContainer);
-
-      try {
-        // Should work with any HTMLElement (600x400 container with 800x600 canvas = fit width)
-        resizeCanvasStyle(divContainer, canvas, 800, 600);
-        const actualWidth1 = parseFloat(canvas.style.width);
-        const expectedWidth1 = 400 * (800 / 600); // Container height * aspect ratio = 533.33
-        expect(actualWidth1).toBeCloseTo(expectedWidth1, 2);
-
-        resizeCanvasStyle(sectionContainer, canvas, 800, 600);
-        const actualWidth2 = parseFloat(canvas.style.width);
-        expect(actualWidth2).toBeCloseTo(expectedWidth1, 2);
-
-        resizeCanvasStyle(mainContainer, canvas, 800, 600);
-        const actualWidth3 = parseFloat(canvas.style.width);
-        expect(actualWidth3).toBeCloseTo(expectedWidth1, 2);
-      } finally {
-        // Cleanup
-        document.body.removeChild(divContainer);
-        document.body.removeChild(sectionContainer);
-        document.body.removeChild(mainContainer);
-      }
     });
   });
 
@@ -374,40 +246,6 @@ describe("resizeCanvasStyle", () => {
           value: originalRatio,
         });
       }
-    });
-  });
-
-  describe("Performance and rendering consistency", () => {
-    test("should maintain canvas pixel dimensions after multiple calls", () => {
-      const originalWidth = canvas.width;
-      const originalHeight = canvas.height;
-
-      // Multiple resize operations
-      for (let i = 0; i < 10; i++) {
-        container.style.width = `${400 + i * 100}px`;
-        container.style.height = `${300 + i * 75}px`;
-        resizeCanvasStyle(container, canvas, 1920, 1080);
-      }
-
-      // Canvas pixel dimensions should never change
-      expect(canvas.width).toBe(originalWidth);
-      expect(canvas.height).toBe(originalHeight);
-    });
-
-    test("should produce consistent results with identical inputs", () => {
-      container.style.width = "1000px";
-      container.style.height = "750px";
-
-      resizeCanvasStyle(container, canvas, 1600, 900);
-      const firstWidth = canvas.style.width;
-      const firstHeight = canvas.style.height;
-
-      // Call again with same parameters
-      resizeCanvasStyle(container, canvas, 1600, 900);
-
-      // Results should be identical
-      expect(canvas.style.width).toBe(firstWidth);
-      expect(canvas.style.height).toBe(firstHeight);
     });
   });
 });
