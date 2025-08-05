@@ -182,7 +182,8 @@ const radioGroup = new RadioButtonManager([option1, option2]);
 Transform existing Three.js meshes into interactive objects without reconstruction:
 
 ```typescript
-import { convertToClickableMesh, convertToCheckboxMesh } from "@masatomakino/threejs-interactive-object";
+import { convertToClickableMesh } from "@masatomakino/threejs-interactive-object";
+import { Mesh } from "three";
 
 // Convert existing mesh to clickable
 const existingMesh = new Mesh(geometry, material);
