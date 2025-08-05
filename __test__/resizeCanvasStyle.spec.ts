@@ -173,58 +173,41 @@ describe("resizeCanvasStyle", () => {
       // Store original devicePixelRatio
       const originalRatio = window.devicePixelRatio;
 
-      try {
-        // Test with standard ratio (1.0)
+      const setDevicePixelRatio = (ratio: number) => {
         Object.defineProperty(window, "devicePixelRatio", {
           writable: true,
           configurable: true,
-          value: 1.0,
+          value: ratio,
         });
+      };
 
+      try {
+        // Test with standard ratio (1.0)
+        setDevicePixelRatio(1.0);
         resizeCanvasStyle(container, canvas, 1920, 1080);
         const width1 = canvas.style.width;
         const height1 = canvas.style.height;
 
         // Test with high-DPI ratio (2.0)
-        Object.defineProperty(window, "devicePixelRatio", {
-          writable: true,
-          configurable: true,
-          value: 2.0,
-        });
-
+        setDevicePixelRatio(2.0);
         resizeCanvasStyle(container, canvas, 1920, 1080);
         const width2 = canvas.style.width;
         const height2 = canvas.style.height;
 
         // Test with very high-DPI ratio (3.0)
-        Object.defineProperty(window, "devicePixelRatio", {
-          writable: true,
-          configurable: true,
-          value: 3.0,
-        });
-
+        setDevicePixelRatio(3.0);
         resizeCanvasStyle(container, canvas, 1920, 1080);
         const width3 = canvas.style.width;
         const height3 = canvas.style.height;
 
         // Test with browser zoom out (0.5 - common when zoomed out to 50%)
-        Object.defineProperty(window, "devicePixelRatio", {
-          writable: true,
-          configurable: true,
-          value: 0.5,
-        });
-
+        setDevicePixelRatio(0.5);
         resizeCanvasStyle(container, canvas, 1920, 1080);
         const width4 = canvas.style.width;
         const height4 = canvas.style.height;
 
         // Test with extreme fractional ratio (1.25 - common on some Windows displays)
-        Object.defineProperty(window, "devicePixelRatio", {
-          writable: true,
-          configurable: true,
-          value: 1.25,
-        });
-
+        setDevicePixelRatio(1.25);
         resizeCanvasStyle(container, canvas, 1920, 1080);
         const width5 = canvas.style.width;
         const height5 = canvas.style.height;
@@ -240,11 +223,7 @@ describe("resizeCanvasStyle", () => {
         expect(height5).toBe(height1);
       } finally {
         // Restore original devicePixelRatio
-        Object.defineProperty(window, "devicePixelRatio", {
-          writable: true,
-          configurable: true,
-          value: originalRatio,
-        });
+        setDevicePixelRatio(originalRatio);
       }
     });
   });
