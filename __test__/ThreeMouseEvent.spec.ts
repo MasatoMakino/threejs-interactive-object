@@ -4,6 +4,7 @@ import {
   CheckBoxMesh,
   ClickableMesh,
   StateMaterialSet,
+  ThreeMouseEventMap,
   ThreeMouseEventUtil,
 } from "../src/index.js";
 
