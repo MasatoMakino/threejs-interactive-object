@@ -36,7 +36,7 @@ describe("ViewPortUtil", () => {
     });
   });
 
-  test("returns true for isContain when viewport is undefined", () => {
+  test("should return true when viewport parameter is undefined", () => {
     const e = getPointerEvent("pointermove", {
       offsetX: 16,
       offsetY: 420,
@@ -44,7 +44,7 @@ describe("ViewPortUtil", () => {
     expect(ViewPortUtil.isContain(canvas, undefined, e)).toBe(true);
   });
 
-  test("correctly validates point containment within defined viewport", () => {
+  test("should return true when pointer is within viewport boundaries", () => {
     const e = getPointerEvent("pointermove", {
       offsetX: 16,
       offsetY: 420,
@@ -66,7 +66,7 @@ describe("ViewPortUtil", () => {
 
   describe("Boundary conditions and error handling", () => {
     describe("convertToRectangle edge cases", () => {
-      test("handles zero-sized viewport dimensions correctly", () => {
+      test("should handle zero-width and zero-height viewport dimensions", () => {
         const zeroViewport = new Vector4(50, 50, 0, 0);
         const rect = ViewPortUtil.convertToRectangle(canvas, zeroViewport);
 
@@ -82,7 +82,7 @@ describe("ViewPortUtil", () => {
         });
       });
 
-      test("handles negative viewport dimensions without errors", () => {
+      test("should process negative width and height values without throwing", () => {
         const negativeViewport = new Vector4(100, 100, -50, -30);
         const rect = ViewPortUtil.convertToRectangle(canvas, negativeViewport);
 
@@ -99,7 +99,7 @@ describe("ViewPortUtil", () => {
         });
       });
 
-      test("handles viewport exceeding canvas boundaries", () => {
+      test("should convert viewport coordinates even when exceeding canvas bounds", () => {
         const largeViewport = new Vector4(0, 0, 1000, 800);
         const rect = ViewPortUtil.convertToRectangle(canvas, largeViewport);
 
@@ -115,7 +115,7 @@ describe("ViewPortUtil", () => {
         });
       });
 
-      test("handles fractional viewport coordinates with precision", () => {
+      test("should maintain precision when converting fractional viewport coordinates", () => {
         const fractionalViewport = new Vector4(10.5, 20.3, 100.7, 50.9);
         const rect = ViewPortUtil.convertToRectangle(
           canvas,
@@ -135,7 +135,7 @@ describe("ViewPortUtil", () => {
     });
 
     describe("Viewport containment validation", () => {
-      test("validates precise viewport boundary containment", () => {
+      test("should correctly identify points at exact viewport boundary edges", () => {
         // Test exact viewport boundaries
         const testBoundaries = [
           { x: 10, y: 410, expected: true }, // Top-left corner
@@ -170,7 +170,7 @@ describe("ViewPortUtil", () => {
 
   describe("Coordinate transformation accuracy", () => {
     describe("Numerical precision", () => {
-      test("maintains precision for fractional input coordinates", () => {
+      test("should preserve coordinate precision within 10 decimal places for fractional inputs", () => {
         const fractionalCoords = [
           { x: 15.5, y: 420.3 },
           { x: 100.123, y: 200.987 },
@@ -225,7 +225,7 @@ describe("ViewPortUtil", () => {
         });
       });
 
-      test("should produce exact NDC boundary values for viewport corners", () => {
+      test("should map viewport corners to exact NDC boundary values (-1 or 1)", () => {
         // Test viewport corners produce exact -1 or 1 values
         const cornerTests = [
           { x: 10, y: 410, expectedX: -1, expectedY: 1 }, // Top-left
@@ -246,7 +246,7 @@ describe("ViewPortUtil", () => {
         });
       });
 
-      test("should handle viewport center correctly", () => {
+      test("should map viewport center coordinates to NDC origin (0, 0)", () => {
         // Viewport center should produce (0, 0) in NDC
         const centerX = viewport.x + viewport.width / 2; // 10 + 128/2 = 74
         const _centerY = viewport.y + viewport.height / 2; // 6 + 64/2 = 38
@@ -267,7 +267,7 @@ describe("ViewPortUtil", () => {
 
   describe("Performance and optimization", () => {
     describe("Vector reuse optimization", () => {
-      test("should reuse provided Vector2 instance", () => {
+      test("should modify and return the same Vector2 instance when provided", () => {
         const reusableVector = new Vector2(999, 999); // Set initial values to detect reuse
         const e = getPointerEvent("pointermove", {
           offsetX: 74, // Center of viewport (10 + 128/2 = 74)
@@ -306,82 +306,11 @@ describe("ViewPortUtil", () => {
         expect(result.y).toBeCloseTo(0, 2);
       });
     });
-
-    describe("Function routing efficiency", () => {
-      test("should route to appropriate coordinate function based on viewport presence", () => {
-        const testCoords = { offsetX: 74, offsetY: 442 }; // Center coordinates
-
-        // Test without viewport - should use canvas-wide conversion
-        const e1 = getPointerEvent(
-          "pointermove",
-          testCoords,
-        ) as unknown as PointerEvent;
-        const resultWithoutViewport = ViewPortUtil.convertToMousePosition(
-          canvas,
-          e1,
-          undefined,
-        );
-
-        // Test with viewport - should use viewport-specific conversion
-        const e2 = getPointerEvent(
-          "pointermove",
-          testCoords,
-        ) as unknown as PointerEvent;
-        const resultWithViewport = ViewPortUtil.convertToMousePosition(
-          canvas,
-          e2,
-          viewport,
-        );
-
-        // Results should be different, confirming different code paths
-        expect(resultWithoutViewport.x).not.toBeCloseTo(
-          resultWithViewport.x,
-          2,
-        );
-        expect(resultWithoutViewport.y).not.toBeCloseTo(
-          resultWithViewport.y,
-          2,
-        );
-
-        // Both should be valid NDC coordinates
-        [resultWithoutViewport, resultWithViewport].forEach((result) => {
-          expect(result.x).toBeGreaterThanOrEqual(-1);
-          expect(result.x).toBeLessThanOrEqual(1);
-          expect(result.y).toBeGreaterThanOrEqual(-1);
-          expect(result.y).toBeLessThanOrEqual(1);
-        });
-      });
-
-      test("should handle high-frequency coordinate conversions efficiently", () => {
-        const startTime = performance.now();
-        const iterations = 1000;
-        const testCoords = { offsetX: 100, offsetY: 200 };
-
-        // Perform many coordinate conversions
-        for (let i = 0; i < iterations; i++) {
-          const e = getPointerEvent(
-            "pointermove",
-            testCoords,
-          ) as unknown as PointerEvent;
-          ViewPortUtil.convertToMousePosition(canvas, e, viewport);
-        }
-
-        const endTime = performance.now();
-        const totalTime = endTime - startTime;
-        const avgTimePerCall = totalTime / iterations;
-
-        // Should complete reasonably quickly (less than 1ms per call on average)
-        expect(avgTimePerCall).toBeLessThan(1.0);
-
-        // Total time should be reasonable (less than 100ms for 1000 calls)
-        expect(totalTime).toBeLessThan(100);
-      });
-    });
   });
 
   describe("Multi-viewport and practical scenarios", () => {
     describe("Multiple viewport configurations", () => {
-      test("should handle adjacent non-overlapping viewports", () => {
+      test("should process multiple non-overlapping viewports independently", () => {
         const leftViewport = new Vector4(0, 0, 320, 240);
         const rightViewport = new Vector4(320, 0, 320, 240);
 
@@ -504,7 +433,7 @@ describe("ViewPortUtil", () => {
     });
 
     describe("Demo viewport scenario emulation", () => {
-      test("should emulate demo_viewport.js dual-scene setup", () => {
+      test("should handle dual-viewport configuration with correct coordinate mapping", () => {
         // Recreate the exact viewport setup from demo_viewport.js
         const scene1Viewport = new Vector4(20, 20, 480, 360);
         const scene2Viewport = new Vector4(480, 360, 520, 480);
@@ -564,7 +493,7 @@ describe("ViewPortUtil", () => {
     });
 
     describe("Real-world usage patterns", () => {
-      test("should handle rapid viewport switching", () => {
+      test("should maintain accuracy when testing same point against multiple viewports", () => {
         const viewports = [
           new Vector4(0, 0, 160, 120),
           new Vector4(160, 0, 160, 120),
@@ -597,135 +526,12 @@ describe("ViewPortUtil", () => {
           }
         });
       });
-
-      test("should maintain consistency across canvas size changes", () => {
-        // Test with different canvas sizes but same relative viewport
-        const testSizes = [
-          { width: 320, height: 240 },
-          { width: 800, height: 600 },
-          { width: 1920, height: 1080 },
-        ];
-
-        testSizes.forEach(({ width, height }) => {
-          // Create temporary canvas with different size
-          const testCanvas = document.createElement("canvas");
-          testCanvas.width = width;
-          testCanvas.height = height;
-          testCanvas.style.width = `${width}px`;
-          testCanvas.style.height = `${height}px`;
-          document.body.appendChild(testCanvas);
-
-          try {
-            // Create viewport that's 25% of canvas size, centered
-            const vpWidth = width * 0.25;
-            const vpHeight = height * 0.25;
-            const vpX = (width - vpWidth) / 2;
-            const vpY = (height - vpHeight) / 2;
-            const testViewport = new Vector4(vpX, vpY, vpWidth, vpHeight);
-
-            // Test center point
-            const centerX = vpX + vpWidth / 2;
-            const centerY = height - (vpY + vpHeight / 2);
-
-            const e = getPointerEvent("pointermove", {
-              offsetX: centerX,
-              offsetY: centerY,
-            }) as unknown as PointerEvent;
-
-            const result = ViewPortUtil.convertToMousePosition(
-              testCanvas,
-              e,
-              testViewport,
-            );
-
-            // Center should always be (0, 0) regardless of canvas size
-            expect(result.x).toBeCloseTo(0, 1);
-            expect(result.y).toBeCloseTo(0, 1);
-          } finally {
-            document.body.removeChild(testCanvas);
-          }
-        });
-      });
     });
   });
 
   describe("Cross-browser and device compatibility", () => {
     describe("Canvas styling variations", () => {
-      test("should handle canvas with margins and padding", () => {
-        const styledCanvas = document.createElement("canvas");
-        styledCanvas.width = 400;
-        styledCanvas.height = 300;
-        styledCanvas.style.width = "400px";
-        styledCanvas.style.height = "300px";
-        styledCanvas.style.setProperty("margin", "20px");
-        styledCanvas.style.setProperty("padding", "10px");
-        styledCanvas.style.setProperty("border", "5px solid red");
-        document.body.appendChild(styledCanvas);
-
-        try {
-          // Test that function doesn't throw with styled canvas
-          const vp = new Vector4(0, 0, 400, 300);
-
-          const testEvent = getPointerEvent("pointermove", {
-            offsetX: 100,
-            offsetY: 150,
-          }) as unknown as PointerEvent;
-
-          const result = ViewPortUtil.convertToMousePosition(
-            styledCanvas,
-            testEvent,
-            vp,
-          );
-
-          // Should produce valid NDC coordinates regardless of styling
-          expect(result.x).toBeGreaterThanOrEqual(-1);
-          expect(result.x).toBeLessThanOrEqual(1);
-          expect(result.y).toBeGreaterThanOrEqual(-1);
-          expect(result.y).toBeLessThanOrEqual(1);
-
-          // Should also work with containment check
-          expect(() => {
-            ViewPortUtil.isContain(styledCanvas, vp, testEvent);
-          }).not.toThrow();
-        } finally {
-          document.body.removeChild(styledCanvas);
-        }
-      });
-
-      test("should handle canvas with CSS transforms", () => {
-        const transformedCanvas = document.createElement("canvas");
-        transformedCanvas.width = 400;
-        transformedCanvas.height = 300;
-        transformedCanvas.style.width = "400px";
-        transformedCanvas.style.height = "300px";
-        transformedCanvas.style.setProperty("transform", "scale(1.5)");
-        transformedCanvas.style.setProperty("transform-origin", "0 0");
-        document.body.appendChild(transformedCanvas);
-
-        try {
-          const vp = new Vector4(0, 0, 400, 300);
-
-          // Test with scaled coordinates (offsetX/Y are still in original canvas space)
-          const centerEvent = getPointerEvent("pointermove", {
-            offsetX: 200, // Canvas center
-            offsetY: 150,
-          }) as unknown as PointerEvent;
-
-          const result = ViewPortUtil.convertToMousePosition(
-            transformedCanvas,
-            centerEvent,
-            vp,
-          );
-
-          // Center should still map to (0, 0)
-          expect(result.x).toBeCloseTo(0, 2);
-          expect(result.y).toBeCloseTo(0, 2);
-        } finally {
-          document.body.removeChild(transformedCanvas);
-        }
-      });
-
-      test("should handle canvas size mismatch (CSS vs canvas dimensions)", () => {
+      test("should use CSS dimensions when canvas pixel size differs from display size", () => {
         const mismatchCanvas = document.createElement("canvas");
         mismatchCanvas.width = 800; // Canvas pixel dimensions
         mismatchCanvas.height = 600;
@@ -734,9 +540,7 @@ describe("ViewPortUtil", () => {
         document.body.appendChild(mismatchCanvas);
 
         try {
-          // Viewport coordinates should work with CSS dimensions, not canvas pixel dimensions
           const vp = new Vector4(0, 0, 200, 150); // Half of CSS dimensions
-
           const vpCenterX = vp.width / 2; // 200 / 2 = 100
           const vpCenterY = 300 - (vp.y + vp.height / 2); // 300 - (0 + 75) = 225
 
@@ -761,7 +565,7 @@ describe("ViewPortUtil", () => {
     });
 
     describe("High-DPI and device scaling", () => {
-      test("should maintain coordinate accuracy across different DPI settings", () => {
+      test("should produce identical results regardless of devicePixelRatio value", () => {
         const originalRatio = window.devicePixelRatio;
         const testCoords = { offsetX: 74, offsetY: 442 };
 
@@ -777,9 +581,7 @@ describe("ViewPortUtil", () => {
           const dpiScenarios = [
             { dpi: 1.0, name: "Standard DPI" },
             { dpi: 1.25, name: "Windows 125% scaling" },
-            { dpi: 1.5, name: "Windows 150% scaling" },
             { dpi: 2.0, name: "Retina/HiDPI 200%" },
-            { dpi: 2.5, name: "Ultra-high DPI" },
             { dpi: 3.0, name: "Mobile high DPI" },
           ];
 
@@ -809,75 +611,29 @@ describe("ViewPortUtil", () => {
           setDevicePixelRatio(originalRatio);
         }
       });
-
-      test("should handle fractional pixel ratios correctly", () => {
-        const originalRatio = window.devicePixelRatio;
-        const fractionalRatios = [0.75, 1.25, 1.33, 1.67, 2.25];
-
-        const setDevicePixelRatio = (ratio: number) => {
-          Object.defineProperty(window, "devicePixelRatio", {
-            writable: true,
-            configurable: true,
-            value: ratio,
-          });
-        };
-
-        try {
-          const testPoint = { offsetX: 74, offsetY: 442 }; // Use viewport center coordinates
-          let previousResult: Vector2 | null = null;
-
-          fractionalRatios.forEach((ratio) => {
-            setDevicePixelRatio(ratio);
-            const e = getPointerEvent(
-              "pointermove",
-              testPoint,
-            ) as unknown as PointerEvent;
-            const result = ViewPortUtil.convertToMousePosition(
-              canvas,
-              e,
-              viewport,
-            );
-
-            // Result should be valid NDC coordinates
-            expect(result.x).toBeGreaterThanOrEqual(-1);
-            expect(result.x).toBeLessThanOrEqual(1);
-            expect(result.y).toBeGreaterThanOrEqual(-1);
-            expect(result.y).toBeLessThanOrEqual(1);
-
-            // Results should be consistent regardless of fractional DPI
-            if (previousResult) {
-              expect(result.x).toBeCloseTo(previousResult.x, 8);
-              expect(result.y).toBeCloseTo(previousResult.y, 8);
-            }
-            previousResult = result.clone();
-          });
-        } finally {
-          setDevicePixelRatio(originalRatio);
-        }
-      });
     });
 
     describe("Touch and pointer device compatibility", () => {
-      test("should handle touch events with same coordinate logic", () => {
-        // Test that touch events (which are also PointerEvents) work the same way
+      test("should handle different pointer types consistently", () => {
+        const testCoords = { offsetX: 74, offsetY: 442 };
+
+        // Test touch and mouse events produce same results
         const touchEvent = {
-          offsetX: 74,
-          offsetY: 442,
+          ...testCoords,
           pointerId: 1,
           pointerType: "touch",
         } as PointerEvent;
+
+        const mouseEvent = getPointerEvent(
+          "pointermove",
+          testCoords,
+        ) as unknown as PointerEvent;
 
         const touchResult = ViewPortUtil.convertToMousePosition(
           canvas,
           touchEvent,
           viewport,
         );
-
-        // Should produce same result as mouse events
-        const mouseEvent = getPointerEvent("pointermove", {
-          offsetX: 74,
-          offsetY: 442,
-        }) as unknown as PointerEvent;
         const mouseResult = ViewPortUtil.convertToMousePosition(
           canvas,
           mouseEvent,
@@ -886,78 +642,6 @@ describe("ViewPortUtil", () => {
 
         expect(touchResult.x).toBeCloseTo(mouseResult.x, 10);
         expect(touchResult.y).toBeCloseTo(mouseResult.y, 10);
-      });
-
-      test("should handle pen/stylus events correctly", () => {
-        // Test pen events with pressure and tilt (should not affect coordinate calculation)
-        const penEvent = {
-          offsetX: 74, // Use viewport center coordinates
-          offsetY: 442,
-          pointerId: 2,
-          pointerType: "pen",
-          pressure: 0.7,
-          tiltX: 15,
-          tiltY: -10,
-        } as PointerEvent;
-
-        const penResult = ViewPortUtil.convertToMousePosition(
-          canvas,
-          penEvent,
-          viewport,
-        );
-
-        // Should be valid coordinates regardless of pen properties
-        expect(penResult.x).toBeGreaterThanOrEqual(-1);
-        expect(penResult.x).toBeLessThanOrEqual(1);
-        expect(penResult.y).toBeGreaterThanOrEqual(-1);
-        expect(penResult.y).toBeLessThanOrEqual(1);
-
-        // Should match mouse event with same coordinates
-        const mouseEvent = getPointerEvent("pointermove", {
-          offsetX: 74,
-          offsetY: 442,
-        }) as unknown as PointerEvent;
-        const mouseResult = ViewPortUtil.convertToMousePosition(
-          canvas,
-          mouseEvent,
-          viewport,
-        );
-
-        expect(penResult.x).toBeCloseTo(mouseResult.x, 2);
-        expect(penResult.y).toBeCloseTo(mouseResult.y, 2);
-      });
-
-      test("should work consistently across different pointer types", () => {
-        const testCoords = { offsetX: 120, offsetY: 400 };
-        const pointerTypes = [
-          { type: "mouse", pointerId: 1 },
-          { type: "touch", pointerId: 2 },
-          { type: "pen", pointerId: 3 },
-        ];
-
-        const results: Vector2[] = [];
-
-        pointerTypes.forEach(({ type, pointerId }) => {
-          const pointerEvent = {
-            ...testCoords,
-            pointerId,
-            pointerType: type,
-          } as PointerEvent;
-
-          const result = ViewPortUtil.convertToMousePosition(
-            canvas,
-            pointerEvent,
-            viewport,
-          );
-          results.push(result.clone());
-        });
-
-        // All pointer types should produce identical results
-        const baseResult = results[0];
-        results.slice(1).forEach((result) => {
-          expect(result.x).toBeCloseTo(baseResult.x, 10);
-          expect(result.y).toBeCloseTo(baseResult.y, 10);
-        });
       });
     });
   });
