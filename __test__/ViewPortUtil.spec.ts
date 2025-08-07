@@ -3,6 +3,13 @@ import { Vector2, Vector4 } from "three";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { ViewPortUtil } from "../src/index.js";
 
+function createPointerMoveEvent(coords: {
+  offsetX: number;
+  offsetY: number;
+}): PointerEvent {
+  return getPointerEvent("pointermove", coords) as unknown as PointerEvent;
+}
+
 describe("ViewPortUtil", () => {
   let canvas: HTMLCanvasElement;
   let viewport: Vector4;
@@ -36,19 +43,11 @@ describe("ViewPortUtil", () => {
     });
   });
 
-  test("should return true when viewport parameter is undefined", () => {
-    const e = getPointerEvent("pointermove", {
-      offsetX: 16,
-      offsetY: 420,
-    }) as unknown as PointerEvent;
-    expect(ViewPortUtil.isContain(canvas, undefined, e)).toBe(true);
-  });
-
   test("should return true when pointer is within viewport boundaries", () => {
-    const e = getPointerEvent("pointermove", {
+    const e = createPointerMoveEvent({
       offsetX: 16,
       offsetY: 420,
-    }) as unknown as PointerEvent;
+    });
     expect(ViewPortUtil.isContain(canvas, viewport, e)).toBe(true);
   });
 
@@ -149,19 +148,19 @@ describe("ViewPortUtil", () => {
         ];
 
         testBoundaries.forEach(({ x, y, expected }) => {
-          const e = getPointerEvent("pointermove", {
+          const e = createPointerMoveEvent({
             offsetX: x,
             offsetY: y,
-          }) as unknown as PointerEvent;
+          });
           expect(ViewPortUtil.isContain(canvas, viewport, e)).toBe(expected);
         });
       });
 
       test("returns true for undefined viewport parameter", () => {
-        const e = getPointerEvent("pointermove", {
+        const e = createPointerMoveEvent({
           offsetX: 100,
           offsetY: 200,
-        }) as unknown as PointerEvent;
+        });
 
         expect(ViewPortUtil.isContain(canvas, undefined, e)).toBe(true);
       });
@@ -178,10 +177,10 @@ describe("ViewPortUtil", () => {
         ];
 
         fractionalCoords.forEach(({ x, y }) => {
-          const e = getPointerEvent("pointermove", {
+          const e = createPointerMoveEvent({
             offsetX: x,
             offsetY: y,
-          }) as unknown as PointerEvent;
+          });
 
           const pos = ViewPortUtil.convertToMousePosition(canvas, e, undefined);
 
@@ -211,10 +210,10 @@ describe("ViewPortUtil", () => {
         ];
 
         boundaryPoints.forEach(({ x, y }) => {
-          const e = getPointerEvent("pointermove", {
+          const e = createPointerMoveEvent({
             offsetX: x,
             offsetY: y,
-          }) as unknown as PointerEvent;
+          });
 
           const pos = ViewPortUtil.convertToMousePosition(canvas, e, undefined);
 
@@ -235,10 +234,10 @@ describe("ViewPortUtil", () => {
         ];
 
         cornerTests.forEach(({ x, y, expectedX, expectedY }) => {
-          const e = getPointerEvent("pointermove", {
+          const e = createPointerMoveEvent({
             offsetX: x,
             offsetY: y,
-          }) as unknown as PointerEvent;
+          });
 
           const pos = ViewPortUtil.convertToMousePosition(canvas, e, viewport);
           expect(pos.x).toBeCloseTo(expectedX, 2);
@@ -249,14 +248,13 @@ describe("ViewPortUtil", () => {
       test("should map viewport center coordinates to NDC origin (0, 0)", () => {
         // Viewport center should produce (0, 0) in NDC
         const centerX = viewport.x + viewport.width / 2; // 10 + 128/2 = 74
-        const _centerY = viewport.y + viewport.height / 2; // 6 + 64/2 = 38
         const canvasCenterY =
           canvas.height - (viewport.y + viewport.height / 2); // 480 - (6 + 32) = 442
 
-        const e = getPointerEvent("pointermove", {
+        const e = createPointerMoveEvent({
           offsetX: centerX,
           offsetY: canvasCenterY,
-        }) as unknown as PointerEvent;
+        });
 
         const pos = ViewPortUtil.convertToMousePosition(canvas, e, viewport);
         expect(pos.x).toBeCloseTo(0, 2);
@@ -269,10 +267,10 @@ describe("ViewPortUtil", () => {
     describe("Vector reuse optimization", () => {
       test("should modify and return the same Vector2 instance when provided", () => {
         const reusableVector = new Vector2(999, 999); // Set initial values to detect reuse
-        const e = getPointerEvent("pointermove", {
+        const e = createPointerMoveEvent({
           offsetX: 74, // Center of viewport (10 + 128/2 = 74)
           offsetY: 442, // Center of viewport (410 + 64/2 = 442)
-        }) as unknown as PointerEvent;
+        });
 
         const result = ViewPortUtil.convertToMousePosition(
           canvas,
@@ -294,10 +292,10 @@ describe("ViewPortUtil", () => {
       });
 
       test("should create new Vector2 when none provided", () => {
-        const e = getPointerEvent("pointermove", {
+        const e = createPointerMoveEvent({
           offsetX: 74, // Center of viewport
           offsetY: 442, // Center of viewport
-        }) as unknown as PointerEvent;
+        });
 
         const result = ViewPortUtil.convertToMousePosition(canvas, e, viewport);
 
@@ -319,10 +317,10 @@ describe("ViewPortUtil", () => {
         const leftCenterY =
           canvas.height - (leftViewport.y + leftViewport.height / 2); // 480 - (0 + 120) = 360
 
-        const leftPoint = getPointerEvent("pointermove", {
+        const leftPoint = createPointerMoveEvent({
           offsetX: leftCenterX,
           offsetY: leftCenterY,
-        }) as unknown as PointerEvent;
+        });
 
         const leftResult = ViewPortUtil.convertToMousePosition(
           canvas,
@@ -337,10 +335,10 @@ describe("ViewPortUtil", () => {
         const rightCenterY =
           canvas.height - (rightViewport.y + rightViewport.height / 2); // 480 - (0 + 120) = 360
 
-        const rightPoint = getPointerEvent("pointermove", {
+        const rightPoint = createPointerMoveEvent({
           offsetX: rightCenterX,
           offsetY: rightCenterY,
-        }) as unknown as PointerEvent;
+        });
 
         const rightResult = ViewPortUtil.convertToMousePosition(
           canvas,
@@ -362,20 +360,14 @@ describe("ViewPortUtil", () => {
         // Choose a point in overlapping region: x=150, y between overlayCanvasTopY(280) and mainCanvasTopY+120(300)
         const testPoint = { offsetX: 150, offsetY: 300 };
 
-        const e1 = getPointerEvent(
-          "pointermove",
-          testPoint,
-        ) as unknown as PointerEvent;
+        const e1 = createPointerMoveEvent(testPoint);
         const mainResult = ViewPortUtil.convertToMousePosition(
           canvas,
           e1,
           mainViewport,
         );
 
-        const e2 = getPointerEvent(
-          "pointermove",
-          testPoint,
-        ) as unknown as PointerEvent;
+        const e2 = createPointerMoveEvent(testPoint);
         const overlayResult = ViewPortUtil.convertToMousePosition(
           canvas,
           e2,
@@ -418,10 +410,10 @@ describe("ViewPortUtil", () => {
           const centerX = vp.x + vp.width / 2;
           const centerY = 480 - (vp.y + vp.height / 2);
 
-          const e = getPointerEvent("pointermove", {
+          const e = createPointerMoveEvent({
             offsetX: centerX,
             offsetY: centerY,
-          }) as unknown as PointerEvent;
+          });
 
           const result = ViewPortUtil.convertToMousePosition(canvas, e, vp);
 
@@ -443,10 +435,10 @@ describe("ViewPortUtil", () => {
         const scene1CenterY =
           canvas.height - (scene1Viewport.y + scene1Viewport.height / 2); // 480 - (20 + 180) = 280
 
-        const scene1Event = getPointerEvent("pointermove", {
+        const scene1Event = createPointerMoveEvent({
           offsetX: scene1CenterX,
           offsetY: scene1CenterY,
-        }) as unknown as PointerEvent;
+        });
 
         const scene1Result = ViewPortUtil.convertToMousePosition(
           canvas,
@@ -461,10 +453,10 @@ describe("ViewPortUtil", () => {
         const scene2CenterY =
           canvas.height - (scene2Viewport.y + scene2Viewport.height / 2); // 480 - (360 + 240) = -120
 
-        const scene2Event = getPointerEvent("pointermove", {
+        const scene2Event = createPointerMoveEvent({
           offsetX: scene2CenterX,
           offsetY: scene2CenterY,
-        }) as unknown as PointerEvent;
+        });
 
         const scene2Result = ViewPortUtil.convertToMousePosition(
           canvas,
@@ -510,10 +502,7 @@ describe("ViewPortUtil", () => {
         };
 
         viewports.forEach((vp, index) => {
-          const e = getPointerEvent(
-            "pointermove",
-            testPoint,
-          ) as unknown as PointerEvent;
+          const e = createPointerMoveEvent(testPoint);
 
           // Only first viewport should contain the point
           const contained = ViewPortUtil.isContain(canvas, vp, e);
@@ -544,10 +533,10 @@ describe("ViewPortUtil", () => {
           const vpCenterX = vp.width / 2; // 200 / 2 = 100
           const vpCenterY = 300 - (vp.y + vp.height / 2); // 300 - (0 + 75) = 225
 
-          const centerEvent = getPointerEvent("pointermove", {
+          const centerEvent = createPointerMoveEvent({
             offsetX: vpCenterX,
             offsetY: vpCenterY,
-          }) as unknown as PointerEvent;
+          });
 
           const result = ViewPortUtil.convertToMousePosition(
             mismatchCanvas,
@@ -589,10 +578,7 @@ describe("ViewPortUtil", () => {
 
           dpiScenarios.forEach(({ dpi, name }) => {
             setDevicePixelRatio(dpi);
-            const e = getPointerEvent(
-              "pointermove",
-              testCoords,
-            ) as unknown as PointerEvent;
+            const e = createPointerMoveEvent(testCoords);
             const result = ViewPortUtil.convertToMousePosition(
               canvas,
               e,
@@ -624,10 +610,7 @@ describe("ViewPortUtil", () => {
           pointerType: "touch",
         } as PointerEvent;
 
-        const mouseEvent = getPointerEvent(
-          "pointermove",
-          testCoords,
-        ) as unknown as PointerEvent;
+        const mouseEvent = createPointerMoveEvent(testCoords);
 
         const touchResult = ViewPortUtil.convertToMousePosition(
           canvas,
@@ -655,10 +638,10 @@ function testPoint(
   canvas: HTMLCanvasElement,
   viewport?: Vector4,
 ): void {
-  const e = getPointerEvent("pointermove", {
+  const e = createPointerMoveEvent({
     offsetX,
     offsetY,
-  }) as unknown as PointerEvent;
+  });
   const pos = ViewPortUtil.convertToMousePosition(
     canvas,
     e,
