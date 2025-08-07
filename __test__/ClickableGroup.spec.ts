@@ -1,4 +1,10 @@
-import { BoxGeometry, Mesh, MeshBasicMaterial } from "three";
+import {
+  BoxGeometry,
+  Mesh,
+  MeshBasicMaterial,
+  Sprite,
+  SpriteMaterial,
+} from "three";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
   ClickableGroup,
@@ -548,6 +554,292 @@ describe("ClickableGroup", () => {
         expect(spyParent).toHaveBeenCalledTimes(1);
         // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
         expect((parentGroup as any).material).toBeUndefined();
+      });
+    });
+  });
+
+  describe("Plain object children as event triggers", () => {
+    let managerScene: MouseEventManagerScene;
+    let parentGroup: ClickableGroup<string>;
+    let plainMesh: Mesh;
+    let plainSprite: Sprite;
+
+    const halfW = MouseEventManagerScene.W / 2;
+    const halfH = MouseEventManagerScene.H / 2;
+
+    beforeEach(() => {
+      managerScene = new MouseEventManagerScene();
+
+      parentGroup = new ClickableGroup<string>();
+      parentGroup.interactionHandler.value = "composite-button";
+      parentGroup.interactionHandler.enable();
+      parentGroup.interactionHandler.frozen = false;
+
+      // Create plain Mesh (no interaction handler)
+      plainMesh = new Mesh(
+        new BoxGeometry(3, 1.5, 0.1),
+        new MeshBasicMaterial({ color: 0x444444 }),
+      );
+
+      // Create plain Sprite (no interaction handler)
+      plainSprite = new Sprite(new SpriteMaterial({ color: 0xffffff }));
+      plainSprite.position.z = 0.1; // Position sprite slightly forward
+
+      parentGroup.add(plainMesh);
+      parentGroup.add(plainSprite);
+      managerScene.scene.add(parentGroup);
+
+      // Initialize scene state
+      managerScene.reset();
+    });
+
+    afterEach(() => {
+      // Clean up DOM elements
+      if (managerScene.canvas.parentNode) {
+        managerScene.canvas.parentNode.removeChild(managerScene.canvas);
+      }
+    });
+
+    describe("Basic plain object triggering", () => {
+      test("should trigger parent Group events when clicking plain Mesh children", () => {
+        const spyParent = vi.fn();
+        parentGroup.interactionHandler.on("click", spyParent);
+
+        // Verify that plain mesh has no interaction handler
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((plainMesh as any).interactionHandler).toBeUndefined();
+
+        // Click on plain mesh should trigger parent group event
+        managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
+        managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
+
+        expect(spyParent).toHaveBeenCalledTimes(1);
+      });
+
+      test("should trigger parent Group events when clicking plain Sprite children", () => {
+        const spyParent = vi.fn();
+        parentGroup.interactionHandler.on("click", spyParent);
+
+        // Verify that plain sprite has no interaction handler
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((plainSprite as any).interactionHandler).toBeUndefined();
+
+        // Click on plain sprite should trigger parent group event
+        managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
+        managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
+
+        expect(spyParent).toHaveBeenCalledTimes(1);
+      });
+
+      test("should handle multiple plain children as unified trigger area", () => {
+        // Add additional plain objects to simulate complex UI
+        const backgroundMesh = new Mesh(
+          new BoxGeometry(4, 2, 0.05),
+          new MeshBasicMaterial({ color: 0x333333 }),
+        );
+        backgroundMesh.position.z = -0.1;
+
+        const iconSprite = new Sprite(new SpriteMaterial({ color: 0x00ff00 }));
+        iconSprite.position.set(1, 0, 0.2);
+        iconSprite.scale.setScalar(0.5);
+
+        parentGroup.add(backgroundMesh);
+        parentGroup.add(iconSprite);
+
+        const spyParent = vi.fn();
+        parentGroup.interactionHandler.on("click", spyParent);
+
+        // Click anywhere should trigger the same parent group
+        managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
+        managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
+
+        expect(spyParent).toHaveBeenCalledTimes(1);
+
+        // Verify all children are plain objects (no interaction handlers)
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((plainMesh as any).interactionHandler).toBeUndefined();
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((plainSprite as any).interactionHandler).toBeUndefined();
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((backgroundMesh as any).interactionHandler).toBeUndefined();
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((iconSprite as any).interactionHandler).toBeUndefined();
+      });
+    });
+
+    describe("Plain object material independence", () => {
+      test("should not change plain children materials during parent interactions", () => {
+        // Record original materials
+        const originalMeshMaterial = plainMesh.material;
+        const originalSpriteMaterial = plainSprite.material;
+
+        const spyParent = vi.fn();
+        parentGroup.interactionHandler.on("over", spyParent);
+
+        // Trigger mouse over on parent group via plain children
+        managerScene.interval();
+        managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
+
+        // Parent should receive event
+        expect(spyParent).toHaveBeenCalledTimes(1);
+
+        // Plain children materials should remain unchanged
+        expect(plainMesh.material).toBe(originalMeshMaterial);
+        expect(plainSprite.material).toBe(originalSpriteMaterial);
+
+        // Trigger mouse out
+        managerScene.interval();
+        managerScene.dispatchMouseEvent("pointermove", 0, 0);
+
+        // Materials should still be unchanged
+        expect(plainMesh.material).toBe(originalMeshMaterial);
+        expect(plainSprite.material).toBe(originalSpriteMaterial);
+      });
+
+      test("should maintain plain children visual state regardless of interaction state", () => {
+        // Record original materials and properties
+        const originalMeshMaterial = plainMesh.material;
+        const originalMeshColor = (
+          plainMesh.material as MeshBasicMaterial
+        ).color.getHex();
+        const originalSpriteColor = (
+          plainSprite.material as SpriteMaterial
+        ).color.getHex();
+
+        // Disable parent group
+        parentGroup.interactionHandler.disable();
+
+        // Plain children should maintain their visual appearance
+        expect(plainMesh.material).toBe(originalMeshMaterial);
+        expect((plainMesh.material as MeshBasicMaterial).color.getHex()).toBe(
+          originalMeshColor,
+        );
+        expect((plainSprite.material as SpriteMaterial).color.getHex()).toBe(
+          originalSpriteColor,
+        );
+
+        // Enable parent group
+        parentGroup.interactionHandler.enable();
+
+        // Plain children should still maintain their visual appearance
+        expect(plainMesh.material).toBe(originalMeshMaterial);
+        expect((plainMesh.material as MeshBasicMaterial).color.getHex()).toBe(
+          originalMeshColor,
+        );
+        expect((plainSprite.material as SpriteMaterial).color.getHex()).toBe(
+          originalSpriteColor,
+        );
+
+        // Trigger interaction to confirm parent state changes but children don't
+        const spyParent = vi.fn();
+        parentGroup.interactionHandler.on("click", spyParent);
+
+        managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
+        managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
+
+        expect(spyParent).toHaveBeenCalledTimes(1);
+
+        // Children materials should remain completely independent
+        expect(plainMesh.material).toBe(originalMeshMaterial);
+        expect((plainSprite.material as SpriteMaterial).color.getHex()).toBe(
+          originalSpriteColor,
+        );
+      });
+    });
+
+    describe("Mixed plain and clickable hierarchy", () => {
+      test("should handle mixed plain and clickable children correctly", () => {
+        // Add a ClickableMesh to the existing plain objects
+        const clickableMesh = new ClickableMesh({
+          geo: new BoxGeometry(2, 2, 0.1),
+          material: getMeshMaterialSet(),
+        });
+        clickableMesh.interactionHandler.value = "interactive-child";
+        // Position in front of plain objects to ensure it gets hit first
+        clickableMesh.position.set(0, 0, 0.2);
+
+        parentGroup.add(clickableMesh);
+
+        // Advance timer to avoid MouseEventManager throttling
+        managerScene.interval();
+
+        const spyParent = vi.fn();
+        const spyClickableChild = vi.fn();
+
+        parentGroup.interactionHandler.on("click", spyParent);
+        clickableMesh.interactionHandler.on("click", spyClickableChild);
+
+        // Click on center where both plain and clickable children can be hit
+        managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
+        managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
+
+        expect(spyClickableChild).toHaveBeenCalledTimes(1);
+        expect(spyParent).toHaveBeenCalledTimes(1);
+
+        // Verify mixed hierarchy: plain objects have no handlers, clickable objects do
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((plainMesh as any).interactionHandler).toBeUndefined();
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((plainSprite as any).interactionHandler).toBeUndefined();
+        expect(clickableMesh.interactionHandler).toBeDefined();
+      });
+
+      test("should simulate realistic UI component with plain decorative elements", () => {
+        // Create a realistic button component:
+        // - Background mesh (plain, decorative)
+        // - Icon sprite (plain, decorative)
+        // - Label mesh (clickable, functional)
+        const backgroundMesh = new Mesh(
+          new BoxGeometry(4, 1.2, 0.05),
+          new MeshBasicMaterial({ color: 0x2c2c2c }),
+        );
+        backgroundMesh.position.z = -0.1;
+
+        const iconSprite = new Sprite(new SpriteMaterial({ color: 0x4a90e2 }));
+        iconSprite.position.set(-1.2, 0, 0.1);
+        iconSprite.scale.setScalar(0.3);
+
+        const labelMesh = new ClickableMesh({
+          geo: new BoxGeometry(3, 1, 0.1),
+          material: getMeshMaterialSet(),
+        });
+        labelMesh.interactionHandler.value = "button-label";
+        // Position in front of other objects to ensure it gets hit first
+        labelMesh.position.set(0, 0, 0.2);
+
+        // Add all components to the group
+        parentGroup.add(backgroundMesh);
+        parentGroup.add(iconSprite);
+        parentGroup.add(labelMesh);
+
+        // Advance timer to avoid MouseEventManager throttling
+        managerScene.interval();
+
+        const spyGroup = vi.fn();
+        const spyLabel = vi.fn();
+
+        parentGroup.interactionHandler.on("click", spyGroup);
+        labelMesh.interactionHandler.on("click", spyLabel);
+
+        // Click on center where all components can be hit
+        managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
+        managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
+
+        // Group should always receive event (unified interaction area)
+        expect(spyGroup).toHaveBeenCalledTimes(1);
+
+        // Label should also receive event (bubbling from functional element)
+        expect(spyLabel).toHaveBeenCalledTimes(1);
+
+        // Verify component structure: decorative (plain) + functional (clickable)
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((backgroundMesh as any).interactionHandler).toBeUndefined(); // Decorative
+        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
+        expect((iconSprite as any).interactionHandler).toBeUndefined(); // Decorative
+        expect(labelMesh.interactionHandler).toBeDefined(); // Functional
+
+        // Verify parent group provides unified interaction surface
+        expect(parentGroup.interactionHandler.value).toBe("composite-button");
       });
     });
   });
