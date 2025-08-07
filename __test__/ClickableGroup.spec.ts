@@ -16,20 +16,29 @@ import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
 const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
+// Helper functions for common test patterns (low-risk utilities)
+// biome-ignore lint/suspicious/noExplicitAny: Helper function for testing non-existent properties
+const expectPlainObject = (obj: any, name: string) => {
+  expect(
+    obj.interactionHandler,
+    `${name} should not have interactionHandler`,
+  ).toBeUndefined();
+};
+
 describe("ClickableGroup", () => {
   let clickableGroup: ClickableGroup<string>;
 
   beforeEach(() => {
     clickableGroup = new ClickableGroup<string>();
-    clickableGroup.interactionHandler.value = "test group value";
-    // Ensure handler is in a clean state
+    clickableGroup.interactionHandler.value = "main-group-value";
+    // Ensure handler is in a clean, responsive state for each test
     clickableGroup.interactionHandler.enable();
     clickableGroup.interactionHandler.frozen = false;
   });
 
   test("should initialize ClickableGroup with ButtonInteractionHandler", () => {
     expect(clickableGroup.interactionHandler).toBeDefined();
-    expect(clickableGroup.interactionHandler.value).toBe("test group value");
+    expect(clickableGroup.interactionHandler.value).toBe("main-group-value");
     expect(clickableGroup.children.length).toBe(0);
   });
 
@@ -58,50 +67,49 @@ describe("ClickableGroup", () => {
   });
 
   test("should handle disable and enable states correctly", () => {
-    const spyOver = vi.fn();
-    clickableGroup.interactionHandler.on("over", spyOver);
+    const overEventSpy = vi.fn();
+    clickableGroup.interactionHandler.on("over", overEventSpy);
 
-    // Disable interactions (changes internal _enable state, not mouseEnabled)
+    // Test disable() - should block all interaction events
     clickableGroup.interactionHandler.disable();
-
-    // Mouse over should not trigger event when disabled
     clickableGroup.interactionHandler.onMouseOverHandler(
       ThreeMouseEventUtil.generate("over", clickableGroup),
     );
-    expect(spyOver).not.toHaveBeenCalled();
+    expect(overEventSpy).not.toHaveBeenCalled(
+      /* disable() should block all events */
+    );
 
-    // Enable interactions
+    // Test enable() - should restore interaction responsiveness
     clickableGroup.interactionHandler.enable();
-
-    // Should now respond to mouse over
     clickableGroup.interactionHandler.onMouseOverHandler(
       ThreeMouseEventUtil.generate("over", clickableGroup),
     );
-    expect(spyOver).toHaveBeenCalledTimes(1);
+    expect(overEventSpy).toHaveBeenCalledTimes(
+      1 /* enable() should restore event processing */,
+    );
   });
 
   test("should handle frozen state", () => {
-    const spyOver = vi.fn();
+    const frozenTestSpy = vi.fn();
+    clickableGroup.interactionHandler.on("over", frozenTestSpy);
 
-    clickableGroup.interactionHandler.on("over", spyOver);
-
-    // Set frozen state
+    // Test frozen = true - should block all events while preserving handler state
     clickableGroup.interactionHandler.frozen = true;
-
-    // Mouse over should not trigger event when frozen
     clickableGroup.interactionHandler.onMouseOverHandler(
       ThreeMouseEventUtil.generate("over", clickableGroup),
     );
-    expect(spyOver).not.toHaveBeenCalled();
+    expect(frozenTestSpy).not.toHaveBeenCalled(
+      /* frozen=true should block events */
+    );
 
-    // Unfreeze
+    // Test frozen = false - should restore event processing immediately
     clickableGroup.interactionHandler.frozen = false;
-
-    // Should now respond to mouse over
     clickableGroup.interactionHandler.onMouseOverHandler(
       ThreeMouseEventUtil.generate("over", clickableGroup),
     );
-    expect(spyOver).toHaveBeenCalledTimes(1);
+    expect(frozenTestSpy).toHaveBeenCalledTimes(
+      1 /* frozen=false should restore events */,
+    );
   });
 
   test("should handle switch enable/disable functionality", () => {
@@ -327,10 +335,12 @@ describe("ClickableGroup", () => {
     });
 
     afterEach(() => {
-      // Clean up DOM elements
+      // Clean up DOM elements to prevent memory leaks in test suite
       if (managerScene.canvas.parentNode) {
         managerScene.canvas.parentNode.removeChild(managerScene.canvas);
       }
+      // Reset scene objects to prevent cross-test contamination
+      managerScene.scene.clear();
     });
 
     describe("Basic bubbling behavior", () => {
@@ -594,10 +604,12 @@ describe("ClickableGroup", () => {
     });
 
     afterEach(() => {
-      // Clean up DOM elements
+      // Clean up DOM elements to prevent memory leaks in test suite
       if (managerScene.canvas.parentNode) {
         managerScene.canvas.parentNode.removeChild(managerScene.canvas);
       }
+      // Reset scene objects to prevent cross-test contamination
+      managerScene.scene.clear();
     });
 
     describe("Basic plain object triggering", () => {
@@ -606,8 +618,7 @@ describe("ClickableGroup", () => {
         parentGroup.interactionHandler.on("click", spyParent);
 
         // Verify that plain mesh has no interaction handler
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((plainMesh as any).interactionHandler).toBeUndefined();
+        expectPlainObject(plainMesh, "Plain mesh");
 
         // Click on plain mesh should trigger parent group event
         managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
@@ -621,8 +632,7 @@ describe("ClickableGroup", () => {
         parentGroup.interactionHandler.on("click", spyParent);
 
         // Verify that plain sprite has no interaction handler
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((plainSprite as any).interactionHandler).toBeUndefined();
+        expectPlainObject(plainSprite, "Plain sprite");
 
         // Click on plain sprite should trigger parent group event
         managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
@@ -656,14 +666,10 @@ describe("ClickableGroup", () => {
         expect(spyParent).toHaveBeenCalledTimes(1);
 
         // Verify all children are plain objects (no interaction handlers)
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((plainMesh as any).interactionHandler).toBeUndefined();
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((plainSprite as any).interactionHandler).toBeUndefined();
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((backgroundMesh as any).interactionHandler).toBeUndefined();
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((iconSprite as any).interactionHandler).toBeUndefined();
+        expectPlainObject(plainMesh, "Plain mesh");
+        expectPlainObject(plainSprite, "Plain sprite");
+        expectPlainObject(backgroundMesh, "Background mesh");
+        expectPlainObject(iconSprite, "Icon sprite");
       });
     });
 
@@ -777,10 +783,8 @@ describe("ClickableGroup", () => {
         expect(spyParent).toHaveBeenCalledTimes(1);
 
         // Verify mixed hierarchy: plain objects have no handlers, clickable objects do
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((plainMesh as any).interactionHandler).toBeUndefined();
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((plainSprite as any).interactionHandler).toBeUndefined();
+        expectPlainObject(plainMesh, "Plain mesh");
+        expectPlainObject(plainSprite, "Plain sprite");
         expect(clickableMesh.interactionHandler).toBeDefined();
       });
 
@@ -832,10 +836,8 @@ describe("ClickableGroup", () => {
         expect(spyLabel).toHaveBeenCalledTimes(1);
 
         // Verify component structure: decorative (plain) + functional (clickable)
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((backgroundMesh as any).interactionHandler).toBeUndefined(); // Decorative
-        // biome-ignore lint/suspicious/noExplicitAny: Need to check non-existent property
-        expect((iconSprite as any).interactionHandler).toBeUndefined(); // Decorative
+        expectPlainObject(backgroundMesh, "Background mesh (decorative)");
+        expectPlainObject(iconSprite, "Icon sprite (decorative)");
         expect(labelMesh.interactionHandler).toBeDefined(); // Functional
 
         // Verify parent group provides unified interaction surface
