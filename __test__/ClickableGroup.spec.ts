@@ -14,8 +14,6 @@ import {
 import { getMeshMaterialSet } from "./Materials.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
-const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
-
 // Helper functions for common test patterns (low-risk utilities)
 // biome-ignore lint/suspicious/noExplicitAny: Helper function for testing non-existent properties
 const expectPlainObject = (obj: any, name: string) => {
