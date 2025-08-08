@@ -282,7 +282,7 @@ describe("convertToInteractiveView", () => {
         "Should show warning when converting already interactive object",
       ).toHaveBeenCalledWith(
         expect.stringContaining(
-          "WARNING: Cannot convert object that already has an interactionHandler",
+          "WARNING: Cannot convert object that already has an interactionHandler. Returning existing object unchanged. This behavior will throw an Error in a future version. Use CheckBoxMesh constructor",
         ),
       );
 
@@ -328,15 +328,16 @@ describe("convertToInteractiveView", () => {
 
       for (const { converter, input, type } of testCases) {
         const originalHandler = input.interactionHandler;
+        _globalWarnSpy.mockClear(); // Clear spy history for each iteration
 
         const result = converter(input);
 
         expect(
           _globalWarnSpy,
           `${type} should show warning when converting already interactive object`,
-        ).toHaveBeenCalledWith(
+        ).toHaveBeenLastCalledWith(
           expect.stringContaining(
-            "WARNING: Cannot convert object that already has an interactionHandler",
+            "WARNING: Cannot convert object that already has an interactionHandler. Returning existing object unchanged. This behavior will throw an Error in a future version. Use",
           ),
         );
 
