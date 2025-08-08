@@ -271,9 +271,7 @@ describe("convertToInteractiveView", () => {
       const originalHandler = firstConversion.interactionHandler;
 
       // Try to convert again - should warn and return unchanged
-      const secondConversion = convertToCheckboxMesh(
-        firstConversion as unknown as Mesh,
-      );
+      const secondConversion = convertToCheckboxMesh(firstConversion);
 
       expect(
         _globalWarnSpy,
@@ -309,23 +307,23 @@ describe("convertToInteractiveView", () => {
       const testCases = [
         {
           converter: convertToClickableMesh,
-          input: checkboxMesh as unknown as Mesh,
+          input: checkboxMesh,
           type: "convertToClickableMesh",
         },
         {
           converter: convertToCheckboxMesh,
-          input: radioMesh as unknown as Mesh,
+          input: radioMesh,
           type: "convertToCheckboxMesh",
         },
         {
           converter: convertToRadioButtonMesh,
-          input: clickableMesh as unknown as Mesh,
+          input: clickableMesh,
           type: "convertToRadioButtonMesh",
         },
       ];
 
       for (const { converter, input, type } of testCases) {
-        const originalHandler = (input as any).interactionHandler;
+        const originalHandler = input.interactionHandler;
 
         const result = converter(input);
 
