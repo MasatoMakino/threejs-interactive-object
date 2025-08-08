@@ -253,20 +253,37 @@ describe("convertToInteractiveView", () => {
 
   describe("Edge cases and error handling", () => {
     it("should handle meshes without geometry or material", () => {
-      const emptyMesh = new Mesh(); // No geometry or material
+      expect(
+        () => convertToClickableMesh(new Mesh()),
+        "Should handle mesh without geometry/material gracefully",
+      ).not.toThrow();
+      expect(
+        () => convertToCheckboxMesh(new Mesh()),
+        "Should handle mesh without geometry/material gracefully",
+      ).not.toThrow();
+      expect(
+        () => convertToRadioButtonMesh(new Mesh()),
+        "Should handle mesh without geometry/material gracefully",
+      ).not.toThrow();
+    });
+
+    it("should attach interaction handlers to empty meshes", () => {
+      const clickableResult = convertToClickableMesh(new Mesh());
+      const checkboxResult = convertToCheckboxMesh(new Mesh());
+      const radioResult = convertToRadioButtonMesh(new Mesh());
 
       expect(
-        () => convertToClickableMesh(emptyMesh),
-        "Should handle mesh without geometry/material gracefully",
-      ).not.toThrow();
+        clickableResult.interactionHandler,
+        "ClickableMesh should have handler attached after conversion",
+      ).toBeDefined();
       expect(
-        () => convertToCheckboxMesh(emptyMesh),
-        "Should handle mesh without geometry/material gracefully",
-      ).not.toThrow();
+        checkboxResult.interactionHandler,
+        "CheckBoxMesh should have handler attached after conversion",
+      ).toBeDefined();
       expect(
-        () => convertToRadioButtonMesh(emptyMesh),
-        "Should handle mesh without geometry/material gracefully",
-      ).not.toThrow();
+        radioResult.interactionHandler,
+        "RadioButtonMesh should have handler attached after conversion",
+      ).toBeDefined();
     });
 
     it("should warn when attempting to convert already interactive objects and return unchanged", () => {
