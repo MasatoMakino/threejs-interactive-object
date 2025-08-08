@@ -40,6 +40,26 @@ import type {
 type Writable<T> = { -readonly [P in keyof T]: T[P] };
 
 /**
+ * Type guard to check if an object already has an interactionHandler property.
+ * Used internally by converter functions to prevent silent overwriting of existing handlers.
+ *
+ * @param obj - Object to check for existing interactionHandler
+ * @returns True if the object has an interactionHandler property
+ *
+ * @internal
+ */
+function hasInteractionHandler(
+  obj: any,
+): obj is { interactionHandler: unknown } {
+  return (
+    obj &&
+    typeof obj === "object" &&
+    "interactionHandler" in obj &&
+    obj.interactionHandler
+  );
+}
+
+/**
  * Converts an existing Three.js Mesh to a ClickableMesh with basic click interaction.
  *
  * This function adds interaction capabilities to a standard Three.js Mesh without
@@ -74,6 +94,8 @@ type Writable<T> = { -readonly [P in keyof T]: T[P] };
  * - Modifies the original mesh in-place, preserving all properties
  * - Requires MouseEventManager to process interactions
  * - Generic value type V allows associating custom data
+ * - ⚠️ **Warning**: If the mesh already has an interactionHandler, this function
+ *   will show a warning and return the object unchanged (will throw Error in future version)
  *
  * @see {@link MouseEventManager} - Required for processing mouse events
  * @see {@link ClickableMesh} - The returned interface type
@@ -82,6 +104,16 @@ type Writable<T> = { -readonly [P in keyof T]: T[P] };
 export function convertToClickableMesh<V = unknown>(
   view: Mesh,
 ): ClickableMesh<V> {
+  if (hasInteractionHandler(view)) {
+    console.warn(
+      "WARNING: Cannot convert object that already has an interactionHandler. " +
+        "Returning existing object unchanged. " +
+        "This behavior will throw an Error in a future version. " +
+        "Use ClickableMesh constructor for new objects instead.",
+    );
+    return view as ClickableMesh<V>;
+  }
+
   const writableView = view as Writable<Mesh & ClickableMesh<V>>;
   writableView.interactionHandler = new ButtonInteractionHandler<V>({
     view: writableView,
@@ -131,6 +163,8 @@ export function convertToClickableMesh<V = unknown>(
  * - Emits 'select' events when state changes
  * - Material state changes handled automatically via updateMaterial()
  * - Requires MouseEventManager to process interactions
+ * - ⚠️ **Warning**: If the mesh already has an interactionHandler, this function
+ *   will show a warning and return the object unchanged (will throw Error in future version)
  *
  * @see {@link MouseEventManager} - Required for processing mouse events
  * @see {@link CheckBoxMesh} - The returned interface type
@@ -140,6 +174,16 @@ export function convertToClickableMesh<V = unknown>(
 export function convertToCheckboxMesh<V = unknown>(
   view: Mesh,
 ): CheckBoxMesh<V> {
+  if (hasInteractionHandler(view)) {
+    console.warn(
+      "WARNING: Cannot convert object that already has an interactionHandler. " +
+        "Returning existing object unchanged. " +
+        "This behavior will throw an Error in a future version. " +
+        "Use CheckBoxMesh constructor for new objects instead.",
+    );
+    return view as CheckBoxMesh<V>;
+  }
+
   const writableView = view as Writable<Mesh & CheckBoxMesh<V>>;
   writableView.interactionHandler = new CheckBoxInteractionHandler<V>({
     view: writableView,
@@ -198,6 +242,8 @@ export function convertToCheckboxMesh<V = unknown>(
  * - Requires RadioButtonManager for exclusive group selection
  * - Material state changes handled automatically via updateMaterial()
  * - Requires MouseEventManager to process interactions
+ * - ⚠️ **Warning**: If the mesh already has an interactionHandler, this function
+ *   will show a warning and return the object unchanged (will throw Error in future version)
  *
  * @see {@link MouseEventManager} - Required for processing mouse events
  * @see {@link RadioButtonMesh} - The returned interface type
@@ -208,6 +254,16 @@ export function convertToCheckboxMesh<V = unknown>(
 export function convertToRadioButtonMesh<V = unknown>(
   view: Mesh,
 ): RadioButtonMesh<V> {
+  if (hasInteractionHandler(view)) {
+    console.warn(
+      "WARNING: Cannot convert object that already has an interactionHandler. " +
+        "Returning existing object unchanged. " +
+        "This behavior will throw an Error in a future version. " +
+        "Use RadioButtonMesh constructor for new objects instead.",
+    );
+    return view as RadioButtonMesh<V>;
+  }
+
   const writableView = view as Writable<Mesh & RadioButtonMesh<V>>;
   writableView.interactionHandler = new RadioButtonInteractionHandler<V>({
     view: writableView,
