@@ -1,5 +1,5 @@
 import { BoxGeometry, Mesh, MeshBasicMaterial } from "three";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ButtonInteractionHandler,
   CheckBoxInteractionHandler,
@@ -16,6 +16,10 @@ const _globalWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 describe("convertToInteractiveView", () => {
   beforeEach(() => {
     _globalWarnSpy.mockClear();
+  });
+
+  afterAll(() => {
+    _globalWarnSpy.mockRestore();
   });
 
   function expectInteractiveView<T>(
