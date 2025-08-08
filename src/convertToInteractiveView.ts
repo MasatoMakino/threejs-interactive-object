@@ -55,7 +55,7 @@ function hasInteractionHandler(
     obj !== null &&
     typeof obj === "object" &&
     "interactionHandler" in obj &&
-    (obj as { interactionHandler: unknown }).interactionHandler !== undefined
+    (obj as { interactionHandler: unknown }).interactionHandler != null
   );
 }
 
