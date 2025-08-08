@@ -49,13 +49,13 @@ type Writable<T> = { -readonly [P in keyof T]: T[P] };
  * @internal
  */
 function hasInteractionHandler(
-  obj: any,
+  obj: unknown,
 ): obj is { interactionHandler: unknown } {
   return (
-    obj &&
+    obj !== null &&
     typeof obj === "object" &&
     "interactionHandler" in obj &&
-    obj.interactionHandler
+    (obj as { interactionHandler: unknown }).interactionHandler !== undefined
   );
 }
 
