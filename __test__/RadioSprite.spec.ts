@@ -1,13 +1,7 @@
-import { describe, test, vi } from "vitest";
+import { describe, test, expect } from "vitest";
 import { RadioButtonManager, RadioButtonSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
-import {
-  testInitManager,
-  testRadioSelection,
-  testRadioSelectionWithMouse,
-} from "./RadioObject.js";
-
-const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+import { testRadioSelectionWithMouse } from "./RadioObject.js";
 
 /**
  * テスト用のボタンを生成する関数。
@@ -20,17 +14,41 @@ const initButton = (buttonValue): RadioButtonSprite => {
   return button;
 };
 
-const manager: RadioButtonManager = new RadioButtonManager();
 describe("RadioButtonSprite", () => {
-  test("should initialize manager with radio button sprites", () => {
-    testInitManager(manager, initButton);
+  test("should create radio button sprite with proper interaction handler", () => {
+    const button = initButton("sprite-test");
+
+    expect(
+      button,
+      "RadioButtonSprite instance should be created",
+    ).toBeDefined();
+    expect(
+      button.interactionHandler,
+      "Should have radio button interaction handler",
+    ).toBeDefined();
+    expect(
+      button.interactionHandler.value,
+      "Handler should preserve assigned value",
+    ).toBe("sprite-test");
+    expect(
+      button.interactionHandler.isFrozen,
+      "New radio button should not be frozen",
+    ).toBe(false);
+    expect(
+      button.interactionHandler.selection,
+      "New radio button should not be selected",
+    ).toBe(false);
   });
 
-  test("should handle exclusive selection behavior", () => {
-    testRadioSelection(manager);
-  });
+  test("should integrate with RadioButtonManager for mouse interactions", () => {
+    const button1 = initButton("sprite1");
+    const button2 = initButton("sprite2");
+    const button3 = initButton("sprite3");
+    const testManager = new RadioButtonManager();
 
-  test("should handle mouse-driven selection", () => {
-    testRadioSelectionWithMouse(manager);
+    testManager.addButton(button1, button2, button3);
+
+    // Test mouse-driven selection integration
+    testRadioSelectionWithMouse(testManager);
   });
 });

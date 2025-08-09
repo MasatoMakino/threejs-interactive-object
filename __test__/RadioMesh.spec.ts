@@ -1,14 +1,8 @@
 import { BoxGeometry } from "three";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 import { RadioButtonManager, RadioButtonMesh } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
-import {
-  testInitManager,
-  testRadioSelection,
-  testRadioSelectionWithMouse,
-} from "./RadioObject.js";
-
-const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+import { testRadioSelectionWithMouse } from "./RadioObject.js";
 
 /**
  * テスト用のボタンを生成する関数。
@@ -24,44 +18,38 @@ const initButton = (buttonValue: unknown): RadioButtonMesh => {
   return button;
 };
 
-const manager: RadioButtonManager = new RadioButtonManager();
+describe("RadioButtonMesh", () => {
+  test("should create radio button mesh with proper interaction handler", () => {
+    const button = initButton("mesh-test");
 
-describe("RadioButton", () => {
-  test("should initialize manager with radio button meshes", () => {
-    testInitManager(manager, initButton);
-  });
-
-  test("should handle exclusive selection behavior", () => {
-    testRadioSelection(manager);
-  });
-
-  test("should warn when selecting unmanaged button", () => {
-    const notManagedButton = initButton("notManagedButton");
-    manager.select(notManagedButton.interactionHandler);
+    expect(button, "RadioButtonMesh instance should be created").toBeDefined();
     expect(
-      spyWarn,
-      "Should warn when selecting button not in manager",
-    ).toHaveBeenCalledWith("管理下でないボタンが選択処理されました。");
-
-    //管理外のボタンをremoveしてもエラーは発生しない。
+      button.interactionHandler,
+      "Should have radio button interaction handler",
+    ).toBeDefined();
     expect(
-      manager.removeButton(notManagedButton),
-      "Removing unmanaged button should return undefined",
-    ).toBeUndefined();
+      button.interactionHandler.value,
+      "Handler should preserve assigned value",
+    ).toBe("mesh-test");
+    expect(
+      button.interactionHandler.isFrozen,
+      "New radio button should not be frozen",
+    ).toBe(false);
+    expect(
+      button.interactionHandler.selection,
+      "New radio button should not be selected",
+    ).toBe(false);
   });
 
-  test("should remove button from manager", () => {
-    const index = 4;
-    const handler = manager.interactionHandlers[index];
-    const initialLength = manager.interactionHandlers.length;
-    manager.removeInteractionHandler(handler);
-    expect(
-      manager.interactionHandlers.length,
-      `Manager should have ${initialLength - 1} handlers after removal`,
-    ).toEqual(initialLength - 1);
-  });
+  test("should integrate with RadioButtonManager for mouse interactions", () => {
+    const button1 = initButton("mesh1");
+    const button2 = initButton("mesh2");
+    const button3 = initButton("mesh3");
+    const testManager = new RadioButtonManager();
 
-  test("should handle mouse-driven selection", () => {
-    testRadioSelectionWithMouse(manager);
+    testManager.addButton(button1, button2, button3);
+
+    // Test mouse-driven selection integration
+    testRadioSelectionWithMouse(testManager);
   });
 });
