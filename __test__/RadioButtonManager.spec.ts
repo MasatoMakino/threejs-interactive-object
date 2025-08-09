@@ -55,18 +55,18 @@ describe("RadioButtonManager", () => {
       const button = createTestButton("option1");
       manager.addButton(button);
 
+      const handlers = manager.interactionHandlers;
       expect(
-        manager.interactionHandlers.length,
+        handlers.length,
         "Manager should contain one handler after adding button",
       ).toBe(1);
       expect(
-        manager.interactionHandlers[0],
+        handlers[0],
         "First handler should match added button's handler",
       ).toBe(button.interactionHandler);
-      expect(
-        manager.interactionHandlers[0].value,
-        "Handler value should match button value",
-      ).toBe("option1");
+      expect(handlers[0].value, "Handler value should match button value").toBe(
+        "option1",
+      );
     });
 
     test("should add multiple buttons to manager", () => {
@@ -76,20 +76,18 @@ describe("RadioButtonManager", () => {
 
       manager.addButton(button1, button2, button3);
 
+      const handlers = manager.interactionHandlers;
+      expect(handlers.length, "Manager should contain three handlers").toBe(3);
       expect(
-        manager.interactionHandlers.length,
-        "Manager should contain three handlers",
-      ).toBe(3);
-      expect(
-        manager.interactionHandlers[0].value,
+        handlers[0].value,
         "First handler should have value 'option1'",
       ).toBe("option1");
       expect(
-        manager.interactionHandlers[1].value,
+        handlers[1].value,
         "Second handler should have value 'option2'",
       ).toBe("option2");
       expect(
-        manager.interactionHandlers[2].value,
+        handlers[2].value,
         "Third handler should have value 'option3'",
       ).toBe("option3");
     });
@@ -98,12 +96,13 @@ describe("RadioButtonManager", () => {
       const button = createTestButton("direct");
       manager.addInteractionHandler(button.interactionHandler);
 
+      const handlers = manager.interactionHandlers;
       expect(
-        manager.interactionHandlers.length,
+        handlers.length,
         "Manager should contain handler added directly",
       ).toBe(1);
       expect(
-        manager.interactionHandlers[0].value,
+        handlers[0].value,
         "Handler value should be preserved when added directly",
       ).toBe("direct");
     });
@@ -198,34 +197,36 @@ describe("RadioButtonManager", () => {
     });
 
     test("should select first button and set it as selected", () => {
-      manager.select(button1.interactionHandler);
+      const handler1 = button1.interactionHandler;
+      manager.select(handler1);
 
       expect(manager.selected, "Manager should have button1 selected").toBe(
-        button1.interactionHandler,
+        handler1,
       );
       expect(
         manager.selected?.value,
         "Selected button should have correct value",
       ).toBe("option1");
       expect(
-        button1.interactionHandler.selection,
+        handler1.selection,
         "Selected button should have selection=true",
       ).toBe(true);
-      expect(
-        button1.interactionHandler.isFrozen,
-        "Selected button should be frozen",
-      ).toBe(true);
+      expect(handler1.isFrozen, "Selected button should be frozen").toBe(true);
     });
 
     test("should maintain exclusive selection when switching buttons", () => {
+      const handler1 = button1.interactionHandler;
+      const handler2 = button2.interactionHandler;
+      const handler3 = button3.interactionHandler;
+
       // Select first button
-      manager.select(button1.interactionHandler);
+      manager.select(handler1);
 
       // Select second button - should deselect first
-      manager.select(button2.interactionHandler);
+      manager.select(handler2);
 
       expect(manager.selected, "Manager should now have button2 selected").toBe(
-        button2.interactionHandler,
+        handler2,
       );
       expect(
         manager.selected?.value,
@@ -234,37 +235,37 @@ describe("RadioButtonManager", () => {
 
       // Check exclusive behavior
       expect(
-        button1.interactionHandler.selection,
+        handler1.selection,
         "Previously selected button should be deselected",
       ).toBe(false);
       expect(
-        button1.interactionHandler.isFrozen,
+        handler1.isFrozen,
         "Previously selected button should not be frozen",
       ).toBe(false);
       expect(
-        button2.interactionHandler.selection,
+        handler2.selection,
         "Currently selected button should be selected",
       ).toBe(true);
       expect(
-        button2.interactionHandler.isFrozen,
+        handler2.isFrozen,
         "Currently selected button should be frozen",
       ).toBe(true);
       expect(
-        button3.interactionHandler.selection,
+        handler3.selection,
         "Unselected button should remain unselected",
       ).toBe(false);
-      expect(
-        button3.interactionHandler.isFrozen,
-        "Unselected button should not be frozen",
-      ).toBe(false);
+      expect(handler3.isFrozen, "Unselected button should not be frozen").toBe(
+        false,
+      );
     });
 
     test("should ignore re-selection of already selected and frozen button", () => {
+      const handler1 = button1.interactionHandler;
       const spySelect = vi.fn();
       manager.on("select", spySelect);
 
       // Initial selection
-      manager.select(button1.interactionHandler);
+      manager.select(handler1);
       expect(
         spySelect,
         "Select event should be emitted for initial selection",
@@ -273,13 +274,13 @@ describe("RadioButtonManager", () => {
       spySelect.mockClear();
 
       // Attempt re-selection
-      manager.select(button1.interactionHandler);
+      manager.select(handler1);
       expect(
         spySelect,
         "Select event should not be emitted for re-selection of frozen button",
       ).not.toHaveBeenCalled();
       expect(
-        button1.interactionHandler.isFrozen,
+        handler1.isFrozen,
         "Button should remain frozen after re-selection attempt",
       ).toBe(true);
     });
@@ -311,10 +312,11 @@ describe("RadioButtonManager", () => {
     });
 
     test("should emit select event when button is selected", () => {
+      const handler1 = button1.interactionHandler;
       const spySelect = vi.fn();
       manager.on("select", spySelect);
 
-      manager.select(button1.interactionHandler);
+      manager.select(handler1);
 
       expect(spySelect, "Select event should be emitted").toHaveBeenCalledTimes(
         1,
@@ -325,7 +327,7 @@ describe("RadioButtonManager", () => {
       expect(
         eventArg.interactionHandler,
         "Event should contain the selected interaction handler",
-      ).toBe(button1.interactionHandler);
+      ).toBe(handler1);
       expect(
         eventArg.isSelected,
         "Event should indicate button is selected",
@@ -333,13 +335,15 @@ describe("RadioButtonManager", () => {
     });
 
     test("should emit select event when switching between buttons", () => {
+      const handler1 = button1.interactionHandler;
+      const handler2 = button2.interactionHandler;
       const spySelect = vi.fn();
       manager.on("select", spySelect);
 
       // Select first button
-      manager.select(button1.interactionHandler);
+      manager.select(handler1);
       // Select second button
-      manager.select(button2.interactionHandler);
+      manager.select(handler2);
 
       expect(
         spySelect,
@@ -350,7 +354,7 @@ describe("RadioButtonManager", () => {
       expect(
         secondEvent.interactionHandler,
         "Second event should contain button2 handler",
-      ).toBe(button2.interactionHandler);
+      ).toBe(handler2);
       expect(
         secondEvent.interactionHandler?.value,
         "Second event handler should have correct value",
@@ -358,13 +362,14 @@ describe("RadioButtonManager", () => {
     });
 
     test("should respond to select events from interaction handlers", () => {
+      const handler1 = button1.interactionHandler;
       const spyManagerSelect = vi.fn();
       manager.on("select", spyManagerSelect);
 
       // Simulate handler emitting select event (as would happen from mouse interaction)
-      button1.interactionHandler.emit("select", {
+      handler1.emit("select", {
         type: "select",
-        interactionHandler: button1.interactionHandler,
+        interactionHandler: handler1,
         isSelected: true,
         pointerEvent: null,
       } as ThreeMouseEvent<string>);
@@ -376,21 +381,22 @@ describe("RadioButtonManager", () => {
       expect(
         manager.selected,
         "Manager should have button selected after handler event",
-      ).toBe(button1.interactionHandler);
+      ).toBe(handler1);
       expect(
-        button1.interactionHandler.isFrozen,
+        handler1.isFrozen,
         "Button should be frozen after handler select event",
       ).toBe(true);
     });
 
     test("should ignore select events with isSelected=false from interaction handlers", () => {
+      const handler1 = button1.interactionHandler;
       const spyManagerSelect = vi.fn();
       manager.on("select", spyManagerSelect);
 
       // Simulate handler emitting select event with isSelected=false (deselection)
-      button1.interactionHandler.emit("select", {
+      handler1.emit("select", {
         type: "select",
-        interactionHandler: button1.interactionHandler,
+        interactionHandler: handler1,
         isSelected: false,
         pointerEvent: null,
       } as ThreeMouseEvent<string>);
@@ -557,68 +563,60 @@ describe("RadioButtonManager", () => {
     test("should properly set selection and frozen states on handlers", () => {
       const button1 = createTestButton("integration1");
       const button2 = createTestButton("integration2");
+      const handler1 = button1.interactionHandler;
+      const handler2 = button2.interactionHandler;
       manager.addButton(button1, button2);
 
       // Initial state
-      expect(
-        button1.interactionHandler.selection,
-        "Handler should start unselected",
-      ).toBe(false);
-      expect(
-        button1.interactionHandler.isFrozen,
-        "Handler should start unfrozen",
-      ).toBe(false);
+      expect(handler1.selection, "Handler should start unselected").toBe(false);
+      expect(handler1.isFrozen, "Handler should start unfrozen").toBe(false);
 
       // After selection
-      manager.select(button1.interactionHandler);
+      manager.select(handler1);
       expect(
-        button1.interactionHandler.selection,
+        handler1.selection,
         "Selected handler should have selection=true",
       ).toBe(true);
+      expect(handler1.isFrozen, "Selected handler should be frozen").toBe(true);
       expect(
-        button1.interactionHandler.isFrozen,
-        "Selected handler should be frozen",
-      ).toBe(true);
-      expect(
-        button2.interactionHandler.selection,
+        handler2.selection,
         "Unselected handler should have selection=false",
       ).toBe(false);
-      expect(
-        button2.interactionHandler.isFrozen,
-        "Unselected handler should be unfrozen",
-      ).toBe(false);
+      expect(handler2.isFrozen, "Unselected handler should be unfrozen").toBe(
+        false,
+      );
 
       // After switching selection
-      manager.select(button2.interactionHandler);
+      manager.select(handler2);
       expect(
-        button1.interactionHandler.selection,
+        handler1.selection,
         "Previously selected handler should be unselected",
       ).toBe(false);
       expect(
-        button1.interactionHandler.isFrozen,
+        handler1.isFrozen,
         "Previously selected handler should be unfrozen",
       ).toBe(false);
       expect(
-        button2.interactionHandler.selection,
+        handler2.selection,
         "Newly selected handler should be selected",
       ).toBe(true);
-      expect(
-        button2.interactionHandler.isFrozen,
-        "Newly selected handler should be frozen",
-      ).toBe(true);
+      expect(handler2.isFrozen, "Newly selected handler should be frozen").toBe(
+        true,
+      );
     });
 
     test("should maintain handler event listener registration", () => {
       const button = createTestButton("listener-test");
+      const handler = button.interactionHandler;
       manager.addButton(button);
 
       // Simulate handler emitting select event
       const spyManagerSelect = vi.fn();
       manager.on("select", spyManagerSelect);
 
-      button.interactionHandler.emit("select", {
+      handler.emit("select", {
         type: "select",
-        interactionHandler: button.interactionHandler,
+        interactionHandler: handler,
         isSelected: true,
         pointerEvent: null,
       } as ThreeMouseEvent<string>);
@@ -631,18 +629,19 @@ describe("RadioButtonManager", () => {
 
     test("should remove event listeners when handler is removed", () => {
       const button = createTestButton("remove-listener-test");
+      const handler = button.interactionHandler;
       manager.addButton(button);
 
       // Remove the handler
-      manager.removeInteractionHandler(button.interactionHandler);
+      manager.removeInteractionHandler(handler);
 
       // Emit event from removed handler - manager should not respond
       const spyManagerSelect = vi.fn();
       manager.on("select", spyManagerSelect);
 
-      button.interactionHandler.emit("select", {
+      handler.emit("select", {
         type: "select",
-        interactionHandler: button.interactionHandler,
+        interactionHandler: handler,
         isSelected: true,
         pointerEvent: null,
       } as ThreeMouseEvent<string>);
