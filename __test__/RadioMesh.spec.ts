@@ -1,19 +1,15 @@
 import { BoxGeometry } from "three";
 import { describe, expect, test, vi } from "vitest";
-import { RadioButtonManager, RadioButtonMesh } from "../src/index.js";
-import { getMeshMaterialSet } from "./Materials.js";
 import {
-  testInitManager,
-  testRadioSelection,
-  testRadioSelectionWithMouse,
-} from "./RadioObject.js";
-
-const spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+  RadioButtonManager,
+  RadioButtonMesh,
+  type ThreeMouseEvent,
+} from "../src/index.js";
+import { getMeshMaterialSet } from "./Materials.js";
+import { testRadioSelectionWithMouse } from "./RadioObject.js";
 
 /**
- * テスト用のボタンを生成する関数。
- * @param buttonValue
- * @returns {RadioButtonMesh}
+ * Helper function to create test radio buttons with specific values.
  */
 const initButton = (buttonValue: unknown): RadioButtonMesh => {
   const button = new RadioButtonMesh({
@@ -24,36 +20,91 @@ const initButton = (buttonValue: unknown): RadioButtonMesh => {
   return button;
 };
 
-const manager: RadioButtonManager = new RadioButtonManager();
+describe("RadioButtonMesh", () => {
+  test("should create radio button mesh with proper interaction handler", () => {
+    const button = initButton("mesh-test");
 
-describe("RadioButton", () => {
-  test("初期化", () => {
-    testInitManager(manager, initButton);
+    expect(button, "RadioButtonMesh instance should be created").toBeDefined();
+    expect(
+      button.interactionHandler,
+      "Should have radio button interaction handler",
+    ).toBeDefined();
+    expect(
+      button.interactionHandler.value,
+      "Handler should preserve assigned value",
+    ).toBe("mesh-test");
+    expect(
+      button.interactionHandler.isFrozen,
+      "New radio button should not be frozen",
+    ).toBe(false);
+    expect(
+      button.interactionHandler.selection,
+      "New radio button should not be selected",
+    ).toBe(false);
   });
 
-  test("選択変更", () => {
-    testRadioSelection(manager);
-  });
+  test("should emit select event and transition state when interacted", () => {
+    const button = initButton("event-test");
+    const handler = button.interactionHandler;
 
-  test("管理外のボタンを選択", () => {
-    const notManagedButton = initButton("notManagedButton");
-    manager.select(notManagedButton.interactionHandler);
-    expect(spyWarn).toHaveBeenCalledWith(
-      "管理下でないボタンが選択処理されました。",
+    // Set up event listener
+    const spySelect = vi.fn();
+    handler.on("select", spySelect);
+
+    // Initial state
+    expect(handler.selection, "Should start unselected").toBe(false);
+    expect(handler.isFrozen, "Should start unfrozen").toBe(false);
+
+    // Simulate pointer interaction (click)
+    handler.onMouseClick();
+
+    // Verify state transition
+    expect(handler.selection, "Should be selected after click").toBe(true);
+    expect(spySelect, "Select event should be emitted").toHaveBeenCalledTimes(
+      1,
     );
 
-    //管理外のボタンをremoveしてもエラーは発生しない。
-    expect(manager.removeButton(notManagedButton)).toBeUndefined();
+    // Verify event payload
+    const eventArg = spySelect.mock.calls[0][0] as ThreeMouseEvent<unknown>;
+    expect(eventArg.type, "Event type should be 'select'").toBe("select");
+    expect(
+      eventArg.interactionHandler,
+      "Event should contain the interaction handler",
+    ).toBe(handler);
+    expect(
+      eventArg.isSelected,
+      "Event should indicate button is selected",
+    ).toBe(true);
+
+    // Test deselection (toggle behavior)
+    spySelect.mockClear();
+    handler.onMouseClick();
+
+    expect(handler.selection, "Should be deselected after second click").toBe(
+      false,
+    );
+    expect(
+      spySelect,
+      "Select event should be emitted for deselection",
+    ).toHaveBeenCalledTimes(1);
+
+    const deselectionEvent = spySelect.mock
+      .calls[0][0] as ThreeMouseEvent<unknown>;
+    expect(
+      deselectionEvent.isSelected,
+      "Event should indicate button is deselected",
+    ).toBe(false);
   });
 
-  test("ボタンを管理から外す", () => {
-    const index = 4;
-    const handler = manager.interactionHandlers[index];
-    manager.removeInteractionHandler(handler);
-    expect(manager.interactionHandlers.length).toEqual(4);
-  });
+  test("should integrate with RadioButtonManager for mouse interactions", () => {
+    const button1 = initButton("mesh1");
+    const button2 = initButton("mesh2");
+    const button3 = initButton("mesh3");
+    const testManager = new RadioButtonManager();
 
-  test("マウスで選択変更", () => {
-    testRadioSelectionWithMouse(manager);
+    testManager.addButton(button1, button2, button3);
+
+    // Test mouse-driven selection integration
+    testRadioSelectionWithMouse(testManager);
   });
 });
