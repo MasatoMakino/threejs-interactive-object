@@ -4,11 +4,9 @@ import { getSpriteMaterialSet } from "./Materials.js";
 import { testRadioSelectionWithMouse } from "./RadioObject.js";
 
 /**
- * テスト用のボタンを生成する関数。
- * @param buttonValue
- * @returns {RadioButtonSprite}
+ * Helper function to create test radio button sprites with specific values.
  */
-const initButton = (buttonValue): RadioButtonSprite => {
+const initButton = (buttonValue: unknown): RadioButtonSprite => {
   const button = new RadioButtonSprite(getSpriteMaterialSet());
   button.interactionHandler.value = buttonValue;
   return button;

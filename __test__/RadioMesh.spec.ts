@@ -5,9 +5,7 @@ import { getMeshMaterialSet } from "./Materials.js";
 import { testRadioSelectionWithMouse } from "./RadioObject.js";
 
 /**
- * テスト用のボタンを生成する関数。
- * @param buttonValue
- * @returns {RadioButtonMesh}
+ * Helper function to create test radio buttons with specific values.
  */
 const initButton = (buttonValue: unknown): RadioButtonMesh => {
   const button = new RadioButtonMesh({
