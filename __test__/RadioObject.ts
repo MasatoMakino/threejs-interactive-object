@@ -29,7 +29,10 @@ export function testInitManager(
   for (const value of values) {
     manager.addButton(generator(value));
   }
-  expect(manager.interactionHandlers[2].value).toBe(values[2]);
+  expect(
+    manager.interactionHandlers[2].value,
+    `Manager should store button value correctly: expected ${JSON.stringify(values[2])} at index 2`,
+  ).toBe(values[2]);
 }
 
 /**
@@ -46,17 +49,35 @@ export function testRadioSelection(manager: RadioButtonManager) {
   const index = 0;
   const handler = manager.interactionHandlers[index];
 
-  expect(handler.isFrozen).toBe(false);
+  expect(
+    handler.isFrozen,
+    "Handler should not be frozen before selection",
+  ).toBe(false);
   manager.select(handler);
-  expect(manager.selected.value).toEqual(values[index]);
-  expect(spySelect).toBeCalled();
+  expect(
+    manager.selected.value,
+    `Selected value should be ${JSON.stringify(values[index])}`,
+  ).toEqual(values[index]);
+  expect(
+    spySelect,
+    "Select event should be emitted when button is selected",
+  ).toBeCalled();
 
-  expect(handler.isFrozen).toBe(true);
+  expect(
+    handler.isFrozen,
+    "Handler should be frozen after selection for exclusive behavior",
+  ).toBe(true);
 
   spySelect.mockClear();
   manager.select(handler);
-  expect(spySelect).not.toBeCalled();
-  expect(handler.isFrozen).toBe(true);
+  expect(
+    spySelect,
+    "Select event should not be emitted when selecting already selected button",
+  ).not.toBeCalled();
+  expect(
+    handler.isFrozen,
+    "Handler should remain frozen after re-selection attempt",
+  ).toBe(true);
 }
 
 /**
@@ -67,13 +88,21 @@ export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
   manager.select(manager.interactionHandlers[0]);
 
   const index = 2;
-
   const handler = manager.interactionHandlers[index];
 
-  expect(handler.isFrozen).toBe(false);
+  expect(
+    handler.isFrozen,
+    `Handler at index ${index} should not be frozen before mouse selection`,
+  ).toBe(false);
   clickButton(handler.view);
-  expect(handler.isFrozen).toBe(true);
-  expect(manager.selected.value).toEqual(handler.value);
+  expect(
+    handler.isFrozen,
+    `Handler at index ${index} should be frozen after mouse selection`,
+  ).toBe(true);
+  expect(
+    manager.selected.value,
+    `Manager selected value should match handler value: ${JSON.stringify(handler.value)}`,
+  ).toEqual(handler.value);
 
   onClickSecondTime(handler.view);
 }
@@ -91,6 +120,12 @@ const onClickSecondTime = <T>(button: ClickableView<T>) => {
 
   clickButton(button);
 
-  expect(spyClick).not.toBeCalled();
-  expect(spySelect).not.toBeCalled();
+  expect(
+    spyClick,
+    "Click event should not be emitted when clicking frozen radio button",
+  ).not.toBeCalled();
+  expect(
+    spySelect,
+    "Select event should not be emitted when clicking already selected radio button",
+  ).not.toBeCalled();
 };

@@ -38,19 +38,27 @@ describe("RadioButton", () => {
   test("should warn when selecting unmanaged button", () => {
     const notManagedButton = initButton("notManagedButton");
     manager.select(notManagedButton.interactionHandler);
-    expect(spyWarn).toHaveBeenCalledWith(
-      "管理下でないボタンが選択処理されました。",
-    );
+    expect(
+      spyWarn,
+      "Should warn when selecting button not in manager",
+    ).toHaveBeenCalledWith("管理下でないボタンが選択処理されました。");
 
     //管理外のボタンをremoveしてもエラーは発生しない。
-    expect(manager.removeButton(notManagedButton)).toBeUndefined();
+    expect(
+      manager.removeButton(notManagedButton),
+      "Removing unmanaged button should return undefined",
+    ).toBeUndefined();
   });
 
   test("should remove button from manager", () => {
     const index = 4;
     const handler = manager.interactionHandlers[index];
+    const initialLength = manager.interactionHandlers.length;
     manager.removeInteractionHandler(handler);
-    expect(manager.interactionHandlers.length).toEqual(4);
+    expect(
+      manager.interactionHandlers.length,
+      `Manager should have ${initialLength - 1} handlers after removal`,
+    ).toEqual(initialLength - 1);
   });
 
   test("should handle mouse-driven selection", () => {
