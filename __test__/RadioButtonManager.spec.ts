@@ -31,7 +31,7 @@ describe("RadioButtonManager", () => {
    * Helper function to create test radio buttons with specific values
    */
   const createTestButton = (value: string): RadioButtonMesh<string> => {
-    const button = new RadioButtonMesh({
+    const button = new RadioButtonMesh<string>({
       geo: new BoxGeometry(1, 1, 1),
       material: getMeshMaterialSet(),
     });
