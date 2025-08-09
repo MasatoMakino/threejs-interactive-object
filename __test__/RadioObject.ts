@@ -55,7 +55,7 @@ export function testRadioSelection(manager: RadioButtonManager) {
   ).toBe(false);
   manager.select(handler);
   expect(
-    manager.selected.value,
+    manager.selected?.value,
     `Selected value should be ${JSON.stringify(values[index])}`,
   ).toEqual(values[index]);
   expect(
@@ -100,7 +100,7 @@ export function testRadioSelectionWithMouse(manager: RadioButtonManager) {
     `Handler at index ${index} should be frozen after mouse selection`,
   ).toBe(true);
   expect(
-    manager.selected.value,
+    manager.selected?.value,
     `Manager selected value should match handler value: ${JSON.stringify(handler.value)}`,
   ).toEqual(handler.value);
 
