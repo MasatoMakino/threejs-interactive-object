@@ -22,15 +22,15 @@ const initButton = (buttonValue): RadioButtonSprite => {
 
 const manager: RadioButtonManager = new RadioButtonManager();
 describe("RadioButtonSprite", () => {
-  test("初期化", () => {
+  test("should initialize manager with radio button sprites", () => {
     testInitManager(manager, initButton);
   });
 
-  test("選択変更", () => {
+  test("should handle exclusive selection behavior", () => {
     testRadioSelection(manager);
   });
 
-  test("マウスで選択変更", () => {
+  test("should handle mouse-driven selection", () => {
     testRadioSelectionWithMouse(manager);
   });
 });

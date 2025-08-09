@@ -27,15 +27,15 @@ const initButton = (buttonValue: unknown): RadioButtonMesh => {
 const manager: RadioButtonManager = new RadioButtonManager();
 
 describe("RadioButton", () => {
-  test("初期化", () => {
+  test("should initialize manager with radio button meshes", () => {
     testInitManager(manager, initButton);
   });
 
-  test("選択変更", () => {
+  test("should handle exclusive selection behavior", () => {
     testRadioSelection(manager);
   });
 
-  test("管理外のボタンを選択", () => {
+  test("should warn when selecting unmanaged button", () => {
     const notManagedButton = initButton("notManagedButton");
     manager.select(notManagedButton.interactionHandler);
     expect(spyWarn).toHaveBeenCalledWith(
@@ -46,14 +46,14 @@ describe("RadioButton", () => {
     expect(manager.removeButton(notManagedButton)).toBeUndefined();
   });
 
-  test("ボタンを管理から外す", () => {
+  test("should remove button from manager", () => {
     const index = 4;
     const handler = manager.interactionHandlers[index];
     manager.removeInteractionHandler(handler);
     expect(manager.interactionHandlers.length).toEqual(4);
   });
 
-  test("マウスで選択変更", () => {
+  test("should handle mouse-driven selection", () => {
     testRadioSelectionWithMouse(manager);
   });
 });
