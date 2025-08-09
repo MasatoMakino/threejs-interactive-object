@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import { RadioButtonManager, RadioButtonSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
 import { testRadioSelectionWithMouse } from "./RadioObject.js";

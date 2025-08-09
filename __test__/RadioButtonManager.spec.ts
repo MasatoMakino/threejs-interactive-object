@@ -4,7 +4,7 @@
  */
 
 import { BoxGeometry } from "three";
-import { describe, expect, test, vi, beforeEach, afterAll } from "vitest";
+import { afterAll, beforeEach, describe, expect, test, vi } from "vitest";
 import {
   RadioButtonManager,
   RadioButtonMesh,
