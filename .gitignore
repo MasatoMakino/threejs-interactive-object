@@ -70,3 +70,6 @@ esm/
 
 # Local work notes (not shared with team)
 .local-note/
+
+# Vitest debug screenshots (environment-dependent temporary files)
+__test__/__screenshots__/
