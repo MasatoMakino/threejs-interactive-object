@@ -1,6 +1,15 @@
 /**
  * Comprehensive test suite for RadioButtonManager functionality.
- * Tests manager-specific features independent of UI implementation (Mesh/Sprite).
+ *
+ * Test Environment: Vitest + WebDriverIO + Chrome (headless)
+ * Test Approach: Logic-focused testing with programmatic interaction
+ *
+ * This suite tests manager-specific features independent of UI implementation (Mesh/Sprite).
+ * Tests verify exclusive selection behavior, event emission, and handler management through
+ * direct API calls and programmatic event simulation rather than DOM mouse interactions.
+ *
+ * For actual mouse interaction testing, see RadioMesh.spec.ts and RadioSprite.spec.ts
+ * which use testRadioSelectionWithMouse() utility for browser automation.
  */
 
 import { BoxGeometry } from "three";
