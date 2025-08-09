@@ -13,7 +13,15 @@
  */
 
 import { BoxGeometry } from "three";
-import { afterAll, beforeEach, describe, expect, test, vi } from "vitest";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  test,
+  vi,
+} from "vitest";
 import {
   RadioButtonManager,
   RadioButtonMesh,
@@ -21,11 +29,15 @@ import {
 } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 
-// Global spy for console.warn with proper cleanup
-const _spyWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+// Suite-scoped spy for console.warn with proper setup/teardown
+let _spyWarn: ReturnType<typeof vi.spyOn>;
 
 describe("RadioButtonManager", () => {
   let manager: RadioButtonManager<string>;
+
+  beforeAll(() => {
+    _spyWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
 
   beforeEach(() => {
     manager = new RadioButtonManager<string>();
@@ -484,17 +496,15 @@ describe("RadioButtonManager", () => {
 
   describe("Edge Cases and Error Handling", () => {
     test("should handle empty manager operations", () => {
-      expect(() => {
-        // These operations should not throw on empty manager
-        expect(
-          manager.selected,
-          "Empty manager should have no selection",
-        ).toBeUndefined();
-        expect(
-          manager.interactionHandlers,
-          "Empty manager should have empty handlers array",
-        ).toEqual([]);
-      }, "Empty manager operations should not throw").not.toThrow();
+      // These reads should not throw and should reflect initial state
+      expect(
+        manager.selected,
+        "Empty manager should have no selection",
+      ).toBeUndefined();
+      expect(
+        manager.interactionHandlers,
+        "Empty manager should have empty handlers array",
+      ).toEqual([]);
     });
 
     test("should handle multiple manager instances independently", () => {
