@@ -34,6 +34,12 @@ describe("ButtonInteractionHandler Event Object Validation", () => {
     ).toHaveBeenCalledTimes(1);
 
     const receivedEvent = clickSpy.mock.calls[0][0] as ThreeMouseEvent<string>;
+    expect(receivedEvent).toEqual(
+      expect.objectContaining({
+        type: "click",
+        interactionHandler: handler,
+      }),
+    );
     expect(
       receivedEvent.type,
       "Event type should be 'click' for complete interaction",
