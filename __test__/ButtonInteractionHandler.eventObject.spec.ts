@@ -73,6 +73,12 @@ describe("ButtonInteractionHandler Event Object Validation", () => {
     const upEvent = upSpy.mock.calls[0][0] as ThreeMouseEvent<string>;
     const clickEvent = clickSpy.mock.calls[0][0] as ThreeMouseEvent<string>;
 
+    // Ensure 'up' event is emitted before 'click'
+    // Note: verify your Vitest version supports `mock.invocationCallOrder`.
+    expect(upSpy.mock.invocationCallOrder[0]).toBeLessThan(
+      clickSpy.mock.invocationCallOrder[0],
+    );
+
     expect(
       upEvent,
       "Up and click events should be distinct object instances",
