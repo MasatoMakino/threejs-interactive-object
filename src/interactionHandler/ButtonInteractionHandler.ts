@@ -453,6 +453,11 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     // when transitioning from disabled/frozen to active state while pointer is over
     this._isOver = event.type === "over";
 
+    // Reset press state when pointer leaves object to prevent click on release outside
+    if (event.type === "out") {
+      this._isPress = false;
+    }
+
     if (!this.checkActivity()) return;
 
     this.updateState(this._isOver ? "over" : "normal");

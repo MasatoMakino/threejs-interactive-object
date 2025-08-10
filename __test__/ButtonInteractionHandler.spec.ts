@@ -156,6 +156,24 @@ describe("ButtonInteractionHandler", () => {
       ).toHaveBeenCalledTimes(1);
     });
 
+    it("should NOT emit click when pointer leaves before release (down -> out -> up)", () => {
+      const { handler } = createTestSetup();
+      const clickSpy = vi.fn();
+      handler.on("click", clickSpy);
+
+      // Test: down -> out -> up should NOT emit click (corrected behavior)
+      // Note: MouseEventManager delivers up events regardless of press state,
+      // but ButtonInteractionHandler now resets _isPress on out to prevent unintended clicks
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+
+      expect(
+        clickSpy,
+        "Click should NOT be emitted when releasing outside",
+      ).toHaveBeenCalledTimes(0);
+    });
+
     it("should transition to over state on mouse up when hovering", () => {
       const { handler } = createTestSetup();
 
