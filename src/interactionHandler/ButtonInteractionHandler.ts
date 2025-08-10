@@ -560,6 +560,8 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
           stateMat.material;
         break;
       default:
+        // Groups and future object types do not require material updates
+        // This case provides safe handling for non-material objects
         break;
     }
   }

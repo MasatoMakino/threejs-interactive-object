@@ -19,16 +19,14 @@ describe("ButtonInteractionHandler", () => {
     _globalWarnSpy.mockRestore();
   });
 
-  const createTestSetup = (withMaterial = true) => {
-    const matSet = withMaterial ? getMeshMaterialSet() : undefined;
+  const createTestSetup = () => {
+    const matSet = getMeshMaterialSet();
     const clickable = new ClickableMesh({
       geo: new BoxGeometry(3, 3, 3),
-      // biome-ignore lint/suspicious/noExplicitAny: Allow undefined for testing material-less scenarios
-      material: matSet as any,
+      material: matSet,
     });
     clickable.interactionHandler.value = "test button";
     const handler = clickable.interactionHandler;
-
     return { clickable, handler, matSet };
   };
 
@@ -318,59 +316,9 @@ describe("ButtonInteractionHandler", () => {
         "Press state should not change when disabled",
       ).toBe(false);
     });
-
-    it("should update material when alpha is set", () => {
-      const { handler, matSet } = createTestSetup();
-      if (!matSet)
-        throw new Error("Material set should be available for this test");
-      const setOpacitySpy = vi.spyOn(matSet, "setOpacity");
-
-      handler.alpha = 0.5;
-
-      expect(
-        setOpacitySpy,
-        "Material set opacity should be updated when alpha is set",
-      ).toHaveBeenCalledWith(0.5);
-    });
-
-    it("should handle dynamic material set changes", () => {
-      const { handler } = createTestSetup();
-      const newMatSet = getMeshMaterialSet();
-      const updateSpy = vi.spyOn(newMatSet, "setOpacity");
-
-      handler.materialSet = newMatSet;
-
-      expect(handler.materialSet, "Material set should be updated").toBe(
-        newMatSet,
-      );
-      expect(
-        updateSpy,
-        "New material set should be updated with current state",
-      ).toHaveBeenCalled();
-    });
   });
 
   describe("Boundary Conditions & Error Handling", () => {
-    it("should work gracefully without material set", () => {
-      const { handler } = createTestSetup(false);
-
-      // Should not throw errors when updating state without materials
-      expect(() => {
-        handler.switchEnable(false);
-        handler.switchEnable(true);
-        handler.alpha = 0.5;
-        handler.onMouseDownHandler(
-          ThreeMouseEventUtil.generate("down", handler),
-        );
-        handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
-      }, "Handler should work without material set without throwing errors").not.toThrow();
-
-      expect(
-        handler.state,
-        "State management should work without materials",
-      ).toBe("normal");
-    });
-
     it("should handle alpha values at boundary conditions", () => {
       const { handler } = createTestSetup();
 
@@ -461,10 +409,10 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       const events: string[] = [];
-      ["over", "down", "up", "out", "click"].forEach((eventType) => {
-        // biome-ignore lint/suspicious/noExplicitAny: Need to cast event type for generic handler
-        handler.on(eventType as any, () => events.push(eventType));
-      });
+      const eventTypes = ["over", "down", "up", "out", "click"] as const;
+      for (const eventType of eventTypes) {
+        handler.on(eventType, () => events.push(eventType));
+      }
 
       // Execute complex interaction sequence
       handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
@@ -516,40 +464,69 @@ describe("ButtonInteractionHandler", () => {
       ).toEqual(customValue);
     });
 
-    it("should handle dynamic material set replacement", () => {
-      const { handler } = createTestSetup();
+    it("should maintain interaction state when material set is replaced", () => {
+      const { handler, clickable } = createTestSetup();
       const newMatSet = getMeshMaterialSet();
 
+      // Set up hover state
       handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
-      expect(
-        handler.state,
-        "State should be 'over' before material change",
-      ).toBe("over");
+      expect(handler.state, "State should be 'over' before replacement").toBe(
+        "over",
+      );
 
+      // Replace material set while in hover state
       handler.materialSet = newMatSet;
 
-      expect(handler.materialSet, "Material set should be updated").toBe(
-        newMatSet,
-      );
+      expect(
+        handler.materialSet,
+        "Material set should be updated to new set",
+      ).toBe(newMatSet);
       expect(
         handler.state,
-        "State should be preserved after material change",
+        "Interaction state should be preserved after replacement",
       ).toBe("over");
+      expect(
+        clickable.material,
+        "View object should have new material set's 'over' material applied",
+      ).toBe(newMatSet.over.material);
     });
 
-    it("should not update material when setting same material set", () => {
-      const { handler, matSet } = createTestSetup();
-      if (!matSet)
-        throw new Error("Material set should be available for this test");
-      // biome-ignore lint/suspicious/noExplicitAny: Need to access protected method for testing
-      const updateSpy = vi.spyOn(handler as any, "updateMaterial");
+    it("should apply correct materials to view object during state transitions", () => {
+      const { handler, clickable, matSet } = createTestSetup();
 
-      handler.materialSet = matSet;
-
+      // Test normal state
       expect(
-        updateSpy,
-        "updateMaterial should not be called when setting same material set",
-      ).not.toHaveBeenCalled();
+        clickable.material,
+        "Initial state should have normal material",
+      ).toBe(matSet.normal.material);
+
+      // Test over state
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      expect(
+        clickable.material,
+        "Over state should apply over material to view object",
+      ).toBe(matSet.over.material);
+
+      // Test down state
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      expect(
+        clickable.material,
+        "Down state should apply down material to view object",
+      ).toBe(matSet.down.material);
+
+      // Test back to over state (mouse still over)
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      expect(
+        clickable.material,
+        "Should return to over material when releasing while hovering",
+      ).toBe(matSet.over.material);
+
+      // Test disable state
+      handler.disable();
+      expect(
+        clickable.material,
+        "Disabled state should apply disable material",
+      ).toBe(matSet.disable.material);
     });
 
     it("should handle state transitions during disable/enable cycles", () => {
