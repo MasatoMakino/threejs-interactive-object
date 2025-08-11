@@ -369,16 +369,17 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @fires click - Emitted when a complete click interaction is detected
    */
   public onMouseUpHandler(event: ThreeMouseEvent<Value>): void {
-    if (!this.checkActivity()) return;
-
-    const currentPress: boolean = this._isPress;
+    // Always clear press first to avoid stale press across disable/freeze
+    const wasPress = this._isPress;
     this._isPress = false;
+
+    if (!this.checkActivity()) return;
 
     const nextState: ClickableState = this._isOver ? "over" : "normal";
     this.updateState(nextState);
     this.emit(event.type, event);
 
-    if (this._isPress !== currentPress) {
+    if (wasPress) {
       this.onMouseClick();
 
       const e = ThreeMouseEventUtil.generate("click", this);

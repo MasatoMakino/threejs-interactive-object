@@ -309,6 +309,41 @@ describe("ButtonInteractionHandler", () => {
       );
     });
 
+    it("should not emit click when frozen between down and up events", () => {
+      const { handler } = createTestSetup();
+      const clickSpy = vi.fn();
+      handler.on("click", clickSpy);
+
+      // 1. Mouse down (press becomes true)
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      expect(handler.isPress, "Press state should be true after down").toBe(
+        true,
+      );
+
+      // 2. Freeze handler
+      handler.frozen = true;
+
+      // 3. Mouse up (should clear press state but not emit click due to early return)
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      expect(handler.isPress, "Press state should be cleared after up").toBe(
+        false,
+      );
+      expect(
+        clickSpy,
+        "Click should not be emitted when frozen",
+      ).toHaveBeenCalledTimes(0);
+
+      // 4. Unfreeze handler
+      handler.frozen = false;
+
+      // 5. Another mouse up (should not emit click - no stale press state)
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      expect(
+        clickSpy,
+        "Click should still not be emitted after unfreeze",
+      ).toHaveBeenCalledTimes(0);
+    });
+
     it("should ignore mouse events when disabled", () => {
       const { handler } = createTestSetup();
       handler.disable();
@@ -333,6 +368,41 @@ describe("ButtonInteractionHandler", () => {
         handler.isPress,
         "Press state should not change when disabled",
       ).toBe(false);
+    });
+
+    it("should not emit click when disabled between down and up events", () => {
+      const { handler } = createTestSetup();
+      const clickSpy = vi.fn();
+      handler.on("click", clickSpy);
+
+      // 1. Mouse down (press becomes true)
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      expect(handler.isPress, "Press state should be true after down").toBe(
+        true,
+      );
+
+      // 2. Disable handler
+      handler.disable();
+
+      // 3. Mouse up (should clear press state but not emit click due to early return)
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      expect(handler.isPress, "Press state should be cleared after up").toBe(
+        false,
+      );
+      expect(
+        clickSpy,
+        "Click should not be emitted when disabled",
+      ).toHaveBeenCalledTimes(0);
+
+      // 4. Re-enable handler
+      handler.enable();
+
+      // 5. Another mouse up (should not emit click - no stale press state)
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      expect(
+        clickSpy,
+        "Click should still not be emitted after enable",
+      ).toHaveBeenCalledTimes(0);
     });
   });
 
