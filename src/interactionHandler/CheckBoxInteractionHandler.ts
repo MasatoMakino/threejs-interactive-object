@@ -131,7 +131,7 @@ export class CheckBoxInteractionHandler<
   public set selection(bool: boolean) {
     if (!this.checkActivity()) return;
     this._isSelect = bool;
-    this.updateState("normal");
+    this.updateMaterial();
   }
 
   /**
