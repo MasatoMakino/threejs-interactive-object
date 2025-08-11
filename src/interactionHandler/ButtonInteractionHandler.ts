@@ -238,6 +238,11 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   public mouseEnabled: boolean = true;
 
   /**
+   * Internal storage for frozen state.
+   */
+  private _frozen: boolean = false;
+
+  /**
    * Temporarily prevents interaction handling while maintaining current visual state.
    *
    * @description
@@ -248,7 +253,18 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    *
    * @default false
    */
-  public frozen: boolean = false;
+  public get frozen(): boolean {
+    return this._frozen;
+  }
+
+  public set frozen(value: boolean) {
+    this._frozen = value;
+    if (value) {
+      // Clear transient interaction state when freezing
+      this._isPress = false;
+      this._isOver = false;
+    }
+  }
 
   /**
    * Current visual interaction state of the object.
@@ -593,6 +609,11 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    */
   public switchEnable(bool: boolean): void {
     this._enable = bool;
+    if (!bool) {
+      // Clear transient interaction state when disabling
+      this._isPress = false;
+      this._isOver = false;
+    }
     this.state = bool ? "normal" : "disable";
     this.updateMaterial();
   }

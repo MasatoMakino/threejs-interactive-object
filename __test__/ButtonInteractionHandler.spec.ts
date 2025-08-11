@@ -623,12 +623,17 @@ describe("ButtonInteractionHandler", () => {
       // Set up hover state
       handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(handler.state, "Initial state should be 'over'").toBe("over");
+      expect(handler.isOver, "Initial hover state should be true").toBe(true);
 
       // Disable while hovering
       handler.disable();
       expect(handler.state, "State should change to 'disable'").toBe("disable");
+      expect(
+        handler.isOver,
+        "Hover state should be cleared when disabled",
+      ).toBe(false);
 
-      // Enable again while still hovering
+      // Enable again (hover state was cleared on disable)
       handler.enable();
       expect(
         handler.state,
@@ -636,8 +641,84 @@ describe("ButtonInteractionHandler", () => {
       ).toBe("normal");
       expect(
         handler.isOver,
-        "Hover state should be preserved during disable/enable",
-      ).toBe(true);
+        "Hover state should remain cleared after enable",
+      ).toBe(false);
+    });
+
+    it("should clear press state when disabling during mouse interaction", () => {
+      const { handler } = createTestSetup();
+
+      // Start mouse interaction
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      expect(handler.isPress, "Press state should be true after down").toBe(
+        true,
+      );
+
+      // Disable while pressed
+      handler.disable();
+      expect(
+        handler.isPress,
+        "Press state should be cleared when disabled",
+      ).toBe(false);
+      expect(handler.state, "State should be 'disable'").toBe("disable");
+    });
+
+    it("should clear hover state when disabling during hover interaction", () => {
+      const { handler } = createTestSetup();
+
+      // Start hover
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      expect(handler.isOver, "Hover state should be true after over").toBe(
+        true,
+      );
+      expect(handler.state, "State should be 'over'").toBe("over");
+
+      // Disable while hovering
+      handler.disable();
+      expect(
+        handler.isOver,
+        "Hover state should be cleared when disabled",
+      ).toBe(false);
+      expect(handler.state, "State should be 'disable'").toBe("disable");
+    });
+
+    it("should clear press state when freezing during mouse interaction", () => {
+      const { handler } = createTestSetup();
+
+      // Start mouse interaction
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      expect(handler.isPress, "Press state should be true after down").toBe(
+        true,
+      );
+
+      // Freeze while pressed
+      handler.frozen = true;
+      expect(handler.isPress, "Press state should be cleared when frozen").toBe(
+        false,
+      );
+      expect(handler.state, "State should remain 'down' when frozen").toBe(
+        "down",
+      );
+    });
+
+    it("should clear hover state when freezing during hover interaction", () => {
+      const { handler } = createTestSetup();
+
+      // Start hover
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      expect(handler.isOver, "Hover state should be true after over").toBe(
+        true,
+      );
+      expect(handler.state, "State should be 'over'").toBe("over");
+
+      // Freeze while hovering
+      handler.frozen = true;
+      expect(handler.isOver, "Hover state should be cleared when frozen").toBe(
+        false,
+      );
+      expect(handler.state, "State should remain 'over' when frozen").toBe(
+        "over",
+      );
     });
   });
 });
