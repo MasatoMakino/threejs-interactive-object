@@ -238,6 +238,11 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   public mouseEnabled: boolean = true;
 
   /**
+   * Internal storage for frozen state.
+   */
+  private _frozen: boolean = false;
+
+  /**
    * Temporarily prevents interaction handling while maintaining current visual state.
    *
    * @description
@@ -248,7 +253,18 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    *
    * @default false
    */
-  public frozen: boolean = false;
+  public get frozen(): boolean {
+    return this._frozen;
+  }
+
+  public set frozen(value: boolean) {
+    this._frozen = value;
+    if (value) {
+      // Clear transient interaction state when freezing
+      this._isPress = false;
+      this._isOver = false;
+    }
+  }
 
   /**
    * Current visual interaction state of the object.
@@ -369,16 +385,17 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @fires click - Emitted when a complete click interaction is detected
    */
   public onMouseUpHandler(event: ThreeMouseEvent<Value>): void {
-    if (!this.checkActivity()) return;
-
-    const currentPress: boolean = this._isPress;
+    // Always clear press first to avoid stale press across disable/freeze
+    const wasPress = this._isPress;
     this._isPress = false;
+
+    if (!this.checkActivity()) return;
 
     const nextState: ClickableState = this._isOver ? "over" : "normal";
     this.updateState(nextState);
     this.emit(event.type, event);
 
-    if (this._isPress !== currentPress) {
+    if (wasPress) {
       this.onMouseClick();
 
       const e = ThreeMouseEventUtil.generate("click", this);
@@ -452,6 +469,11 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     // Track hover state regardless of activity status to ensure proper visual updates
     // when transitioning from disabled/frozen to active state while pointer is over
     this._isOver = event.type === "over";
+
+    // Reset press state when pointer leaves object to prevent click on release outside
+    if (event.type === "out") {
+      this._isPress = false;
+    }
 
     if (!this.checkActivity()) return;
 
@@ -560,6 +582,8 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
           stateMat.material;
         break;
       default:
+        // Groups and future object types do not require material updates
+        // This case provides safe handling for non-material objects
         break;
     }
   }
@@ -585,6 +609,11 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    */
   public switchEnable(bool: boolean): void {
     this._enable = bool;
+    if (!bool) {
+      // Clear transient interaction state when disabling
+      this._isPress = false;
+      this._isOver = false;
+    }
     this.state = bool ? "normal" : "disable";
     this.updateMaterial();
   }
