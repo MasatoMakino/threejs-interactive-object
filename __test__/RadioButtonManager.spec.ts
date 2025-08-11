@@ -671,4 +671,96 @@ describe("RadioButtonManager", () => {
       ).not.toHaveBeenCalled();
     });
   });
+
+  describe("Material State Integration", () => {
+    test("should apply normalSelect material when selecting button in normal state", () => {
+      const button = createTestButton("material-normal");
+      manager.addButton(button);
+      const handler = button.interactionHandler;
+
+      // Select button in normal state
+      manager.select(handler);
+
+      expect(handler.selection, "Handler should be selected").toBe(true);
+      expect(handler.isFrozen, "Handler should be frozen").toBe(true);
+      expect(
+        button.material,
+        "Should apply normalSelect material when selecting in normal state",
+      ).toBe(button.interactionHandler.materialSet?.normalSelect.material);
+    });
+
+    test("should force normalSelect material even when button was in hover state", () => {
+      const button = createTestButton("material-hover");
+      manager.addButton(button);
+      const handler = button.interactionHandler;
+      const matSet = handler.materialSet;
+
+      // Simulate hover state before selection
+      handler.onMouseOverHandler({
+        type: "over",
+        interactionHandler: handler,
+        pointerEvent: null,
+      } as ThreeMouseEvent<string>);
+
+      expect(handler.isOver, "Handler should be in hover state").toBe(true);
+      expect(
+        button.material,
+        "Should have over material before selection",
+      ).toBe(matSet?.over.material);
+
+      // Select button while in hover state
+      manager.select(handler);
+
+      expect(handler.selection, "Handler should be selected").toBe(true);
+      expect(handler.isFrozen, "Handler should be frozen").toBe(true);
+      expect(handler.isOver, "Hover state should be preserved internally").toBe(
+        true,
+      );
+      expect(
+        button.material,
+        "Should force normalSelect material despite hover state",
+      ).toBe(matSet?.normalSelect.material);
+    });
+
+    test("should maintain normalSelect material for selected frozen button", () => {
+      const button1 = createTestButton("maintain-1");
+      const button2 = createTestButton("maintain-2");
+      manager.addButton(button1, button2);
+
+      const handler1 = button1.interactionHandler;
+      const handler2 = button2.interactionHandler;
+      const matSet1 = handler1.materialSet;
+
+      // Select first button
+      manager.select(handler1);
+      expect(
+        button1.material,
+        "Should have normalSelect after initial selection",
+      ).toBe(matSet1?.normalSelect.material);
+
+      // Simulate hover on selected frozen button
+      handler1.onMouseOverHandler({
+        type: "over",
+        interactionHandler: handler1,
+        pointerEvent: null,
+      } as ThreeMouseEvent<string>);
+
+      expect(
+        button1.material,
+        "Selected frozen button should maintain normalSelect despite hover",
+      ).toBe(matSet1?.normalSelect.material);
+
+      // Switch to second button
+      manager.select(handler2);
+
+      expect(handler1.selection, "First handler should be deselected").toBe(
+        false,
+      );
+      expect(handler1.isFrozen, "First handler should be unfrozen").toBe(false);
+      expect(
+        button2.material,
+        "Second button should have normalSelect material",
+      ).toBe(handler2.materialSet?.normalSelect.material);
+    });
+  });
 });

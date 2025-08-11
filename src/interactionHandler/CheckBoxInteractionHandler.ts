@@ -73,8 +73,7 @@ import {
  * @see {@link ButtonInteractionHandler} - Base interaction handler class
  * @see {@link StateMaterialSet} - Material state management with selection support
  * @see {@link CheckBoxMesh} - Checkbox mesh implementation
- * @see {@link CheckBoxSprite} - Checkbox sprite implementation
- * @see {@link convertToCheckboxMesh} - Utility for converting existing Mesh objects
+ * @see {@link convertToCheckboxMesh} - Utility for converting existing objects
  *
  * @public
  */
@@ -93,7 +92,6 @@ export class CheckBoxInteractionHandler<
    *
    * @fires select - Emitted with the updated selection state after toggling
    * @override
-   * @remarks Called automatically on complete pointer interactions.
    */
   public override onMouseClick(): void {
     this._isSelect = !this._isSelect;
@@ -120,17 +118,39 @@ export class CheckBoxInteractionHandler<
    * @param bool - True to select the checkbox, false to deselect
    *
    * @description
-   * Programmatically controls selection state without triggering pointer interactions
-   * or select events. Updates internal state, resets to "normal", and triggers
-   * material update.
+   * Programmatically controls selection state without triggering select events.
+   * Follows HTML input element behavior where programmatic changes (e.g., `input.checked = true`)
+   * do not emit events, unlike user interactions which do emit events.
    *
    * @remarks
-   * Does not emit select events, preventing recursive updates when synchronizing
-   * with external application logic.
+   * - **No events emitted** (prevents infinite loops in RadioButtonManager)
+   * - **Respects disabled/frozen states** via checkActivity() validation
+   * - **Preserves current visual state** (hover, press) for consistent UX
+   * - **Performance optimized** (skips redundant updateMaterial() calls for same-value settings)
+   *
+   * @example
+   * ```typescript
+   * // Programmatic selection change - no events emitted
+   * checkbox.interactionHandler.selection = true;
+   *
+   * // Listen for user interactions only
+   * checkbox.interactionHandler.on('select', (event) => {
+   *   console.log('User toggled selection:', event.isSelected);
+   * });
+   *
+   * // Manual event emission if needed
+   * const event = ThreeMouseEventUtil.generate("select", checkbox.interactionHandler);
+   * checkbox.interactionHandler.emit(event.type, event);
+   * ```
+   *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement} HTML Input behavior reference
    */
   public set selection(bool: boolean) {
+    // Skip if no change
+    if (bool === this._isSelect) return;
+    if (!this.checkActivity()) return;
     this._isSelect = bool;
-    this.updateState("normal");
+    this.updateMaterial();
   }
 
   /**
