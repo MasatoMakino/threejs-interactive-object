@@ -141,4 +141,78 @@ describe("CheckBoxInteractionHandler", () => {
       expect(handler.selection).toBe(false);
     });
   });
+
+  describe("Event Emission Behavior", () => {
+    it("should NOT emit select events when using selection setter (programmatic)", () => {
+      const { handler } = createTestSetup();
+      const selectEventSpy = vi.fn();
+      handler.on("select", selectEventSpy);
+
+      // Programmatic selection change - should not emit events
+      handler.selection = true;
+      expect(selectEventSpy).not.toHaveBeenCalled();
+
+      // Programmatic deselection - should not emit events
+      handler.selection = false;
+      expect(selectEventSpy).not.toHaveBeenCalled();
+
+      // Multiple programmatic changes - should not emit events
+      handler.selection = true;
+      handler.selection = false;
+      handler.selection = true;
+      expect(selectEventSpy).not.toHaveBeenCalled();
+    });
+
+    it("should emit select events when using onMouseClick (user input device operation)", () => {
+      const { handler } = createTestSetup();
+      const selectEventSpy = vi.fn();
+      handler.on("select", selectEventSpy);
+
+      // User click operation - should emit event
+      handler.onMouseClick();
+      expect(selectEventSpy).toHaveBeenCalledTimes(1);
+      expect(selectEventSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "select",
+          isSelected: true,
+          interactionHandler: handler,
+        }),
+      );
+
+      // Clear spy and test another user click operation
+      selectEventSpy.mockClear();
+      handler.onMouseClick();
+      expect(selectEventSpy).toHaveBeenCalledTimes(1);
+      expect(selectEventSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "select",
+          isSelected: false,
+          interactionHandler: handler,
+        }),
+      );
+    });
+
+    it("should demonstrate clear distinction between programmatic and user operations", () => {
+      const { handler } = createTestSetup();
+      const selectEventSpy = vi.fn();
+      handler.on("select", selectEventSpy);
+
+      // Mix programmatic and user operations to prove different behavior
+      handler.selection = true; // Programmatic - no event
+      expect(selectEventSpy).not.toHaveBeenCalled();
+      expect(handler.selection).toBe(true);
+
+      handler.onMouseClick(); // User operation - emit event (toggles to false)
+      expect(selectEventSpy).toHaveBeenCalledTimes(1);
+      expect(handler.selection).toBe(false);
+
+      handler.selection = true; // Programmatic - no event
+      expect(selectEventSpy).toHaveBeenCalledTimes(1); // Still only one event
+      expect(handler.selection).toBe(true);
+
+      handler.onMouseClick(); // User operation - emit event (toggles to false)
+      expect(selectEventSpy).toHaveBeenCalledTimes(2);
+      expect(handler.selection).toBe(false);
+    });
+  });
 });

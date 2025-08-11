@@ -121,14 +121,43 @@ export class CheckBoxInteractionHandler<
    *
    * @description
    * Programmatically controls selection state without triggering pointer interactions
-   * or select events. Updates internal state and triggers material update while
-   * preserving current interaction state (hover, disable, etc.).
+   * or select events. This behavior mirrors HTML input elements where programmatic
+   * value changes (e.g., `input.checked = true`) do not emit change/input events,
+   * unlike user input device operations which do emit events.
+   *
+   * Updates internal state and triggers material update while preserving current
+   * interaction state (hover, disable, etc.).
    *
    * @remarks
+   * **Event Behavior (follows HTML standard)**:
+   * - **Programmatic changes**: No select events emitted (this setter)
+   * - **User input device operations**: Select events emitted (mouse/touch/keyboard interactions)
+   * - This design prevents infinite loops in RadioButtonManager and follows web standards
+   *
+   * **State Management**:
    * - Respects disabled and frozen states via checkActivity() validation
-   * - Does not emit select events, preventing recursive updates when synchronizing
-   *   with external application logic
    * - Preserves current visual state (hover, press) for consistent user experience
+   * - Returns early if the checkbox is disabled or frozen
+   *
+   * @example
+   * ```typescript
+   * // Programmatic change - no events fired
+   * checkbox.interactionHandler.selection = true;
+   *
+   * // User input device operation - events fired
+   * // (handled automatically when user clicks/taps the checkbox)
+   *
+   * // If you need to emit events programmatically without changing state
+   * const event = ThreeMouseEventUtil.generate("select", checkbox.interactionHandler);
+   * checkbox.interactionHandler.emit(event.type, event);
+   *
+   * // Listen for user-initiated changes only
+   * checkbox.interactionHandler.on('select', (event) => {
+   *   console.log('User changed selection:', event.isSelected);
+   * });
+   * ```
+   *
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement} HTML Input behavior reference
    */
   public set selection(bool: boolean) {
     if (!this.checkActivity()) return;
