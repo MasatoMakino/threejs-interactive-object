@@ -156,7 +156,13 @@ export class CheckBoxInteractionHandler<
    */
   public _setSelectionOverride(bool: boolean): void {
     this._isSelect = bool;
-    this.updateState("normal");
+    if (bool) {
+      // When selecting: Force normal state to ensure predictable normalSelect material
+      this.updateState("normal");
+    } else {
+      // When deselecting: Just update material with current interaction state
+      this.updateMaterial();
+    }
   }
 
   /**
