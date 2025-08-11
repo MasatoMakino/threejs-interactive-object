@@ -43,11 +43,11 @@ describe("RadioButtonInteractionHandler", () => {
       expect(handler.selection).toBe(true); // Unchanged due to disable state
     });
 
-    it("should force selection despite frozen state", () => {
+    it("should force selection despite exclusive selection state", () => {
       const { handler } = createTestSetup();
 
-      // Freeze radio button and select
-      handler.frozen = true;
+      // Mark as exclusively selected and select
+      handler.isExclusivelySelected = true;
       handler._setSelectionOverride(true);
       expect(handler.selection).toBe(true);
 
@@ -56,12 +56,12 @@ describe("RadioButtonInteractionHandler", () => {
       expect(handler.selection).toBe(false);
     });
 
-    it("should work with both disable and frozen states", () => {
+    it("should work with both disable and exclusive selection states", () => {
       const { handler } = createTestSetup();
 
-      // Disable and freeze
+      // Disable and mark as exclusively selected
       handler.disable();
-      handler.frozen = true;
+      handler.isExclusivelySelected = true;
 
       // Internal API should still work
       handler._setSelectionOverride(true);
@@ -80,8 +80,8 @@ describe("RadioButtonInteractionHandler", () => {
       handler.selection = true;
       expect(handler.selection).toBe(true);
 
-      // Step 2: Freeze (selection state maintained)
-      handler.isFrozen = true;
+      // Step 2: Mark as exclusively selected (selection state maintained)
+      handler.isExclusivelySelected = true;
       expect(handler.selection).toBe(true);
 
       // Step 3: Public API deselection attempt (ignored)
@@ -92,8 +92,8 @@ describe("RadioButtonInteractionHandler", () => {
       handler._setSelectionOverride(false);
       expect(handler.selection).toBe(false);
 
-      // Step 5: Unfreeze and verify public API works
-      handler.isFrozen = false;
+      // Step 5: Remove exclusive selection and verify public API works
+      handler.isExclusivelySelected = false;
       handler.selection = true;
       expect(handler.selection).toBe(true);
     });
@@ -104,13 +104,13 @@ describe("RadioButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Simulate RadioButtonManager selection (using internal API)
-      handler.isFrozen = true;
+      handler.isExclusivelySelected = true;
       handler._setSelectionOverride(true);
 
       expect(handler.selection).toBe(true);
-      expect(handler.isFrozen).toBe(true);
+      expect(handler.isExclusivelySelected).toBe(true);
 
-      // Public API should respect frozen state
+      // Public API should respect exclusive selection state
       handler.selection = false;
       expect(handler.selection).toBe(true); // Should remain selected
 

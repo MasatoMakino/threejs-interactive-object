@@ -118,80 +118,120 @@ export class RadioButtonInteractionHandler<
   Value,
 > extends CheckBoxInteractionHandler<Value> {
   declare readonly view: RadioButtonMesh<Value> | RadioButtonSprite<Value>;
-  protected _isFrozen: boolean = false;
+  protected _isExclusivelySelected: boolean = false;
 
   /**
    * Checks if the radio button can respond to pointer interactions.
    *
-   * @returns True if the radio button is enabled and not frozen, false otherwise
+   * @returns True if the radio button is enabled and not exclusively selected, false otherwise
    *
    * @description
-   * Overrides the base checkActivity to include frozen state consideration.
-   * Radio buttons become frozen when selected to prevent re-selection, implementing
+   * Overrides the base checkActivity to include exclusive selection state consideration.
+   * Radio buttons become exclusively selected when chosen to prevent re-selection, implementing
    * the exclusive selection behavior required for radio button groups.
    *
    * Activity status depends on both:
    * - `_enable` state (inherited from ButtonInteractionHandler)
-   * - `_isFrozen` state (RadioButton-specific, controlled by RadioButtonManager)
+   * - `_isExclusivelySelected` state (RadioButton-specific, controlled by RadioButtonManager)
    *
    * @override
    * @protected
    *
    * @remarks
-   * The frozen state is managed externally by RadioButtonManager, not by the
+   * The exclusive selection state is managed externally by RadioButtonManager, not by the
    * radio button itself. When a radio button is selected, RadioButtonManager
-   * sets isFrozen=true to prevent further interactions.
+   * sets isExclusivelySelected=true to prevent further interactions.
    *
-   * @see {@link RadioButtonManager.select} - External method that controls frozen state
+   * @see {@link RadioButtonManager.select} - External method that controls exclusive selection state
    */
   protected override checkActivity(): boolean {
-    return this._enable && !this._isFrozen;
+    return this._enable && !this._isExclusivelySelected;
+  }
+
+  /**
+   * Gets the current exclusive selection state of the radio button.
+   *
+   * @returns True if the radio button is exclusively selected (non-interactive), false otherwise
+   *
+   * @description
+   * Returns the exclusive selection state that prevents re-selection of already selected radio buttons.
+   * This state is controlled externally by RadioButtonManager to maintain exclusive
+   * selection behavior in radio button groups. When a radio button is exclusively selected,
+   * it becomes non-interactive to prevent re-selection of the same option.
+   *
+   * @readonly
+   *
+   * @see {@link RadioButtonManager.select} - External method that manages this state
+   * @see {@link checkActivity} - Method that considers this state for interactivity
+   */
+  get isExclusivelySelected(): boolean {
+    return this._isExclusivelySelected;
+  }
+
+  /**
+   * Sets the exclusive selection state of the radio button.
+   *
+   * @param bool - True to mark as exclusively selected (make non-interactive), false to unmark
+   *
+   * @description
+   * Controls the exclusive selection state for RadioButtonManager's exclusive selection behavior.
+   * This setter is intended for external control by RadioButtonManager, not for self-management.
+   *
+   * When exclusively selected (true):
+   * - Radio button becomes non-interactive (checkActivity returns false)
+   * - Indicates the button is currently selected in the group
+   * - Prevents re-selection of the same option
+   *
+   * When not exclusively selected (false):
+   * - Radio button becomes interactive again
+   * - Indicates the button is not selected and can be clicked
+   *
+   * @remarks
+   * RadioButtonManager automatically manages this state during selection:
+   * - Selected button: exclusively selected = true
+   * - Unselected buttons: exclusively selected = false
+   *
+   * @see {@link RadioButtonManager.select} - External method that manages this state
+   * @see {@link checkActivity} - Method that considers this state for interactivity
+   */
+  set isExclusivelySelected(bool: boolean) {
+    this._isExclusivelySelected = bool;
   }
 
   /**
    * Gets the current frozen state of the radio button.
    *
+   * @deprecated Use `isExclusivelySelected` instead. This property will be removed in the next minor version.
+   *
    * @returns True if the radio button is frozen (selected and non-interactive), false otherwise
    *
    * @description
-   * Returns the frozen state that prevents re-selection of already selected radio buttons.
-   * This state is controlled externally by RadioButtonManager to maintain exclusive
-   * selection behavior in radio button groups.
+   * Legacy property for backward compatibility. Use `isExclusivelySelected` for better clarity
+   * about the RadioButtonManager's exclusive selection behavior.
    *
    * @readonly
+   *
+   * @see {@link isExclusivelySelected} - Recommended replacement property
    */
   get isFrozen(): boolean {
-    return this._isFrozen;
+    return this._isExclusivelySelected;
   }
 
   /**
    * Sets the frozen state of the radio button.
    *
+   * @deprecated Use `isExclusivelySelected` instead. This property will be removed in the next minor version.
+   *
    * @param bool - True to freeze (make non-interactive), false to unfreeze
    *
    * @description
-   * Controls the frozen state for exclusive selection behavior. This setter is intended
-   * for external control by RadioButtonManager, not for self-management.
+   * Legacy setter for backward compatibility. Use `isExclusivelySelected` for better clarity
+   * about the RadioButtonManager's exclusive selection behavior.
    *
-   * When frozen=true:
-   * - Radio button becomes non-interactive (checkActivity returns false)
-   * - Indicates the button is currently selected in the group
-   * - Prevents re-selection of the same option
-   *
-   * When frozen=false:
-   * - Radio button becomes interactive again
-   * - Indicates the button is not selected and can be clicked
-   *
-   * @remarks
-   * RadioButtonManager automatically manages frozen state during selection:
-   * - Selected button: frozen=true
-   * - Unselected buttons: frozen=false
-   *
-   * @see {@link RadioButtonManager.select} - External method that manages this state
-   * @see {@link checkActivity} - Method that considers frozen state for interactivity
+   * @see {@link isExclusivelySelected} - Recommended replacement property
    */
   set isFrozen(bool: boolean) {
-    this._isFrozen = bool;
+    this._isExclusivelySelected = bool;
   }
   /**
    * Forces selection state change for exclusive radio button group management.

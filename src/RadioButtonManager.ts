@@ -199,14 +199,17 @@ export class RadioButtonManager<Value = unknown> extends EventEmitter<
       return;
     }
 
-    // Ignore if the same button is already selected and frozen
-    if (interactionHandler === this._selected && interactionHandler.isFrozen) {
+    // Ignore if the same button is already selected and exclusively selected
+    if (
+      interactionHandler === this._selected &&
+      interactionHandler.isExclusivelySelected
+    ) {
       return;
     }
 
     this._selected = interactionHandler;
     for (const mdl of this._interactionHandlers) {
-      mdl.isFrozen = mdl === interactionHandler;
+      mdl.isExclusivelySelected = mdl === interactionHandler;
       mdl._setSelectionOverride(mdl === interactionHandler);
     }
 
