@@ -106,78 +106,7 @@ describe("CheckBoxInteractionHandler", () => {
     });
   });
 
-  describe("Internal Override API", () => {
-    it("should force selection despite disable state", () => {
-      const { handler } = createTestSetup();
-
-      // Disable checkbox
-      handler.disable();
-      expect(handler.selection).toBe(false);
-
-      // Internal API should force selection change
-      handler._setSelectionOverride(true);
-      expect(handler.selection).toBe(true);
-
-      // But handler is still disabled, so public API is still blocked
-      handler.selection = false;
-      expect(handler.selection).toBe(true); // Unchanged due to disable state
-    });
-
-    it("should force selection despite frozen state", () => {
-      const { handler } = createTestSetup();
-
-      // Freeze checkbox and select
-      handler.frozen = true;
-      handler._setSelectionOverride(true);
-      expect(handler.selection).toBe(true);
-
-      // Internal API should force deselection
-      handler._setSelectionOverride(false);
-      expect(handler.selection).toBe(false);
-    });
-
-    it("should work with both disable and frozen states", () => {
-      const { handler } = createTestSetup();
-
-      // Disable and freeze
-      handler.disable();
-      handler.frozen = true;
-
-      // Internal API should still work
-      handler._setSelectionOverride(true);
-      expect(handler.selection).toBe(true);
-
-      handler._setSelectionOverride(false);
-      expect(handler.selection).toBe(false);
-    });
-  });
-
   describe("Complex State Management Scenarios", () => {
-    it("should handle complex state transition sequences", () => {
-      const { handler } = createTestSetup();
-
-      // Step 1: Normal selection
-      handler.selection = true;
-      expect(handler.selection).toBe(true);
-
-      // Step 2: Disable (selection state maintained)
-      handler.disable();
-      expect(handler.selection).toBe(true);
-
-      // Step 3: Public API deselection attempt (ignored)
-      handler.selection = false;
-      expect(handler.selection).toBe(true);
-
-      // Step 4: Internal API deselection (succeeds)
-      handler._setSelectionOverride(false);
-      expect(handler.selection).toBe(false);
-
-      // Step 5: Re-enable and verify public API works
-      handler.enable();
-      handler.selection = true;
-      expect(handler.selection).toBe(true);
-    });
-
     it("should maintain selection state through disable/enable cycles", () => {
       const { handler } = createTestSetup();
 
@@ -209,27 +138,6 @@ describe("CheckBoxInteractionHandler", () => {
 
       // Public API should work normally after unfreeze
       handler.selection = false;
-      expect(handler.selection).toBe(false);
-    });
-  });
-
-  describe("Integration with RadioButtonManager Simulation", () => {
-    it("should simulate RadioButtonManager frozen button behavior", () => {
-      const { handler } = createTestSetup();
-
-      // Simulate RadioButtonManager selection (using internal API)
-      handler.frozen = true;
-      handler._setSelectionOverride(true);
-
-      expect(handler.selection).toBe(true);
-      expect(handler.frozen).toBe(true);
-
-      // Public API should respect frozen state
-      handler.selection = false;
-      expect(handler.selection).toBe(true); // Should remain selected
-
-      // Internal API should still work
-      handler._setSelectionOverride(false);
       expect(handler.selection).toBe(false);
     });
   });

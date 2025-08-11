@@ -193,6 +193,36 @@ export class RadioButtonInteractionHandler<
   set isFrozen(bool: boolean) {
     this._isFrozen = bool;
   }
+  /**
+   * Forces selection state change for exclusive radio button group management.
+   *
+   * @param bool - True to select the radio button, false to deselect
+   *
+   * @description
+   * Internal method specifically designed for RadioButtonManager to force selection
+   * state changes during exclusive group management. This method ensures predictable
+   * visual behavior in radio button groups:
+   * - Selection (true): Forces normal state for consistent normalSelect material
+   * - Deselection (false): Preserves current interaction state for natural UX
+   *
+   * @internal
+   * @remarks
+   * - This method is intended only for RadioButtonManager internal use
+   * - Bypasses all activity checks (disabled/frozen states)
+   * - Ensures exclusive selection groups have predictable visual appearance
+   * - Selection: Forces normal state to guarantee normalSelect material display
+   * - Deselection: Uses updateMaterial() to preserve hover/press states
+   */
+  public _setSelectionOverride(bool: boolean): void {
+    this._isSelect = bool;
+    if (bool) {
+      // When selecting: Force normal state to ensure predictable normalSelect material
+      this.updateState("normal");
+    } else {
+      // When deselecting: Just update material with current interaction state
+      this.updateMaterial();
+    }
+  }
 }
 
 /**

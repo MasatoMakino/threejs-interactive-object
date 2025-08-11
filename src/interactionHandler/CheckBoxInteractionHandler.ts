@@ -137,35 +137,6 @@ export class CheckBoxInteractionHandler<
   }
 
   /**
-   * Forces selection state change, ignoring activity checks.
-   *
-   * @param bool - True to select the checkbox, false to deselect
-   *
-   * @description
-   * Internal method for forcing selection state changes regardless of disabled/frozen status.
-   * Used by RadioButtonManager and other internal systems that need to override normal
-   * state management behavior. This method bypasses checkActivity() validation and
-   * forces transition to "normal" state for consistent visual appearance.
-   *
-   * @internal
-   * @remarks
-   * - This method is intended only for internal library use
-   * - External application code should use the public selection setter which respects object state
-   * - Forces "normal" state transition to ensure predictable material appearance (e.g., normalSelect)
-   * - Used when exclusive selection systems need to override user interaction states
-   */
-  public _setSelectionOverride(bool: boolean): void {
-    this._isSelect = bool;
-    if (bool) {
-      // When selecting: Force normal state to ensure predictable normalSelect material
-      this.updateState("normal");
-    } else {
-      // When deselecting: Just update material with current interaction state
-      this.updateMaterial();
-    }
-  }
-
-  /**
    * Updates the display object's material based on current interaction and selection state.
    *
    * @description
