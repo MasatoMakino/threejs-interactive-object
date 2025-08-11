@@ -1,18 +1,30 @@
 import { BoxGeometry } from "three";
-import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { CheckBoxMesh } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 
-// Global spy for console.warn to avoid affecting other tests
-const _globalWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
-
 describe("CheckBoxInteractionHandler", () => {
+  let _warnSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeAll(() => {
+    // Spy for console.warn to avoid affecting other tests
+    _warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+  });
+
   beforeEach(() => {
-    _globalWarnSpy.mockClear();
+    _warnSpy.mockClear();
   });
 
   afterAll(() => {
-    _globalWarnSpy.mockRestore();
+    _warnSpy.mockRestore();
   });
 
   const createTestSetup = () => {
