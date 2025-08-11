@@ -121,12 +121,14 @@ export class CheckBoxInteractionHandler<
    *
    * @description
    * Programmatically controls selection state without triggering pointer interactions
-   * or select events. Updates internal state, resets to "normal", and triggers
-   * material update.
+   * or select events. Updates internal state and triggers material update while
+   * preserving current interaction state (hover, disable, etc.).
    *
    * @remarks
-   * Does not emit select events, preventing recursive updates when synchronizing
-   * with external application logic.
+   * - Respects disabled and frozen states via checkActivity() validation
+   * - Does not emit select events, preventing recursive updates when synchronizing
+   *   with external application logic
+   * - Preserves current visual state (hover, press) for consistent user experience
    */
   public set selection(bool: boolean) {
     if (!this.checkActivity()) return;
@@ -143,12 +145,14 @@ export class CheckBoxInteractionHandler<
    * Internal method for forcing selection state changes regardless of disabled/frozen status.
    * Used by RadioButtonManager and other internal systems that need to override normal
    * state management behavior. This method bypasses checkActivity() validation and
-   * directly modifies selection state.
+   * forces transition to "normal" state for consistent visual appearance.
    *
    * @internal
    * @remarks
-   * This method is intended only for internal library use. External application code
-   * should use the public selection setter which respects object state.
+   * - This method is intended only for internal library use
+   * - External application code should use the public selection setter which respects object state
+   * - Forces "normal" state transition to ensure predictable material appearance (e.g., normalSelect)
+   * - Used when exclusive selection systems need to override user interaction states
    */
   public _setSelectionOverride(bool: boolean): void {
     this._isSelect = bool;

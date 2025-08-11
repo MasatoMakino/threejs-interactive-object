@@ -693,7 +693,7 @@ describe("RadioButtonManager", () => {
       const button = createTestButton("material-hover");
       manager.addButton(button);
       const handler = button.interactionHandler;
-      const matSet = handler.materialSet!;
+      const matSet = handler.materialSet;
 
       // Simulate hover state before selection
       handler.onMouseOverHandler({
@@ -706,7 +706,7 @@ describe("RadioButtonManager", () => {
       expect(
         button.material,
         "Should have over material before selection",
-      ).toBe(matSet.over.material);
+      ).toBe(matSet?.over.material);
 
       // Select button while in hover state
       manager.select(handler);
@@ -719,7 +719,7 @@ describe("RadioButtonManager", () => {
       expect(
         button.material,
         "Should force normalSelect material despite hover state",
-      ).toBe(matSet.normalSelect.material);
+      ).toBe(matSet?.normalSelect.material);
     });
 
     test("should maintain normalSelect material for selected frozen button", () => {
@@ -729,14 +729,14 @@ describe("RadioButtonManager", () => {
 
       const handler1 = button1.interactionHandler;
       const handler2 = button2.interactionHandler;
-      const matSet1 = handler1.materialSet!;
+      const matSet1 = handler1.materialSet;
 
       // Select first button
       manager.select(handler1);
       expect(
         button1.material,
         "Should have normalSelect after initial selection",
-      ).toBe(matSet1.normalSelect.material);
+      ).toBe(matSet1?.normalSelect.material);
 
       // Simulate hover on selected frozen button
       handler1.onMouseOverHandler({
@@ -748,7 +748,7 @@ describe("RadioButtonManager", () => {
       expect(
         button1.material,
         "Selected frozen button should maintain normalSelect despite hover",
-      ).toBe(matSet1.normalSelect.material);
+      ).toBe(matSet1?.normalSelect.material);
 
       // Switch to second button
       manager.select(handler2);
