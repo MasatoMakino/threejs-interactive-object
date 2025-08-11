@@ -214,5 +214,38 @@ describe("CheckBoxInteractionHandler", () => {
       expect(selectEventSpy).toHaveBeenCalledTimes(2);
       expect(handler.selection).toBe(false);
     });
+
+    it("should optimize redundant same-value settings by skipping updateMaterial calls", () => {
+      const { handler } = createTestSetup();
+      // biome-ignore lint/suspicious/noExplicitAny : spy private method
+      const updateMaterialSpy = vi.spyOn(handler as any, "updateMaterial");
+
+      // Initial state: false
+      expect(handler.selection).toBe(false);
+
+      // First change: false → true (should call updateMaterial)
+      handler.selection = true;
+      expect(updateMaterialSpy).toHaveBeenCalledTimes(1);
+      expect(handler.selection).toBe(true);
+
+      // Same-value setting: true → true (should skip updateMaterial)
+      updateMaterialSpy.mockClear();
+      handler.selection = true;
+      expect(updateMaterialSpy).not.toHaveBeenCalled();
+      expect(handler.selection).toBe(true);
+
+      // Different value: true → false (should call updateMaterial)
+      handler.selection = false;
+      expect(updateMaterialSpy).toHaveBeenCalledTimes(1);
+      expect(handler.selection).toBe(false);
+
+      // Same-value setting: false → false (should skip updateMaterial)
+      updateMaterialSpy.mockClear();
+      handler.selection = false;
+      expect(updateMaterialSpy).not.toHaveBeenCalled();
+      expect(handler.selection).toBe(false);
+
+      updateMaterialSpy.mockRestore();
+    });
   });
 });

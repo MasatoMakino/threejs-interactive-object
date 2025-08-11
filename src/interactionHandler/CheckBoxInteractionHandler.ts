@@ -126,6 +126,7 @@ export class CheckBoxInteractionHandler<
    * - **No events emitted** (prevents infinite loops in RadioButtonManager)
    * - **Respects disabled/frozen states** via checkActivity() validation
    * - **Preserves current visual state** (hover, press) for consistent UX
+   * - **Performance optimized** (skips redundant updateMaterial() calls for same-value settings)
    *
    * @example
    * ```typescript
@@ -145,6 +146,8 @@ export class CheckBoxInteractionHandler<
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement} HTML Input behavior reference
    */
   public set selection(bool: boolean) {
+    // Skip if no change
+    if (bool === this._isSelect) return;
     if (!this.checkActivity()) return;
     this._isSelect = bool;
     this.updateMaterial();
