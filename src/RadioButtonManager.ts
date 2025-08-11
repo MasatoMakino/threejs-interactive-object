@@ -206,7 +206,8 @@ export class RadioButtonManager<Value = unknown> extends EventEmitter<
 
     this._selected = interactionHandler;
     for (const mdl of this._interactionHandlers) {
-      mdl.selection = mdl.isFrozen = mdl === interactionHandler;
+      mdl.isFrozen = mdl === interactionHandler;
+      mdl._setSelectionOverride(mdl === interactionHandler);
     }
 
     const evt = ThreeMouseEventUtil.generate("select", interactionHandler);
