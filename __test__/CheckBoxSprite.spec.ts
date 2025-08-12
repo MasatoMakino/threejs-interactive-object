@@ -1,3 +1,4 @@
+import { SpriteMaterial } from "three";
 import { describe, expect, test } from "vitest";
 import { CheckBoxSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
@@ -28,12 +29,16 @@ describe("CheckBoxSprite", () => {
 
   test("should update sprite material opacity during selection state changes", () => {
     const btn = initButton("button01");
+    const materialSet = getSpriteMaterialSet();
     const initialOpacity = btn.material.opacity;
+    const expectedSelectedOpacity = (
+      materialSet.normalSelect.material as SpriteMaterial
+    ).opacity;
 
     // Test sprite-specific material behavior during selection
     btn.interactionHandler.selection = true;
     // Material opacity should be updated for selected state
-    expect(btn.material.opacity).toBe(0.65); // Selected state opacity
+    expect(btn.material.opacity).toBe(expectedSelectedOpacity);
 
     btn.interactionHandler.selection = false;
     expect(btn.material.opacity).toBe(initialOpacity); // Restored to initial
