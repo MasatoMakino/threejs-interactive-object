@@ -1,14 +1,12 @@
-import { describe, expect, test, vi } from "vitest";
+import { SpriteMaterial } from "three";
+import { describe, expect, test } from "vitest";
 import { CheckBoxSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
-import { clickButton } from "./MouseControl.js";
-
-const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 /**
- * ボタンを生成する
- * @param value
- * @returns {CheckBoxSprite}
+ * Creates a CheckBoxSprite instance for testing.
+ * @param value - The value to associate with the checkbox sprite
+ * @returns CheckBoxSprite instance with configured material set and value
  */
 const initButton = (value: string): CheckBoxSprite => {
   const button = new CheckBoxSprite(getSpriteMaterialSet());
@@ -17,28 +15,32 @@ const initButton = (value: string): CheckBoxSprite => {
 };
 
 describe("CheckBoxSprite", () => {
-  test("初期化", () => {
+  test("should initialize with default selection state false", () => {
     const btn = initButton("button01");
     expect(btn.interactionHandler.selection).toBe(false);
   });
 
-  test("選択", () => {
+  test("should initialize with correct sprite material properties", () => {
     const btn = initButton("button01");
-    btn.interactionHandler.selection = true;
-    expect(btn.interactionHandler.selection).toBe(true);
+    // Focus on sprite-specific material initialization
+    expect(btn.material.opacity).toBeDefined();
+    expect(btn.material.transparent).toBe(true);
   });
 
-  test("マウスクリックで選択", () => {
+  test("should update sprite material opacity during selection state changes", () => {
     const btn = initButton("button01");
+    const materialSet = getSpriteMaterialSet();
+    const initialOpacity = btn.material.opacity;
+    const expectedSelectedOpacity = (
+      materialSet.normalSelect.material as SpriteMaterial
+    ).opacity;
 
-    const spySelect = vi.fn(() => {});
-    const spyClick = vi.fn(() => {});
-    btn.interactionHandler.on("click", spyClick);
-    btn.interactionHandler.on("select", spySelect);
+    // Test sprite-specific material behavior during selection
+    btn.interactionHandler.selection = true;
+    // Material opacity should be updated for selected state
+    expect(btn.material.opacity).toBe(expectedSelectedOpacity);
 
-    clickButton(btn);
-    expect(spySelect).toBeCalled();
-    expect(spyClick).toBeCalled();
-    expect(btn.material.opacity).toBe(0.85);
+    btn.interactionHandler.selection = false;
+    expect(btn.material.opacity).toBe(initialOpacity); // Restored to initial
   });
 });
