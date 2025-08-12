@@ -3,9 +3,9 @@ import { CheckBoxSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
 
 /**
- * ボタンを生成する
- * @param value
- * @returns {CheckBoxSprite}
+ * Creates a CheckBoxSprite instance for testing.
+ * @param value - The value to associate with the checkbox sprite
+ * @returns CheckBoxSprite instance with configured material set and value
  */
 const initButton = (value: string): CheckBoxSprite => {
   const button = new CheckBoxSprite(getSpriteMaterialSet());
