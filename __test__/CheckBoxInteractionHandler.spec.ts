@@ -372,16 +372,15 @@ describe("CheckBoxInteractionHandler", () => {
       expect(handler.selection).toBe(true);
       expect(handler.view.material).toBe(matSet.downSelect.material);
 
-      // Complete interaction: up (triggers click, toggles selection back to false)
+      // Complete interaction: up (programmatic selection cleared press state, no click occurs)
       handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
       expect(
         handler.selection,
-        "Up handler triggers click which toggles selection back to false",
-      ).toBe(false);
-      expect(
-        handler.view.material,
-        "Should be over state with no selection",
-      ).toBe(matSet.over.material);
+        "Selection should remain true as programmatic change cleared press state",
+      ).toBe(true);
+      expect(handler.view.material, "Should be over state with selection").toBe(
+        matSet.overSelect.material,
+      );
     });
 
     it("should persist selection state across disable/enable cycles with complex transitions", () => {

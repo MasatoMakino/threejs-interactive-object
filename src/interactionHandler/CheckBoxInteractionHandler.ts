@@ -150,6 +150,8 @@ export class CheckBoxInteractionHandler<
     if (bool === this._isSelect) return;
     if (!this.checkActivity()) return;
     this._isSelect = bool;
+    // Clear press state to prevent unwanted click events after programmatic selection changes
+    this._isPress = false;
     this.updateMaterial();
   }
 
