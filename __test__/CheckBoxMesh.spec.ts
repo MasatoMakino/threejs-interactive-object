@@ -1,10 +1,8 @@
 import { BoxGeometry } from "three";
-import { describe, expect, test, vi } from "vitest";
+import { describe, expect, test } from "vitest";
 import { CheckBoxMesh, type StateMaterialSet } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import { changeMaterialState } from "./MouseControl.js";
-
-const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
 
 describe("CheckBoxMesh", () => {
   let checkbox: CheckBoxMesh;
