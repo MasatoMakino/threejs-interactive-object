@@ -1,20 +1,30 @@
 import { BoxGeometry } from "three";
 import { describe, expect, test } from "vitest";
-import { CheckBoxMesh, type StateMaterialSet } from "../src/index.js";
+import { CheckBoxMesh } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import { changeMaterialState } from "./MouseControl.js";
 
+/**
+ * Creates a CheckBoxMesh instance for testing.
+ * @param value - Optional value to associate with the checkbox mesh
+ * @returns CheckBoxMesh instance with configured geometry and material set
+ */
+const createCheckboxMesh = <T = unknown>(value?: T) => {
+  const geometry = new BoxGeometry(3, 3, 3);
+  const matSet = getMeshMaterialSet();
+  const checkbox = new CheckBoxMesh<T>({
+    geo: geometry,
+    material: matSet,
+  });
+  if (value !== undefined) {
+    checkbox.interactionHandler.value = value;
+  }
+  return { checkbox, matSet, geometry };
+};
+
 describe("CheckBoxMesh", () => {
-  let checkbox: CheckBoxMesh;
-  const matSet: StateMaterialSet = getMeshMaterialSet();
-
   test("should initialize with correct geometry, material, and default selection state", () => {
-    const geometry = new BoxGeometry(3, 3, 3);
-
-    checkbox = new CheckBoxMesh({
-      geo: geometry,
-      material: matSet,
-    });
+    const { checkbox, matSet, geometry } = createCheckboxMesh();
 
     expect(checkbox.geometry).toBe(geometry);
     expect(checkbox.material).toBe(matSet.normal.material);
@@ -22,6 +32,8 @@ describe("CheckBoxMesh", () => {
   });
 
   test("should update mesh material when selection state changes", () => {
+    const { checkbox, matSet } = createCheckboxMesh();
+
     // Focus on view-specific material updates, not handler logic
     expect(checkbox.material).toBe(matSet.normal.material);
 
@@ -33,6 +45,8 @@ describe("CheckBoxMesh", () => {
   });
 
   test("should update mesh material during interaction states with selection awareness", () => {
+    const { checkbox, matSet } = createCheckboxMesh();
+
     // Test View-specific concern: material updates during complex interaction states
     checkbox.interactionHandler.selection = true;
     expect(checkbox.material).toBe(matSet.normalSelect.material);
