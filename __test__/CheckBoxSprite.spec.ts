@@ -1,4 +1,4 @@
-import { SpriteMaterial } from "three";
+import type { SpriteMaterial } from "three";
 import { describe, expect, test } from "vitest";
 import { CheckBoxSprite } from "../src/index.js";
 import { getSpriteMaterialSet } from "./Materials.js";
