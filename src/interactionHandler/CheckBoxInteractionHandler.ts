@@ -125,7 +125,7 @@ export class CheckBoxInteractionHandler<
    * @remarks
    * - **No events emitted** (prevents infinite loops in RadioButtonManager)
    * - **Respects disabled/frozen states** via checkActivity() validation
-   * - **Preserves current visual state** (hover, press) for consistent UX
+   * - **Clears press state** (resets to "up") to prevent unintended click on release; hover state is preserved for consistent UX
    * - **Performance optimized** (skips redundant updateMaterial() calls for same-value settings)
    *
    * @example
