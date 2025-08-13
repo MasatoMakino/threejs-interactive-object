@@ -17,7 +17,7 @@
  */
 
 import { Group } from "three";
-import { describe, expect, test, vi } from "vitest";
+import { afterAll, describe, expect, test, vi } from "vitest";
 import { ClickableGroup } from "../src/index.js";
 import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
@@ -40,49 +40,6 @@ interface TestEnvironment {
 }
 
 /**
- * Creates a completely isolated test environment for MouseEventManager tests
- *
- * @returns Complete test environment with all necessary components
- *
- * @description
- * Generates a fresh, isolated test environment containing:
- * - MouseEventManagerScene with Three.js scene, camera, canvas, and MouseEventManager
- * - Primary ClickableGroup with button at Z=0
- * - Background Group with button at Z=-10 for overlap testing
- * - Canvas center coordinates for consistent pointer positioning
- *
- * Each call creates completely new instances, ensuring perfect test isolation
- * without any shared state between test executions.
- */
-const createTestEnvironment = (): TestEnvironment => {
-  const managerScene = new MouseEventManagerScene();
-
-  const wrapper = new ClickableGroup();
-  const btn = new MouseEventManagerButton();
-  wrapper.add(btn.button);
-  managerScene.scene.add(wrapper);
-
-  const wrapperBackground = new Group();
-  const btnBackground = new MouseEventManagerButton();
-  wrapperBackground.position.setZ(-10);
-  wrapperBackground.add(btnBackground.button);
-  managerScene.scene.add(wrapperBackground);
-
-  const halfW = MouseEventManagerScene.W / 2;
-  const halfH = MouseEventManagerScene.H / 2;
-
-  return {
-    managerScene,
-    wrapper,
-    btn,
-    wrapperBackground,
-    btnBackground,
-    halfW,
-    halfH,
-  };
-};
-
-/**
  * MouseEventManager core functionality tests with complete isolation
  *
  * @description
@@ -101,8 +58,69 @@ const createTestEnvironment = (): TestEnvironment => {
  * - Canvas center coordinates for consistent pointer positioning
  * - Event throttling with 33ms default interval
  * - Fresh Three.js scene, camera, canvas, and MouseEventManager instances
+ *
+ * **DOM Cleanup**:
+ * All MouseEventManagerScene instances are tracked and cleaned up in afterAll
+ * to prevent DOM pollution and memory leaks during test execution.
  */
 describe("MouseEventManager", () => {
+  const testEnvironments: MouseEventManagerScene[] = [];
+
+  afterAll(() => {
+    // Clean up all canvas elements to prevent DOM pollution
+    testEnvironments.forEach((env) => {
+      if (env.canvas.parentNode) {
+        env.canvas.parentNode.removeChild(env.canvas);
+      }
+    });
+    testEnvironments.length = 0;
+  });
+
+  /**
+   * Creates a completely isolated test environment for MouseEventManager tests
+   *
+   * @returns Complete test environment with all necessary components
+   *
+   * @description
+   * Generates a fresh, isolated test environment containing:
+   * - MouseEventManagerScene with Three.js scene, camera, canvas, and MouseEventManager
+   * - Primary ClickableGroup with button at Z=0
+   * - Background Group with button at Z=-10 for overlap testing
+   * - Canvas center coordinates for consistent pointer positioning
+   *
+   * Each call creates completely new instances, ensuring perfect test isolation
+   * without any shared state between test executions.
+   */
+  const createTestEnvironment = (): TestEnvironment => {
+    const managerScene = new MouseEventManagerScene();
+
+    // Track instance for cleanup in afterAll
+    testEnvironments.push(managerScene);
+
+    const wrapper = new ClickableGroup();
+    const btn = new MouseEventManagerButton();
+    wrapper.add(btn.button);
+    managerScene.scene.add(wrapper);
+
+    const wrapperBackground = new Group();
+    const btnBackground = new MouseEventManagerButton();
+    wrapperBackground.position.setZ(-10);
+    wrapperBackground.add(btnBackground.button);
+    managerScene.scene.add(wrapperBackground);
+
+    const halfW = MouseEventManagerScene.W / 2;
+    const halfH = MouseEventManagerScene.H / 2;
+
+    return {
+      managerScene,
+      wrapper,
+      btn,
+      wrapperBackground,
+      btnBackground,
+      halfW,
+      halfH,
+    };
+  };
   /**
    * Tests pointer move event handling with throttling behavior
    *
