@@ -11,8 +11,18 @@ import {
 } from "../src/index.js";
 
 /**
- * 対象のボタンをクリックする
- * @param {IClickableObject3D} button
+ * Simulates a complete mouse click interaction on a button
+ *
+ * @param button - Target interactive object implementing IClickableObject3D
+ *
+ * @description
+ * Performs a full click sequence by calling interaction handlers in order:
+ * 1. Mouse over (onMouseOverHandler)
+ * 2. Mouse down (onMouseDownHandler)
+ * 3. Mouse up (onMouseUpHandler)
+ *
+ * This simulates realistic user interaction and triggers all associated
+ * events and material state changes.
  */
 export function clickButton(button: IClickableObject3D<unknown>) {
   button.interactionHandler.onMouseOverHandler(
@@ -27,11 +37,16 @@ export function clickButton(button: IClickableObject3D<unknown>) {
 }
 
 /**
- * イベントタイプを指定して、IClickableObject3Dの対応するマウスイベントハンドラーを呼び出す。
- * そのあと、マテリアル状態の評価を行う
- * @param {ClickableMesh | ClickableSprite} target
- * @param {keyof ThreeMouseEventMap} type
- * @param {StateMaterial} mat
+ * Triggers specific mouse event and validates resulting material state
+ *
+ * @param target - ClickableMesh or ClickableSprite to test
+ * @param type - Mouse event type from ThreeMouseEventMap
+ * @param mat - Expected StateMaterial after the event
+ *
+ * @description
+ * Calls the appropriate mouse event handler via MouseEventManager.onButtonHandler
+ * and immediately validates that the target's material matches the expected
+ * StateMaterial. Uses vitest expect assertion for validation.
  */
 export function changeMaterialState(
   target: ClickableMesh | ClickableSprite,
@@ -43,9 +58,16 @@ export function changeMaterialState(
 }
 
 /**
- * マウスオーバー状態での反応をテストする。
- * @param {ClickableMesh | ClickableSprite} target
- * @param {StateMaterialSet} matSet
+ * Tests mouse over/out interaction behavior
+ *
+ * @param target - ClickableMesh or ClickableSprite to test
+ * @param matSet - StateMaterialSet containing expected materials
+ *
+ * @description
+ * Validates hover behavior by testing the complete over/out cycle twice:
+ * 1. over -> out -> over -> out
+ * Ensures materials change correctly between normal and over states
+ * and that the interaction is repeatable.
  */
 export function testMouseOver(
   target: ClickableMesh | ClickableSprite,
@@ -58,10 +80,18 @@ export function testMouseOver(
 }
 
 /**
- * disable状態での反応をテストする。
- * disable状態ではどの操作をしてもmaterialはdisableを維持する。
- * @param {ClickableMesh | ClickableSprite} target
- * @param {StateMaterialSet} matSet
+ * Tests disabled state behavior and re-enabling functionality
+ *
+ * @param target - ClickableMesh or ClickableSprite to test
+ * @param matSet - StateMaterialSet containing expected materials
+ *
+ * @description
+ * Validates disabled state behavior by:
+ * 1. Disabling the target and testing that all mouse interactions
+ *    (over, down, up, out) maintain the disable material
+ * 2. Re-enabling the target and verifying normal interaction resumes
+ *
+ * This ensures disabled objects are completely unresponsive to mouse events.
  */
 export function testDisable(
   target: ClickableMesh | ClickableSprite,
@@ -78,6 +108,21 @@ export function testDisable(
   changeMaterialState(target, "out", matSet.normal);
 }
 
+/**
+ * Tests frozen state behavior and unfreezing functionality
+ *
+ * @param target - ClickableMesh or ClickableSprite to test
+ * @param matSet - StateMaterialSet containing expected materials
+ *
+ * @description
+ * Validates frozen state behavior by:
+ * 1. Setting the target to normal state (out event)
+ * 2. Freezing the target and testing that all mouse interactions
+ *    (over, down, up, out) maintain the normal material
+ * 3. Unfreezing the target and verifying normal interaction resumes
+ *
+ * Frozen objects maintain their current visual state regardless of mouse events.
+ */
 export function testFrozen(
   target: ClickableMesh | ClickableSprite,
   matSet: StateMaterialSet,
@@ -95,9 +140,18 @@ export function testFrozen(
 }
 
 /**
- * mouse enable / disableのスイッチングをテストする。
- * @param target
- * @param matSet
+ * Tests enable/disable state switching functionality
+ *
+ * @param target - ClickableMesh or ClickableSprite to test
+ * @param matSet - StateMaterialSet containing expected materials
+ *
+ * @description
+ * Validates the switchEnable method by:
+ * 1. Disabling the target (switchEnable(false)) and verifying disable material
+ * 2. Enabling the target (switchEnable(true)) and verifying normal material
+ *
+ * This tests the convenience method for toggling enabled state and
+ * ensuring immediate material updates.
  */
 export function testSwitch(
   target: ClickableMesh | ClickableSprite,
@@ -111,9 +165,16 @@ export function testSwitch(
 }
 
 /**
- * マウスアップを行う。
- * マウスアップのみではClickイベントが実行されないことをテストする。
- * @param {ClickableMesh | ClickableSprite} target
+ * Tests that mouse up alone does not trigger click events
+ *
+ * @param target - ClickableMesh or ClickableSprite to test
+ *
+ * @description
+ * Validates that performing only a mouse up action:
+ * 1. Triggers the 'up' event (expected behavior)
+ * 2. Does NOT trigger the 'click' event (must have down+up sequence)
+ *
+ * This ensures click events require the complete interaction sequence.
  */
 export function testMouseUP(target: ClickableMesh | ClickableSprite) {
   const spyUp = vi.fn(() => {});
@@ -129,9 +190,17 @@ export function testMouseUP(target: ClickableMesh | ClickableSprite) {
 }
 
 /**
- * マウスイベントハンドラーを順に呼び出してクリックを行う。
- * クリックイベントが正常にdispatchされることをテストする。
- * @param target
+ * Tests complete click interaction and event emission
+ *
+ * @param target - ClickableMesh or ClickableSprite to test
+ *
+ * @description
+ * Validates that performing a complete click sequence (via clickButton helper):
+ * 1. Calls mouse event handlers in correct order (over -> down -> up)
+ * 2. Successfully dispatches the 'click' event
+ *
+ * This ensures the full click interaction chain works correctly and
+ * click events are properly emitted.
  */
 export function testClick(target: ClickableMesh | ClickableSprite) {
   const spyClick = vi.fn(() => {});
