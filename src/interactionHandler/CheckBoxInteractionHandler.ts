@@ -89,11 +89,14 @@ export class CheckBoxInteractionHandler<
    * @description
    * Overrides base onMouseClick to implement checkbox toggle behavior. Toggles internal
    * selection state, emits select event, and updates material for visual feedback.
+   * Respects activity state (disabled/frozen/exclusively selected) to ensure API consistency.
    *
    * @fires select - Emitted with the updated selection state after toggling
    * @override
    */
   public override onMouseClick(): void {
+    if (!this.checkActivity()) return;
+
     this._isSelect = !this._isSelect;
 
     const e = ThreeMouseEventUtil.generate("select", this);
