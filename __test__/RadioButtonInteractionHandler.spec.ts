@@ -8,7 +8,10 @@ import {
   it,
   vi,
 } from "vitest";
-import { RadioButtonMesh } from "../src/index.js";
+import {
+  type RadioButtonInteractionHandler,
+  RadioButtonMesh,
+} from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 
 describe("RadioButtonInteractionHandler", () => {
@@ -27,6 +30,17 @@ describe("RadioButtonInteractionHandler", () => {
     _warnSpy.mockRestore();
   });
 
+  /**
+   * Creates a standard test setup with RadioButtonMesh, interaction handler, and material set.
+   *
+   * @returns Test setup object containing radioButton, handler, and matSet
+   *
+   * @description
+   * Sets up a complete test environment with:
+   * - RadioButtonMesh with BoxGeometry (3x3x3)
+   * - Full StateMaterialSet for all interaction states
+   * - Handler configured with test value "test radio button"
+   */
   const createTestSetup = () => {
     const matSet = getMeshMaterialSet();
     const radioButton = new RadioButtonMesh({
@@ -36,6 +50,44 @@ describe("RadioButtonInteractionHandler", () => {
     radioButton.interactionHandler.value = "test radio button";
     const handler = radioButton.interactionHandler;
     return { radioButton, handler, matSet };
+  };
+
+  /**
+   * Simulates a complete mouse click interaction sequence (hover → down → up).
+   *
+   * @param handler - The RadioButtonInteractionHandler to simulate interaction on
+   *
+   * @description
+   * Triggers a full click event sequence that mimics real user interaction:
+   * 1. Mouse over (hover state)
+   * 2. Mouse down (press state)
+   * 3. Mouse up (completes click, triggers onMouseClick)
+   *
+   * This is useful for testing complete user interaction flows and verifying
+   * that selection state changes and events are emitted correctly.
+   */
+  const simulateCompleteClick = (
+    handler: RadioButtonInteractionHandler<unknown>,
+  ) => {
+    handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+    handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
+    handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+  };
+
+  /**
+   * Simulates mouse leaving the interactive object area.
+   *
+   * @param handler - The RadioButtonInteractionHandler to simulate mouse out on
+   *
+   * @description
+   * Triggers mouse out event to return the object to normal state when not selected.
+   * This clears hover state and resets press state to prevent unintended clicks.
+   * Useful for testing state transitions when user moves cursor away from the object.
+   */
+  const simulateMouseOut = (
+    handler: RadioButtonInteractionHandler<unknown>,
+  ) => {
+    handler.onMouseOutHandler({ type: "out", interactionHandler: handler });
   };
 
   describe("Internal Override API for RadioButtonManager", () => {
@@ -68,7 +120,7 @@ describe("RadioButtonInteractionHandler", () => {
       expect(handler.selection).toBe(false);
     });
 
-    it("should work with both disable and exclusive selection states", () => {
+    it("should bypass both disable and exclusive selection via internal API", () => {
       const { handler } = createTestSetup();
 
       // Disable and mark as exclusively selected
@@ -84,38 +136,12 @@ describe("RadioButtonInteractionHandler", () => {
     });
   });
 
-  describe("Complex State Management for Radio Groups", () => {
-    it("should handle complex state transition sequences", () => {
+  describe("RadioButtonManager Integration Scenarios", () => {
+    it("should support RadioButtonManager exclusive selection workflow", () => {
       const { handler } = createTestSetup();
 
-      // Step 1: Normal selection
+      // Simulate RadioButtonManager workflow
       handler.selection = true;
-      expect(handler.selection).toBe(true);
-
-      // Step 2: Mark as exclusively selected (selection state maintained)
-      handler.isExclusivelySelected = true;
-      expect(handler.selection).toBe(true);
-
-      // Step 3: Public API deselection attempt (ignored)
-      handler.selection = false;
-      expect(handler.selection).toBe(true);
-
-      // Step 4: Internal API deselection (succeeds)
-      handler._setSelectionOverride(false);
-      expect(handler.selection).toBe(false);
-
-      // Step 5: Remove exclusive selection and verify public API works
-      handler.isExclusivelySelected = false;
-      handler.selection = true;
-      expect(handler.selection).toBe(true);
-    });
-  });
-
-  describe("RadioButtonManager Integration", () => {
-    it("should simulate RadioButtonManager exclusive selection behavior", () => {
-      const { handler } = createTestSetup();
-
-      // Simulate RadioButtonManager selection (using internal API)
       handler.isExclusivelySelected = true;
       handler._setSelectionOverride(true);
 
@@ -130,33 +156,184 @@ describe("RadioButtonInteractionHandler", () => {
       handler._setSelectionOverride(false);
       expect(handler.selection).toBe(false);
     });
+  });
 
-    it("should force normalSelect material when selecting in hover state", () => {
-      const { handler, radioButton, matSet } = createTestSetup();
+  describe("Exclusive Selection State Management", () => {
+    it("should block public API when isExclusivelySelected is true", () => {
+      const { handler } = createTestSetup();
 
-      // Simulate hover state before selection
-      handler.onMouseOverHandler({
-        type: "over",
-        interactionHandler: handler,
-      });
+      // Initially allow selection
+      handler.selection = true;
+      expect(handler.selection, "Initial selection should work normally").toBe(
+        true,
+      );
 
-      expect(handler.isOver).toBe(true);
-      expect(radioButton.material).toBe(matSet.over.material);
+      // Mark as exclusively selected
+      handler.isExclusivelySelected = true;
 
-      // Internal API selection should force normalSelect material
-      handler._setSelectionOverride(true);
+      // Public API should respect exclusive selection state (cannot deselect)
+      handler.selection = false;
+      expect(
+        handler.selection,
+        "Public API should be blocked by isExclusivelySelected state",
+      ).toBe(true);
 
-      expect(handler.selection).toBe(true);
-      expect(handler.isOver).toBe(true); // Hover state preserved internally
-      expect(radioButton.material).toBe(matSet.normalSelect.material); // Forces normal state
+      // Public API should also be blocked for selection changes
+      handler.selection = true;
+      expect(
+        handler.selection,
+        "Selection should remain unchanged when exclusively selected",
+      ).toBe(true);
     });
 
-    it("should preserve interaction state when deselecting", () => {
+    it("should allow internal API to bypass isExclusivelySelected restrictions", () => {
+      const { handler } = createTestSetup();
+
+      // Set up exclusively selected state
+      handler.isExclusivelySelected = true;
+      handler._setSelectionOverride(true);
+      expect(
+        handler.selection,
+        "Internal API should work despite exclusive state",
+      ).toBe(true);
+
+      // Internal API should be able to deselect despite exclusive state
+      handler._setSelectionOverride(false);
+      expect(
+        handler.selection,
+        "Internal API should bypass exclusive selection restriction",
+      ).toBe(false);
+
+      // Verify public API is still blocked
+      handler.selection = true;
+      expect(handler.selection, "Public API should remain blocked").toBe(false);
+    });
+
+    it("should handle combined disable and exclusive selection states", () => {
+      const { handler } = createTestSetup();
+
+      // Test disable state blocking
+      handler.disable();
+      handler.selection = true;
+      expect(handler.selection, "Disabled state should block selection").toBe(
+        false,
+      );
+
+      // Test isExclusivelySelected state blocking after enable
+      handler.enable();
+      handler.selection = true;
+      expect(handler.selection, "Should work normally when enabled").toBe(true);
+
+      handler.isExclusivelySelected = true;
+      handler.selection = false;
+      expect(
+        handler.selection,
+        "Exclusively selected state should block deselection",
+      ).toBe(true);
+
+      // Test combined states
+      handler.disable();
+      handler._setSelectionOverride(false);
+      expect(
+        handler.selection,
+        "Internal API should work despite both disabled and exclusive states",
+      ).toBe(false);
+    });
+
+    it("should block mouse interactions when disabled or exclusively selected", () => {
+      const { handler } = createTestSetup();
+      const selectEventSpy = vi.fn();
+      handler.on("select", selectEventSpy);
+
+      // Initially should respond to complete mouse interaction (enabled, not exclusively selected)
+      simulateCompleteClick(handler);
+      expect(
+        selectEventSpy,
+        "Should respond to interactions initially",
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        handler.selection,
+        "Should be selected after initial interaction",
+      ).toBe(true);
+
+      // Reset for next test
+      selectEventSpy.mockClear();
+      handler.selection = false;
+      simulateMouseOut(handler);
+
+      // Disable should make unresponsive to mouse interactions
+      handler.disable();
+      simulateCompleteClick(handler);
+      expect(
+        selectEventSpy,
+        "Should not respond to interactions when disabled",
+      ).not.toHaveBeenCalled();
+      expect(
+        handler.selection,
+        "Selection should remain unchanged when disabled",
+      ).toBe(false);
+
+      // Re-enable should make responsive again
+      handler.enable();
+      simulateCompleteClick(handler);
+      expect(
+        selectEventSpy,
+        "Should respond to interactions when re-enabled",
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        handler.selection,
+        "Should be selected after re-enable interaction",
+      ).toBe(true);
+
+      // Exclusively selected should make unresponsive to mouse interactions
+      selectEventSpy.mockClear();
+      handler.isExclusivelySelected = true;
+      simulateMouseOut(handler);
+      simulateCompleteClick(handler);
+      expect(
+        selectEventSpy,
+        "Should not respond to interactions when exclusively selected",
+      ).not.toHaveBeenCalled();
+      expect(
+        handler.selection,
+        "Selection should remain unchanged when exclusively selected",
+      ).toBe(true);
+
+      // Both disabled and exclusively selected should remain unresponsive
+      handler.disable();
+      simulateCompleteClick(handler);
+      expect(
+        selectEventSpy,
+        "Should remain unresponsive with both conditions",
+      ).not.toHaveBeenCalled();
+
+      // Only removing both should make responsive
+      handler.enable();
+      simulateCompleteClick(handler);
+      expect(
+        selectEventSpy,
+        "Should still be unresponsive with only exclusive state",
+      ).not.toHaveBeenCalled();
+
+      handler.isExclusivelySelected = false;
+      simulateCompleteClick(handler);
+      expect(
+        selectEventSpy,
+        "Should be responsive when both conditions removed",
+      ).toHaveBeenCalled();
+    });
+  });
+
+  describe("RadioButtonManager Integration", () => {
+    it("should restore hover state when deselecting via internal API", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start with selection
       handler._setSelectionOverride(true);
-      expect(radioButton.material).toBe(matSet.normalSelect.material);
+      expect(
+        radioButton.material,
+        "Should show normalSelect material when selected",
+      ).toBe(matSet.normalSelect.material);
 
       // Simulate hover state
       handler.onMouseOverHandler({
@@ -164,12 +341,275 @@ describe("RadioButtonInteractionHandler", () => {
         interactionHandler: handler,
       });
 
-      // Deselect - should preserve hover state
+      // Deselect - should restore hover state from internal flags
       handler._setSelectionOverride(false);
 
-      expect(handler.selection).toBe(false);
-      expect(handler.isOver).toBe(true);
-      expect(radioButton.material).toBe(matSet.over.material); // Preserves hover state
+      expect(
+        handler.selection,
+        "Selection should be false after deselection",
+      ).toBe(false);
+      expect(handler.isOver, "Hover state should remain true").toBe(true);
+      expect(
+        radioButton.material,
+        "Should restore hover material from internal flags",
+      ).toBe(matSet.over.material);
+    });
+  });
+
+  describe("Event Emission Differential Behavior", () => {
+    it("should NOT emit events when _setSelectionOverride is used (internal API)", () => {
+      const { handler } = createTestSetup();
+      const selectEventSpy = vi.fn();
+      handler.on("select", selectEventSpy);
+
+      // Internal API selection change - should not emit events
+      handler._setSelectionOverride(true);
+      expect(
+        selectEventSpy,
+        "Internal API selection should not emit events",
+      ).not.toHaveBeenCalled();
+
+      // Internal API deselection - should not emit events
+      handler._setSelectionOverride(false);
+      expect(
+        selectEventSpy,
+        "Internal API deselection should not emit events",
+      ).not.toHaveBeenCalled();
+
+      // Multiple internal changes - should not emit events
+      handler._setSelectionOverride(true);
+      handler._setSelectionOverride(false);
+      handler._setSelectionOverride(true);
+      expect(
+        selectEventSpy,
+        "Multiple internal API changes should not emit events",
+      ).not.toHaveBeenCalled();
+    });
+
+    it("should emit events normally when using onMouseClick (user interaction)", () => {
+      const { handler } = createTestSetup();
+      const selectEventSpy = vi.fn();
+      handler.on("select", selectEventSpy);
+
+      // User click operation - should emit event
+      handler.onMouseClick();
+      expect(
+        selectEventSpy,
+        "User click should emit select event",
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        selectEventSpy,
+        "Event should indicate selected state",
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "select",
+          isSelected: true,
+          interactionHandler: handler,
+        }),
+      );
+
+      // Another user click operation
+      selectEventSpy.mockClear();
+      handler.onMouseClick();
+      expect(
+        selectEventSpy,
+        "Second click should emit deselection event",
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        selectEventSpy,
+        "Event should indicate deselected state",
+      ).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: "select",
+          isSelected: false,
+          interactionHandler: handler,
+        }),
+      );
+    });
+
+    it("should produce identical results for onMouseClick and full mouse flow", () => {
+      const { handler } = createTestSetup();
+      const selectEventSpy = vi.fn();
+      handler.on("select", selectEventSpy);
+
+      // Both onMouseClick() and full mouse flow should behave identically when active
+      handler.onMouseClick();
+      const directCallResult = {
+        selection: handler.selection,
+        eventCount: selectEventSpy.mock.calls.length,
+      };
+
+      // Reset
+      handler.selection = false;
+      selectEventSpy.mockClear();
+
+      // Test full mouse flow
+      simulateCompleteClick(handler);
+      const mouseFlowResult = {
+        selection: handler.selection,
+        eventCount: selectEventSpy.mock.calls.length,
+      };
+
+      expect(
+        directCallResult,
+        "onMouseClick() and mouse event flow should produce identical results when active",
+      ).toEqual(mouseFlowResult);
+    });
+  });
+
+  describe("Material Update Radio-Specific Behavior", () => {
+    it("should force normalSelect material when _setSelectionOverride selects in hover state", () => {
+      const { handler, radioButton, matSet } = createTestSetup();
+
+      // Start in hover state
+      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      expect(radioButton.material, "Should show hover material").toBe(
+        matSet.over.material,
+      );
+      expect(handler.isOver, "Should be in hover state").toBe(true);
+
+      // Internal API selection should force normal state display
+      handler._setSelectionOverride(true);
+      expect(
+        radioButton.material,
+        "Should force normalSelect material despite hover",
+      ).toBe(matSet.normalSelect.material);
+      expect(handler.isOver, "Hover state should be preserved internally").toBe(
+        true,
+      );
+      expect(handler.selection, "Selection should be true").toBe(true);
+    });
+
+    it("should restore hover state after deselection (improved behavior)", () => {
+      const { handler, radioButton, matSet } = createTestSetup();
+
+      // Start in hover state, then select
+      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      expect(radioButton.material, "Should show hover material initially").toBe(
+        matSet.over.material,
+      );
+
+      handler._setSelectionOverride(true);
+      expect(
+        radioButton.material,
+        "Should show normalSelect (forces normal state)",
+      ).toBe(matSet.normalSelect.material);
+      expect(handler.isOver, "Hover state should be preserved internally").toBe(
+        true,
+      );
+
+      // Internal API deselection should restore hover state from flags
+      handler._setSelectionOverride(false);
+      expect(
+        radioButton.material,
+        "Should restore hover state after deselection",
+      ).toBe(matSet.over.material);
+      expect(
+        handler.isOver,
+        "Hover state should still be preserved internally",
+      ).toBe(true);
+      expect(handler.selection, "Selection should be false").toBe(false);
+    });
+
+    it("should handle materialSet changes during internal state management", () => {
+      const { handler, radioButton, matSet } = createTestSetup();
+      const newMatSet = getMeshMaterialSet();
+
+      // Set up state: hover, then select (which forces normal state)
+      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler._setSelectionOverride(true);
+      expect(
+        radioButton.material,
+        "Should show normalSelect with original materialSet",
+      ).toBe(matSet.normalSelect.material);
+
+      // Change materialSet during interaction
+      handler.materialSet = newMatSet;
+      expect(
+        radioButton.material,
+        "Should immediately update to new materialSet",
+      ).toBe(newMatSet.normalSelect.material);
+      expect(handler.selection, "Selection state should be preserved").toBe(
+        true,
+      );
+      expect(handler.isOver, "Hover state should be preserved").toBe(true);
+
+      // Continue interaction with new materialSet (deselection should restore hover state)
+      handler._setSelectionOverride(false);
+      expect(
+        radioButton.material,
+        "Should use new materialSet and restore hover state",
+      ).toBe(newMatSet.over.material);
+    });
+
+    it("should maintain selection-aware materials during complex state transitions", () => {
+      const { handler, radioButton, matSet } = createTestSetup();
+
+      // Test unselected state materials
+      expect(radioButton.material, "Normal unselected").toBe(
+        matSet.normal.material,
+      );
+
+      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      expect(radioButton.material, "Hover unselected").toBe(
+        matSet.over.material,
+      );
+
+      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
+      expect(radioButton.material, "Down unselected").toBe(
+        matSet.down.material,
+      );
+
+      // Select during press state (forces normal state)
+      handler._setSelectionOverride(true);
+      expect(
+        radioButton.material,
+        "Should force normalSelect even during press",
+      ).toBe(matSet.normalSelect.material);
+
+      // Release triggers onMouseClick which toggles selection (true->false) and restores over state
+      handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+      expect(
+        radioButton.material,
+        "Should show over material after UP toggles selection (false, over)",
+      ).toBe(matSet.over.material);
+
+      // Move out should show unselected normal
+      handler.onMouseOutHandler({ type: "out", interactionHandler: handler });
+      expect(
+        radioButton.material,
+        "Should show normal material (false, normal)",
+      ).toBe(matSet.normal.material);
+    });
+
+    it("should handle disable state override during material management", () => {
+      const { handler, radioButton, matSet } = createTestSetup();
+
+      // Start with hover, then select (which forces normal state)
+      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler._setSelectionOverride(true);
+      expect(
+        radioButton.material,
+        "Should show normalSelect (forced normal state)",
+      ).toBe(matSet.normalSelect.material);
+
+      // Disable should override all states
+      handler.disable();
+      expect(
+        radioButton.material,
+        "Disable should override all materials",
+      ).toBe(matSet.disable.material);
+      expect(
+        handler.selection,
+        "Selection should be preserved during disable",
+      ).toBe(true);
+
+      // Re-enable should restore appropriate state
+      handler.enable();
+      expect(
+        radioButton.material,
+        "Should restore normalSelect after re-enable",
+      ).toBe(matSet.normalSelect.material);
     });
   });
 });

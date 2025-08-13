@@ -15,7 +15,11 @@
  * @see {@link ButtonInteractionHandler} - Root base class for interaction handling
  */
 
-import type { RadioButtonMesh, RadioButtonSprite } from "../index.js";
+import type {
+  ClickableState,
+  RadioButtonMesh,
+  RadioButtonSprite,
+} from "../index.js";
 import {
   type ButtonInteractionHandlerParameters,
   CheckBoxInteractionHandler,
@@ -234,6 +238,33 @@ export class RadioButtonInteractionHandler<
     this._isExclusivelySelected = bool;
   }
   /**
+   * Calculates the current interaction state based on internal flags.
+   *
+   * @returns The appropriate ClickableState based on current flags
+   *
+   * @description
+   * Reconstructs the proper interaction state from internal flags when the state
+   * has been overridden by selection operations. This method follows the standard
+   * priority order for interaction states:
+   * 1. disable - when not enabled
+   * 2. down - when pressed
+   * 3. over - when hovering
+   * 4. normal - default state
+   *
+   * @remarks
+   * This method is used internally by `_setSelectionOverride()` to restore the
+   * correct visual state after deselection operations in RadioButtonManager workflows.
+   *
+   * @private
+   */
+  private calculateCurrentState(): ClickableState {
+    if (!this._enable) return "disable";
+    if (this._isPress) return "down";
+    if (this._isOver) return "over";
+    return "normal";
+  }
+
+  /**
    * Forces selection state change for exclusive radio button group management.
    *
    * @param bool - True to select the radio button, false to deselect
@@ -243,7 +274,7 @@ export class RadioButtonInteractionHandler<
    * state changes during exclusive group management. This method ensures predictable
    * visual behavior in radio button groups:
    * - Selection (true): Forces normal state for consistent normalSelect material
-   * - Deselection (false): Preserves current interaction state for natural UX
+   * - Deselection (false): Restores appropriate interaction state from internal flags
    *
    * @internal
    * @remarks
@@ -251,7 +282,7 @@ export class RadioButtonInteractionHandler<
    * - Bypasses all activity checks (disabled/frozen states)
    * - Ensures exclusive selection groups have predictable visual appearance
    * - Selection: Forces normal state to guarantee normalSelect material display
-   * - Deselection: Uses updateMaterial() to preserve hover/press states
+   * - Deselection: Reconstructs state from flags (_enable, _isPress, _isOver)
    */
   public _setSelectionOverride(bool: boolean): void {
     this._isSelect = bool;
@@ -259,8 +290,9 @@ export class RadioButtonInteractionHandler<
       // When selecting: Force normal state to ensure predictable normalSelect material
       this.updateState("normal");
     } else {
-      // When deselecting: Just update material with current interaction state
-      this.updateMaterial();
+      // When deselecting: Restore proper state from internal flags
+      const currentState = this.calculateCurrentState();
+      this.updateState(currentState);
     }
   }
 }
