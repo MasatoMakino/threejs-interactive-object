@@ -290,12 +290,15 @@ describe("RadioButtonInteractionHandler", () => {
   });
 
   describe("RadioButtonManager Integration", () => {
-    it("should preserve hover state when deselecting via internal API", () => {
+    it("should restore hover state when deselecting via internal API", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start with selection
       handler._setSelectionOverride(true);
-      expect(radioButton.material).toBe(matSet.normalSelect.material);
+      expect(
+        radioButton.material,
+        "Should show normalSelect material when selected",
+      ).toBe(matSet.normalSelect.material);
 
       // Simulate hover state
       handler.onMouseOverHandler({
@@ -303,12 +306,18 @@ describe("RadioButtonInteractionHandler", () => {
         interactionHandler: handler,
       });
 
-      // Deselect - should preserve hover state
+      // Deselect - should restore hover state from internal flags
       handler._setSelectionOverride(false);
 
-      expect(handler.selection).toBe(false);
-      expect(handler.isOver).toBe(true);
-      expect(radioButton.material).toBe(matSet.over.material); // Preserves hover state
+      expect(
+        handler.selection,
+        "Selection should be false after deselection",
+      ).toBe(false);
+      expect(handler.isOver, "Hover state should remain true").toBe(true);
+      expect(
+        radioButton.material,
+        "Should restore hover material from internal flags",
+      ).toBe(matSet.over.material);
     });
   });
 
@@ -436,7 +445,7 @@ describe("RadioButtonInteractionHandler", () => {
       expect(handler.selection, "Selection should be true").toBe(true);
     });
 
-    it("should maintain normal state after deselection (design intent)", () => {
+    it("should restore hover state after deselection (improved behavior)", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start in hover state, then select
@@ -454,12 +463,12 @@ describe("RadioButtonInteractionHandler", () => {
         true,
       );
 
-      // Internal API deselection does not restore hover state (by design)
+      // Internal API deselection should restore hover state from flags
       handler._setSelectionOverride(false);
       expect(
         radioButton.material,
-        "Should remain in normal state after deselection",
-      ).toBe(matSet.normal.material);
+        "Should restore hover state after deselection",
+      ).toBe(matSet.over.material);
       expect(
         handler.isOver,
         "Hover state should still be preserved internally",
@@ -490,12 +499,12 @@ describe("RadioButtonInteractionHandler", () => {
       );
       expect(handler.isOver, "Hover state should be preserved").toBe(true);
 
-      // Continue interaction with new materialSet (deselection maintains normal state)
+      // Continue interaction with new materialSet (deselection should restore hover state)
       handler._setSelectionOverride(false);
       expect(
         radioButton.material,
-        "Should use new materialSet in normal state",
-      ).toBe(newMatSet.normal.material);
+        "Should use new materialSet and restore hover state",
+      ).toBe(newMatSet.over.material);
     });
 
     it("should maintain selection-aware materials during complex state transitions", () => {
