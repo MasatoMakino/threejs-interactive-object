@@ -55,6 +55,20 @@ describe("CheckBoxInteractionHandler", () => {
       expect(handler.view.material).toBe(matSet.disable.material);
     });
 
+    it("should block programmatic deselection when disabled after selection", () => {
+      const { handler } = createTestSetup();
+
+      // Select first, then disable
+      handler.selection = true;
+      expect(handler.selection).toBe(true);
+
+      handler.disable();
+
+      // Attempt to deselect while disabled (should be blocked)
+      handler.selection = false;
+      expect(handler.selection).toBe(true);
+    });
+
     it("should respect frozen state when setting selection", () => {
       const { handler, matSet } = createTestSetup();
 
