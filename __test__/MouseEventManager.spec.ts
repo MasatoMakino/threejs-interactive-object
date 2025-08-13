@@ -59,16 +59,22 @@ interface TestEnvironment {
  * - Event throttling with 33ms default interval
  * - Fresh Three.js scene, camera, canvas, and MouseEventManager instances
  *
- * **DOM Cleanup**:
- * All MouseEventManagerScene instances are tracked and cleaned up in afterAll
- * to prevent DOM pollution and memory leaks during test execution.
+ * **Memory Management**:
+ * All MouseEventManagerScene instances are tracked and properly disposed in afterAll.
+ * This includes calling dispose() on MouseEventManager instances to clean up RAF
+ * ticker subscriptions and DOM event listeners, plus removing canvas elements from DOM
+ * to prevent memory leaks during test execution.
  */
 describe("MouseEventManager", () => {
   const testEnvironments: MouseEventManagerScene[] = [];
 
   afterAll(() => {
-    // Clean up all canvas elements to prevent DOM pollution
+    // Clean up all MouseEventManager instances and canvas elements to prevent memory leaks
     testEnvironments.forEach((env) => {
+      // Dispose MouseEventManager to clean up RAF ticker and DOM listeners
+      env.manager.dispose();
+
+      // Remove canvas from DOM
       if (env.canvas.parentNode) {
         env.canvas.parentNode.removeChild(env.canvas);
       }
