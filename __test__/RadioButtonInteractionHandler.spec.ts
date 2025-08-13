@@ -30,6 +30,17 @@ describe("RadioButtonInteractionHandler", () => {
     _warnSpy.mockRestore();
   });
 
+  /**
+   * Creates a standard test setup with RadioButtonMesh, interaction handler, and material set.
+   *
+   * @returns Test setup object containing radioButton, handler, and matSet
+   *
+   * @description
+   * Sets up a complete test environment with:
+   * - RadioButtonMesh with BoxGeometry (3x3x3)
+   * - Full StateMaterialSet for all interaction states
+   * - Handler configured with test value "test radio button"
+   */
   const createTestSetup = () => {
     const matSet = getMeshMaterialSet();
     const radioButton = new RadioButtonMesh({
@@ -41,6 +52,20 @@ describe("RadioButtonInteractionHandler", () => {
     return { radioButton, handler, matSet };
   };
 
+  /**
+   * Simulates a complete mouse click interaction sequence (hover → down → up).
+   *
+   * @param handler - The RadioButtonInteractionHandler to simulate interaction on
+   *
+   * @description
+   * Triggers a full click event sequence that mimics real user interaction:
+   * 1. Mouse over (hover state)
+   * 2. Mouse down (press state)
+   * 3. Mouse up (completes click, triggers onMouseClick)
+   *
+   * This is useful for testing complete user interaction flows and verifying
+   * that selection state changes and events are emitted correctly.
+   */
   const simulateCompleteClick = (
     handler: RadioButtonInteractionHandler<unknown>,
   ) => {
@@ -49,6 +74,16 @@ describe("RadioButtonInteractionHandler", () => {
     handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
   };
 
+  /**
+   * Simulates mouse leaving the interactive object area.
+   *
+   * @param handler - The RadioButtonInteractionHandler to simulate mouse out on
+   *
+   * @description
+   * Triggers mouse out event to return the object to normal state when not selected.
+   * This clears hover state and resets press state to prevent unintended clicks.
+   * Useful for testing state transitions when user moves cursor away from the object.
+   */
   const simulateMouseOut = (
     handler: RadioButtonInteractionHandler<unknown>,
   ) => {
