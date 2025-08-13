@@ -52,6 +52,9 @@ export class MouseEventManagerScene {
     document.body.appendChild(this.canvas);
     //マウスイベントの取得開始
     this.manager = new MouseEventManager(this.scene, this.camera, this.canvas);
+
+    // Ensure clean initial state after MouseEventManager creation
+    this.reset();
   }
 
   /**
