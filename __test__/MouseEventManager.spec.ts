@@ -17,54 +17,116 @@
  */
 
 import { Group } from "three";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { afterAll, describe, expect, test, vi } from "vitest";
 import { ClickableGroup } from "../src/index.js";
 import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
 /**
- * MouseEventManager core functionality tests
+ * Test environment interface for type safety and clarity
+ *
+ * @description
+ * Defines the complete test environment structure returned by
+ * createTestEnvironment helper function for MouseEventManager tests.
+ */
+interface TestEnvironment {
+  managerScene: MouseEventManagerScene;
+  wrapper: ClickableGroup;
+  btn: MouseEventManagerButton;
+  wrapperBackground: Group;
+  btnBackground: MouseEventManagerButton;
+  halfW: number;
+  halfH: number;
+}
+
+/**
+ * MouseEventManager core functionality tests with complete isolation
  *
  * @description
  * Comprehensive test suite for MouseEventManager's pointer event handling,
  * including throttling, state management, and interaction behavior with
  * overlapping objects.
  *
- * **Test Setup**:
+ * **Isolation Strategy**:
+ * Each test creates its own completely isolated environment using the
+ * createTestEnvironment() helper function. This ensures perfect test
+ * isolation without shared state between test executions.
+ *
+ * **Test Environment Components**:
  * - Primary button in ClickableGroup at Z=0
  * - Background button at Z=-10 for overlap testing
  * - Canvas center coordinates for consistent pointer positioning
  * - Event throttling with 33ms default interval
+ * - Fresh Three.js scene, camera, canvas, and MouseEventManager instances
+ *
+ * **Memory Management**:
+ * All MouseEventManagerScene instances are tracked and properly disposed in afterAll.
+ * This includes calling dispose() on MouseEventManager instances to clean up RAF
+ * ticker subscriptions and DOM event listeners, plus removing canvas elements from DOM
+ * to prevent memory leaks during test execution.
  */
 describe("MouseEventManager", () => {
-  const managerScene = new MouseEventManagerScene();
+  const testEnvironments: MouseEventManagerScene[] = [];
 
-  const wrapper = new ClickableGroup();
-  const btn = new MouseEventManagerButton();
-  wrapper.add(btn.button);
-  managerScene.scene.add(wrapper);
+  afterAll(() => {
+    // Clean up all MouseEventManager instances and canvas elements to prevent memory leaks
+    testEnvironments.forEach((env) => {
+      // Dispose MouseEventManager to clean up RAF ticker and DOM listeners
+      env.manager.dispose();
 
-  const wrapperBackground = new Group();
-  const btnBackground = new MouseEventManagerButton();
-  wrapperBackground.position.setZ(-10);
-  wrapperBackground.add(btnBackground.button);
-  managerScene.scene.add(wrapperBackground);
-
-  const halfW = MouseEventManagerScene.W / 2;
-  const halfH = MouseEventManagerScene.H / 2;
-
-  /**
-   * Reset test environment before each test
-   *
-   * @description
-   * Ensures clean state by advancing time, dispatching neutral pointer events,
-   * and resetting internal counters. This prevents test interference and
-   * ensures consistent initial conditions.
-   */
-  beforeEach(() => {
-    managerScene.reset();
+      // Remove canvas from DOM
+      if (env.canvas.parentNode) {
+        env.canvas.parentNode.removeChild(env.canvas);
+      }
+    });
+    testEnvironments.length = 0;
   });
 
+  /**
+   * Creates a completely isolated test environment for MouseEventManager tests
+   *
+   * @returns Complete test environment with all necessary components
+   *
+   * @description
+   * Generates a fresh, isolated test environment containing:
+   * - MouseEventManagerScene with Three.js scene, camera, canvas, and MouseEventManager
+   * - Primary ClickableGroup with button at Z=0
+   * - Background Group with button at Z=-10 for overlap testing
+   * - Canvas center coordinates for consistent pointer positioning
+   *
+   * Each call creates completely new instances, ensuring perfect test isolation
+   * without any shared state between test executions.
+   */
+  const createTestEnvironment = (): TestEnvironment => {
+    const managerScene = new MouseEventManagerScene();
+
+    // Track instance for cleanup in afterAll
+    testEnvironments.push(managerScene);
+
+    const wrapper = new ClickableGroup();
+    const btn = new MouseEventManagerButton();
+    wrapper.add(btn.button);
+    managerScene.scene.add(wrapper);
+
+    const wrapperBackground = new Group();
+    const btnBackground = new MouseEventManagerButton();
+    wrapperBackground.position.setZ(-10);
+    wrapperBackground.add(btnBackground.button);
+    managerScene.scene.add(wrapperBackground);
+
+    const halfW = MouseEventManagerScene.W / 2;
+    const halfH = MouseEventManagerScene.H / 2;
+
+    return {
+      managerScene,
+      wrapper,
+      btn,
+      wrapperBackground,
+      btnBackground,
+      halfW,
+      halfH,
+    };
+  };
   /**
    * Tests pointer move event handling with throttling behavior
    *
@@ -86,6 +148,9 @@ describe("MouseEventManager", () => {
    * - Z-depth ordering affects which objects receive events
    */
   test("should throttle pointer move events and transition material states correctly", () => {
+    const { managerScene, wrapper, btn, btnBackground, halfW, halfH } =
+      createTestEnvironment();
+
     // Verify clean initial state
     btn.checkMaterial(
       "normal",
@@ -138,6 +203,9 @@ describe("MouseEventManager", () => {
    * 4. Background objects remain unaffected due to Z-depth priority
    */
   test("should handle pointer down/up sequence with immediate state changes bypassing throttling", () => {
+    const { managerScene, wrapper, btn, btnBackground, halfW, halfH } =
+      createTestEnvironment();
+
     // Verify clean initial state
     btn.checkMaterial(
       "normal",
@@ -177,6 +245,9 @@ describe("MouseEventManager", () => {
    * - btnBackground.button at Z=-10 (background, enabled but blocked)
    */
   test("should block background object interactions when foreground object is disabled", () => {
+    const { managerScene, wrapper, btn, btnBackground, halfW, halfH } =
+      createTestEnvironment();
+
     btn.button.interactionHandler.disable();
     btn.button.interactionHandler.mouseEnabled = true;
 
@@ -235,6 +306,9 @@ describe("MouseEventManager", () => {
    * - Wrapper objects don't register hover/press when mouseEnabled=false
    */
   test("should pass through pointer events to background when mouseEnabled is false", () => {
+    const { managerScene, wrapper, btn, btnBackground, halfW, halfH } =
+      createTestEnvironment();
+
     btn.button.interactionHandler.enable();
     btn.button.interactionHandler.mouseEnabled = false;
     wrapper.interactionHandler.mouseEnabled = false;
@@ -268,9 +342,6 @@ describe("MouseEventManager", () => {
     btnBackground.checkMaterial("normal");
     expect(wrapper.interactionHandler.isPress).toBe(false);
     expect(wrapper.interactionHandler.isOver).toBe(false);
-
-    btn.button.interactionHandler.mouseEnabled = true;
-    wrapper.interactionHandler.mouseEnabled = true;
   });
 
   /**
@@ -294,6 +365,8 @@ describe("MouseEventManager", () => {
    * **Use Case**: UI elements that may be disabled during hover (e.g., loading states)
    */
   test("should continue hover state tracking when disabled during pointer interaction", () => {
+    const { managerScene, btn, halfW, halfH } = createTestEnvironment();
+
     const spyOverButton = vi.fn(() => true);
     const spyOutButton = vi.fn(() => true);
 
@@ -361,6 +434,9 @@ describe("MouseEventManager", () => {
    * 3. Click events fire for both btn.button and wrapper (parent)
    */
   test("should propagate click events to both target object and parent container", () => {
+    const { managerScene, wrapper, btn, halfW, halfH } =
+      createTestEnvironment();
+
     const spyClickButton = vi.fn(() => true);
     const spyClickGroup = vi.fn(() => true);
 
@@ -406,6 +482,8 @@ describe("MouseEventManager", () => {
    * 4. Re-enter bounds → over event fires again
    */
   test("should deduplicate hover events within same object bounds to prevent excessive firing", () => {
+    const { managerScene, btn, halfW, halfH } = createTestEnvironment();
+
     const spyOver = vi.fn(() => true);
     btn.button.interactionHandler.on("over", spyOver);
 
