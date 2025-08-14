@@ -151,4 +151,23 @@ export class MouseEventManagerScene {
     });
     this.canvas.dispatchEvent(e);
   }
+
+  /**
+   * Safely disposes of the MouseEventManager and cleans up DOM elements
+   *
+   * @description
+   * Provides stable memory cleanup for the MouseEventManagerScene helper class.
+   * Calls dispose() on the MouseEventManager to clean up RAF ticker subscriptions
+   * and DOM event listeners, then removes the canvas element from the DOM if connected.
+   * Safe to call multiple times.
+   */
+  public dispose(): void {
+    // Dispose MouseEventManager to clean up RAF ticker and DOM listeners
+    this.manager.dispose();
+
+    // Remove canvas from DOM if still connected
+    if (this.canvas.isConnected) {
+      this.canvas.parentNode?.removeChild(this.canvas);
+    }
+  }
 }
