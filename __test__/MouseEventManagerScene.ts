@@ -1,7 +1,27 @@
 import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 import { RAFTicker } from "@masatomakino/raf-ticker";
-import { type Camera, PerspectiveCamera, Scene } from "three";
+import {
+  type Camera,
+  type Object3D,
+  PerspectiveCamera,
+  Scene,
+  type Vector4,
+} from "three";
 import { MouseEventManager } from "../src/index.js";
+
+/**
+ * Constructor options interface for MouseEventManager
+ *
+ * @description
+ * Type definition for MouseEventManager constructor options,
+ * used for testing different configuration scenarios.
+ */
+export interface MouseEventManagerConstructorOptions {
+  throttlingTime_ms?: number;
+  viewport?: Vector4;
+  targets?: Object3D[];
+  recursive?: boolean;
+}
 
 /**
  * Test helper class providing unified MouseEventManager environment
@@ -18,6 +38,19 @@ export class MouseEventManagerScene {
   public manager: MouseEventManager;
   private time: number = 0;
 
+  /**
+   * Gets the current internal time counter value
+   *
+   * @returns Current time value in milliseconds
+   *
+   * @description
+   * Provides read-only access to the internal time counter used for
+   * throttling simulation and RAF ticker event generation in tests.
+   */
+  public get currentTime(): number {
+    return this.time;
+  }
+
   /** Default canvas width for test environment */
   public static readonly W = 1920;
   /** Default canvas height for test environment */
@@ -26,13 +59,15 @@ export class MouseEventManagerScene {
   /**
    * Creates a new test environment with scene, camera, canvas, and MouseEventManager
    *
+   * @param options - Optional constructor options for MouseEventManager
+   *
    * @description
    * Automatically sets up a complete Three.js test environment including:
    * - Scene with PerspectiveCamera positioned at (0, 0, 100)
    * - Canvas element with default dimensions (1920x1080)
-   * - MouseEventManager configured for the created components
+   * - MouseEventManager configured for the created components with optional custom options
    */
-  constructor() {
+  constructor(options?: MouseEventManagerConstructorOptions) {
     this.scene = new Scene();
     this.camera = new PerspectiveCamera(
       45,
@@ -51,7 +86,12 @@ export class MouseEventManagerScene {
 
     document.body.appendChild(this.canvas);
     //マウスイベントの取得開始
-    this.manager = new MouseEventManager(this.scene, this.camera, this.canvas);
+    this.manager = new MouseEventManager(
+      this.scene,
+      this.camera,
+      this.canvas,
+      options,
+    );
 
     // Ensure clean initial state after MouseEventManager creation
     this.reset();
