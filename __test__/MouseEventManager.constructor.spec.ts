@@ -1,17 +1,17 @@
 /**
- * @fileoverview MouseEventManager constructor options comprehensive tests
+ * @fileoverview MouseEventManager constructor options tests
  *
  * @description
- * Tests comprehensive constructor option handling for MouseEventManager including
+ * Tests constructor option handling for MouseEventManager including
  * throttlingTime_ms, viewport, targets, and recursive options configuration.
  *
  * **Test Environment**: Uses extended MouseEventManagerScene with constructor options
  * support to create controlled Three.js environments with different MouseEventManager
  * configurations.
  *
- * **Isolation Strategy**: Each test creates its own completely isolated environment
- * following the same pattern as MouseEventManager.spec.ts to ensure perfect test
- * isolation without shared state between test executions.
+ * **Isolation Strategy**: Each test creates its own isolated environment
+ * following the same pattern as MouseEventManager.spec.ts to ensure no
+ * shared state between test executions.
  */
 
 import { BoxGeometry, Group, Vector4 } from "three";
@@ -28,7 +28,7 @@ import {
  * Test environment interface for type safety and clarity
  *
  * @description
- * Defines the complete test environment structure returned by
+ * Defines the test environment structure returned by
  * createTestEnvironment helper function for MouseEventManager constructor tests.
  */
 interface TestEnvironment {
@@ -39,16 +39,15 @@ interface TestEnvironment {
 }
 
 /**
- * MouseEventManager constructor options tests with complete isolation
+ * MouseEventManager constructor options tests
  *
  * @description
  * Comprehensive test suite for MouseEventManager's constructor options,
  * including throttlingTime_ms, viewport, targets, and recursive configuration.
  *
  * **Isolation Strategy**:
- * Each test creates its own completely isolated environment using the
- * createTestEnvironment() helper function. This ensures perfect test
- * isolation without shared state between test executions.
+ * Each test creates its own isolated environment using createTestEnvironment()
+ * to ensure no shared state between test executions.
  *
  * **Test Environment Components**:
  * - Fresh Three.js scene, camera, canvas, and MouseEventManager instances
@@ -56,9 +55,7 @@ interface TestEnvironment {
  * - Canvas center coordinates for consistent pointer positioning
  *
  * **Memory Management**:
- * All MouseEventManagerScene instances are tracked and properly disposed in afterAll.
- * This includes calling dispose() on MouseEventManager instances to clean up RAF
- * ticker subscriptions and DOM event listeners, plus removing canvas elements from DOM
+ * All MouseEventManagerScene instances are tracked and properly disposed in afterAll
  * to prevent memory leaks during test execution.
  */
 describe("MouseEventManager Constructor Options", () => {
@@ -79,19 +76,16 @@ describe("MouseEventManager Constructor Options", () => {
   });
 
   /**
-   * Creates a completely isolated test environment for MouseEventManager constructor tests
+   * Creates an isolated test environment for MouseEventManager constructor tests
    *
    * @param options - Optional constructor options for MouseEventManager
-   * @returns Complete test environment with all necessary components
+   * @returns Test environment with all necessary components
    *
    * @description
-   * Generates a fresh, isolated test environment containing:
+   * Generates a fresh test environment containing:
    * - MouseEventManagerScene with Three.js scene, camera, canvas, and MouseEventManager
    * - Primary ClickableMesh button for interaction testing
    * - Canvas center coordinates for consistent pointer positioning
-   *
-   * Each call creates completely new instances with custom constructor options,
-   * ensuring perfect test isolation without any shared state between test executions.
    */
   const createTestEnvironment = (
     options?: MouseEventManagerConstructorOptions,
