@@ -13,7 +13,15 @@
  */
 
 import { RAFTicker } from "@masatomakino/raf-ticker";
-import { afterAll, describe, expect, test, vi } from "vitest";
+import {
+  afterAll,
+  describe,
+  expect,
+  type MockInstance,
+  test,
+  vi,
+} from "vitest";
+import type { MouseEventManager } from "../src/index.js";
 import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
@@ -69,6 +77,66 @@ describe("MouseEventManager Dispose Functionality", () => {
   };
 
   /**
+   * Helper function to verify that pointer event listeners have been removed
+   */
+  const expectPointerEventListenersRemoved = (
+    removeEventListenerSpy: MockInstance,
+    manager: MouseEventManager,
+  ): void => {
+    // biome-ignore lint/suspicious/noExplicitAny: Testing protected method references
+    const typedManager = manager as any;
+
+    expect(
+      removeEventListenerSpy,
+      "Should remove pointermove listener",
+    ).toHaveBeenCalledWith(
+      "pointermove",
+      typedManager.onDocumentMouseMove,
+      false,
+    );
+    expect(
+      removeEventListenerSpy,
+      "Should remove pointerdown listener",
+    ).toHaveBeenCalledWith(
+      "pointerdown",
+      typedManager.onDocumentMouseUpDown,
+      false,
+    );
+    expect(
+      removeEventListenerSpy,
+      "Should remove pointerup listener",
+    ).toHaveBeenCalledWith(
+      "pointerup",
+      typedManager.onDocumentMouseUpDown,
+      false,
+    );
+    expect(
+      removeEventListenerSpy,
+      "Should call removeEventListener 3 times",
+    ).toHaveBeenCalledTimes(3);
+  };
+
+  /**
+   * Helper function to verify that RAF ticker has been properly unsubscribed
+   */
+  const expectRAFTickerUnsubscribed = (
+    rafTickerOffSpy: MockInstance,
+    manager: MouseEventManager,
+  ): void => {
+    // biome-ignore lint/suspicious/noExplicitAny: Testing protected method reference
+    const typedManager = manager as any;
+
+    expect(
+      rafTickerOffSpy,
+      "Should unsubscribe from RAF ticker",
+    ).toHaveBeenCalledWith("tick", typedManager.onTick);
+    expect(
+      rafTickerOffSpy,
+      "Should call RAFTicker.off once",
+    ).toHaveBeenCalledTimes(1);
+  };
+
+  /**
    * DOM Event Listener Management Tests
    */
   describe("DOM Event Listener Management", () => {
@@ -83,23 +151,10 @@ describe("MouseEventManager Dispose Functionality", () => {
 
       managerScene.manager.dispose();
 
-      expect(
+      expectPointerEventListenersRemoved(
         removeEventListenerSpy,
-        "Should remove pointermove listener",
-      ).toHaveBeenCalledWith("pointermove", expect.any(Function), false);
-      expect(
-        removeEventListenerSpy,
-        "Should remove pointerdown listener",
-      ).toHaveBeenCalledWith("pointerdown", expect.any(Function), false);
-      expect(
-        removeEventListenerSpy,
-        "Should remove pointerup listener",
-      ).toHaveBeenCalledWith("pointerup", expect.any(Function), false);
-
-      expect(
-        removeEventListenerSpy,
-        "Should call removeEventListener 3 times",
-      ).toHaveBeenCalledTimes(3);
+        managerScene.manager,
+      );
 
       removeEventListenerSpy.mockRestore();
     });
@@ -170,18 +225,10 @@ describe("MouseEventManager Dispose Functionality", () => {
       managerScene.manager.dispose();
 
       // Verify correct event types and flags are used for removal
-      expect(
+      expectPointerEventListenersRemoved(
         removeEventListenerSpy,
-        "pointermove listener removed with correct flag",
-      ).toHaveBeenCalledWith("pointermove", expect.any(Function), false);
-      expect(
-        removeEventListenerSpy,
-        "pointerdown listener removed with correct flag",
-      ).toHaveBeenCalledWith("pointerdown", expect.any(Function), false);
-      expect(
-        removeEventListenerSpy,
-        "pointerup listener removed with correct flag",
-      ).toHaveBeenCalledWith("pointerup", expect.any(Function), false);
+        managerScene.manager,
+      );
 
       removeEventListenerSpy.mockRestore();
     });
@@ -199,14 +246,7 @@ describe("MouseEventManager Dispose Functionality", () => {
 
       managerScene.manager.dispose();
 
-      expect(
-        rafTickerOffSpy,
-        "Should unsubscribe from RAF ticker",
-      ).toHaveBeenCalledWith("tick", expect.any(Function));
-      expect(
-        rafTickerOffSpy,
-        "Should call RAFTicker.off once",
-      ).toHaveBeenCalledTimes(1);
+      expectRAFTickerUnsubscribed(rafTickerOffSpy, managerScene.manager);
 
       rafTickerOffSpy.mockRestore();
     });
