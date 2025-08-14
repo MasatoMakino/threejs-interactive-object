@@ -51,7 +51,7 @@
     "prepare": "husky",
     "test": "vitest --run",
     "coverage": "vitest --coverage --run",
-    "test:watch": "vitest",
+    "test:watch": "vitest --watch",
     "preversion": "npx @masatomakino/release-helper preversion",
     "postversion": "npx @masatomakino/release-helper postversion",
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",

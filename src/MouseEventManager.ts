@@ -126,6 +126,7 @@ export class MouseEventManager {
   protected viewport?: Vector4;
   protected recursive: boolean;
   protected targets: Object3D[];
+  private _disposed: boolean = false;
 
   /**
    * Creates a new MouseEventManager instance.
@@ -748,6 +749,10 @@ export class MouseEventManager {
    * @public
    */
   public dispose(): void {
+    // Idempotent behavior: prevent multiple cleanup operations
+    if (this._disposed) return;
+    this._disposed = true;
+
     // Clear current hover state to emit proper "out" events
     this.clearOver();
 
