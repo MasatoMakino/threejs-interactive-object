@@ -159,7 +159,7 @@ describe("MouseEventManager Dispose Functionality", () => {
       removeEventListenerSpy.mockRestore();
     });
 
-    test("should not process pointer events after dispose", () => {
+    test("should prevent memory leaks and stop event processing after dispose", () => {
       const { managerScene, btn, halfW, halfH } = createTestEnvironment();
 
       // Verify initial responsiveness
@@ -170,22 +170,34 @@ describe("MouseEventManager Dispose Functionality", () => {
         "Button should respond before dispose",
       ).toBe(true);
 
-      // Reset state and dispose
+      // Reset state and prepare for dispose
       managerScene.reset();
       expect(
         btn.button.interactionHandler.isOver,
         "Button should be reset to normal state",
       ).toBe(false);
 
+      // Setup spy for comprehensive memory leak verification
+      const removeEventListenerSpy = vi.spyOn(
+        managerScene.canvas,
+        "removeEventListener",
+      );
+
       // Dispose the manager
       managerScene.manager.dispose();
 
-      // Test that events are no longer processed
+      // Spy verification: Ensure all event listeners are properly removed
+      expectPointerEventListenersRemoved(
+        removeEventListenerSpy,
+        managerScene.manager,
+      );
+
+      // Behavioral verification: Ensure events are no longer processed
       managerScene.interval();
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
       expect(
         btn.button.interactionHandler.isOver,
-        "Button should not respond after dispose",
+        "Button should not respond to pointer move after dispose",
       ).toBe(false);
 
       managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
@@ -193,42 +205,6 @@ describe("MouseEventManager Dispose Functionality", () => {
         btn.button.interactionHandler.isPress,
         "Button should not register pointer press after dispose",
       ).toBe(false);
-    });
-
-    test("should prevent memory leaks from event listener accumulation", () => {
-      const { managerScene } = createTestEnvironment();
-
-      const removeEventListenerSpy = vi.spyOn(
-        managerScene.canvas,
-        "removeEventListener",
-      );
-
-      // Dispose should clean up listeners
-      managerScene.manager.dispose();
-
-      expect(
-        removeEventListenerSpy,
-        "Should remove listeners to prevent memory leaks",
-      ).toHaveBeenCalledTimes(3);
-
-      removeEventListenerSpy.mockRestore();
-    });
-
-    test("should remove event listeners with correct event types and flags", () => {
-      const { managerScene } = createTestEnvironment();
-
-      const removeEventListenerSpy = vi.spyOn(
-        managerScene.canvas,
-        "removeEventListener",
-      );
-
-      managerScene.manager.dispose();
-
-      // Verify correct event types and flags are used for removal
-      expectPointerEventListenersRemoved(
-        removeEventListenerSpy,
-        managerScene.manager,
-      );
 
       removeEventListenerSpy.mockRestore();
     });
