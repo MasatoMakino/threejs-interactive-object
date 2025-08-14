@@ -1,27 +1,18 @@
 import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 import { RAFTicker } from "@masatomakino/raf-ticker";
-import {
-  type Camera,
-  type Object3D,
-  PerspectiveCamera,
-  Scene,
-  type Vector4,
-} from "three";
+import { type Camera, PerspectiveCamera, Scene } from "three";
 import { MouseEventManager } from "../src/index.js";
 
 /**
- * Constructor options interface for MouseEventManager
+ * Constructor options type for MouseEventManager
  *
  * @description
- * Type definition for MouseEventManager constructor options,
- * used for testing different configuration scenarios.
+ * Type alias derived from actual MouseEventManager constructor signature,
+ * ensuring tests always match the real constructor options.
  */
-export interface MouseEventManagerConstructorOptions {
-  throttlingTime_ms?: number;
-  viewport?: Vector4;
-  targets?: Object3D[];
-  recursive?: boolean;
-}
+export type MouseEventManagerConstructorOptions = ConstructorParameters<
+  typeof MouseEventManager
+>[3];
 
 /**
  * Test helper class providing unified MouseEventManager environment
