@@ -71,13 +71,7 @@ describe("MouseEventManager", () => {
   afterAll(() => {
     // Clean up all MouseEventManager instances and canvas elements to prevent memory leaks
     testEnvironments.forEach((env) => {
-      // Dispose MouseEventManager to clean up RAF ticker and DOM listeners
-      env.manager.dispose();
-
-      // Remove canvas from DOM
-      if (env.canvas.parentNode) {
-        env.canvas.parentNode.removeChild(env.canvas);
-      }
+      env.dispose();
     });
     testEnvironments.length = 0;
   });

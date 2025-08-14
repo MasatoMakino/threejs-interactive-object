@@ -4,6 +4,17 @@ import { type Camera, PerspectiveCamera, Scene } from "three";
 import { MouseEventManager } from "../src/index.js";
 
 /**
+ * Constructor options type for MouseEventManager
+ *
+ * @description
+ * Type alias derived from actual MouseEventManager constructor signature,
+ * ensuring tests always match the real constructor options.
+ */
+export type MouseEventManagerConstructorOptions = ConstructorParameters<
+  typeof MouseEventManager
+>[3];
+
+/**
  * Test helper class providing unified MouseEventManager environment
  *
  * @description
@@ -18,6 +29,19 @@ export class MouseEventManagerScene {
   public manager: MouseEventManager;
   private time: number = 0;
 
+  /**
+   * Gets the current internal time counter value
+   *
+   * @returns Current time value in milliseconds
+   *
+   * @description
+   * Provides read-only access to the internal time counter used for
+   * throttling simulation and RAF ticker event generation in tests.
+   */
+  public get currentTime(): number {
+    return this.time;
+  }
+
   /** Default canvas width for test environment */
   public static readonly W = 1920;
   /** Default canvas height for test environment */
@@ -26,13 +50,15 @@ export class MouseEventManagerScene {
   /**
    * Creates a new test environment with scene, camera, canvas, and MouseEventManager
    *
+   * @param options - Optional constructor options for MouseEventManager
+   *
    * @description
    * Automatically sets up a complete Three.js test environment including:
    * - Scene with PerspectiveCamera positioned at (0, 0, 100)
    * - Canvas element with default dimensions (1920x1080)
-   * - MouseEventManager configured for the created components
+   * - MouseEventManager configured for the created components with optional custom options
    */
-  constructor() {
+  constructor(options?: MouseEventManagerConstructorOptions) {
     this.scene = new Scene();
     this.camera = new PerspectiveCamera(
       45,
@@ -51,7 +77,12 @@ export class MouseEventManagerScene {
 
     document.body.appendChild(this.canvas);
     //マウスイベントの取得開始
-    this.manager = new MouseEventManager(this.scene, this.camera, this.canvas);
+    this.manager = new MouseEventManager(
+      this.scene,
+      this.camera,
+      this.canvas,
+      options,
+    );
 
     // Ensure clean initial state after MouseEventManager creation
     this.reset();
@@ -119,5 +150,24 @@ export class MouseEventManagerScene {
       offsetY: y,
     });
     this.canvas.dispatchEvent(e);
+  }
+
+  /**
+   * Safely disposes of the MouseEventManager and cleans up DOM elements
+   *
+   * @description
+   * Provides stable memory cleanup for the MouseEventManagerScene helper class.
+   * Calls dispose() on the MouseEventManager to clean up RAF ticker subscriptions
+   * and DOM event listeners, then removes the canvas element from the DOM if connected.
+   * Safe to call multiple times.
+   */
+  public dispose(): void {
+    // Dispose MouseEventManager to clean up RAF ticker and DOM listeners
+    this.manager.dispose();
+
+    // Remove canvas from DOM if still connected
+    if (this.canvas.isConnected) {
+      this.canvas.parentNode?.removeChild(this.canvas);
+    }
   }
 }
