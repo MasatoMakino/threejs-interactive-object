@@ -27,15 +27,31 @@ import { MouseEventManager } from "../src/index.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
 /**
- * Test-specific interface extending MouseEventManager to access private properties
+ * Test-specific interface for accessing MouseEventManager protected properties
  *
  * @description
- * Provides type-safe access to private throttling-related properties needed for testing
- * without completely disabling type checking like 'any' would do.
+ * Defines the shape of protected throttling-related properties needed for testing.
+ * Used with exposeMouseEventManagerForTest helper function.
  */
-interface MouseEventManagerWithThrottlingAccess extends MouseEventManager {
+interface MouseEventManagerTestProps {
   throttlingDelta: number;
   hasThrottled: boolean;
+}
+
+/**
+ * Test utility function to expose protected properties of MouseEventManager
+ *
+ * @param obj - MouseEventManager instance to expose
+ * @returns MouseEventManager with accessible protected properties
+ *
+ * @description
+ * Provides type-safe access to protected throttling properties without using 'any'.
+ * This approach maintains type checking while allowing test access to internal state.
+ */
+function exposeMouseEventManagerForTest(
+  obj: MouseEventManager,
+): MouseEventManager & MouseEventManagerTestProps {
+  return obj as MouseEventManager & MouseEventManagerTestProps;
 }
 
 /**
@@ -84,8 +100,7 @@ describe("MouseEventManager Advanced Throttling", () => {
     describe("onTick() Method Internal Behavior", () => {
       test("should accumulate delta time correctly in onTick callback", () => {
         // Access private throttlingDelta through type assertion for testing
-        const typedManager =
-          manager as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager = exposeMouseEventManagerForTest(manager);
 
         // Initial state verification
         expect(
@@ -109,8 +124,7 @@ describe("MouseEventManager Advanced Throttling", () => {
       });
 
       test("should reset hasThrottled flag when throttling interval expires", () => {
-        const typedManager =
-          manager as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager = exposeMouseEventManagerForTest(manager);
 
         // Set hasThrottled to true
         typedManager.hasThrottled = true;
@@ -135,8 +149,7 @@ describe("MouseEventManager Advanced Throttling", () => {
       });
 
       test("should apply modulo operation to throttlingDelta after reset", () => {
-        const typedManager =
-          manager as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager = exposeMouseEventManagerForTest(manager);
         const throttlingTime = manager.throttlingTime_ms; // Default 33ms
 
         // Set initial state
@@ -157,8 +170,7 @@ describe("MouseEventManager Advanced Throttling", () => {
 
     describe("Delta Time Edge Cases", () => {
       test("should handle negative delta time safely using Math.max protection", () => {
-        const typedManager =
-          manager as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager = exposeMouseEventManagerForTest(manager);
         const initialDelta = 10;
 
         // Set initial accumulation
@@ -174,8 +186,7 @@ describe("MouseEventManager Advanced Throttling", () => {
       });
 
       test("should process zero delta time without accumulation", () => {
-        const typedManager =
-          manager as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager = exposeMouseEventManagerForTest(manager);
         const initialDelta = 10;
 
         // Set initial accumulation
@@ -191,8 +202,7 @@ describe("MouseEventManager Advanced Throttling", () => {
       });
 
       test("should handle very small positive delta times correctly", () => {
-        const typedManager =
-          manager as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager = exposeMouseEventManagerForTest(manager);
 
         // Emit very small delta
         const smallDelta = 0.1;
@@ -238,10 +248,8 @@ describe("MouseEventManager Advanced Throttling", () => {
         const canvas2 = document.createElement("canvas");
         const manager2 = new MouseEventManager(scene2, camera2, canvas2);
 
-        const typedManager1 =
-          manager as unknown as MouseEventManagerWithThrottlingAccess;
-        const typedManager2 =
-          manager2 as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager1 = exposeMouseEventManagerForTest(manager);
+        const typedManager2 = exposeMouseEventManagerForTest(manager2);
 
         // Both should start with clean state
         expect(typedManager1.throttlingDelta).toBe(0);
@@ -299,8 +307,9 @@ describe("MouseEventManager Advanced Throttling", () => {
     describe("High-frequency Event Stress Testing", () => {
       test("should ignore rapid pointer events during throttling window", () => {
         const managerScene = createTestEnvironment();
-        const typedManager =
-          managerScene.manager as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager = exposeMouseEventManagerForTest(
+          managerScene.manager,
+        );
 
         // Set hasThrottled to true to simulate active throttling
         typedManager.hasThrottled = true;
@@ -323,8 +332,9 @@ describe("MouseEventManager Advanced Throttling", () => {
 
       test("should process events normally after throttling window expires", () => {
         const managerScene = createTestEnvironment();
-        const typedManager =
-          managerScene.manager as unknown as MouseEventManagerWithThrottlingAccess;
+        const typedManager = exposeMouseEventManagerForTest(
+          managerScene.manager,
+        );
 
         // Set throttling state
         typedManager.hasThrottled = true;
