@@ -299,8 +299,8 @@ describe("MouseEventManager Throttling", () => {
         rafTickerOnSpy.mockRestore();
       });
 
-      test("should handle zero throttling time safely without division by zero", () => {
-        // Create manager with throttlingTime_ms: 0 to test zero division safety
+      test("should handle zero throttling time safely without modulo-by-zero (NaN)", () => {
+        // Create manager with throttlingTime_ms: 0 to test modulo-by-zero safety
         const testScene = new Scene();
         const testCamera = new PerspectiveCamera(45, 1, 1, 400);
         const testCanvas = document.createElement("canvas");
@@ -323,13 +323,13 @@ describe("MouseEventManager Throttling", () => {
         typedManager.hasThrottled = true;
         typedManager.throttlingDelta = 50;
 
-        // Emit tick event with zero throttling time - should not cause division by zero
+        // Emit tick event with zero throttling time - should not cause modulo-by-zero (NaN)
         expect(() => {
           RAFTicker.emit("tick", { timestamp: 0, delta: 33 });
-        }, "Zero throttling time should not cause division by zero errors").not.toThrow();
+        }, "Zero throttling time should not cause modulo-by-zero (NaN)").not.toThrow();
 
         // When throttlingTime_ms is 0, throttlingDelta should be reset to 0 (not NaN)
-        // to prevent division by zero errors
+        // to prevent modulo-by-zero from producing NaN
         expect(
           typedManager.throttlingDelta,
           "Delta should be reset to 0 when throttling time is 0 to prevent NaN",
