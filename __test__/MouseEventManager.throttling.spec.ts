@@ -228,7 +228,7 @@ describe("MouseEventManager Throttling", () => {
           "hasThrottled should be reset to false after large delta exceeds throttling interval",
         ).toBe(false);
 
-        // Modulo calculation: 5000 % 33 = 2ms remainder expected
+        // Modulo calculation: 5000 % 33 = 2 remainder expected
         const expectedRemainder = largeDelta % throttlingTime; // 5000 % 33 = 2
         expect(
           typedManager.throttlingDelta,
@@ -339,7 +339,7 @@ describe("MouseEventManager Throttling", () => {
         ).toBe(false);
         expect(
           typedManager16.throttlingDelta,
-          "32ms % 16ms should equal 0ms remainder",
+          "32ms % 16ms should equal 0 remainder",
         ).toBe(0);
 
         // Test low-frequency throttling (100ms for 10fps)
@@ -367,7 +367,7 @@ describe("MouseEventManager Throttling", () => {
         ).toBe(false);
         expect(
           typedManager100.throttlingDelta,
-          "249ms % 100ms should equal 49ms remainder",
+          "249ms % 100ms should equal 49 remainder",
         ).toBe(49);
 
         // Clean up custom managers
