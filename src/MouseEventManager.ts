@@ -288,18 +288,23 @@ export class MouseEventManager {
    *
    * @description
    * Processes pointer movement by performing raycasting to detect object intersections
-   * and managing hover state transitions. The method implements throttling to prevent
-   * excessive raycasting during rapid pointer movements, which significantly improves
-   * performance in complex scenes.
+   * and managing hover state transitions. The method implements conditional throttling
+   * to prevent excessive raycasting during rapid pointer movements, which significantly
+   * improves performance in complex scenes.
    *
-   * The method checks throttling status, performs raycasting, processes intersections
-   * in Z-order, updates hover targets, and emits "out"/"over" events as needed.
+   * **Throttling Behavior:**
+   * - When throttlingTime_ms > 0: Applies throttling with hasThrottled flag management
+   * - When throttlingTime_ms <= 0: Bypasses throttling entirely for immediate processing
+   *
+   * The method checks throttling status (if enabled), performs raycasting, processes
+   * intersections in Z-order, updates hover targets, and emits "out"/"over" events as needed.
    *
    * The method maintains a currentOver array to track hovered objects and compares
    * new intersection results with the previous state to determine event needs.
    *
    * @remarks
    * - Throttling is controlled by the throttlingTime_ms constructor parameter
+   * - When throttling is disabled (throttlingTime_ms <= 0), events are processed immediately
    * - Early termination occurs when the first interactive object is found in Z-order
    * - The method calls preventDefault() to ensure consistent behavior across browsers
    * - Empty intersection results trigger clearOver() to reset all hover states
@@ -307,10 +312,14 @@ export class MouseEventManager {
    * @see {@link getIntersects} - Raycasting and intersection detection
    * @see {@link checkTarget} - Object interactivity validation and event dispatch
    * @see {@link clearOver} - Hover state cleanup
+   * @see {@link onTick} - RAF ticker callback that manages throttling state
    */
   protected onDocumentMouseMove = (event: PointerEvent) => {
-    if (this.hasThrottled) return;
-    this.hasThrottled = true;
+    // Skip throttling checks when throttling is disabled
+    if (this.throttlingTime_ms > 0) {
+      if (this.hasThrottled) return;
+      this.hasThrottled = true;
+    }
 
     event.preventDefault();
     const intersects = this.getIntersects(event);
