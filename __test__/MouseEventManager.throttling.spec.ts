@@ -228,8 +228,8 @@ describe("MouseEventManager Throttling", () => {
           "hasThrottled should be reset to false after large delta exceeds throttling interval",
         ).toBe(false);
 
-        // Modulo calculation: 5000 % 33 = 2 remainder expected
-        const expectedRemainder = largeDelta % throttlingTime; // 5000 % 33 = 2
+        // Modulo calculation: 5000 % 33 = 17 remainder expected
+        const expectedRemainder = largeDelta % throttlingTime; // 5000 % 33 = 17
         expect(
           typedManager.throttlingDelta,
           `Large delta modulo calculation: ${largeDelta} % ${throttlingTime} should equal ${expectedRemainder}`,
