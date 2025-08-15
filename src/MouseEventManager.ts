@@ -257,12 +257,14 @@ export class MouseEventManager {
       return;
     }
 
-    this.throttlingDelta += Math.max(e.delta, 0); // Ensure delta time is never negative by setting 0 for values below 0
-
-    // Prevent modulo-by-zero and sanitize non-finite accumulator
-    if (!Number.isFinite(this.throttlingDelta) || this.throttlingDelta < 0) {
+    // Sanitize non-finite input deltas immediately
+    if (!Number.isFinite(e.delta)) {
+      this.hasThrottled = false;
       this.throttlingDelta = 0;
+      return;
     }
+
+    this.throttlingDelta += Math.max(e.delta, 0); // Ensure delta time is never negative by setting 0 for values below 0
 
     if (this.throttlingDelta < this.throttlingTime_ms) {
       return;

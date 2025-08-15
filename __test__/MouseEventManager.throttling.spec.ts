@@ -440,6 +440,65 @@ describe("MouseEventManager Throttling", () => {
               `Delta should be 0 after ${description} with zero throttling`,
             ).toBe(0);
           }
+
+          // Reset RAFTicker state with normal value after edge case
+          RAFTicker.emit("tick", { timestamp: 0, delta: 33 }); // Use default throttling time
+        }
+
+        // Clean up
+        testManager.dispose();
+      });
+
+      test("should reset throttling state when non-finite values occur with positive throttling time", () => {
+        const testScene = new Scene();
+        const testCamera = new PerspectiveCamera(45, 1, 1, 400);
+        const testCanvas = document.createElement("canvas");
+        const testManager = new MouseEventManager(
+          testScene,
+          testCamera,
+          testCanvas,
+          { throttlingTime_ms: 33 }, // Positive throttling time
+        );
+
+        const typedManager = exposeMouseEventManagerForTest(testManager);
+
+        // Test non-finite values with positive throttling time
+        const nonFiniteEdgeCases = [
+          { delta: Number.NaN, description: "NaN delta" },
+          {
+            delta: Number.POSITIVE_INFINITY,
+            description: "positive infinity delta",
+          },
+          {
+            delta: Number.NEGATIVE_INFINITY,
+            description: "negative infinity delta",
+          },
+        ];
+
+        for (const { delta, description } of nonFiniteEdgeCases) {
+          // Set up throttled state
+          typedManager.hasThrottled = true;
+          typedManager.throttlingDelta = 100;
+
+          // Emit non-finite delta
+          RAFTicker.emit("tick", { timestamp: 0, delta });
+
+          // Verify throttling state is reset for all non-finite values
+          expect(
+            typedManager.hasThrottled,
+            `hasThrottled should be reset to false with ${description}`,
+          ).toBe(false);
+
+          expect(
+            typedManager.throttlingDelta,
+            `throttlingDelta should be reset to 0 with ${description}`,
+          ).toBe(0);
+
+          // Reset RAFTicker state with normal value after edge case
+          RAFTicker.emit("tick", {
+            timestamp: 0,
+            delta: testManager.throttlingTime_ms,
+          }); // Use manager's throttling time
         }
 
         // Clean up
