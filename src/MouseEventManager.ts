@@ -227,21 +227,28 @@ export class MouseEventManager {
    *
    * @description
    * This method is called on every animation frame to manage the throttling mechanism
-   * that prevents excessive raycasting during rapid pointer movements. It accumulates
+   * that prevents excessive raycasting during rapid pointer movements. It implements
+   * early-exit rules for disabled throttling and abnormal delta values, then accumulates
    * frame delta time and resets the throttling flag when enough time has passed.
    *
    * **Throttling Logic:**
-   * 1. Accumulate delta time from animation frames
-   * 2. Reset hasThrottled flag when throttling interval expires
-   * 3. Use modulo operation to maintain accurate timing across intervals
+   * 1. **Throttling disabled**: When throttlingTime_ms <= 0, hasThrottled is reset each frame and throttlingDelta cleared
+   * 2. **Non-finite delta**: If delta is NaN/±Infinity, throttle state is reset and the frame is ignored
+   * 3. Accumulate delta time from animation frames using Math.max protection
+   * 4. Reset hasThrottled flag when throttling interval expires
+   * 5. Use modulo operation to maintain accurate timing across intervals
    *
    * **Delta Time Safety:**
-   * The method ensures delta time is never negative by using Math.max(e.delta, 0),
-   * protecting against edge cases where timing calculations might produce invalid values.
+   * The method implements multi-layered protection against invalid delta values:
+   * - Non-finite values (NaN, ±Infinity) trigger immediate state reset and early return
+   * - Finite negative values are clamped to 0 using Math.max(e.delta, 0)
+   * - This ensures robust operation even with abnormal timing data from RAF ticker
    *
    * @remarks
    * - This callback is registered with RAFTicker during constructor initialization
    * - The throttling interval is configurable via throttlingTime_ms (default: 33ms)
+   * - Early-exit optimizations improve performance when throttling is disabled
+   * - Non-finite value sanitization prevents NaN propagation and state corruption
    * - Modulo operation prevents accumulated timing drift over long sessions
    *
    * @see {@link throttlingTime_ms} - Configurable throttling interval
