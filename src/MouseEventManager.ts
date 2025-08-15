@@ -255,7 +255,12 @@ export class MouseEventManager {
       return;
     }
     this.hasThrottled = false;
-    this.throttlingDelta %= this.throttlingTime_ms;
+    // Prevent division by zero when throttlingTime_ms is 0
+    if (this.throttlingTime_ms > 0) {
+      this.throttlingDelta %= this.throttlingTime_ms;
+    } else {
+      this.throttlingDelta = 0; // Reset to 0 when throttling is disabled
+    }
   };
 
   /**

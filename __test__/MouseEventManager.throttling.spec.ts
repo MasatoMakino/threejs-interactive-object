@@ -299,6 +299,152 @@ describe("MouseEventManager Throttling", () => {
         rafTickerOnSpy.mockRestore();
       });
 
+      test("should handle zero throttling time safely without division by zero", () => {
+        // Create manager with throttlingTime_ms: 0 to test zero division safety
+        const testScene = new Scene();
+        const testCamera = new PerspectiveCamera(45, 1, 1, 400);
+        const testCanvas = document.createElement("canvas");
+        const testManager = new MouseEventManager(
+          testScene,
+          testCamera,
+          testCanvas,
+          { throttlingTime_ms: 0 },
+        );
+
+        const typedManager = exposeMouseEventManagerForTest(testManager);
+
+        // Verify throttling is disabled when set to 0
+        expect(
+          testManager.throttlingTime_ms,
+          "Throttling time should be set to 0",
+        ).toBe(0);
+
+        // Set initial state for testing
+        typedManager.hasThrottled = true;
+        typedManager.throttlingDelta = 50;
+
+        // Emit tick event with zero throttling time - should not cause division by zero
+        expect(() => {
+          RAFTicker.emit("tick", { timestamp: 0, delta: 33 });
+        }, "Zero throttling time should not cause division by zero errors").not.toThrow();
+
+        // When throttlingTime_ms is 0, throttlingDelta should be reset to 0 (not NaN)
+        // to prevent division by zero errors
+        expect(
+          typedManager.throttlingDelta,
+          "Delta should be reset to 0 when throttling time is 0 to prevent NaN",
+        ).toBe(0);
+
+        expect(
+          typedManager.hasThrottled,
+          "hasThrottled should reset to false when delta >= throttlingTime (0)",
+        ).toBe(false);
+
+        // Clean up
+        testManager.dispose();
+      });
+
+      test("should effectively disable throttling when throttlingTime_ms is 0", () => {
+        const testScene = new Scene();
+        const testCamera = new PerspectiveCamera(45, 1, 1, 400);
+        const testCanvas = document.createElement("canvas");
+        const testManager = new MouseEventManager(
+          testScene,
+          testCamera,
+          testCanvas,
+          { throttlingTime_ms: 0 },
+        );
+
+        const typedManager = exposeMouseEventManagerForTest(testManager);
+
+        // Initial state
+        expect(typedManager.hasThrottled).toBe(false);
+        expect(typedManager.throttlingDelta).toBe(0);
+
+        // Any delta time should immediately reset hasThrottled to false
+        typedManager.hasThrottled = true;
+        RAFTicker.emit("tick", { timestamp: 0, delta: 1 });
+
+        expect(
+          typedManager.hasThrottled,
+          "Even 1ms delta should reset hasThrottled when throttling is disabled",
+        ).toBe(false);
+
+        // Multiple rapid ticks should not cause accumulation issues
+        for (let i = 0; i < 10; i++) {
+          typedManager.hasThrottled = true;
+          RAFTicker.emit("tick", { timestamp: i, delta: 16 });
+
+          expect(
+            typedManager.hasThrottled,
+            `Tick ${i}: hasThrottled should reset immediately with zero throttling`,
+          ).toBe(false);
+        }
+
+        // Clean up
+        testManager.dispose();
+      });
+
+      test("should prevent NaN propagation in throttling calculations with zero configuration", () => {
+        const testScene = new Scene();
+        const testCamera = new PerspectiveCamera(45, 1, 1, 400);
+        const testCanvas = document.createElement("canvas");
+        const testManager = new MouseEventManager(
+          testScene,
+          testCamera,
+          testCanvas,
+          { throttlingTime_ms: 0 },
+        );
+
+        const typedManager = exposeMouseEventManagerForTest(testManager);
+
+        // Test various edge cases that could produce NaN
+        const edgeCases = [
+          { delta: 0, description: "zero delta" },
+          { delta: -10, description: "negative delta" },
+          {
+            delta: Number.POSITIVE_INFINITY,
+            description: "positive infinity delta",
+          },
+          {
+            delta: Number.NEGATIVE_INFINITY,
+            description: "negative infinity delta",
+          },
+          { delta: 1e10, description: "very large delta" },
+        ];
+
+        for (const { delta, description } of edgeCases) {
+          // Reset state
+          typedManager.hasThrottled = true;
+          typedManager.throttlingDelta = 100;
+
+          // Emit tick with edge case delta
+          RAFTicker.emit("tick", { timestamp: 0, delta });
+
+          // Verify no NaN values propagate
+          expect(
+            Number.isNaN(typedManager.throttlingDelta),
+            `throttlingDelta should not be NaN with ${description}`,
+          ).toBe(false);
+
+          expect(
+            typeof typedManager.hasThrottled,
+            `hasThrottled should remain boolean with ${description}`,
+          ).toBe("boolean");
+
+          // For zero throttling, delta should be reset regardless of input
+          if (delta >= 0) {
+            expect(
+              typedManager.throttlingDelta,
+              `Delta should be 0 after ${description} with zero throttling`,
+            ).toBe(0);
+          }
+        }
+
+        // Clean up
+        testManager.dispose();
+      });
+
       test("should handle multiple MouseEventManager instances sharing RAFTicker", () => {
         // Create second manager instance
         const scene2 = new Scene();
