@@ -213,6 +213,48 @@ describe("MouseEventManager Advanced Throttling", () => {
           `Small positive delta ${smallDelta}ms should be accumulated correctly`,
         ).toBe(smallDelta);
       });
+
+      test("should handle browser freeze recovery with very large delta times", () => {
+        const typedManager = exposeMouseEventManagerForTest(manager);
+        const throttlingTime = manager.throttlingTime_ms; // Default 33ms
+
+        // Simulate browser freeze recovery: 5-second gap
+        const largeDelta = 5000; // 5000ms browser freeze
+        RAFTicker.emit("tick", { timestamp: 0, delta: largeDelta });
+
+        // After large delta: hasThrottled should be reset to false
+        expect(
+          typedManager.hasThrottled,
+          "hasThrottled should be reset to false after large delta exceeds throttling interval",
+        ).toBe(false);
+
+        // Modulo calculation: 5000 % 33 = 2ms remainder expected
+        const expectedRemainder = largeDelta % throttlingTime; // 5000 % 33 = 2
+        expect(
+          typedManager.throttlingDelta,
+          `Large delta modulo calculation: ${largeDelta} % ${throttlingTime} should equal ${expectedRemainder}`,
+        ).toBe(expectedRemainder);
+      });
+
+      test("should handle extreme delta values larger than multiple throttling intervals", () => {
+        const typedManager = exposeMouseEventManagerForTest(manager);
+        const throttlingTime = manager.throttlingTime_ms; // Default 33ms
+
+        // Test with delta spanning multiple intervals: 100ms = 3 × 33ms + 1ms
+        const multiIntervalDelta = 100;
+        RAFTicker.emit("tick", { timestamp: 0, delta: multiIntervalDelta });
+
+        expect(
+          typedManager.hasThrottled,
+          "hasThrottled should be reset after multi-interval delta",
+        ).toBe(false);
+
+        const expectedRemainder = multiIntervalDelta % throttlingTime; // 100 % 33 = 1
+        expect(
+          typedManager.throttlingDelta,
+          `Multi-interval delta: ${multiIntervalDelta} % ${throttlingTime} should equal ${expectedRemainder}`,
+        ).toBe(expectedRemainder);
+      });
     });
 
     describe("RAFTicker Integration", () => {
@@ -269,6 +311,84 @@ describe("MouseEventManager Advanced Throttling", () => {
 
         // Clean up second manager
         manager2.dispose();
+      });
+
+      test("should work correctly with custom throttling intervals", () => {
+        // Test high-frequency throttling (16ms for 60fps)
+        const scene1 = new Scene();
+        const camera1 = new PerspectiveCamera(45, 1, 1, 400);
+        const canvas1 = document.createElement("canvas");
+        const manager16ms = new MouseEventManager(scene1, camera1, canvas1, {
+          throttlingTime_ms: 16,
+        });
+
+        const typedManager16 = exposeMouseEventManagerForTest(manager16ms);
+
+        // 15ms delta should not trigger reset (< 16ms)
+        RAFTicker.emit("tick", { timestamp: 0, delta: 15 });
+        expect(
+          typedManager16.throttlingDelta,
+          "15ms delta should accumulate in 16ms throttling",
+        ).toBe(15);
+
+        // 17ms delta should trigger reset (> 16ms)
+        RAFTicker.emit("tick", { timestamp: 15, delta: 17 });
+        expect(
+          typedManager16.hasThrottled,
+          "32ms total (>16ms) should reset hasThrottled in 16ms throttling",
+        ).toBe(false);
+        expect(
+          typedManager16.throttlingDelta,
+          "32ms % 16ms should equal 0ms remainder",
+        ).toBe(0);
+
+        // Test low-frequency throttling (100ms for 10fps)
+        const scene2 = new Scene();
+        const camera2 = new PerspectiveCamera(45, 1, 1, 400);
+        const canvas2 = document.createElement("canvas");
+        const manager100ms = new MouseEventManager(scene2, camera2, canvas2, {
+          throttlingTime_ms: 100,
+        });
+
+        const typedManager100 = exposeMouseEventManagerForTest(manager100ms);
+
+        // 99ms delta should not trigger reset (< 100ms)
+        RAFTicker.emit("tick", { timestamp: 0, delta: 99 });
+        expect(
+          typedManager100.throttlingDelta,
+          "99ms delta should accumulate in 100ms throttling",
+        ).toBe(99);
+
+        // 150ms delta should trigger reset (> 100ms)
+        RAFTicker.emit("tick", { timestamp: 99, delta: 150 });
+        expect(
+          typedManager100.hasThrottled,
+          "249ms total (>100ms) should reset hasThrottled in 100ms throttling",
+        ).toBe(false);
+        expect(
+          typedManager100.throttlingDelta,
+          "249ms % 100ms should equal 49ms remainder",
+        ).toBe(49);
+
+        // Clean up custom managers
+        manager16ms.dispose();
+        manager100ms.dispose();
+      });
+
+      test("should handle RAFTicker events safely after dispose", () => {
+        // Dispose the manager first
+        manager.dispose();
+
+        // Emit RAFTicker events after dispose - should not cause errors
+        expect(() => {
+          RAFTicker.emit("tick", { timestamp: 0, delta: 33 });
+          RAFTicker.emit("tick", { timestamp: 33, delta: 16 });
+          RAFTicker.emit("tick", { timestamp: 49, delta: 100 });
+        }, "RAFTicker events after dispose should not throw errors").not.toThrow();
+
+        // Internal state should remain stable (no access to disposed state)
+        // Note: We cannot verify state after dispose as the manager is no longer functional
+        // The test passes if no exceptions are thrown
       });
     });
   });
