@@ -166,6 +166,22 @@ describe("MouseEventManager Throttling", () => {
           `Delta modulo calculation: ${largeDelta} % ${throttlingTime} should equal ${expectedRemainder}`,
         ).toBe(expectedRemainder);
       });
+
+      test("should reset at exact throttling boundary (delta == throttlingTime_ms)", () => {
+        const typedManager = exposeMouseEventManagerForTest(manager);
+        const throttlingTime = manager.throttlingTime_ms;
+
+        // Start from throttled state
+        typedManager.hasThrottled = true;
+        typedManager.throttlingDelta = 0;
+
+        // Emit exact boundary delta
+        RAFTicker.emit("tick", { timestamp: 0, delta: throttlingTime });
+
+        // Expect reset and zero remainder
+        expect(typedManager.hasThrottled).toBe(false);
+        expect(typedManager.throttlingDelta).toBe(0);
+      });
     });
 
     describe("Delta Time Edge Cases", () => {
