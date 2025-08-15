@@ -227,21 +227,28 @@ export class MouseEventManager {
    *
    * @description
    * This method is called on every animation frame to manage the throttling mechanism
-   * that prevents excessive raycasting during rapid pointer movements. It accumulates
+   * that prevents excessive raycasting during rapid pointer movements. It implements
+   * early-exit rules for disabled throttling and abnormal delta values, then accumulates
    * frame delta time and resets the throttling flag when enough time has passed.
    *
    * **Throttling Logic:**
-   * 1. Accumulate delta time from animation frames
-   * 2. Reset hasThrottled flag when throttling interval expires
-   * 3. Use modulo operation to maintain accurate timing across intervals
+   * 1. **Throttling disabled**: When throttlingTime_ms <= 0, hasThrottled is reset each frame and throttlingDelta cleared
+   * 2. **Non-finite delta**: If delta is NaN/±Infinity, throttle state is reset and the frame is ignored
+   * 3. Accumulate delta time from animation frames using Math.max protection
+   * 4. Reset hasThrottled flag when throttling interval expires
+   * 5. Use modulo operation to maintain accurate timing across intervals
    *
    * **Delta Time Safety:**
-   * The method ensures delta time is never negative by using Math.max(e.delta, 0),
-   * protecting against edge cases where timing calculations might produce invalid values.
+   * The method implements multi-layered protection against invalid delta values:
+   * - Non-finite values (NaN, ±Infinity) trigger immediate state reset and early return
+   * - Finite negative values are clamped to 0 using Math.max(e.delta, 0)
+   * - This ensures robust operation even with abnormal timing data from RAF ticker
    *
    * @remarks
    * - This callback is registered with RAFTicker during constructor initialization
    * - The throttling interval is configurable via throttlingTime_ms (default: 33ms)
+   * - Early-exit optimizations improve performance when throttling is disabled
+   * - Non-finite value sanitization prevents NaN propagation and state corruption
    * - Modulo operation prevents accumulated timing drift over long sessions
    *
    * @see {@link throttlingTime_ms} - Configurable throttling interval
@@ -250,10 +257,26 @@ export class MouseEventManager {
    * @private
    */
   private onTick = (e: RAFTickerEventContext) => {
+    // When throttling is disabled, always reset throttling state immediately
+    if (this.throttlingTime_ms <= 0) {
+      this.hasThrottled = false;
+      this.throttlingDelta = 0;
+      return;
+    }
+
+    // Sanitize non-finite input deltas immediately
+    if (!Number.isFinite(e.delta)) {
+      this.hasThrottled = false;
+      this.throttlingDelta = 0;
+      return;
+    }
+
     this.throttlingDelta += Math.max(e.delta, 0); // Ensure delta time is never negative by setting 0 for values below 0
+
     if (this.throttlingDelta < this.throttlingTime_ms) {
       return;
     }
+
     this.hasThrottled = false;
     this.throttlingDelta %= this.throttlingTime_ms;
   };
@@ -265,18 +288,23 @@ export class MouseEventManager {
    *
    * @description
    * Processes pointer movement by performing raycasting to detect object intersections
-   * and managing hover state transitions. The method implements throttling to prevent
-   * excessive raycasting during rapid pointer movements, which significantly improves
-   * performance in complex scenes.
+   * and managing hover state transitions. The method implements conditional throttling
+   * to prevent excessive raycasting during rapid pointer movements, which significantly
+   * improves performance in complex scenes.
    *
-   * The method checks throttling status, performs raycasting, processes intersections
-   * in Z-order, updates hover targets, and emits "out"/"over" events as needed.
+   * **Throttling Behavior:**
+   * - When throttlingTime_ms > 0: Applies throttling with hasThrottled flag management
+   * - When throttlingTime_ms <= 0: Bypasses throttling entirely for immediate processing
+   *
+   * The method checks throttling status (if enabled), performs raycasting, processes
+   * intersections in Z-order, updates hover targets, and emits "out"/"over" events as needed.
    *
    * The method maintains a currentOver array to track hovered objects and compares
    * new intersection results with the previous state to determine event needs.
    *
    * @remarks
    * - Throttling is controlled by the throttlingTime_ms constructor parameter
+   * - When throttling is disabled (throttlingTime_ms <= 0), events are processed immediately
    * - Early termination occurs when the first interactive object is found in Z-order
    * - The method calls preventDefault() to ensure consistent behavior across browsers
    * - Empty intersection results trigger clearOver() to reset all hover states
@@ -284,10 +312,14 @@ export class MouseEventManager {
    * @see {@link getIntersects} - Raycasting and intersection detection
    * @see {@link checkTarget} - Object interactivity validation and event dispatch
    * @see {@link clearOver} - Hover state cleanup
+   * @see {@link onTick} - RAF ticker callback that manages throttling state
    */
   protected onDocumentMouseMove = (event: PointerEvent) => {
-    if (this.hasThrottled) return;
-    this.hasThrottled = true;
+    // Skip throttling checks when throttling is disabled
+    if (this.throttlingTime_ms > 0) {
+      if (this.hasThrottled) return;
+      this.hasThrottled = true;
+    }
 
     event.preventDefault();
     const intersects = this.getIntersects(event);

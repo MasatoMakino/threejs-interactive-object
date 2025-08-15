@@ -24,6 +24,7 @@ import {
   vi,
 } from "vitest";
 import { MouseEventManager } from "../src/index.js";
+import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
 /**
@@ -299,6 +300,212 @@ describe("MouseEventManager Throttling", () => {
         rafTickerOnSpy.mockRestore();
       });
 
+      test("should handle zero throttling time safely without modulo-by-zero (NaN)", () => {
+        // Create manager with throttlingTime_ms: 0 to test modulo-by-zero safety
+        const testScene = new Scene();
+        const testCamera = new PerspectiveCamera(45, 1, 1, 400);
+        const testCanvas = document.createElement("canvas");
+        const testManager = new MouseEventManager(
+          testScene,
+          testCamera,
+          testCanvas,
+          { throttlingTime_ms: 0 },
+        );
+
+        const typedManager = exposeMouseEventManagerForTest(testManager);
+
+        // Verify throttling is disabled when set to 0
+        expect(
+          testManager.throttlingTime_ms,
+          "Throttling time should be set to 0",
+        ).toBe(0);
+
+        // Set initial state for testing
+        typedManager.hasThrottled = true;
+        typedManager.throttlingDelta = 50;
+
+        // Emit tick event with zero throttling time - should not cause modulo-by-zero (NaN)
+        expect(() => {
+          RAFTicker.emit("tick", { timestamp: 0, delta: 33 });
+        }, "Zero throttling time should not cause modulo-by-zero (NaN)").not.toThrow();
+
+        // When throttlingTime_ms is 0, throttlingDelta should be reset to 0 (not NaN)
+        // to prevent modulo-by-zero from producing NaN
+        expect(
+          typedManager.throttlingDelta,
+          "Delta should be reset to 0 when throttling time is 0 to prevent NaN",
+        ).toBe(0);
+
+        expect(
+          typedManager.hasThrottled,
+          "hasThrottled should reset to false when delta >= throttlingTime (0)",
+        ).toBe(false);
+
+        // Clean up
+        testManager.dispose();
+      });
+
+      test("should effectively disable throttling when throttlingTime_ms is 0", () => {
+        const testScene = new Scene();
+        const testCamera = new PerspectiveCamera(45, 1, 1, 400);
+        const testCanvas = document.createElement("canvas");
+        const testManager = new MouseEventManager(
+          testScene,
+          testCamera,
+          testCanvas,
+          { throttlingTime_ms: 0 },
+        );
+
+        const typedManager = exposeMouseEventManagerForTest(testManager);
+
+        // Initial state
+        expect(typedManager.hasThrottled).toBe(false);
+        expect(typedManager.throttlingDelta).toBe(0);
+
+        // Any delta time should immediately reset hasThrottled to false
+        typedManager.hasThrottled = true;
+        RAFTicker.emit("tick", { timestamp: 0, delta: 1 });
+
+        expect(
+          typedManager.hasThrottled,
+          "Even 1ms delta should reset hasThrottled when throttling is disabled",
+        ).toBe(false);
+
+        // Multiple rapid ticks should not cause accumulation issues
+        for (let i = 0; i < 10; i++) {
+          typedManager.hasThrottled = true;
+          RAFTicker.emit("tick", { timestamp: i, delta: 16 });
+
+          expect(
+            typedManager.hasThrottled,
+            `Tick ${i}: hasThrottled should reset immediately with zero throttling`,
+          ).toBe(false);
+        }
+
+        // Clean up
+        testManager.dispose();
+      });
+
+      test("should prevent NaN propagation in throttling calculations with zero configuration", () => {
+        const testScene = new Scene();
+        const testCamera = new PerspectiveCamera(45, 1, 1, 400);
+        const testCanvas = document.createElement("canvas");
+        const testManager = new MouseEventManager(
+          testScene,
+          testCamera,
+          testCanvas,
+          { throttlingTime_ms: 0 },
+        );
+
+        const typedManager = exposeMouseEventManagerForTest(testManager);
+
+        // Test various edge cases that could produce NaN
+        const edgeCases = [
+          { delta: 0, description: "zero delta" },
+          { delta: -10, description: "negative delta" },
+          { delta: Number.NaN, description: "NaN delta" },
+          {
+            delta: Number.POSITIVE_INFINITY,
+            description: "positive infinity delta",
+          },
+          {
+            delta: Number.NEGATIVE_INFINITY,
+            description: "negative infinity delta",
+          },
+          { delta: 1e10, description: "very large delta" },
+        ];
+
+        for (const { delta, description } of edgeCases) {
+          // Reset state
+          typedManager.hasThrottled = true;
+          typedManager.throttlingDelta = 100;
+
+          // Emit tick with edge case delta
+          RAFTicker.emit("tick", { timestamp: 0, delta });
+
+          // Verify no NaN values propagate
+          expect(
+            Number.isNaN(typedManager.throttlingDelta),
+            `throttlingDelta should not be NaN with ${description}`,
+          ).toBe(false);
+
+          expect(
+            typeof typedManager.hasThrottled,
+            `hasThrottled should remain boolean with ${description}`,
+          ).toBe("boolean");
+
+          // For zero throttling, delta should be reset regardless of input
+          if (delta >= 0) {
+            expect(
+              typedManager.throttlingDelta,
+              `Delta should be 0 after ${description} with zero throttling`,
+            ).toBe(0);
+          }
+
+          // Reset RAFTicker state with normal value after edge case
+          RAFTicker.emit("tick", { timestamp: 0, delta: 33 }); // Use default throttling time
+        }
+
+        // Clean up
+        testManager.dispose();
+      });
+
+      test("should reset throttling state when non-finite values occur with positive throttling time", () => {
+        const testScene = new Scene();
+        const testCamera = new PerspectiveCamera(45, 1, 1, 400);
+        const testCanvas = document.createElement("canvas");
+        const testManager = new MouseEventManager(
+          testScene,
+          testCamera,
+          testCanvas,
+          { throttlingTime_ms: 33 }, // Positive throttling time
+        );
+
+        const typedManager = exposeMouseEventManagerForTest(testManager);
+
+        // Test non-finite values with positive throttling time
+        const nonFiniteEdgeCases = [
+          { delta: Number.NaN, description: "NaN delta" },
+          {
+            delta: Number.POSITIVE_INFINITY,
+            description: "positive infinity delta",
+          },
+          {
+            delta: Number.NEGATIVE_INFINITY,
+            description: "negative infinity delta",
+          },
+        ];
+
+        for (const { delta, description } of nonFiniteEdgeCases) {
+          // Set up throttled state
+          typedManager.hasThrottled = true;
+          typedManager.throttlingDelta = 100;
+
+          // Emit non-finite delta
+          RAFTicker.emit("tick", { timestamp: 0, delta });
+
+          // Verify throttling state is reset for all non-finite values
+          expect(
+            typedManager.hasThrottled,
+            `hasThrottled should be reset to false with ${description}`,
+          ).toBe(false);
+
+          expect(
+            typedManager.throttlingDelta,
+            `throttlingDelta should be reset to 0 with ${description}`,
+          ).toBe(0);
+
+          // Reset RAFTicker state with normal value after edge case
+          RAFTicker.emit("tick", {
+            timestamp: 0,
+            delta: testManager.throttlingTime_ms,
+          }); // Use manager's throttling time
+        }
+
+        // Clean up
+        testManager.dispose();
+      });
+
       test("should handle multiple MouseEventManager instances sharing RAFTicker", () => {
         // Create second manager instance
         const scene2 = new Scene();
@@ -496,6 +703,224 @@ describe("MouseEventManager Throttling", () => {
           typedManager.hasThrottled,
           "Event processing should set throttling flag",
         ).toBe(true);
+      });
+    });
+
+    /**
+     * Zero throttling event processing tests
+     *
+     * @description
+     * Tests MouseEventManager behavior when throttlingTime_ms is set to 0,
+     * ensuring that onDocumentMouseMove processes all pointer events immediately
+     * without throttling delays. This verifies the fix for throttling implementation
+     * inconsistency between onTick() and onDocumentMouseMove() methods.
+     */
+    describe("Zero Throttling Event Processing", () => {
+      /**
+       * Creates test environment with throttling disabled
+       */
+      const createZeroThrottlingEnvironment = () => {
+        const managerScene = new MouseEventManagerScene({
+          throttlingTime_ms: 0, // Disable throttling
+        });
+        testEnvironments.push(managerScene);
+        return managerScene;
+      };
+
+      test("should process all pointermove events immediately when throttlingTime_ms is 0", () => {
+        const managerScene = createZeroThrottlingEnvironment();
+        const typedManager = exposeMouseEventManagerForTest(
+          managerScene.manager,
+        );
+
+        // Verify throttling is disabled
+        expect(
+          managerScene.manager.throttlingTime_ms,
+          "Throttling time should be 0",
+        ).toBe(0);
+
+        // Initial state verification
+        expect(
+          typedManager.hasThrottled,
+          "Initial hasThrottled should be false",
+        ).toBe(false);
+
+        const centerX = managerScene.canvas.width / 2;
+        const centerY = managerScene.canvas.height / 2;
+
+        // Dispatch multiple rapid pointermove events without time advancement
+        managerScene.dispatchMouseEvent("pointermove", centerX, centerY);
+        expect(
+          typedManager.hasThrottled,
+          "hasThrottled should remain false after first pointermove with zero throttling",
+        ).toBe(false);
+
+        managerScene.dispatchMouseEvent("pointermove", centerX + 10, centerY);
+        expect(
+          typedManager.hasThrottled,
+          "hasThrottled should remain false after second pointermove with zero throttling",
+        ).toBe(false);
+
+        managerScene.dispatchMouseEvent("pointermove", centerX + 20, centerY);
+        expect(
+          typedManager.hasThrottled,
+          "hasThrottled should remain false after third pointermove with zero throttling",
+        ).toBe(false);
+
+        // Verify consistent behavior with additional events
+        managerScene.dispatchMouseEvent("pointermove", centerX + 30, centerY);
+        expect(
+          typedManager.hasThrottled,
+          "hasThrottled should remain false for all pointermove events with zero throttling",
+        ).toBe(false);
+      });
+
+      test("should emit interaction events immediately without throttling delay", () => {
+        const managerScene = createZeroThrottlingEnvironment();
+
+        // Create button for interaction testing
+        const btn = new MouseEventManagerButton();
+        managerScene.scene.add(btn.button);
+
+        // Set up event spies
+        const spyOver = vi.fn(() => true);
+        const spyOut = vi.fn(() => true);
+        const spyDown = vi.fn(() => true);
+        const spyUp = vi.fn(() => true);
+
+        btn.button.interactionHandler.on("over", spyOver);
+        btn.button.interactionHandler.on("out", spyOut);
+        btn.button.interactionHandler.on("down", spyDown);
+        btn.button.interactionHandler.on("up", spyUp);
+
+        const centerX = managerScene.canvas.width / 2;
+        const centerY = managerScene.canvas.height / 2;
+
+        // Initial state - move away from button
+        managerScene.dispatchMouseEvent("pointermove", 0, 0);
+        managerScene.reset();
+
+        // Move over button - should trigger over event immediately
+        managerScene.dispatchMouseEvent("pointermove", centerX, centerY);
+        expect(spyOver).toHaveBeenCalledTimes(1);
+        expect(btn.button.interactionHandler.isOver).toBe(true);
+        spyOver.mockClear();
+
+        // Move within button area - should not trigger additional over events
+        managerScene.dispatchMouseEvent(
+          "pointermove",
+          centerX + 1,
+          centerY + 1,
+        );
+        expect(spyOver).not.toHaveBeenCalled();
+
+        // Press down - should trigger down event immediately
+        managerScene.dispatchMouseEvent("pointerdown", centerX, centerY);
+        expect(spyDown).toHaveBeenCalledTimes(1);
+        expect(btn.button.interactionHandler.isPress).toBe(true);
+
+        // Release - should trigger up event immediately
+        managerScene.dispatchMouseEvent("pointerup", centerX, centerY);
+        expect(spyUp).toHaveBeenCalledTimes(1);
+
+        // Move away - should trigger out event immediately
+        managerScene.dispatchMouseEvent("pointermove", 0, 0);
+        expect(spyOut).toHaveBeenCalledTimes(1);
+        expect(btn.button.interactionHandler.isOver).toBe(false);
+
+        // Clean up event listeners
+        btn.button.interactionHandler.off("over", spyOver);
+        btn.button.interactionHandler.off("out", spyOut);
+        btn.button.interactionHandler.off("down", spyDown);
+        btn.button.interactionHandler.off("up", spyUp);
+      });
+
+      test("should demonstrate hasThrottled flag behavior difference between throttled vs non-throttled", () => {
+        // Create throttled environment (33ms default)
+        const throttledScene = createTestEnvironment();
+        const throttledManager = exposeMouseEventManagerForTest(
+          throttledScene.manager,
+        );
+
+        // Create non-throttled environment (0ms)
+        const nonThrottledScene = createZeroThrottlingEnvironment();
+        const nonThrottledManager = exposeMouseEventManagerForTest(
+          nonThrottledScene.manager,
+        );
+
+        // Verify initial configuration
+        expect(
+          throttledScene.manager.throttlingTime_ms,
+          "Throttled environment should have positive throttling time",
+        ).toBe(33);
+        expect(
+          nonThrottledScene.manager.throttlingTime_ms,
+          "Non-throttled environment should have zero throttling time",
+        ).toBe(0);
+
+        const centerX = 960; // Half of MouseEventManagerScene.W (1920)
+        const centerY = 540; // Half of MouseEventManagerScene.H (1080)
+
+        // Reset both environments to ensure clean state
+        throttledScene.reset();
+        nonThrottledScene.reset();
+
+        // Additional cleanup for throttled environment if needed
+        if (throttledManager.hasThrottled) {
+          throttledScene.interval(); // Additional time advancement to ensure reset
+        }
+
+        // Dispatch rapid pointermove events to both environments
+        throttledScene.dispatchMouseEvent("pointermove", centerX, centerY);
+        nonThrottledScene.dispatchMouseEvent("pointermove", centerX, centerY);
+
+        // Key difference: throttled sets hasThrottled, non-throttled doesn't
+        expect(
+          throttledManager.hasThrottled,
+          "Throttled environment should set hasThrottled flag on pointermove",
+        ).toBe(true);
+        expect(
+          nonThrottledManager.hasThrottled,
+          "Non-throttled environment should not set hasThrottled flag on pointermove",
+        ).toBe(false);
+
+        // Dispatch more events rapidly
+        throttledScene.dispatchMouseEvent("pointermove", centerX + 5, centerY);
+        throttledScene.dispatchMouseEvent("pointermove", centerX + 10, centerY);
+
+        nonThrottledScene.dispatchMouseEvent(
+          "pointermove",
+          centerX + 5,
+          centerY,
+        );
+        nonThrottledScene.dispatchMouseEvent(
+          "pointermove",
+          centerX + 10,
+          centerY,
+        );
+
+        // Throttled should maintain hasThrottled true, non-throttled remains false
+        expect(
+          throttledManager.hasThrottled,
+          "Throttled environment should maintain hasThrottled flag during rapid events",
+        ).toBe(true);
+        expect(
+          nonThrottledManager.hasThrottled,
+          "Non-throttled environment should never set hasThrottled flag",
+        ).toBe(false);
+
+        // Reset throttled environment by advancing time
+        throttledScene.interval(); // Advances by 2.0 * throttlingTime_ms
+
+        // After time advancement, throttled should reset hasThrottled
+        expect(
+          throttledManager.hasThrottled,
+          "Throttled environment should reset hasThrottled after time advancement",
+        ).toBe(false);
+        expect(
+          nonThrottledManager.hasThrottled,
+          "Non-throttled environment should always remain false",
+        ).toBe(false);
       });
     });
   });
