@@ -402,6 +402,7 @@ describe("MouseEventManager Throttling", () => {
         const edgeCases = [
           { delta: 0, description: "zero delta" },
           { delta: -10, description: "negative delta" },
+          { delta: Number.NaN, description: "NaN delta" },
           {
             delta: Number.POSITIVE_INFINITY,
             description: "positive infinity delta",

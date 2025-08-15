@@ -250,17 +250,26 @@ export class MouseEventManager {
    * @private
    */
   private onTick = (e: RAFTickerEventContext) => {
+    // When throttling is disabled, always reset throttling state immediately
+    if (this.throttlingTime_ms <= 0) {
+      this.hasThrottled = false;
+      this.throttlingDelta = 0;
+      return;
+    }
+
     this.throttlingDelta += Math.max(e.delta, 0); // Ensure delta time is never negative by setting 0 for values below 0
+
+    // Prevent modulo-by-zero and sanitize non-finite accumulator
+    if (!Number.isFinite(this.throttlingDelta) || this.throttlingDelta < 0) {
+      this.throttlingDelta = 0;
+    }
+
     if (this.throttlingDelta < this.throttlingTime_ms) {
       return;
     }
+
     this.hasThrottled = false;
-    // Prevent division by zero when throttlingTime_ms is 0
-    if (this.throttlingTime_ms > 0) {
-      this.throttlingDelta %= this.throttlingTime_ms;
-    } else {
-      this.throttlingDelta = 0; // Reset to 0 when throttling is disabled
-    }
+    this.throttlingDelta %= this.throttlingTime_ms;
   };
 
   /**
