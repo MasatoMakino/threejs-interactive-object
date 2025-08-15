@@ -376,6 +376,8 @@ describe("MouseEventManager Throttling", () => {
       });
 
       test("should handle RAFTicker events safely after dispose", () => {
+        const typed = exposeMouseEventManagerForTest(manager);
+
         // Dispose the manager first
         manager.dispose();
 
@@ -386,9 +388,9 @@ describe("MouseEventManager Throttling", () => {
           RAFTicker.emit("tick", { timestamp: 49, delta: 100 });
         }, "RAFTicker events after dispose should not throw errors").not.toThrow();
 
-        // Internal state should remain stable (no access to disposed state)
-        // Note: We cannot verify state after dispose as the manager is no longer functional
-        // The test passes if no exceptions are thrown
+        // Verify no residual listener mutated state
+        expect(typed.throttlingDelta).toBe(0);
+        expect(typed.hasThrottled).toBe(false);
       });
     });
   });
