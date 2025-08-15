@@ -1,5 +1,5 @@
 /**
- * @fileoverview MouseEventManager advanced throttling and performance tests
+ * @fileoverview MouseEventManager throttling and performance tests
  *
  * @description
  * Tests advanced throttling mechanisms and performance optimizations beyond
@@ -55,9 +55,9 @@ function exposeMouseEventManagerForTest(
 }
 
 /**
- * MouseEventManager advanced throttling and performance tests
+ * MouseEventManager throttling and performance tests
  */
-describe("MouseEventManager Advanced Throttling", () => {
+describe("MouseEventManager Throttling", () => {
   /**
    * Canvas-independent throttling logic tests
    *
