@@ -16,15 +16,24 @@
  * edge cases and optimization behaviors.
  */
 
-import { BoxGeometry, Group, Mesh, Object3D } from "three";
-import { afterAll, describe, expect, test, vi } from "vitest";
 import {
-  ClickableMesh,
-  type ClickableState,
-  type StateMaterialSet,
-} from "../src/index.js";
+  BoxGeometry,
+  Group,
+  type Intersection,
+  Mesh,
+  MeshBasicMaterial,
+  Object3D,
+} from "three";
+import {
+  afterAll,
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  test,
+} from "vitest";
+import { ClickableMesh, type ClickableState } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
-import { MouseEventManagerButton } from "./MouseEventManagerButton.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
 
 /**
@@ -342,6 +351,115 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
         multiFaceMesh,
         "over",
         "Edge coordinates should be properly converted for intersection detection",
+      );
+    });
+  });
+
+  /**
+   * Internal Implementation Testing (Encapsulation Breaking)
+   *
+   * @description
+   * ⚠️ WARNING: This test suite breaks encapsulation by accessing internal
+   * MouseEventManager implementation details. These tests are necessary to
+   * verify critical UUID filtering functionality that cannot be validated
+   * through public APIs alone.
+   *
+   * **Justification for Encapsulation Breaking:**
+   * - UUID filtering is an internal optimization with no public API
+   * - Multi-face intersections are implementation details of Three.js raycasting
+   * - Public API testing cannot detect UUID filtering effectiveness
+   * - This functionality is critical for preventing duplicate event processing
+   *
+   * **Isolation Strategy:**
+   * These tests are isolated in a separate describe block to clearly mark
+   * them as implementation-dependent and potentially brittle.
+   */
+  describe("Internal Implementation Testing (Encapsulation Breaking)", () => {
+    let managerScene: MouseEventManagerScene;
+    let plainMesh: Mesh;
+
+    const halfW = MouseEventManagerScene.W / 2;
+    const halfH = MouseEventManagerScene.H / 2;
+
+    beforeEach(() => {
+      managerScene = new MouseEventManagerScene();
+
+      // Create plain mesh with BoxGeometry to trigger multi-face collisions
+      plainMesh = new Mesh(
+        new BoxGeometry(3, 3, 3),
+        new MeshBasicMaterial({ color: 0x444444 }),
+      );
+      plainMesh.position.set(0, 0, 0);
+
+      managerScene.scene.add(plainMesh);
+      managerScene.reset();
+    });
+
+    afterEach(() => {
+      managerScene.dispose();
+    });
+
+    test("should verify UUID filtering effectiveness by directly testing getIntersects", () => {
+      // Create a mock PointerEvent for testing
+      const mockEvent = new PointerEvent("pointermove", {
+        clientX: halfW,
+        clientY: halfH,
+        bubbles: true,
+        cancelable: true,
+      });
+
+      // Access the internal MouseEventManager instance
+      // biome-ignore lint/suspicious/noExplicitAny: Breaking encapsulation for critical UUID filtering verification
+      const manager = (managerScene as any).manager;
+
+      // Temporarily disable UUID filtering to get raw intersection results
+      const originalGetIntersects = manager.getIntersects.bind(manager);
+
+      // Create modified version that returns raw intersects without UUID filtering
+      const getRawIntersects = function (event: PointerEvent) {
+        // Copy the getIntersects logic but skip UUID filtering
+        // Convert mouse position (same logic as getIntersects)
+        const mouse = manager.mouse;
+        mouse.set(
+          (event.clientX / manager.canvas.clientWidth) * 2 - 1,
+          -(event.clientY / manager.canvas.clientHeight) * 2 + 1,
+        );
+
+        manager.raycaster.setFromCamera(mouse, manager.camera);
+        const intersects = manager.raycaster.intersectObjects(
+          manager.targets,
+          manager.recursive,
+        );
+
+        // Return raw intersects WITHOUT UUID filtering
+        return intersects;
+      };
+
+      // Get results with and without UUID filtering
+      const rawIntersects = getRawIntersects(mockEvent);
+      const filteredIntersects = originalGetIntersects(mockEvent);
+
+      // Extract UUIDs for analysis
+      const rawUuids = rawIntersects.map((i: Intersection) => i.object.uuid);
+      const uniqueRawUuids = new Set(rawUuids);
+      const filteredUuids = filteredIntersects.map(
+        (i: Intersection) => i.object.uuid,
+      );
+      const uniqueFilteredUuids = new Set(filteredUuids);
+
+      // CRITICAL VERIFICATION: Prove UUID duplicates exist in raw results
+      expect(rawUuids.length).toBeGreaterThan(uniqueRawUuids.size);
+      expect(rawUuids.length).toBeGreaterThanOrEqual(2);
+
+      // CRITICAL VERIFICATION: Prove UUID filtering removes duplicates
+      expect(filteredUuids.length).toBe(uniqueFilteredUuids.size);
+      expect(filteredIntersects.length).toBeLessThan(rawIntersects.length);
+
+      // CRITICAL VERIFICATION: Ensure same object produces multiple intersections
+      expect(uniqueRawUuids.size).toBe(1);
+      expect(uniqueFilteredUuids.size).toBe(1);
+      expect(Array.from(uniqueRawUuids)[0]).toBe(
+        Array.from(uniqueFilteredUuids)[0],
       );
     });
   });
