@@ -48,10 +48,6 @@ interface RaycastingTestEnvironment {
   managerScene: MouseEventManagerScene;
   /** ClickableMesh with BoxGeometry for UUID filtering tests */
   multiFaceMesh: ClickableMesh;
-  /** Parent group container for hierarchy traversal tests */
-  parentGroup: Group;
-  /** Child mesh within parent group for hierarchy tests */
-  childMesh: ClickableMesh;
   /** Canvas center X coordinate for consistent event positioning */
   halfW: number;
   /** Canvas center Y coordinate for consistent event positioning */
@@ -135,24 +131,12 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
     multiFaceMesh.position.set(0, 0, 0);
     managerScene.scene.add(multiFaceMesh);
 
-    // Create parent-child hierarchy for traversal tests
-    const parentGroup = new Group();
-    const childMesh = new ClickableMesh({
-      geo: new BoxGeometry(3, 3, 3),
-      material: getMeshMaterialSet(),
-    });
-    childMesh.position.set(100, 0, 0);
-    parentGroup.add(childMesh);
-    managerScene.scene.add(parentGroup);
-
     const halfW = MouseEventManagerScene.W / 2;
     const halfH = MouseEventManagerScene.H / 2;
 
     return {
       managerScene,
       multiFaceMesh,
-      parentGroup,
-      childMesh,
       halfW,
       halfH,
     };
