@@ -334,13 +334,13 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
         "Pointer coordinates should be properly converted through ViewPortUtil",
       );
 
-      // Test edge coordinate conversion
+      // Test small delta from center to validate coordinate conversion continuity
       managerScene.interval();
       managerScene.dispatchMouseEvent("pointermove", halfW + 1, halfH);
       checkMeshMaterialState(
         multiFaceMesh,
         "over",
-        "Edge coordinates should be properly converted for intersection detection",
+        "Near-center coordinates should be properly converted for intersection detection",
       );
     });
   });
