@@ -8,12 +8,12 @@
  * **Test Coverage**:
  * - getIntersects() UUID deduplication for multi-face geometry
  * - ViewPortUtil integration for coordinate transformation
- * - checkIntersects() distance-based ordering and early termination
- * - checkTarget() hierarchy traversal and Scene boundary detection
+ * - checkIntersects() distance-based ordering for Z-depth handling
+ * - checkTarget() hierarchy traversal until Scene boundary
  *
- * **Test Environment**: Uses MouseEventManagerScene and MouseEventManagerButton
- * helper classes with complex geometry and hierarchy setups to test raycasting
- * edge cases and optimization behaviors.
+ * **Test Environment**: Uses MouseEventManagerScene helper class with
+ * complex geometry and hierarchy setups to test raycasting edge cases
+ * and core raycasting behaviors.
  */
 
 import {
@@ -44,11 +44,17 @@ import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
  * including multi-face geometry and complex hierarchy setups.
  */
 interface RaycastingTestEnvironment {
+  /** MouseEventManager test scene with camera, canvas, and event dispatching */
   managerScene: MouseEventManagerScene;
+  /** ClickableMesh with BoxGeometry for UUID filtering tests */
   multiFaceMesh: ClickableMesh;
+  /** Parent group container for hierarchy traversal tests */
   parentGroup: Group;
+  /** Child mesh within parent group for hierarchy tests */
   childMesh: ClickableMesh;
+  /** Canvas center X coordinate for consistent event positioning */
   halfW: number;
+  /** Canvas center Y coordinate for consistent event positioning */
   halfH: number;
 }
 
@@ -84,7 +90,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
    *
    * @description
    * Verifies that the mesh's current material matches the expected state
-   * material from its material set. Similar to MouseEventManagerButton.checkMaterial.
+   * material from its material set, considering the enabled/disabled state.
    */
   const checkMeshMaterialState = (
     mesh: ClickableMesh,
@@ -214,8 +220,8 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
    * checkIntersects() Z-order Processing Tests
    *
    * @description
-   * Tests the distance-based ordering and early termination optimization
-   * in checkIntersects() method.
+   * Tests the distance-based ordering in checkIntersects() method
+   * for proper Z-depth handling and occlusion behavior.
    */
   describe("checkIntersects() Z-order Processing", () => {
     test("should process intersections in distance order for proper Z-depth handling", () => {
@@ -365,10 +371,10 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
    * through public APIs alone.
    *
    * **Justification for Encapsulation Breaking:**
-   * - UUID filtering is an internal optimization with no public API
-   * - Multi-face intersections are implementation details of Three.js raycasting
-   * - Public API testing cannot detect UUID filtering effectiveness
-   * - This functionality is critical for preventing duplicate event processing
+   * - UUID filtering is an internal optimization with no public API exposure
+   * - Multi-face intersections occur when Three.js raycaster hits multiple faces of BoxGeometry
+   * - Public API testing cannot verify UUID deduplication effectiveness
+   * - This functionality is critical for preventing duplicate event processing and performance
    *
    * **Isolation Strategy:**
    * These tests are isolated in a separate describe block to clearly mark
