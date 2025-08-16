@@ -422,7 +422,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
       const originalGetIntersects = manager.getIntersects.bind(manager);
 
       // Create modified version that returns raw intersects without UUID filtering
-      const getRawIntersects = function (event: PointerEvent) {
+      const getRawIntersects = (event: PointerEvent) => {
         // Copy the getIntersects logic but skip UUID filtering
         // Convert mouse position (same logic as getIntersects)
         const mouse = manager.mouse;
