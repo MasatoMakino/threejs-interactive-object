@@ -209,7 +209,8 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
    */
   describe("checkIntersects() Z-order Processing", () => {
     test("should process intersections in distance order for proper Z-depth handling", () => {
-      const { managerScene, halfW, halfH } = createRaycastingTestEnvironment();
+      const { managerScene, halfW, halfH, multiFaceMesh } =
+        createRaycastingTestEnvironment();
 
       // Create two meshes at different Z positions
       const frontMesh = new ClickableMesh({
@@ -243,6 +244,13 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
         backMesh,
         "normal",
         "Objects behind nearer objects should not receive interaction",
+      );
+
+      // Pre-existing small mesh should also be occluded by the front mesh
+      checkMeshMaterialState(
+        multiFaceMesh,
+        "normal",
+        "Pre-existing mesh behind the front mesh should remain non-interactive due to occlusion",
       );
     });
   });
