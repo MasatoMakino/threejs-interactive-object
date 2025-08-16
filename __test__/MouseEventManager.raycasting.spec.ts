@@ -81,29 +81,33 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
    * Helper function to check ClickableMesh material state
    *
    * @param mesh - ClickableMesh to check
-   * @param expectedState - Expected ClickableState
-   * @param message - Custom error message for assertion
+   * @param options - Expected state configuration
+   * @param options.expectedState - Expected ClickableState
+   * @param options.expectedEnable - Expected enabled state (defaults to true)
+   * @param options.message - Custom error message for assertion
    *
    * @description
    * Verifies that the mesh's current material matches the expected state
-   * material from its material set, considering the enabled/disabled state.
+   * material from its material set, using the specified enabled state.
    */
   const checkMeshMaterialState = (
     mesh: ClickableMesh,
-    expectedState: ClickableState,
-    message: string = "",
+    options: {
+      expectedState: ClickableState;
+      expectedEnable?: boolean;
+      message?: string;
+    },
   ): void => {
+    const { expectedState, expectedEnable = true, message = "" } = options;
+
     const materialSet = mesh.interactionHandler.materialSet;
     if (!materialSet) {
       throw new Error("materialSet is undefined");
     }
 
-    // biome-ignore lint/suspicious/noExplicitAny: Testing internal _enable flag for state consistency validation
-    const isEnabled = (mesh.interactionHandler as any)._enable as boolean;
-
     const expectedMaterial = materialSet.getMaterial(
       expectedState,
-      isEnabled,
+      expectedEnable,
     ).material;
     expect(mesh.material, message).toBe(expectedMaterial);
   };
@@ -161,42 +165,41 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
 
       // Verify the multi-face mesh receives interaction (confirming intersection occurred)
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "over",
-        "Multi-face mesh should receive interaction when ray intersects multiple faces",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "over",
+        message:
+          "Multi-face mesh should receive interaction when ray intersects multiple faces",
+      });
     });
 
     test("should handle empty intersections array gracefully", () => {
       const { managerScene, multiFaceMesh } = createRaycastingTestEnvironment();
 
       // Ensure clean initial state
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "normal",
-        "Initial state should be normal before testing empty intersections",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "normal",
+        message:
+          "Initial state should be normal before testing empty intersections",
+      });
 
       // Dispatch event far outside any object bounds
       managerScene.interval();
       managerScene.dispatchMouseEvent("pointermove", 10, 10);
 
       // Verify no interactions occurred (confirming empty intersections handling)
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "normal",
-        "Empty intersections should be handled without errors",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "normal",
+        message: "Empty intersections should be handled without errors",
+      });
 
       // Verify system remains stable after empty intersections
       managerScene.interval();
       managerScene.dispatchMouseEvent("pointermove", 20, 20);
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "normal",
-        "System should remain stable after processing empty intersections",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "normal",
+        message:
+          "System should remain stable after processing empty intersections",
+      });
     });
   });
 
@@ -233,25 +236,24 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
 
       // The front mesh should receive interaction (processed first due to Z-order)
-      checkMeshMaterialState(
-        frontMesh,
-        "over",
-        "Nearest objects should be processed first in intersection handling",
-      );
+      checkMeshMaterialState(frontMesh, {
+        expectedState: "over",
+        message:
+          "Nearest objects should be processed first in intersection handling",
+      });
 
       // Back mesh should not receive interaction due to Z-depth occlusion
-      checkMeshMaterialState(
-        backMesh,
-        "normal",
-        "Objects behind nearer objects should not receive interaction",
-      );
+      checkMeshMaterialState(backMesh, {
+        expectedState: "normal",
+        message: "Objects behind nearer objects should not receive interaction",
+      });
 
       // Pre-existing small mesh should also be occluded by the front mesh
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "normal",
-        "Pre-existing mesh behind the front mesh should remain non-interactive due to occlusion",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "normal",
+        message:
+          "Pre-existing mesh behind the front mesh should remain non-interactive due to occlusion",
+      });
     });
   });
 
@@ -283,11 +285,11 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
 
       // Verify the mesh receives interaction through hierarchy traversal
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "over",
-        "Hierarchy traversal should detect interactive objects through parent chain",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "over",
+        message:
+          "Hierarchy traversal should detect interactive objects through parent chain",
+      });
     });
 
     test("should handle null parent references without errors", () => {
@@ -302,20 +304,20 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
 
       // Verify the mesh receives interaction without errors
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "over",
-        "Null parent references should be handled gracefully during hierarchy search",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "over",
+        message:
+          "Null parent references should be handled gracefully during hierarchy search",
+      });
 
       // Move away to test system stability
       managerScene.interval();
       managerScene.dispatchMouseEvent("pointermove", 10, 10);
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "normal",
-        "System should remain stable after processing null parent references",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "normal",
+        message:
+          "System should remain stable after processing null parent references",
+      });
     });
   });
 
@@ -336,20 +338,20 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
       managerScene.interval();
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
 
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "over",
-        "Pointer coordinates should be properly converted through ViewPortUtil",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "over",
+        message:
+          "Pointer coordinates should be properly converted through ViewPortUtil",
+      });
 
       // Test small delta from center to validate coordinate conversion continuity
       managerScene.interval();
       managerScene.dispatchMouseEvent("pointermove", halfW + 1, halfH);
-      checkMeshMaterialState(
-        multiFaceMesh,
-        "over",
-        "Near-center coordinates should be properly converted for intersection detection",
-      );
+      checkMeshMaterialState(multiFaceMesh, {
+        expectedState: "over",
+        message:
+          "Near-center coordinates should be properly converted for intersection detection",
+      });
     });
   });
 
