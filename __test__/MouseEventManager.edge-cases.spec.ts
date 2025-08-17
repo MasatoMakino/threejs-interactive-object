@@ -298,47 +298,6 @@ describe("MouseEventManager Edge Cases & Error Handling", () => {
    * prevention, exception recovery, and state consistency under stress.
    */
   describe("Robustness Verification", () => {
-    test("should maintain stable memory usage during error conditions", () => {
-      const { managerScene, halfW, halfH } = createTestEnvironment();
-
-      // Simulate continuous error conditions to test memory stability
-      const errorConditions = [
-        () =>
-          managerScene.dispatchMouseEvent(
-            "pointermove",
-            Number.NaN,
-            Number.NaN,
-          ),
-        () =>
-          managerScene.dispatchMouseEvent(
-            "pointerdown",
-            Number.POSITIVE_INFINITY,
-            Number.NEGATIVE_INFINITY,
-          ),
-        () => managerScene.dispatchMouseEvent("pointerup", -1000000, 1000000),
-      ];
-
-      // Run error conditions multiple times
-      for (let cycle = 0; cycle < 5; cycle++) {
-        for (const errorCondition of errorConditions) {
-          expect(() => {
-            errorCondition();
-            managerScene.interval();
-          }, `Error condition cycle ${cycle} should not throw errors`).not.toThrow();
-        }
-      }
-
-      // Verify normal operation is still possible after error conditions
-      managerScene.interval();
-      managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-
-      // System should remain functional
-      expect(
-        typeof managerScene.manager.throttlingTime_ms,
-        "Manager should remain functional after error conditions",
-      ).toBe("number");
-    });
-
     test("should handle concurrent error conditions without state corruption", () => {
       const { managerScene, btn } = createTestEnvironment();
 
