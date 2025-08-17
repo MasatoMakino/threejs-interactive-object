@@ -298,48 +298,66 @@ describe("MouseEventManager Edge Cases & Error Handling", () => {
    * prevention, exception recovery, and state consistency under stress.
    */
   describe("Robustness Verification", () => {
-    test("should handle concurrent error conditions without state corruption", () => {
+    test("should handle complex error scenarios with dynamic scene changes", () => {
       const { managerScene, btn } = createTestEnvironment();
 
-      // Create multiple types of errors simultaneously
-      const createConcurrentErrors = () => {
-        // Invalid coordinates
+      // Simulate complex error scenario with multiple simultaneous issues
+      const createComplexErrorScenario = () => {
+        // Invalid coordinates from corrupted input data
         managerScene.dispatchMouseEvent(
           "pointermove",
           Number.NaN,
           Number.POSITIVE_INFINITY,
         );
 
-        // Rapid object changes in scene
+        // Dynamic scene modification during event processing
         const tempMesh = new ClickableMesh({
           geo: new BoxGeometry(1, 1, 1),
           material: getMeshMaterialSet(),
         });
         managerScene.scene.add(tempMesh);
 
-        // Invalid time advancement
+        // Time progression during scene changes
         managerScene.interval();
 
         // Clean up temporary object
         managerScene.scene.remove(tempMesh);
       };
 
-      // Run concurrent errors multiple times
+      // Run complex error scenarios multiple times
       for (let i = 0; i < 3; i++) {
         expect(() => {
-          createConcurrentErrors();
-        }, `Concurrent errors iteration ${i} should not throw`).not.toThrow();
+          createComplexErrorScenario();
+        }, `Complex error scenario iteration ${i} should not throw`).not.toThrow();
       }
 
       // Verify system state integrity
       expect(
         btn.button.interactionHandler.isOver,
-        "Button state should remain valid after concurrent errors",
+        "Button state should remain valid after complex error scenarios",
       ).toBe(false);
       expect(
         btn.button.interactionHandler.isPress,
-        "Button press state should remain valid after concurrent errors",
+        "Button press state should remain valid after complex error scenarios",
       ).toBe(false);
+
+      // Verify MouseEventManager internal state consistency
+      // biome-ignore lint/suspicious/noExplicitAny: Testing protected property access
+      const currentOverArray = (managerScene.manager as any).currentOver;
+      expect(
+        currentOverArray,
+        "currentOver array should be empty after error conditions",
+      ).toHaveLength(0);
+
+      // Verify manager remains functional with basic operation
+      expect(
+        managerScene.manager.throttlingTime_ms,
+        "Manager throttling configuration should remain intact",
+      ).toBeGreaterThan(0);
+      expect(
+        typeof managerScene.manager.throttlingTime_ms,
+        "Manager throttling should be numeric",
+      ).toBe("number");
     });
 
     test("should recover gracefully from exception during event processing", () => {
