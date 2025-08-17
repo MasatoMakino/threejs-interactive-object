@@ -10,9 +10,25 @@ import { MouseEventManager } from "../src/index.js";
  * Type alias derived from actual MouseEventManager constructor signature,
  * ensuring tests always match the real constructor options.
  */
-export type MouseEventManagerConstructorOptions = ConstructorParameters<
-  typeof MouseEventManager
->[3];
+export type MouseEventManagerConstructorOptions = NonNullable<
+  ConstructorParameters<typeof MouseEventManager>[3]
+>;
+
+/**
+ * Constructor options for MouseEventManagerScene
+ *
+ * @description
+ * Options for customizing the test environment setup, including canvas dimensions
+ * and MouseEventManager configuration. Extends MouseEventManagerConstructorOptions
+ * to provide full backward compatibility with existing tests.
+ */
+export interface MouseEventManagerSceneOptions
+  extends MouseEventManagerConstructorOptions {
+  /** Canvas width in pixels (default: 1920) */
+  canvasWidth?: number;
+  /** Canvas height in pixels (default: 1080) */
+  canvasHeight?: number;
+}
 
 /**
  * Test helper class providing unified MouseEventManager environment
@@ -50,30 +66,39 @@ export class MouseEventManagerScene {
   /**
    * Creates a new test environment with scene, camera, canvas, and MouseEventManager
    *
-   * @param options - Optional constructor options for MouseEventManager
+   * @param options - Optional scene configuration options
    *
    * @description
    * Automatically sets up a complete Three.js test environment including:
    * - Scene with PerspectiveCamera positioned at (0, 0, 100)
-   * - Canvas element with default dimensions (1920x1080)
+   * - Canvas element with configurable dimensions (default: 1920x1080)
    * - MouseEventManager configured for the created components with optional custom options
+   *
+   * **Backward Compatibility**: Extends MouseEventManagerConstructorOptions to accept
+   * all existing MouseEventManager options directly, while adding canvas dimension options.
    */
-  constructor(options?: MouseEventManagerConstructorOptions) {
+  constructor(options?: MouseEventManagerSceneOptions) {
+    // Extract canvas dimensions from options or use defaults
+    const canvasWidth = options?.canvasWidth ?? MouseEventManagerScene.W;
+    const canvasHeight = options?.canvasHeight ?? MouseEventManagerScene.H;
+
+    // Create MouseEventManager options by excluding canvas dimensions from scene options
+    const {
+      canvasWidth: _,
+      canvasHeight: __,
+      ...mouseEventManagerOptions
+    } = options || {};
+
     this.scene = new Scene();
-    this.camera = new PerspectiveCamera(
-      45,
-      MouseEventManagerScene.W / MouseEventManagerScene.H,
-      1,
-      400,
-    );
+    this.camera = new PerspectiveCamera(45, canvasWidth / canvasHeight, 1, 400);
     this.camera.position.set(0, 0, 100);
     this.scene.add(this.camera);
 
     this.canvas = document.createElement("canvas");
-    this.canvas.width = MouseEventManagerScene.W;
-    this.canvas.height = MouseEventManagerScene.H;
-    this.canvas.style.width = `${MouseEventManagerScene.W}px`;
-    this.canvas.style.height = `${MouseEventManagerScene.H}px`;
+    this.canvas.width = canvasWidth;
+    this.canvas.height = canvasHeight;
+    this.canvas.style.width = `${canvasWidth}px`;
+    this.canvas.style.height = `${canvasHeight}px`;
 
     document.body.appendChild(this.canvas);
     //マウスイベントの取得開始
@@ -81,7 +106,7 @@ export class MouseEventManagerScene {
       this.scene,
       this.camera,
       this.canvas,
-      options,
+      mouseEventManagerOptions,
     );
 
     // Ensure clean initial state after MouseEventManager creation
