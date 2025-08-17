@@ -281,9 +281,7 @@ describe("MouseEventManager Edge Cases & Error Handling", () => {
       const { managerScene, halfW, halfH } = createTestEnvironment();
 
       // Clear all objects from scene to test empty scene handling
-      while (managerScene.scene.children.length > 0) {
-        managerScene.scene.remove(managerScene.scene.children[0]);
-      }
+      managerScene.scene.remove(...managerScene.scene.children);
 
       expect(() => {
         managerScene.interval();
