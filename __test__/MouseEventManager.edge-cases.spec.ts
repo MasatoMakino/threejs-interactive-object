@@ -3,14 +3,32 @@
  *
  * @description
  * Tests MouseEventManager's robustness under error conditions and edge cases,
- * including null object handling, invalid events, system boundary conditions,
- * and error recovery scenarios.
+ * including object lifecycle management, invalid pointer events, system boundary
+ * conditions, and dynamic scene modifications.
  *
  * **Test Focus**: Edge cases and error conditions that could cause system
  * instability or unexpected behavior in production environments.
  *
  * **Test Environment**: Uses MouseEventManagerScene helper for controlled
- * Three.js environment setup with error condition simulation.
+ * Three.js environment setup with configurable canvas dimensions.
+ *
+ * **Test Scope & Responsibility**:
+ * - MouseEventManager functional behavior and API contract compliance
+ * - Error handling and recovery within the application layer
+ * - Configuration value validity and range checking
+ * - Integration with Three.js and DOM APIs under adverse conditions
+ *
+ * **Explicitly Not Tested** (Out of Project Scope):
+ * - TypeScript type system validation (e.g., `typeof` checks for primitives)
+ * - JavaScript engine memory corruption or low-level runtime failures
+ * - Browser implementation bugs or inconsistencies
+ * - Operating system or hardware-level failures
+ * - Prototype pollution attacks or malicious code injection
+ *
+ * **Rationale**: This project operates within TypeScript's type safety guarantees
+ * and browser JavaScript execution environment. Testing scenarios that assume
+ * fundamental system failures would lead to infinite test expansion and maintenance
+ * complexity without practical value for the project's actual use cases.
  */
 
 import { BoxGeometry } from "three";
@@ -31,10 +49,10 @@ import {
  * and edge cases that could occur in production environments.
  *
  * **Test Categories**:
- * - Error-prone Object Handling: null/undefined objects, invalid hierarchies
- * - Invalid Event Processing: malformed events, invalid coordinates
- * - System Boundary Conditions: null cameras/scenes, invalid viewports
- * - Robustness Verification: memory leaks, exception recovery, state consistency
+ * - Error-prone Object Handling: currentOver state management during object removal
+ * - Invalid Event Processing: malformed events, invalid coordinates, stress testing
+ * - System Boundary Conditions: zero-size canvas, empty scenes
+ * - Robustness Verification: dynamic scene modifications, state consistency
  */
 describe("MouseEventManager Edge Cases & Error Handling", () => {
   const testEnvironments: MouseEventManagerScene[] = [];
@@ -294,8 +312,9 @@ describe("MouseEventManager Edge Cases & Error Handling", () => {
    * Robustness Verification Tests
    *
    * @description
-   * Tests MouseEventManager's overall robustness including memory leak
-   * prevention, exception recovery, and state consistency under stress.
+   * Tests MouseEventManager's overall robustness under complex error scenarios
+   * involving simultaneous invalid coordinates, dynamic scene modifications,
+   * and internal state consistency verification.
    */
   describe("Robustness Verification", () => {
     test("should handle complex error scenarios with dynamic scene changes", () => {
