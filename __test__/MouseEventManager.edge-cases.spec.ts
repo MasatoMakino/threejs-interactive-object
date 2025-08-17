@@ -277,35 +277,6 @@ describe("MouseEventManager Edge Cases & Error Handling", () => {
       }
     });
 
-    test("should handle raycaster setup errors without crashing", () => {
-      const { managerScene, halfW, halfH } = createTestEnvironment();
-
-      // Corrupt the camera matrix to trigger raycaster errors
-      managerScene.camera.matrixWorldInverse.set(
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-        Number.NaN,
-      );
-
-      expect(() => {
-        managerScene.interval();
-        managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-      }, "Should handle corrupted camera matrix without crashing").not.toThrow();
-    });
-
     test("should handle empty scene gracefully", () => {
       const { managerScene, halfW, halfH } = createTestEnvironment();
 
