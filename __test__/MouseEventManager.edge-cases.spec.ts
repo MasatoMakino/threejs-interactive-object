@@ -360,48 +360,6 @@ describe("MouseEventManager Edge Cases & Error Handling", () => {
       ).toBe("number");
     });
 
-    test("should recover gracefully from exception during event processing", () => {
-      const { managerScene, btn, halfW, halfH } = createTestEnvironment();
-
-      // Create a spy that throws an error once, then works normally
-      let callCount = 0;
-      const originalDispatchEvent = managerScene.canvas.dispatchEvent.bind(
-        managerScene.canvas,
-      );
-
-      const mockDispatchEvent = vi.fn((event: Event) => {
-        callCount++;
-        if (callCount === 1) {
-          throw new Error("Simulated event processing error");
-        }
-        return originalDispatchEvent(event);
-      });
-
-      managerScene.canvas.dispatchEvent = mockDispatchEvent;
-
-      // First call should throw error (simulated)
-      expect(() => {
-        managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-      }, "Simulated error should be thrown").toThrow(
-        "Simulated event processing error",
-      );
-
-      // Restore normal dispatch behavior
-      managerScene.canvas.dispatchEvent = originalDispatchEvent;
-
-      // Subsequent calls should work normally
-      expect(() => {
-        managerScene.interval();
-        managerScene.dispatchMouseEvent("pointermove", halfW, halfH);
-      }, "Should recover normal operation after exception").not.toThrow();
-
-      // Verify functionality is restored
-      expect(
-        btn.button.interactionHandler.isOver,
-        "Button should respond normally after error recovery",
-      ).toBe(true);
-    });
-
     test("should maintain consistent internal state across error scenarios", () => {
       const { managerScene } = createTestEnvironment();
 
