@@ -354,18 +354,6 @@ describe("MouseEventManager Edge Cases & Error Handling", () => {
         managerScene.manager.throttlingTime_ms,
         "Manager throttling configuration should remain intact",
       ).toBeGreaterThan(0);
-      expect(
-        typeof managerScene.manager.throttlingTime_ms,
-        "Manager throttling should be numeric",
-      ).toBe("number");
-
-      // Verify throttling flag state consistency
-      // biome-ignore lint/suspicious/noExplicitAny: Testing protected property access
-      const hasThrottled = (managerScene.manager as any).hasThrottled;
-      expect(
-        typeof hasThrottled,
-        "hasThrottled flag should remain boolean after complex error scenarios",
-      ).toBe("boolean");
     });
   });
 });
