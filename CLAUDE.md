@@ -39,12 +39,12 @@ This is a TypeScript library for creating mouse-interactive objects in Three.js 
 
 **Interactive Views** (`src/view/`)
 - `InteractiveMesh.ts` - Mesh-based interactive objects:
-  - `InteractiveMesh<Value, Handler>` - Generic base class for all interactive 3D meshes
+  - `InteractiveMesh<Value, InteractionHandler>` - **@internal** Generic base class (not exported; use concrete subclasses)
     - `ClickableMesh<Value>` - Basic clickable mesh with button-like behavior
     - `CheckBoxMesh<Value>` - Checkbox mesh with toggle selection behavior  
     - `RadioButtonMesh<Value>` - Radio button mesh with exclusive selection behavior
 - `InteractiveSprite.ts` - Sprite-based interactive objects:
-  - `InteractiveSprite<Value, Handler>` - Generic base class for all interactive sprites
+  - `InteractiveSprite<Value, Handler>` - **@internal** Generic base class (not exported; use concrete subclasses)
     - `ClickableSprite<Value>` - Basic clickable sprite with button-like behavior
     - `CheckBoxSprite<Value>` - Checkbox sprite with toggle selection behavior
     - `RadioButtonSprite<Value>` - Radio button sprite with exclusive selection behavior
