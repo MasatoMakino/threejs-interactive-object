@@ -3,13 +3,13 @@ import { describe, expect, test, vi } from "vitest";
 import {
   CheckBoxMesh,
   ClickableMesh,
+  clone,
+  cloneThreeMouseEvent,
+  createThreeMouseEvent,
+  generate,
   StateMaterialSet,
   type ThreeMouseEventMap,
   ThreeMouseEventUtil,
-  createThreeMouseEvent,
-  cloneThreeMouseEvent,
-  generate,
-  clone,
 } from "../src/index.js";
 
 const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
