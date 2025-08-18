@@ -1,5 +1,5 @@
 import { BoxGeometry, MeshBasicMaterial } from "three";
-import { describe, expect, test, vi } from "vitest";
+import { afterAll, describe, expect, test, vi } from "vitest";
 import {
   CheckBoxMesh,
   ClickableMesh,
@@ -12,9 +12,12 @@ import {
   ThreeMouseEventUtil,
 } from "../src/index.js";
 
-const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
-
 describe("ThreeMouseEvent", () => {
+  const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
+
+  afterAll(() => {
+    _spyWarn.mockRestore();
+  });
   test("should throw error when generating select event for non-selectable objects", () => {
     const geometry = new BoxGeometry(3, 3, 3);
     const matSet = new StateMaterialSet({
