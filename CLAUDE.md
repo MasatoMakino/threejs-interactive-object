@@ -232,9 +232,12 @@ This project follows [GitHub Flow](https://docs.github.com/en/get-started/using-
    - Collaborate through line-specific or general comments
 
 5. **Merge Pull Request**
-   - Must satisfy all branch protection requirements (see [Branch Protection Rules](#branch-protection-rules) below)
+   - Must satisfy **all** branch protection requirements before merging is allowed:
+     - ✅ All automated status checks pass (TypeScript compilation, code quality, tests)
+   - See [Branch Protection Rules](#branch-protection-rules) below for complete details
    - Use "Squash and merge" for cleaner history when appropriate
-   - Automatically integrates branch into `main` only after all requirements are met
+   - GitHub automatically prevents merging until all protection requirements are satisfied
+   - **Auto-deployment**: After successful merge to `main`, demo pages and API documentation are automatically deployed to GitHub Pages
 
 6. **Delete Branch**
    - Remove feature branch after successful merge
@@ -246,11 +249,10 @@ This project enforces strict branch protection on the `main` branch:
 
 - **🚫 Direct Push Blocked**: Cannot push commits directly to `main` branch
 - **✅ Pull Request Required**: All changes must go through pull request process
-- **🔍 Status Checks Required**: CI workflows must pass:
-  - TypeScript compilation (`npx tsc --noEmit`)
-  - Code quality checks (`npx biome ci .`)
-  - Test suite execution (`npm test`)
-- **👥 Review Required**: Pull requests require approval from maintainers
+- **🔍 Status Checks Required**: CI workflows must pass before merging:
+  - `TypeScript compilation` - Validates code compiles without errors (`npx tsc --noEmit`)
+  - `Code quality checks` - Ensures code style and quality standards (`npx biome ci .`)
+  - `Test suite execution` - Verifies all tests pass (`npm test`)
 - **🔒 Admin Enforcement**: Branch protection rules apply to all users including admins
 
 ### Key Principles
@@ -258,7 +260,7 @@ This project enforces strict branch protection on the `main` branch:
 - **One branch per feature/fix**: Create separate branches for unrelated changes
 - **Short-lived branches**: Keep branches focused and merge quickly
 - **Continuous integration**: All changes go through pull request review and automated testing
-- **Main branch stability**: `main` branch should always be deployable and protected
+- **Main branch stability**: `main` branch should always be deployable and protected by enforced status checks
 
 ## Local Work Notes Strategy
 
