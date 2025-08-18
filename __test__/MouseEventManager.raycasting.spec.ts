@@ -83,12 +83,14 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
    * @param mesh - ClickableMesh to check
    * @param options - Expected state configuration
    * @param options.expectedState - Expected ClickableState
-   * @param options.expectedEnable - Expected enabled state (defaults to true)
+   * @param options.expectedEnable - Expected enabled state (defaults to actual enabled state from getter)
    * @param options.message - Custom error message for assertion
    *
    * @description
    * Verifies that the mesh's current material matches the expected state
-   * material from its material set, using the specified enabled state.
+   * material from its material set. When expectedEnable is not specified,
+   * automatically uses the actual enabled state from the handler's enabled getter,
+   * eliminating the need for encapsulation-breaking private field access.
    */
   const checkMeshMaterialState = (
     mesh: ClickableMesh,
@@ -98,7 +100,11 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
       message?: string;
     },
   ): void => {
-    const { expectedState, expectedEnable = true, message = "" } = options;
+    const {
+      expectedState,
+      expectedEnable = mesh.interactionHandler.enabled, // Use enabled getter as default
+      message = "",
+    } = options;
 
     const materialSet = mesh.interactionHandler.materialSet;
     if (!materialSet) {

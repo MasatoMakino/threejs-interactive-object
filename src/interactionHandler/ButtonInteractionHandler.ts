@@ -198,6 +198,26 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   }
 
   /**
+   * Indicates whether the object is currently enabled for interactions.
+   *
+   * @returns True if the object is enabled, false if disabled
+   *
+   * @description
+   * This getter provides read-only access to the internal enabled state.
+   * When enabled, the object can respond to pointer interactions; when disabled,
+   * the object becomes non-interactive and displays in disabled visual state.
+   *
+   * @readonly
+   *
+   * @see {@link enable} - Method to enable the object
+   * @see {@link disable} - Method to disable the object
+   * @see {@link switchEnable} - Method to toggle enabled state
+   */
+  get enabled(): boolean {
+    return this._enable;
+  }
+
+  /**
    * The display object being managed by this interaction handler.
    *
    * @description
