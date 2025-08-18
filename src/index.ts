@@ -5,16 +5,16 @@ export * from "./RadioButtonManager.js";
 export * from "./resizeCanvasStyle.js";
 export * from "./StateMaterial.js";
 export * from "./ThreeMouseEvent.js";
-/**
- * @deprecated Use named exports directly from "@masatomakino/threejs-interactive-object" instead.
- */
 export {
   clone,
   cloneThreeMouseEvent,
   createThreeMouseEvent,
   generate,
-  ThreeMouseEventUtil,
 } from "./ThreeMouseEventUtil.js";
+/**
+ * @deprecated Use named exports directly from "@masatomakino/threejs-interactive-object" instead.
+ */
+export { ThreeMouseEventUtil } from "./ThreeMouseEventUtil.js";
 export * from "./ViewPortUtil.js";
 /**
  * @deprecated Use named exports directly from "@masatomakino/threejs-interactive-object" instead.
