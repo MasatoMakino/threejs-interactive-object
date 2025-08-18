@@ -7,12 +7,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Build and Development
 - `npm run build` - Full build: TypeScript compilation, demo generation, and API docs
 - `npm run buildTS` - TypeScript compilation only
-- `npm run start:dev` - Start development server with file watching
+- `npm run start:dev` - Start comprehensive development environment (runs server, TypeScript watch, and demo watch in parallel)
+- `npm run server` - Start browser-sync server for demo pages with live reload
+- `npm run watch:tsc` - TypeScript compilation in watch mode with incremental builds
+- `npm run watch:demo` - Demo page generation in watch mode
 
 ### Testing
 - `npm test` - Run all tests using Vitest with Chrome browser
 - `npm run test:watch` - Run tests in watch mode
-- `npm run coverage` - Generate test coverage report
+- `npm run coverage` - Generate comprehensive test coverage report using Istanbul provider (text, lcov, json formats)
 
 ### Code Quality
 - `npx biome check` - Run linter and formatter
@@ -20,7 +23,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Documentation
 - `npm run typedocs` - Generate TypeDoc API documentation
-- `npm run demo` - Generate demo pages
+- `npm run demo` - Generate demo pages with custom canvas element and ES2020 compilation target
 
 ## Architecture Overview
 
@@ -35,11 +38,18 @@ This is a TypeScript library for creating mouse-interactive objects in Three.js 
 - Identifies interactive objects via `IClickableObject3D` interface
 
 **Interactive Views** (`src/view/`)
-- `InteractiveMesh` - Base class for interactive 3D meshes
-- `ClickableMesh` - Basic clickable mesh implementation
-- `CheckBoxMesh` - Checkbox-style interactive mesh
-- `RadioButtonMesh` - Radio button-style interactive mesh
-- Similar sprite and group variants available
+- `InteractiveMesh.ts` - Mesh-based interactive objects:
+  - `InteractiveMesh<Value, Handler>` - Generic base class for all interactive 3D meshes
+    - `ClickableMesh<Value>` - Basic clickable mesh with button-like behavior
+    - `CheckBoxMesh<Value>` - Checkbox mesh with toggle selection behavior  
+    - `RadioButtonMesh<Value>` - Radio button mesh with exclusive selection behavior
+- `InteractiveSprite.ts` - Sprite-based interactive objects:
+  - `InteractiveSprite<Value, Handler>` - Generic base class for all interactive sprites
+    - `ClickableSprite<Value>` - Basic clickable sprite with button-like behavior
+    - `CheckBoxSprite<Value>` - Checkbox sprite with toggle selection behavior
+    - `RadioButtonSprite<Value>` - Radio button sprite with exclusive selection behavior
+- `ClickableGroup.ts` - Group-based interactive container:
+  - `ClickableGroup<Value>` - Interactive Three.js Group with UUID-based collision deduplication
 
 **Interaction Handlers** (`src/interactionHandler/`)
 - `ButtonInteractionHandler` - Base interaction logic with EventEmitter
@@ -49,6 +59,13 @@ This is a TypeScript library for creating mouse-interactive objects in Three.js 
 **State Management** (`src/StateMaterial.ts`)
 - `StateMaterial` - Wraps Three.js materials with opacity management
 - `StateMaterialSet` - Manages materials for different interaction states (normal, over, down, disable, selected variants)
+
+**Utility Components**
+- `RadioButtonManager.ts` - Exclusive selection manager for radio button groups
+- `resizeCanvasStyle.ts` - Canvas size adjustment utility with aspect ratio preservation
+- `ThreeMouseEventUtil.ts` - Mouse event object manipulation utilities (getSelection, generate, clone)
+- `ViewPortUtil.ts` - Viewport coordinate transformation utilities (convertToRectangle, isContain, convertToMousePosition)
+- `convertToInteractiveView.ts` - Conversion utilities for existing Three.js objects (convertToClickableMesh, convertToCheckboxMesh, convertToRadioButtonMesh)
 
 ### Key Patterns
 
@@ -76,8 +93,11 @@ Functions like `convertToClickableMesh()` allow converting existing Three.js mes
 - `src/` - Source TypeScript files
 - `esm/` - Compiled ES modules (build output)
 - `__test__/` - Vitest test files with browser automation
+  - `__test__/__screenshots__/` - **GIT-IGNORED** debug screenshots (captured on test failures)
+- `coverage/` - **AUTO-GENERATED** test coverage reports (Istanbul provider)
 - `docs/` - **AUTO-GENERATED** documentation and demo pages (**DO NOT EDIT**)
 - `demoSrc/` - Demo assets and source files
+- `node_modules/` - Dependencies (standard npm directory)
 
 ### Important: docs/ Directory Handling
 
@@ -104,7 +124,54 @@ Functions like `convertToClickableMesh()` allow converting existing Three.js mes
 
 ## Testing Strategy
 
-Tests run in actual Chrome browser using WebDriverIO provider. This ensures real DOM/WebGL behavior rather than mocked environments. Tests verify mouse interaction behavior, state transitions, and event emission.
+This project implements a comprehensive browser-based testing strategy with **52 test files** to ensure robust Three.js interaction behavior.
+
+### Testing Infrastructure
+
+**Browser Automation**
+- **WebDriverIO Provider**: Tests execute in actual Chrome browser (headless mode)
+- **Real DOM/WebGL**: No mocking - tests verify actual Three.js rendering and interaction behavior
+- **Vitest Framework**: Modern testing framework with browser automation integration
+- **Istanbul Coverage**: Comprehensive code coverage reporting (text, lcov, json formats)
+
+### Test Categories
+
+**Core Component Tests**
+- `MouseEventManager.*.spec.ts` (8 files) - Event manager functionality, throttling, raycasting, edge cases
+- `ButtonInteractionHandler.*.spec.ts` (2 files) - Base interaction logic and event object validation  
+- `CheckBoxInteractionHandler.spec.ts` - Toggle behavior, state management, event emission
+- `RadioButtonInteractionHandler.spec.ts` - Exclusive selection logic and RadioButtonManager integration
+
+**View Layer Tests**
+- Interactive mesh, sprite, and group component testing
+- Material state transitions and visual feedback verification
+- Generic value type handling and event propagation
+
+**Edge Case & Integration Tests**
+- `MouseEventManager.edge-cases.spec.ts` - Error handling, corrupted objects, boundary conditions
+- `MouseEventManager.overlapping.spec.ts` - Complex collision scenarios and Z-depth processing
+- Complex state transition sequences and mixed user/programmatic operations
+
+**Utility & Helper Tests**
+- Viewport coordinate transformation utilities
+- Canvas resizing with aspect ratio preservation  
+- Three.js object conversion utilities
+- Mouse event manipulation helpers
+
+### Debug & Development Tools
+
+**Debug Screenshots** (Git-ignored)
+- Automatic screenshot capture on test failures for debugging
+- Screenshots stored in `__test__/__screenshots__/` (environment-dependent, not version-controlled)
+- Used for manual debugging of visual rendering issues, not automated validation
+
+### Performance & Throttling Tests
+
+**Real-world Performance Validation**
+- RAF (RequestAnimationFrame) ticker integration testing
+- Throttling behavior verification with configurable intervals
+- High-frequency event stress testing
+- Event handler cleanup verification (dispose method testing)
 
 ## Build System
 
