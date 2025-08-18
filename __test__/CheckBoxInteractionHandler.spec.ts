@@ -664,6 +664,8 @@ describe("CheckBoxInteractionHandler", () => {
     });
 
     it("should maintain identical functionality between CheckBoxInteractionHandler and CheckBoxObject", () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
       const matSet = getMeshMaterialSet();
       const checkbox = new CheckBoxMesh({
         geo: new BoxGeometry(3, 3, 3),
@@ -684,6 +686,8 @@ describe("CheckBoxInteractionHandler", () => {
       legacyHandler.onMouseClick();
       expect(legacyHandler.selection).toBe(false);
       expect(selectEventSpy).toHaveBeenCalledTimes(1);
+
+      warnSpy.mockRestore();
     });
   });
 });
