@@ -93,13 +93,13 @@ export function getSelection<Value>(
  *
  * @example
  * ```typescript
- * // Generate click event from button
- * const clickEvent = generate("click", button.interactionHandler);
+ * // Create click event from button
+ * const clickEvent = createThreeMouseEvent("click", button.interactionHandler);
  * console.log(clickEvent.type); // "click"
  * console.log(clickEvent.isSelected); // undefined
  *
- * // Generate select event from checkbox
- * const selectEvent = generate("select", checkbox);
+ * // Create select event from checkbox
+ * const selectEvent = createThreeMouseEvent("select", checkbox);
  * console.log(selectEvent.type); // "select"
  * console.log(selectEvent.isSelected); // true/false
  * ```
@@ -142,8 +142,8 @@ export function createThreeMouseEvent<Value>(
  *
  * @example
  * ```typescript
- * const originalEvent = generate("select", checkbox);
- * const clonedEvent = clone(originalEvent);
+ * const originalEvent = createThreeMouseEvent("select", checkbox);
+ * const clonedEvent = cloneThreeMouseEvent(originalEvent);
  *
  * // Events have same structure but selection state reflects current handler
  * // state
@@ -152,7 +152,7 @@ export function createThreeMouseEvent<Value>(
  * // true
  * ```
  *
- * @see {@link generate} - Primary event creation function
+ * @see {@link createThreeMouseEvent} - Primary event creation function
  */
 export function cloneThreeMouseEvent<Value>(
   e: ThreeMouseEvent<Value>,
