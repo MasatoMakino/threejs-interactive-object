@@ -173,6 +173,26 @@ This project implements a comprehensive browser-based testing strategy with **52
 - High-frequency event stress testing
 - Event handler cleanup verification (dispose method testing)
 
+### Test Scope Philosophy
+
+**Test Responsibility Boundaries**
+This project's testing strategy focuses on validating functionality within defined responsibility boundaries:
+- **Application Layer**: MouseEventManager functional behavior and API contract compliance
+- **Error Handling**: Recovery mechanisms within the application layer
+- **Integration**: Three.js and DOM API integration under adverse conditions
+- **Configuration**: Value validity and range checking for user-configurable options
+
+**Explicit Testing Exclusions**
+The following areas are intentionally excluded from test coverage to maintain practical scope:
+- **Type System Validation**: TypeScript type checking and primitive type validation (handled by TypeScript compiler)
+- **Runtime Environment**: JavaScript engine memory corruption or low-level runtime failures
+- **Browser Implementation**: Browser-specific bugs, inconsistencies, or non-standard behaviors
+- **System Level**: Operating system or hardware-level failures
+- **Security Attacks**: Prototype pollution attacks or malicious code injection scenarios
+
+**Design Rationale**
+This project operates within TypeScript's type safety guarantees and standard browser JavaScript execution environments. Testing scenarios that assume fundamental system failures would lead to infinite test expansion and maintenance complexity without practical value for the library's intended use cases. The testing strategy prioritizes real-world robustness while avoiding theoretical edge cases that fall outside the project's operational environment.
+
 ## Build System
 
 - TypeScript compilation to ES2022 modules
