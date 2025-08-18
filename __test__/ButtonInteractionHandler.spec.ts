@@ -250,38 +250,60 @@ describe("ButtonInteractionHandler", () => {
         "mouseEnabled should be true by default",
       ).toBe(true);
       expect(handler.frozen, "frozen should be false by default").toBe(false);
+      expect(handler.enabled, "enabled should be true by default").toBe(true);
     });
 
     it("should enable and disable correctly with enable/disable methods", () => {
       const { handler } = createTestSetup();
+
+      // Initial state should be enabled
+      expect(handler.enabled, "Handler should be enabled initially").toBe(true);
 
       handler.disable();
       expect(
         handler.state,
         "State should be 'disable' after calling disable()",
       ).toBe("disable");
+      expect(
+        handler.enabled,
+        "Handler should be disabled after disable()",
+      ).toBe(false);
 
       handler.enable();
       expect(
         handler.state,
         "State should be 'normal' after calling enable()",
       ).toBe("normal");
+      expect(handler.enabled, "Handler should be enabled after enable()").toBe(
+        true,
+      );
     });
 
     it("should enable and disable correctly with switchEnable method", () => {
       const { handler } = createTestSetup();
+
+      // Initial state should be enabled
+      expect(handler.enabled, "Handler should be enabled initially").toBe(true);
 
       handler.switchEnable(false);
       expect(
         handler.state,
         "State should be 'disable' when switchEnable(false)",
       ).toBe("disable");
+      expect(
+        handler.enabled,
+        "Handler should be disabled after switchEnable(false)",
+      ).toBe(false);
 
       handler.switchEnable(true);
       expect(
         handler.state,
         "State should be 'normal' when switchEnable(true)",
       ).toBe("normal");
+      expect(
+        handler.enabled,
+        "Handler should be enabled after switchEnable(true)",
+      ).toBe(true);
     });
 
     it("should ignore mouse events when frozen", () => {
