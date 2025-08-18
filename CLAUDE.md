@@ -255,6 +255,20 @@ This project enforces strict branch protection on the `main` branch:
   - `Test suite execution` - Verifies all tests pass (`npm test`)
 - **🔒 Admin Enforcement**: Branch protection rules apply to all users including admins
 
+### Commit Message Guidelines
+
+**@ Symbol Prohibition**
+- **Never use "@" symbol in commit messages**
+- **Reason**: Causes unintended user mentions in GitHub WebUI
+- **No escaping available**: Markdown escaping does not work in commit messages
+- **Use alternative expressions**:
+  - ❌ "Add @param documentation"
+  - ✅ "Add JSDoc parameter documentation"
+  - ❌ "Fix @returns type"  
+  - ✅ "Fix return type annotation"
+  - ❌ "Update @example usage"
+  - ✅ "Update example usage documentation"
+
 ### Key Principles
 
 - **One branch per feature/fix**: Create separate branches for unrelated changes
