@@ -252,6 +252,6 @@ export class RadioButtonManager<Value = unknown> extends EventEmitter<
    * @returns Array of managed RadioButtonInteractionHandler instances
    */
   get interactionHandlers(): RadioButtonInteractionHandler<Value>[] {
-    return this._interactionHandlers;
+    return [...this._interactionHandlers];
   }
 }
