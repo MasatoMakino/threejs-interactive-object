@@ -7,8 +7,8 @@
  * handle event object construction and selection state management.
  */
 
-import type { IClickableObject3D } from "./MouseEventManager.js";
 import type { ButtonInteractionHandler } from "./interactionHandler";
+import type { IClickableObject3D } from "./MouseEventManager.js";
 import type { ThreeMouseEvent, ThreeMouseEventMap } from "./ThreeMouseEvent.js";
 
 /**
