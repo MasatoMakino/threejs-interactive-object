@@ -65,7 +65,7 @@ function getInteractionHandler<Value>(
  *
  * @internal
  */
-export function getSelection<Value>(
+function getSelection<Value>(
   interactionHandler: ButtonInteractionHandler<Value> | undefined,
 ): boolean {
   if (interactionHandler != null && "selection" in interactionHandler) {
