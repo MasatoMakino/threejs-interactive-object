@@ -60,7 +60,8 @@ This is a TypeScript library for creating mouse-interactive objects in Three.js 
 - `StateMaterial` - Wraps Three.js materials with opacity management
 - `StateMaterialSet` - Manages materials for different interaction states (normal, over, down, disable, selected variants)
 
-**Utility Components**
+### Utility Components
+
 - `RadioButtonManager.ts` - Exclusive selection manager for radio button groups
 - `resizeCanvasStyle.ts` - Canvas size adjustment utility with aspect ratio preservation
 - `ThreeMouseEventUtil.ts` - Mouse event object manipulation utilities (getSelection, generate, clone)
