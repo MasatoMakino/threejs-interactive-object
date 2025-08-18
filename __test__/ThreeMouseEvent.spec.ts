@@ -6,6 +6,10 @@ import {
   StateMaterialSet,
   type ThreeMouseEventMap,
   ThreeMouseEventUtil,
+  createThreeMouseEvent,
+  cloneThreeMouseEvent,
+  generate,
+  clone,
 } from "../src/index.js";
 
 const _spyWarn = vi.spyOn(console, "warn").mockImplementation((x) => x);
@@ -27,7 +31,7 @@ describe("ThreeMouseEvent", () => {
     });
 
     expect(() => {
-      ThreeMouseEventUtil.generate("select", clickable);
+      createThreeMouseEvent("select", clickable);
     }).toThrowError("選択可能なボタン以外を引数にして");
   });
 
@@ -46,9 +50,9 @@ describe("ThreeMouseEvent", () => {
       material: matSet,
     });
 
-    const e = ThreeMouseEventUtil.generate("select", clickable);
+    const e = createThreeMouseEvent("select", clickable);
 
-    expect(e).toEqual(ThreeMouseEventUtil.clone(e));
+    expect(e).toEqual(cloneThreeMouseEvent(e));
   });
 
   describe("Event generation for all event types", () => {
@@ -73,7 +77,7 @@ describe("ThreeMouseEvent", () => {
       ];
 
       for (const eventType of eventTypes) {
-        const event = ThreeMouseEventUtil.generate(eventType, clickable);
+        const event = createThreeMouseEvent(eventType, clickable);
 
         expect(event.type).toBe(eventType);
         expect(event.interactionHandler).toBe(clickable.interactionHandler);
@@ -94,7 +98,7 @@ describe("ThreeMouseEvent", () => {
 
       // Test with unchecked state
       checkbox.interactionHandler.selection = false;
-      let event = ThreeMouseEventUtil.generate("select", checkbox);
+      let event = createThreeMouseEvent("select", checkbox);
 
       expect(event.type).toBe("select");
       expect(event.interactionHandler).toBe(checkbox.interactionHandler);
@@ -102,7 +106,7 @@ describe("ThreeMouseEvent", () => {
 
       // Test with checked state
       checkbox.interactionHandler.selection = true;
-      event = ThreeMouseEventUtil.generate("select", checkbox);
+      event = createThreeMouseEvent("select", checkbox);
 
       expect(event.type).toBe("select");
       expect(event.interactionHandler).toBe(checkbox.interactionHandler);
@@ -124,7 +128,7 @@ describe("ThreeMouseEvent", () => {
 
       // Initial state: unchecked
       checkbox.interactionHandler.selection = false;
-      const originalEvent = ThreeMouseEventUtil.generate("select", checkbox);
+      const originalEvent = createThreeMouseEvent("select", checkbox);
 
       expect(originalEvent.isSelected).toBe(false);
 
@@ -132,7 +136,7 @@ describe("ThreeMouseEvent", () => {
       checkbox.interactionHandler.selection = true;
 
       // Clone should reflect current handler state, not original event state
-      const clonedEvent = ThreeMouseEventUtil.clone(originalEvent);
+      const clonedEvent = cloneThreeMouseEvent(originalEvent);
 
       expect(clonedEvent.type).toBe(originalEvent.type);
       expect(clonedEvent.interactionHandler).toBe(
@@ -155,7 +159,7 @@ describe("ThreeMouseEvent", () => {
       });
 
       // Test with IClickableObject3D (view object)
-      const eventFromView = ThreeMouseEventUtil.generate("click", clickable);
+      const eventFromView = createThreeMouseEvent("click", clickable);
 
       expect(eventFromView.type).toBe("click");
       expect(eventFromView.interactionHandler).toBe(
@@ -163,7 +167,7 @@ describe("ThreeMouseEvent", () => {
       );
 
       // Test with ButtonInteractionHandler directly
-      const eventFromHandler = ThreeMouseEventUtil.generate(
+      const eventFromHandler = createThreeMouseEvent(
         "click",
         clickable.interactionHandler,
       );
@@ -177,14 +181,89 @@ describe("ThreeMouseEvent", () => {
       expect(eventFromView).toEqual(eventFromHandler);
 
       // Test with undefined
-      const eventFromUndefined = ThreeMouseEventUtil.generate(
-        "click",
-        undefined,
-      );
+      const eventFromUndefined = createThreeMouseEvent("click", undefined);
 
       expect(eventFromUndefined.type).toBe("click");
       expect(eventFromUndefined.interactionHandler).toBeUndefined();
       expect(eventFromUndefined.isSelected).toBeUndefined();
+    });
+  });
+
+  /**
+   * Legacy API Compatibility Tests
+   *
+   * These tests verify that deprecated APIs remain callable for backward compatibility.
+   * They only check that functions can be invoked without throwing errors - they do
+   * NOT test implementation details or return values, as those are covered by the
+   * main test suites above.
+   *
+   * Purpose:
+   * - Ensure deprecated exports remain accessible during migration period
+   * - Detect breaking changes in legacy API surface
+   * - Provide confidence for users transitioning to new APIs
+   *
+   * Removal:
+   * This entire describe block should be removed when legacy API compatibility
+   * is no longer required (e.g., in a future major version).
+   */
+  describe("Legacy API Compatibility", () => {
+    test("should support deprecated namespace exports without errors", () => {
+      const geometry = new BoxGeometry(1, 1, 1);
+      const matSet = new StateMaterialSet({
+        normal: new MeshBasicMaterial({ color: 0x999999 }),
+      });
+      const clickable = new ClickableMesh({
+        geo: geometry,
+        material: matSet,
+      });
+
+      // Test ThreeMouseEventUtil.generate (namespace export)
+      expect(() => {
+        ThreeMouseEventUtil.generate("click", clickable);
+      }).not.toThrow();
+
+      // Test ThreeMouseEventUtil.clone (namespace export)
+      const event = createThreeMouseEvent("click", clickable);
+      expect(() => {
+        ThreeMouseEventUtil.clone(event);
+      }).not.toThrow();
+
+      // Test ThreeMouseEventUtil.getInteractionHandler (namespace export)
+      expect(() => {
+        ThreeMouseEventUtil.getInteractionHandler(clickable);
+      }).not.toThrow();
+
+      // Test ThreeMouseEventUtil.getSelection (namespace export)
+      const checkbox = new CheckBoxMesh({
+        geo: geometry,
+        material: matSet,
+      });
+      checkbox.interactionHandler.selection = true;
+      expect(() => {
+        ThreeMouseEventUtil.getSelection(checkbox.interactionHandler);
+      }).not.toThrow();
+    });
+
+    test("should support deprecated direct function exports without errors", () => {
+      const geometry = new BoxGeometry(1, 1, 1);
+      const matSet = new StateMaterialSet({
+        normal: new MeshBasicMaterial({ color: 0x999999 }),
+      });
+      const clickable = new ClickableMesh({
+        geo: geometry,
+        material: matSet,
+      });
+
+      // Test generate (direct export)
+      expect(() => {
+        generate("click", clickable);
+      }).not.toThrow();
+
+      // Test clone (direct export)
+      const event = createThreeMouseEvent("click", clickable);
+      expect(() => {
+        clone(event);
+      }).not.toThrow();
     });
   });
 });
