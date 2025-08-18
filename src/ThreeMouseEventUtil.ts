@@ -7,8 +7,8 @@
  * handle event object construction and selection state management.
  */
 
-import type { IClickableObject3D } from "./index.js";
 import type { ButtonInteractionHandler } from "./interactionHandler";
+import type { IClickableObject3D } from "./MouseEventManager.js";
 import type { ThreeMouseEvent, ThreeMouseEventMap } from "./ThreeMouseEvent.js";
 
 /**
@@ -26,8 +26,6 @@ import type { ThreeMouseEvent, ThreeMouseEventMap } from "./ThreeMouseEvent.js";
  * @returns The ButtonInteractionHandler instance or undefined if input is
  *   null/undefined
  *
- * @deprecated This function was not intended for public export and may be made
- *   private in future versions.
  * @internal
  */
 function getInteractionHandler<Value>(
@@ -65,10 +63,9 @@ function getInteractionHandler<Value>(
  * const isSelected = getSelection(checkbox.interactionHandler); // true/false
  * ```
  *
- * @deprecated This function was not intended for public export and may be made
- *   private in future versions.
+ * @internal
  */
-export function getSelection<Value>(
+function getSelection<Value>(
   interactionHandler: ButtonInteractionHandler<Value> | undefined,
 ): boolean {
   if (interactionHandler != null && "selection" in interactionHandler) {
@@ -96,13 +93,13 @@ export function getSelection<Value>(
  *
  * @example
  * ```typescript
- * // Generate click event from button
- * const clickEvent = generate("click", button.interactionHandler);
+ * // Create click event from button
+ * const clickEvent = createThreeMouseEvent("click", button.interactionHandler);
  * console.log(clickEvent.type); // "click"
  * console.log(clickEvent.isSelected); // undefined
  *
- * // Generate select event from checkbox
- * const selectEvent = generate("select", checkbox);
+ * // Create select event from checkbox
+ * const selectEvent = createThreeMouseEvent("select", checkbox);
  * console.log(selectEvent.type); // "select"
  * console.log(selectEvent.isSelected); // true/false
  * ```
@@ -110,7 +107,7 @@ export function getSelection<Value>(
  * @see {@link ThreeMouseEvent} - Event object structure
  * @see {@link ButtonInteractionHandler} - Handler base class
  */
-export function generate<Value>(
+export function createThreeMouseEvent<Value>(
   type: keyof ThreeMouseEventMap<Value>,
   handlerOrView:
     | ButtonInteractionHandler<Value>
@@ -145,8 +142,8 @@ export function generate<Value>(
  *
  * @example
  * ```typescript
- * const originalEvent = generate("select", checkbox);
- * const clonedEvent = clone(originalEvent);
+ * const originalEvent = createThreeMouseEvent("select", checkbox);
+ * const clonedEvent = cloneThreeMouseEvent(originalEvent);
  *
  * // Events have same structure but selection state reflects current handler
  * // state
@@ -155,10 +152,44 @@ export function generate<Value>(
  * // true
  * ```
  *
- * @see {@link generate} - Primary event creation function
+ * @see {@link createThreeMouseEvent} - Primary event creation function
+ */
+export function cloneThreeMouseEvent<Value>(
+  e: ThreeMouseEvent<Value>,
+): ThreeMouseEvent<Value> {
+  return createThreeMouseEvent(e.type, e.interactionHandler);
+}
+
+/**
+ * @deprecated Use createThreeMouseEvent instead.
+ */
+export function generate<Value>(
+  type: keyof ThreeMouseEventMap<Value>,
+  handlerOrView:
+    | ButtonInteractionHandler<Value>
+    | IClickableObject3D<Value>
+    | undefined,
+): ThreeMouseEvent<Value> {
+  return createThreeMouseEvent(type, handlerOrView);
+}
+
+/**
+ * @deprecated Use cloneThreeMouseEvent instead.
  */
 export function clone<Value>(
   e: ThreeMouseEvent<Value>,
 ): ThreeMouseEvent<Value> {
-  return generate(e.type, e.interactionHandler);
+  return cloneThreeMouseEvent(e);
 }
+
+/**
+ * @deprecated Use named exports directly from "@masatomakino/threejs-interactive-object" instead.
+ */
+export const ThreeMouseEventUtil = {
+  /** @deprecated Not intended for external use. Use createThreeMouseEvent with interactive objects directly. */
+  getInteractionHandler,
+  /** @deprecated Not intended for external use. Use handler.selection property directly. */
+  getSelection,
+  generate: createThreeMouseEvent,
+  clone: cloneThreeMouseEvent,
+};
