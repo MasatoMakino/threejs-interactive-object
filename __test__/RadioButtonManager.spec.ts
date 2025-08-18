@@ -775,10 +775,7 @@ describe("RadioButtonManager", () => {
       const originalLength = handlersArray.length;
 
       // Attempt destructive operations on the returned array
-      handlersArray.push(
-        createTestButton("malicious")
-          .interactionHandler as RadioButtonInteractionHandler<string>,
-      );
+      handlersArray.push(createTestButton("malicious").interactionHandler);
       handlersArray.pop();
       handlersArray.splice(0, 1);
 
