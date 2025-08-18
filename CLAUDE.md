@@ -124,11 +124,11 @@ Functions like `convertToClickableMesh()` allow converting existing Three.js mes
 
 ## Testing Strategy
 
-This project implements a comprehensive browser-based testing strategy with **52 test files** to ensure robust Three.js interaction behavior.
+This project implements a comprehensive browser-based testing strategy with **25 test files** to ensure robust Three.js interaction behavior.
 
 ### Testing Infrastructure
 
-**Browser Automation**
+#### Browser Automation
 - **WebDriverIO Provider**: Tests execute in actual Chrome browser (headless mode)
 - **Real DOM/WebGL**: No mocking - tests verify actual Three.js rendering and interaction behavior
 - **Vitest Framework**: Modern testing framework with browser automation integration
@@ -136,23 +136,23 @@ This project implements a comprehensive browser-based testing strategy with **52
 
 ### Test Categories
 
-**Core Component Tests**
-- `MouseEventManager.*.spec.ts` (8 files) - Event manager functionality, throttling, raycasting, edge cases
-- `ButtonInteractionHandler.*.spec.ts` (2 files) - Base interaction logic and event object validation  
+#### Core Component Tests
+- `MouseEventManager.*.spec.ts` (7 files) - Event manager functionality, throttling, raycasting, edge cases
+- `ButtonInteractionHandler.*.spec.ts` (1 file) - Base interaction logic and event object validation  
 - `CheckBoxInteractionHandler.spec.ts` - Toggle behavior, state management, event emission
 - `RadioButtonInteractionHandler.spec.ts` - Exclusive selection logic and RadioButtonManager integration
 
-**View Layer Tests**
+#### View Layer Tests
 - Interactive mesh, sprite, and group component testing
 - Material state transitions and visual feedback verification
 - Generic value type handling and event propagation
 
-**Edge Case & Integration Tests**
+#### Edge Case & Integration Tests
 - `MouseEventManager.edge-cases.spec.ts` - Error handling, corrupted objects, boundary conditions
 - `MouseEventManager.overlapping.spec.ts` - Complex collision scenarios and Z-depth processing
 - Complex state transition sequences and mixed user/programmatic operations
 
-**Utility & Helper Tests**
+#### Utility & Helper Tests
 - Viewport coordinate transformation utilities
 - Canvas resizing with aspect ratio preservation  
 - Three.js object conversion utilities
