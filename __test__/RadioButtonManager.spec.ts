@@ -763,4 +763,53 @@ describe("RadioButtonManager", () => {
       ).toBe(handler2.materialSet?.normalSelect.material);
     });
   });
+
+  describe("Array Reference Security", () => {
+    test("should prevent external mutation of interactionHandlers array", () => {
+      const button1 = createTestButton("option1");
+      const button2 = createTestButton("option2");
+      manager.addButton(button1, button2);
+
+      // Get the array reference
+      const handlersArray = manager.interactionHandlers;
+      const originalLength = handlersArray.length;
+
+      // Attempt destructive operations on the returned array
+      handlersArray.push(createTestButton("malicious").interactionHandler);
+      handlersArray.pop();
+      handlersArray.splice(0, 1);
+
+      // Verify internal state is unchanged
+      expect(
+        manager.interactionHandlers.length,
+        "Internal array should not be affected by external mutations",
+      ).toBe(originalLength);
+      expect(
+        manager.interactionHandlers.find((h) => h.value === "option1"),
+        "Original buttons should still be present",
+      ).toBeDefined();
+      expect(
+        manager.interactionHandlers.find((h) => h.value === "option2"),
+        "Original buttons should still be present",
+      ).toBeDefined();
+      expect(
+        manager.interactionHandlers.find((h) => h.value === "malicious"),
+        "External additions should not affect internal state",
+      ).toBeUndefined();
+    });
+
+    test("should return different array instances on multiple calls", () => {
+      const button = createTestButton("test");
+      manager.addButton(button);
+
+      const array1 = manager.interactionHandlers;
+      const array2 = manager.interactionHandlers;
+
+      expect(
+        array1 === array2,
+        "Different calls should return different array instances",
+      ).toBe(false);
+      expect(array1, "Arrays should have same content").toEqual(array2);
+    });
+  });
 });
