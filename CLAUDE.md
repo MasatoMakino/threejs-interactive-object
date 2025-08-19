@@ -222,7 +222,7 @@ This project follows [GitHub Flow](https://docs.github.com/en/get-started/using-
 
 3. **Create a Pull Request**
    - Request feedback from collaborators before merging
-   - Summarize changes and problems solved
+   - Follow Pull Request guidelines for reviewer load reduction
    - Link related issues using keywords (closes #123)
    - Use draft PRs for early feedback on work-in-progress
 
@@ -303,3 +303,7 @@ This project uses a local note system for personal thought organization and work
 ## JSDoc Documentation Guidelines
 
 @.claude/fragments/documentation/jsdoc-guidelines.md
+
+## Pull Request Guidelines
+
+@.claude/fragments/documentation/pull-request-guidelines.md

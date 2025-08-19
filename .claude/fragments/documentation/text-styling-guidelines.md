@@ -1,6 +1,18 @@
 # Cross-Platform Text Styling Guidelines
 
-This document establishes consistent text styling standards across all project documentation including README, Pull Requests, Issues, Wiki pages, and commit messages. These guidelines prioritize professionalism, readability, and GitHub platform optimization.
+This document establishes consistent text styling standards across **all project documentation** including README, Pull Requests, Issues, Wiki pages, and commit messages. These guidelines prioritize professionalism, readability, and GitHub platform optimization.
+
+## Document Purpose and Scope
+
+This document serves as the **universal text styling standard** for the project, covering:
+- Core principles for professional documentation across all platforms
+- Emoji usage limitations and text alternatives
+- @ symbol safety guidelines to prevent unintended mentions
+- Bold expression minimization and proper heading structure
+- GitHub Alert notation standards
+- Platform-specific application guidelines (overview level)
+
+For detailed Pull Request implementation guidance, see `@.claude/fragments/documentation/pull-request-guidelines.md`.
 
 ## Core Principles
 
@@ -265,37 +277,20 @@ When referencing official documentation that uses @ symbols in their standard no
 ```
 
 ### Pull Requests
-Apply consistent structure following JSDoc guidelines' motivation and scope approach:
+Follow dedicated Pull Request guidelines optimized for reviewer load reduction:
 
-#### Standard PR Structure
-```markdown
-## Summary
-- Brief description of changes
-- Key features or fixes implemented
+> [!IMPORTANT]
+> See `@.claude/fragments/documentation/pull-request-guidelines.md` for complete structure, templates, and implementation details.
 
-## Motivation
-Why these changes were necessary and the problem they solve.
+#### Text Styling Principles for PRs
+Apply cross-platform text styling standards to Pull Request documentation:
 
-## Scope
-### Target
-- What is modified or added
-- Specific components affected
-
-### Out of Scope
-- What is intentionally not changed
-- Future work items
-
-## Implementation Details
-#### Code Quality Examples
-- ✅ Implemented: Modern async/await patterns
-- ❌ Replaced: Legacy callback implementations
-- ⚠️ Retained: Existing error handling // Requires separate refactoring
-
-## Test Plan
-- [x] Unit tests for new functionality
-- [x] Integration tests updated
-- [ ] Performance testing
-```
+- **Professional Documentation**: Maintain consistency with project-wide standards
+- **Emoji Limitation**: Restrict to ✅❌⚠️ for critical code safety examples only
+- **@ Symbol Safety**: Use code blocks for JSDoc references to prevent unintended mentions
+- **Alert Notation**: Leverage GitHub alerts for structured review guidance
+- **Bold Minimization**: Use proper heading levels instead of bold emphasis
+- **Platform Optimization**: Ensure GitHub markdown rendering compatibility
 
 ### Issues
 Structure issues for clear problem identification and resolution:
