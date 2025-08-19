@@ -348,6 +348,26 @@ Follow text styling minimization principles:
    - Node.js: Version 16+
 ```
 
+## Terminology Consistency
+
+### Basic Principles
+- Inherit terminology from existing codebase and project documentation
+- Follow established naming patterns when introducing new terms
+- Maintain consistency across PR description and related documentation
+- Avoid terminology variations that increase reviewer cognitive load
+
+### Implementation Guidelines
+- Use exact names from source code (API names, class names, method names)
+- Reference established terms from project documentation
+- Verify terminology consistency between PR content and existing docs
+- When introducing new terms, follow existing naming conventions
+
+### Benefits
+- Reduces cognitive overhead for reviewers familiar with existing codebase
+- Prevents confusion from terminology variations
+- Maintains professional consistency across project documentation
+- Enables more efficient code review process
+
 ## Quality Verification
 
 ### Quality Assurance Overview
@@ -377,6 +397,12 @@ Follow text styling minimization principles:
 - [ ] Integration dependencies clearly identified?
 - [ ] Boundary conditions explicitly stated?
 - [ ] Responsibility limits well-defined?
+
+### Terminology Consistency Checklist
+- [ ] Existing codebase terminology correctly referenced?
+- [ ] Consistency maintained with project documentation?
+- [ ] New terms follow established naming patterns?
+- [ ] No terminology variations that increase cognitive load?
 
 ### Overall Review Load Reduction Checklist
 - [ ] Title provides motivation rather than just description?
