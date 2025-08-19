@@ -168,6 +168,7 @@ Comparative expressions without clear comparison targets are prohibited
 - more efficient, faster, better (compared to what?)
 - improved, enhanced, optimized (improvement from what?)
 - advanced, superior, simplified (relative to what?)
+- completely, totally, fully (without evidence or measurable criteria)
 
 #### ❌ Bad Examples
 ```typescript
