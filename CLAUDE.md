@@ -313,3 +313,7 @@ This project uses a local note system for personal thought organization and work
 ## JSDoc Documentation Guidelines
 
 @.claude/fragments/documentation/jsdoc-guidelines.md
+
+## Text Styling Guidelines
+
+@.claude/fragments/documentation/text-styling-guidelines.md
