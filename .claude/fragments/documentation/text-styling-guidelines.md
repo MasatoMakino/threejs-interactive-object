@@ -225,14 +225,14 @@ Replace direct @ usage with descriptive terms:
 @ symbols are acceptable in these contexts:
 
 #### Email Addresses
-- contact@example.com
-- support@company.org
-- developer@project.dev
+- <mailto:contact@example.com>
+- <mailto:support@example.org>
+- <mailto:developer@example.net>
 
 #### URL Contexts
-- https://github.com/username/repository
+- <https://github.com/username/repository>
 - `npm install @scope/package-name`
-- https://docs.example.com/@latest/api
+- <https://docs.example.com/@latest/api>
 
 #### Official Documentation References
 When referencing official documentation that uses @ symbols in their standard notation.
