@@ -247,13 +247,13 @@ This project follows [GitHub Flow](https://docs.github.com/en/get-started/using-
 
 This project enforces strict branch protection on the `main` branch:
 
-- 🚫 **Direct Push Blocked**: Cannot push commits directly to `main` branch
-- ✅ **Pull Request Required**: All changes must go through pull request process
-- 🔍 **Status Checks Required**: CI workflows must pass before merging:
+- ❌ Direct push blocked: Cannot push commits directly to `main` branch
+- ✅ Pull request required: All changes must go through pull request process
+- Status checks required: CI workflows must pass before merging:
   - `TypeScript compilation` - Validates code compiles without errors (`npx tsc --noEmit`)
   - `Code quality checks` - Ensures code style and quality standards (`npx biome ci .`)
   - `Test suite execution` - Verifies all tests pass (`npm test`)
-- 🔒 **Admin Enforcement**: Branch protection rules apply to all users including admins
+- Admin enforcement: Branch protection rules apply to all users including admins
 
 ### Key Principles
 
