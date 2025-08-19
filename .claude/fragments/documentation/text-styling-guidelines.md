@@ -26,7 +26,7 @@ This document establishes consistent text styling standards across all project d
 - **❌ Red X**: Bad examples, deprecated approaches, incorrect methods, practices to avoid  
 - **⚠️ Warning**: Conditional usage, requires caution, has risks, context-dependent
 
-**Use Only When:**
+#### Use Only When
 - Text alternatives cannot adequately convey critical safety or correctness information
 - Quick visual distinction is essential for preventing user errors
 - Code examples require immediate good/bad/caution identification
@@ -44,14 +44,14 @@ This document establishes consistent text styling standards across all project d
 - Dangerous configuration examples that must be immediately recognizable
 - Security-related good/bad practice distinctions where errors have serious consequences
 
-**Prefer text alternatives for:**
+#### Prefer Text Alternatives For
 - General code quality evaluation → Use headings and text labels
 - Routine technical comparisons → Use structured lists
 - Standard implementation guidance → Use Alert notation
 
 #### Usage Examples
 
-**Critical Safety Examples (Emoji Justified)**:
+#### Critical Safety Examples (Emoji Justified)
 ```markdown
 #### Security Configuration Examples
 - ✅ Secure: `process.env.API_KEY` // Environment variable
@@ -64,7 +64,7 @@ This document establishes consistent text styling standards across all project d
 - ⚠️ Conditional: `db.query(trustedQuery)` // Only with validated trusted input
 ```
 
-**Preferred Text Alternatives for Routine Cases**:
+#### Preferred Text Alternatives for Routine Cases
 ```markdown
 #### Code Style Comparison
 > [!TIP]
