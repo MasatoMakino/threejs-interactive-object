@@ -309,3 +309,7 @@ This project uses a local note system for personal thought organization and work
 - **Efficiency**: Quick note-taking without formal Issue overhead
 - **Organization**: Structured approach to personal task management
 - **Quality**: Thoughtful preparation before creating Issues/PRs
+
+## JSDoc Documentation Guidelines
+
+@.claude/fragments/documentation/jsdoc-guidelines.md
