@@ -265,37 +265,46 @@ When referencing official documentation that uses @ symbols in their standard no
 ```
 
 ### Pull Requests
-Apply consistent structure following JSDoc guidelines' motivation and scope approach:
+Follow comprehensive Pull Request guidelines for reviewer load reduction:
 
-#### Standard PR Structure
+> [!IMPORTANT]
+> See `@.claude/fragments/documentation/pull-request-guidelines.md` for complete guidelines.
+
+#### Key Principles for Text Styling
+- **Out-of-Scope Emphasis** - Explicitly state what reviewers should NOT examine
+- **Issue-First Motivation** - Link to GitHub Issues when available
+- **Reviewer Load Reduction** - Structure information to minimize cognitive overhead
+- **CodeRabbit Complement** - Focus on human decisions, not code analysis
+
+#### Essential Structure
 ```markdown
 ## Summary
-- Brief description of changes
-- Key features or fixes implemented
+Brief one-sentence description of change and motivation.
 
 ## Motivation
-Why these changes were necessary and the problem they solve.
+Resolves #123 - [Issue summary] OR [Development context when no issue exists]
+
+## Out of Scope
+- **Component X**: Specific reason why unchanged
+- **Feature Y**: Justification for deferral  
+- **System Z**: Explanation of intentional non-modification
 
 ## Scope
 ### Target
-- What is modified or added
-- Specific components affected
+- Specific changes made
 
-### Out of Scope
-- What is intentionally not changed
-- Future work items
+### Dependencies
+- Integration points affected
 
-## Implementation Details
-#### Code Quality Examples
-- ✅ Implemented: Modern async/await patterns
-- ❌ Replaced: Legacy callback implementations
-- ⚠️ Retained: Existing error handling // Requires separate refactoring
-
-## Test Plan
-- [x] Unit tests for new functionality
-- [x] Integration tests updated
-- [ ] Performance testing
+### Boundaries
+- Clear limits of PR responsibility
 ```
+
+#### Text Styling Applications
+- **Alert Notation**: Use GitHub alerts for critical review guidance
+- **Emoji Limitation**: Only ✅❌⚠️ for code example evaluation
+- **@ Symbol Safety**: Escape JSDoc references in code blocks
+- **Professional Structure**: Clear headings without bold emphasis
 
 ### Issues
 Structure issues for clear problem identification and resolution:
