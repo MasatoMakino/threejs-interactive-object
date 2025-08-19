@@ -1,274 +1,272 @@
 # LLM-First JSDoc Documentation Guidelines
 
-このドキュメントは、LLMエージェントが効果的にコードを理解・改修できるよう、**意思決定の動機**と**責任範囲**を中心としたJSDocベストプラクティスを定めます。プロジェクトや技術スタックに依存しない汎用的なガイドラインとして設計されており、あらゆるJavaScript/TypeScriptプロジェクトで適用可能です。
+This document establishes JSDoc best practices centered on **decision motivation** and **responsibility boundaries** to enable LLM agents to effectively understand and modify code. Designed as universal guidelines independent of specific projects or technology stacks, these practices are applicable to any JavaScript/TypeScript project.
 
-## ドキュメントの目的
+## Documentation Purpose
 
-- 従来のドキュメント: API仕様や使用方法の説明が中心  
-- LLM重視ドキュメント: なぜその設計を選択したかの背景と意図を重視
+- Traditional documentation: Focuses on API specifications and usage instructions
+- LLM-focused documentation: Emphasizes the background and intent behind design choices
 
-LLMは構文やパターンは理解できますが、人間の思考プロセスや意思決定の文脈は推測できません。このガイドラインは、その「見えない部分」を明文化することで、LLMがより適切なコード理解・生成を行えるよう支援します。
+While LLMs can understand syntax and patterns, they cannot infer human thought processes or decision-making context. These guidelines make this "invisible information" explicit, enabling LLMs to perform more appropriate code understanding and generation.
 
-## アプローチの利点と欠点
+## Approach Benefits and Drawbacks
 
-### 利点
+### Benefits
 
-#### 仕様の近接性
-- 仕様がコードと同じファイルに記述されるため、LLMのコンテキストに収まりやすい
-- コード変更時に仕様も同時に目に入るため、更新忘れが起きにくい
-- 分散した仕様書を探索する精度の問題を回避
+#### Specification Proximity
+- Specifications are documented in the same file as code, making them easily accessible in LLM context
+- Simultaneous visibility of code and specifications during changes reduces update oversight
+- Avoids precision issues when searching for distributed specification documents
 
-#### 同期の確実性
-- コードと仕様が物理的に近い位置にあるため、変更の同期が容易
-- 外部仕様書との不整合リスクを大幅に削減
-- Pull Request時にコードと仕様を一括レビュー可能
+#### Synchronization Reliability
+- Physical proximity of code and specifications enables easy synchronization of changes
+- Significantly reduces risk of inconsistency with external specification documents
+- Enables unified review of code and specifications during Pull Requests
 
-#### LLM処理効率
-- 仕様とコードが同一コンテキスト内に存在するため検索不要
-- ファイル間の関連性推測が不要
-- 1回の読み込みで設計意図とコードの両方を理解可能
+#### LLM Processing Efficiency
+- Specifications and code exist within the same context, eliminating search requirements
+- No need to infer relationships between files
+- Single read operation provides understanding of both design intent and code
 
-### 欠点
+### Drawbacks
 
-#### コードの肥大化
-- JSDocコメントによりファイルサイズが大幅に増加
-- 実装コードの視認性が低下
-- スクロール量の増加により全体把握が困難
+#### Code Bloat
+- JSDoc comments significantly increase file size
+- Reduced visibility of implementation code
+- Increased scrolling makes overall comprehension difficult
 
-#### 保守負荷の増加
-- コメントの更新コストが発生
-- 詳細な記述ほど変更時の修正箇所が増加
-- 実装変更時の文書更新が必須
+#### Increased Maintenance Burden
+- Documentation update costs accumulate
+- More detailed descriptions mean more modification points during changes
+- Documentation updates become mandatory when implementation changes
 
-#### 可読性の悪化
-- 人間にとってコードの流れが追いにくくなる
-- 本質的でない情報が画面を占有
-- 新規参加者の学習コストが増大
+#### Degraded Readability
+- Code flow becomes harder to follow for humans
+- Non-essential information occupies screen space
+- Increased learning costs for new team members
 
-### LLM処理能力による欠点の回避
+### Overcoming Drawbacks Through LLM Processing Capabilities
 
-前提条件：
+Prerequisites:
 
-#### LLMの処理能力仮定
-- 大量のテキストを高速で処理可能
-- コードとコメントを区別して理解可能
-- 肥大化したファイルでも本質的な情報を抽出可能
+#### LLM Processing Capability Assumptions
+- Capable of high-speed processing of large amounts of text
+- Can distinguish and understand code versus comments
+- Can extract essential information even from bloated files
 
-#### 従来の問題の解決
+#### Solving Traditional Problems
 ```
-従来: 仕様書分離 → 検索精度低下・同期困難
-新規: JSDoc集約 → 肥大化・可読性低下 → LLMで回避
+Traditional: Specification separation → Reduced search precision, synchronization difficulties
+New approach: JSDoc aggregation → Bloat, readability issues → Overcome with LLM
 ```
 
-#### トレードオフの選択
-- 人間の可読性 < LLM効率性 + 仕様同期確実性
-- 短期的な開発効率 < 長期的な保守性
-- ファイルサイズ < コンテキスト一貫性
+#### Tradeoff Choices
+- Human readability < LLM efficiency + Specification synchronization reliability
+- Short-term development efficiency < Long-term maintainability
+- File size < Context consistency
 
-### 適用判断基準
+### Application Decision Criteria
 
-#### このアプローチが有効な場合
-- LLMエージェントが開発チームの主要メンバー
-- 長期運用されるプロジェクト
-- API仕様の変更が頻繁
-- 複雑なビジネスロジックを含む
+#### When This Approach Is Effective
+- All developers in the team use LLM agents
+- Frequent API specification changes
+- Significant amount of decision-making that doesn't appear in code
 
-#### 従来手法が適している場合
-- 人間中心の開発チーム
-- 短期プロジェクト
-- 仕様が安定している
-- シンプルな処理が中心
+#### When Traditional Methods Are Suitable
+- Development teams that do not use LLM agents
+- Stable specifications
+- Minimal implicit decision-making
 
-## 基本理念
+## Core Principles
 
-### LLMエージェント配慮型ドキュメント
+### LLM Agent-Aware Documentation
 
-記録すべき情報：
+Information to record:
 
-1. 意思決定の動機 - なぜその実装を選択したか
-2. 責任範囲 - 何を処理し、何を処理しないか
-3. 設計制約 - 技術的・感覚的制限要因
-4. アーキテクチャ意図 - 将来の変更における考慮事項
-5. トレードオフ - 何を犠牲にして何を優先したか
-6. 前提条件 - 実装が依存する環境・状況
+1. Decision motivation - Why that implementation was chosen
+2. Responsibility boundaries - What is processed and what is not
+3. Design constraints - Technical and perceptual limiting factors
+4. Architectural intent - Considerations for future changes
+5. Tradeoffs - What was sacrificed and what was prioritized
+6. Prerequisites - Environment and conditions the implementation depends on
 
-### LLMの理解を助ける原則
+### Principles for Helping LLM Understanding
 
-#### 明示的記述の重要性
-- 暗黙の前提は必ず明文化
-- 「常識」や「当然」は記述対象
-- 人間には自明でもLLMには不明な情報を重視
+#### Importance of Explicit Description
+- Always explicitly document implicit assumptions
+- "Common sense" and "obvious" information are documentation targets
+- Prioritize information that is obvious to humans but unclear to LLMs
 
-#### コンテキスト保存
-- 実装時の状況・制約を記録
-- 代替案検討の痕跡を残す
-- 将来の判断材料となる情報を含む
+#### Context Preservation
+- Record implementation circumstances and constraints
+- Leave traces of alternative option considerations
+- Include information that will serve as future decision-making material
 
-## JSDoc構造の最適化
+## JSDoc Structure Optimization
 
-### 要約行（最初の一行）の重要性
+### Importance of Summary Line (First Line)
 
-#### 目的
-IDEのポップアップウィンドウでの表示に最適化された簡潔な機能説明
+#### Purpose
+Concise functional description optimized for display in IDE popup windows
 
-#### 情報量の目安
-- 関数名以上の情報量で
-- 1文で収まる範囲
+#### Information Volume Guidelines
+- More information than function name provides
+- Within the scope of a single sentence
 
-#### 記述原則
-- 関数名では伝わらない「何を」「どのように」を補完
-- 専門的な処理方法や制約があれば簡潔に言及
-- 詳細な契約や設計意図は@descriptionや他のタグで説明
+#### Description Principles
+- Supplement "what" and "how" that function names cannot convey
+- Briefly mention specialized processing methods or constraints if present
+- Explain detailed contracts and design intent in @description or other tags
 
-### 良い要約行の例
+### Good Summary Line Examples
 
-#### 関数名の情報を適切に補完
+#### Appropriate Function Name Supplementation
 ```typescript
 /**
- * 有効なアイテムのみを抽出したフィルタリング済み配列を返します
+ * Returns a filtered array containing only valid items
  */
 function filterItems(items: Item[]): Item[] {}
 
 /**
- * ラジオボタン間の排他的選択動作を管理します
+ * Manages exclusive selection behavior among radio buttons
  */
 class RadioButtonManager<T> {}
 
 /**
- * 指定されたパスのファイルを非同期で読み込みます
+ * Asynchronously loads a file from the specified path
  */
 async function loadFile(path: string): Promise<Buffer> {}
 ```
 
-#### 情報量が適切でない例
+#### Examples with Inappropriate Information Volume
 ```typescript
-// ❌ 関数名と同じ情報量（不十分）
+// ❌ Same information volume as function name (insufficient)
 /**
- * アイテムをフィルタリングします
+ * Filters items
  */
 function filterItems(items: Item[]): Item[] {}
 
-// ❌ 一文を超える詳細情報（過剰）
+// ❌ Detailed information exceeding one sentence (excessive)
 /**
- * アイテム配列を受け取り、各要素の有効性を検証し、条件に合致する要素のみを含む新しい配列を生成して返します。元の配列は変更されません。
+ * Receives an item array, validates each element's validity, generates and returns a new array containing only elements that match conditions. The original array is not modified.
  */
 function filterItems(items: Item[]): Item[] {}
 
-// ✅ 適切な情報量
+// ✅ Appropriate information volume
 /**
- * 有効なアイテムのみを抽出したフィルタリング済み配列を返します
+ * Returns a filtered array containing only valid items
  */
 function filterItems(items: Item[]): Item[] {}
 ```
 
-### 比較表現の禁止原則
+### Comparative Expression Prohibition Principle
 
-#### 基本ルール
-比較対象が明確でない比較表現は禁止
+#### Basic Rule
+Comparative expressions without clear comparison targets are prohibited
 
-#### 禁止される表現例
-- more efficient, faster, better（何と比較して？）
-- improved, enhanced, optimized（何からの改善？）
-- advanced, superior, simplified（何に対して？）
+#### Prohibited Expression Examples
+- more efficient, faster, better (compared to what?)
+- improved, enhanced, optimized (improvement from what?)
+- advanced, superior, simplified (relative to what?)
 
-#### ❌ 悪い例
+#### ❌ Bad Examples
 ```typescript
 /**
- * より高速なソートアルゴリズムを実装します
+ * Implements a faster sorting algorithm
  */
 function quickSort(items: Item[]): Item[] {}
 
 /**
- * パフォーマンスを改善したフィルタリング処理
+ * Improved filtering process with better performance
  */
 function filterItems(items: Item[]): Item[] {}
 
 /**
- * 従来よりも効率的なキャッシュ機能を提供します
+ * Provides more efficient cache functionality than conventional approaches
  */
 class CacheManager {}
 ```
 
-#### ✅ 良い例
+#### ✅ Good Examples
 ```typescript
 /**
- * O(n log n)の計算量でアイテムをソートします
+ * Sorts items with O(n log n) computational complexity
  */
 function quickSort(items: Item[]): Item[] {}
 
 /**
- * メモ化によりフィルタリング結果をキャッシュします
+ * Caches filtering results through memoization
  */
 function filterItems(items: Item[]): Item[] {}
 
 /**
- * LRU戦略に基づくキャッシュ機能を提供します
+ * Provides cache functionality based on LRU strategy
  */
 class CacheManager {}
 ```
 
-#### 例外的に許可される場合
+#### Exceptionally Permitted Cases
 
-#### テストコードでの閾値比較
+#### Test Code Threshold Comparisons
 ```typescript
 /**
- * 実行時間が1秒未満であることを検証します
+ * Verifies that execution time is less than 1 second
  */
 function testPerformance() {
-  // 明確な比較基準（1秒）が存在
+  // Clear comparison criterion (1 second) exists
 }
 
 /**
- * 結果が期待値より大きいことを確認します
+ * Confirms that result is greater than expected value
  */
 function testThreshold(result: number, expected: number) {
-  // 比較対象（expected）が明確
+  // Comparison target (expected) is clear
 }
 ```
 
-#### コード内で比較対象が明示されている場合
+#### When Comparison Target Is Explicitly Stated in Code
 ```typescript
 /**
- * bubbleSortより高速なソートを実行します
+ * Executes sorting faster than bubbleSort
  * 
- * @param items ソート対象の配列
- * @motivation bubbleSort(O(n²))に対してO(n log n)の改善を実現
+ * @param items Array to sort
+ * @motivation Achieves O(n log n) improvement over bubbleSort(O(n²))
  */
 function quickSort(items: Item[]): Item[] {}
 ```
 
-### 要約行の品質チェック
+### Summary Line Quality Checklist
 
-- [ ] 関数名だけでは分からない情報を含んでいるか
-- [ ] 一文で完結しているか
-- [ ] IDEのポップアップで読みやすい長さか
-- [ ] 核心的な機能や特徴を端的に表現しているか
-- [ ] 比較表現を使う場合、比較対象が明確に特定できるか
+- [ ] Contains information not derivable from function name alone?
+- [ ] Completes within a single sentence?
+- [ ] Readable length for IDE popups?
+- [ ] Concisely expresses core functionality or characteristics?
+- [ ] When using comparative expressions, is the comparison target clearly identifiable?
 
-## カスタムタグシステム
+## Custom Tag System
 
-### @motivation タグ
+### @motivation Tag
 
-#### 用途
-設計決定・実装選択の動機を記録
+#### Usage
+Record design decisions and implementation choice motivations
 
-#### 対象範囲
-- 技術的制約による判断
-- UX・感覚的考慮による決定
-- 経験則・ベストプラクティスの適用
-- パフォーマンス最適化の選択
-- アーキテクチャパターンの採用理由
+#### Target Scope
+- Judgments based on technical constraints
+- Decisions based on UX and perceptual considerations
+- Application of empirical rules and best practices
+- Performance optimization choices
+- Architectural pattern adoption reasons
 
-#### 記述例
+#### Description Examples
 
 ```typescript
 /**
  * Central event dispatcher for UI interactions.
  * 
- * @motivation 継承制約によりベースクラス直接継承が困難なため、
- *             ハンドラーパターンで複数コンポーネント間の共通ロジックを実現。
- *             また、33msスロットリングはユーザー操作感覚として自然で、
- *             システム負荷との最適バランス点として経験的に選択。
+ * @motivation Inheritance constraints make direct base class inheritance difficult,
+ *             so handler pattern achieves common logic across multiple components.
+ *             Also, 33ms throttling feels natural for user operations and
+ *             was empirically chosen as optimal balance point with system load.
  */
 class EventManager {
   // ...
@@ -277,36 +275,37 @@ class EventManager {
 
 ```typescript
 /**
- * @motivation UUIDフィルタリングは複合オブジェクトで同一エンティティが
- *             複数回検出される問題を解決。フレームワーク特有の現象で実装経験から必須と判断。
+ * @motivation UUID filtering solves the problem of the same entity being
+ *             detected multiple times in composite objects. Framework-specific
+ *             phenomenon deemed essential based on implementation experience.
  */
 private filterDuplicatesByUUID(items: ProcessableItem[]): ProcessableItem[] {
   // ...
 }
 ```
 
-### @scope タグ
+### @scope Tag
 
-#### 用途
-クラス・関数の処理対象と責任境界の明確化
+#### Usage
+Clarify processing targets and responsibility boundaries of classes and functions
 
-#### 記述要素
-- 対象: 何を処理するか
-- 対象外: 意図的に処理しないもの
-- 境界: 処理範囲の終了条件
-- 依存: 他のモジュールとの責任分担
+#### Description Elements
+- Target: What is processed
+- Out of scope: What is intentionally not processed
+- Boundary: Conditions where processing range ends
+- Dependencies: Responsibility sharing with other modules
 
-#### 記述例
+#### Description Examples
 
 ```typescript
 /**
  * Manages exclusive selection behavior for option group components.
  * 
  * @scope 
- * - 対象: SelectableItem実装オブジェクトの排他制御
- * - 対象外: 単独選択コンポーネントの状態管理、非選択系オブジェクト
- * - 境界: 同一SelectionManager登録オブジェクト間のみ
- * - 依存: 各アイテムの個別状態はItemHandlerに委譲
+ * - Target: Exclusive control of SelectableItem implementation objects
+ * - Out of scope: State management of individual selection components, non-selection objects
+ * - Boundary: Only among objects registered to the same SelectionManager
+ * - Dependencies: Individual item states delegated to ItemHandler
  */
 class SelectionManager<Value> {
   // ...
@@ -316,228 +315,229 @@ class SelectionManager<Value> {
 ```typescript
 /**
  * @scope
- * - 対象: オブジェクト階層の上向きトラバーサル
- * - 対象外: 子オブジェクトの検索、ルート外オブジェクト
- * - 境界: parent === null時点で検索終了
- * - 依存: IInteractable判定は各オブジェクトの実装に依存
+ * - Target: Upward traversal of object hierarchy
+ * - Out of scope: Child object search, objects outside root
+ * - Boundary: Search ends when parent === null
+ * - Dependencies: IInteractable determination depends on each object's implementation
  */
 private findTargetInHierarchy(obj: HierarchyNode): InteractionHandler<unknown> | null {
   // ...
 }
 ```
 
-## @description の契約重視アプローチ
+## Contract-Focused @description Approach
 
-### 基本原則：実装ではなく契約を記述
+### Basic Principle: Describe Contracts, Not Implementation
 
-#### @descriptionの目的
-コードの内部動作ではなく、外部に対する約束・契約を明示
+#### Purpose of @description
+Specify promises and contracts to external parties, not internal code behavior
 
-#### 記述すべき内容
-- 戻り値の保証: 何を返すか、どのような状態で返すか
-- 副作用の明示: 何を変更するか/変更しないか
-- エラー条件: いつ例外が発生するか、どのような例外か
-- 境界条件: 特殊な入力（null、空配列等）への対応
-- 無視条件: 何を処理しない、どのような場合にスキップするか
+#### Content to Describe
+- Return value guarantees: What is returned and in what state
+- Side effect specification: What is modified/not modified
+- Error conditions: When exceptions occur and what types
+- Boundary conditions: Handling of special inputs (null, empty arrays, etc.)
+- Ignore conditions: What is not processed, when to skip
 
-### 良い例 vs 悪い例
+### Good vs Bad Examples
 
-#### ❌ 悪い例（実装解説）
+#### ❌ Bad Example (Implementation Explanation)
 ```typescript
 /**
- * @description forループでitemsを走査し、validateメソッドを呼び出して
- *              条件をチェックし、新しい配列にpushして返します。
+ * @description Traverses items with for loop, calls validate method to
+ *              check conditions, pushes to new array and returns it.
  */
 function filterItems(items: Item[]): Item[] {
-  // 実装は読めば自明
+  // Implementation is self-evident from reading
 }
 ```
 
-#### ✅ 良い例（外部契約）
+#### ✅ Good Example (External Contract)
 ```typescript
 /**
- * @description 有効なアイテムのみを含む新しい配列を返します。
- *              空配列が渡された場合は空配列を返します。
- *              不正なアイテムは警告なしに除外されます。
- *              元の配列は変更されません。
+ * @description Returns a new array containing only valid items.
+ *              Returns empty array when empty array is passed.
+ *              Invalid items are excluded without warning.
+ *              Original array is not modified.
  */
 function filterItems(items: Item[]): Item[] {
-  // 実装詳細
+  // Implementation details
 }
 ```
 
-#### ✅ 状態管理の契約例
+#### ✅ State Management Contract Example
 ```typescript
 /**
- * @description 指定されたアイテムを選択状態に設定します。
- *              既に選択済みの場合は何も行いません。
- *              無効なアイテムが指定された場合はfalseを返します。
- *              選択状態の変更時はchangeイベントを発火します。
+ * @description Sets the specified item to selected state.
+ *              Does nothing if already selected.
+ *              Returns false if invalid item is specified.
+ *              Fires change event when selection state changes.
  */
 function selectItem(item: Item): boolean {
-  // 実装詳細
+  // Implementation details
 }
 ```
 
-#### ✅ 非同期処理の契約例
+#### ✅ Asynchronous Processing Contract Example
 ```typescript
 /**
- * @description データを非同期で取得し、Promiseを返します。
- *              ネットワークエラーの場合はリトライを3回実行します。
- *              3回失敗した場合はNetworkErrorを投げます。
- *              キャッシュが有効な場合は即座に解決されます。
+ * @description Asynchronously fetches data and returns Promise.
+ *              Executes 3 retries on network errors.
+ *              Throws NetworkError after 3 failures.
+ *              Resolves immediately when cache is valid.
  */
 async function fetchData(id: string): Promise<Data> {
-  // 実装詳細
+  // Implementation details
 }
 ```
 
-### 契約記述のチェックリスト
+### Contract Description Checklist
 
-#### 戻り値について
-- [ ] 正常時に何を返すか明記されているか
-- [ ] 特殊ケース（空、null等）の戻り値が説明されているか
-- [ ] 戻り値の状態・形式が明確か
+#### About Return Values
+- [ ] Is what is returned under normal conditions clearly stated?
+- [ ] Are return values for special cases (empty, null, etc.) explained?
+- [ ] Is the state/format of return values clear?
 
-#### 副作用について
-- [ ] 何を変更するか/しないかが明記されているか
-- [ ] 外部システムへの影響が記述されているか
-- [ ] イベント発火の条件が明確か
+#### About Side Effects
+- [ ] Is what is modified/not modified clearly stated?
+- [ ] Are impacts on external systems described?
+- [ ] Are event firing conditions clear?
 
-#### エラー処理について
-- [ ] どのような場合に例外が発生するか記述されているか
-- [ ] 例外の種類が明記されているか
-- [ ] エラー時の状態が説明されているか
+#### About Error Handling
+- [ ] Are conditions under which exceptions occur described?
+- [ ] Are exception types clearly stated?
+- [ ] Is the state during errors explained?
 
-## 既存タグ強化パターン
+## Enhanced Existing Tag Patterns
 
-### @internal の使用基準
+### @internal Usage Criteria
 
-#### 基底クラス・非公開API用途
+#### Base Classes and Private API Usage
 
 ```typescript
 /**
  * Generic base class for interactive mesh objects.
  * 
  * @internal 
- * @motivation 直接使用ではなく、ClickableMesh/CheckBoxMesh/RadioButtonMeshの
- *             基底として共通機能を提供。型安全性確保のため非エクスポート。
+ * @motivation Not for direct use, but provides common functionality
+ *             as base for ClickableMesh/CheckBoxMesh/RadioButtonMesh.
+ *             Non-exported to ensure type safety.
  */
 class InteractiveMesh<Value, Handler extends ButtonInteractionHandler<Value>> {
   // ...
 }
 ```
 
-### @example の戦略的配置
+### Strategic @example Placement
 
-#### 複雑な概念・エッジケースの具体例
+#### Complex Concepts and Edge Case Examples
 
 ```typescript
 /**
  * @example
  * ```typescript
- * // 基本使用法
+ * // Basic usage
  * const manager = new EventManager(container, options);
  * 
- * // 多重ビューポート対応
+ * // Multi-viewport support
  * const viewport = { x: 0, y: 0, width: 512, height: 512 };
  * const manager = new EventManager(container, { viewport });
  * 
- * // パフォーマンス調整
+ * // Performance tuning
  * const manager = new EventManager(container, { 
- *   throttlingTime_ms: 16  // 60FPS対応
+ *   throttlingTime_ms: 16  // 60FPS support
  * });
  * ```
  */
 ```
 
-## プロジェクト特化ガイドライン
+## Project-Specific Guidelines
 
-### Three.js特有パターン
+### Three.js-Specific Patterns
 
-#### EventEmitter継承制約
+#### EventEmitter Inheritance Constraints
 ```typescript
 /**
- * @motivation EventEmitter3の型制約(primus/eventemitter3#243)により
- *             Three.jsオブジェクトの直接継承が困難。ハンドラーパターンで回避。
+ * @motivation EventEmitter3 type constraints (primus/eventemitter3#243) make
+ *             direct inheritance from Three.js objects difficult. Avoided with handler pattern.
  */
 ```
 
-#### 階層トラバーサル
+#### Hierarchy Traversal
 ```typescript
 /**
- * @motivation Three.jsのparent-child関係でインタラクティブオブジェクトを
- *             子オブジェクトに配置するUI設計に対応。Sceneまで遡って検索。
+ * @motivation Accommodates UI design where interactive objects are placed as
+ *             child objects in Three.js parent-child relationships. Searches up to Scene.
  */
 ```
 
-#### マルチフェース問題
+#### Multi-face Issues
 ```typescript
 /**
- * @motivation BoxGeometryなど複数面を持つジオメトリで同一オブジェクトが
- *             複数回ヒットする問題をUUIDで解決。Three.js特有の現象。
+ * @motivation Solves problem where same object hits multiple times with multi-face
+ *             geometries like BoxGeometry using UUID. Three.js-specific phenomenon.
  */
 ```
 
-### パフォーマンス決定の記録
+### Performance Decision Recording
 
-#### スロットリング値
+#### Throttling Values
 ```typescript
 /**
- * @motivation 33ms(約30FPS)はマウス追従の自然さとCPU負荷のバランス点。
- *             16ms(60FPS)は過剰、66ms(15FPS)はユーザー体験を損なう。
+ * @motivation 33ms (approximately 30FPS) is balance point between mouse tracking
+ *             naturalness and CPU load. 16ms (60FPS) is excessive, 66ms (15FPS) harms user experience.
  */
 ```
 
-#### メモリ最適化
+#### Memory Optimization
 ```typescript
 /**
- * @motivation currentOverの配列管理により、マウスアウト時の確実な状態クリアを実現。
- *             メモリリークを防ぐため、dispose()での明示的なクリーンアップが必要。
+ * @motivation Array management of currentOver achieves reliable state clearing on mouse out.
+ *             Explicit cleanup in dispose() necessary to prevent memory leaks.
  */
 ```
 
-## 実装品質基準
+## Implementation Quality Standards
 
-### @motivation記述品質
+### @motivation Description Quality
 
-#### 良い例
-- 具体的な制約・要因を明記
-- 代替案を検討した痕跡
-- 感覚的判断でも論理的説明を試行
+#### Good Examples
+- Specify concrete constraints and factors
+- Show traces of alternative option consideration
+- Attempt logical explanation even for perceptual judgments
 
-#### 避けるべき例
-- 「パフォーマンスのため」（具体性不足）
-- 「Three.jsの制約」（詳細不明）
-- 「ベストプラクティス」（根拠不明）
+#### Examples to Avoid
+- "For performance" (lacks specificity)
+- "Three.js constraints" (details unclear)
+- "Best practices" (no basis given)
 
-### @scope記述品質
+### @scope Description Quality
 
-#### 良い例
-- 対象・対象外・境界を明確に分離
-- 他のモジュールとの責任分担を明記
-- エッジケースの処理方針を含む
+#### Good Examples
+- Clearly separate target, out-of-scope, and boundaries
+- Specify responsibility sharing with other modules
+- Include edge case handling policies
 
-#### 避けるべき例
-- 「マウスイベントを処理」（曖昧）
-- 「Three.jsオブジェクト用」（範囲不明）
-- 「UIインタラクション」（抽象的）
+#### Examples to Avoid
+- "Processes mouse events" (vague)
+- "For Three.js objects" (scope unclear)
+- "UI interactions" (abstract)
 
-## ドキュメント品質検証
+## Document Quality Verification
 
-### チェックリスト
+### Checklist
 
-#### @motivation検証
-- [ ] 実装選択の理由が推測ではなく明記されているか
-- [ ] 感覚的判断にも可能な限り論理的説明があるか
-- [ ] 将来の変更で参考になる情報が含まれているか
+#### @motivation Verification
+- [ ] Are implementation choice reasons explicitly stated rather than inferred?
+- [ ] Do perceptual judgments have logical explanations to the extent possible?
+- [ ] Is information included that will be useful for future changes?
 
-#### @scope検証
-- [ ] 処理対象・対象外が具体的に記述されているか
-- [ ] 責任境界が他のモジュールとの関係で明確か
-- [ ] エッジケース・例外処理の方針が含まれているか
+#### @scope Verification
+- [ ] Are processing targets and out-of-scope items specifically described?
+- [ ] Are responsibility boundaries clear in relation to other modules?
+- [ ] Are edge case and exception handling policies included?
 
-#### 統合検証
-- [ ] LLMが類似コードを書く際に十分な指針となるか
-- [ ] 人間の開発者が6か月後に読んで理解できるか
-- [ ] 設計意図が将来のリファクタリングで保持されるか
+#### Integrated Verification
+- [ ] Does this provide sufficient guidance for LLMs writing similar code?
+- [ ] Can human developers understand this when reading 6 months later?
+- [ ] Will design intent be preserved during future refactoring?
