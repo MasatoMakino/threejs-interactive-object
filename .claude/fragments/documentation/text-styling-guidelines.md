@@ -230,8 +230,8 @@ Replace direct @ usage with descriptive terms:
 - developer@project.dev
 
 #### URL Contexts
-- https://github.com/@username/repository
-- npm install @scope/package-name
+- https://github.com/username/repository
+- `npm install @scope/package-name`
 - https://docs.example.com/@latest/api
 
 #### Official Documentation References
