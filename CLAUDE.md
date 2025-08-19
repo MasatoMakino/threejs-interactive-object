@@ -247,27 +247,13 @@ This project follows [GitHub Flow](https://docs.github.com/en/get-started/using-
 
 This project enforces strict branch protection on the `main` branch:
 
-- **🚫 Direct Push Blocked**: Cannot push commits directly to `main` branch
-- **✅ Pull Request Required**: All changes must go through pull request process
-- **🔍 Status Checks Required**: CI workflows must pass before merging:
+- 🚫 **Direct Push Blocked**: Cannot push commits directly to `main` branch
+- ✅ **Pull Request Required**: All changes must go through pull request process
+- 🔍 **Status Checks Required**: CI workflows must pass before merging:
   - `TypeScript compilation` - Validates code compiles without errors (`npx tsc --noEmit`)
   - `Code quality checks` - Ensures code style and quality standards (`npx biome ci .`)
   - `Test suite execution` - Verifies all tests pass (`npm test`)
-- **🔒 Admin Enforcement**: Branch protection rules apply to all users including admins
-
-### Commit Message Guidelines
-
-**@ Symbol Prohibition**
-- **Never use "@" symbol in commit messages**
-- **Reason**: Causes unintended user mentions in GitHub WebUI
-- **No escaping available**: Markdown escaping does not work in commit messages
-- **Use alternative expressions**:
-  - ❌ "Add @param documentation"
-  - ✅ "Add JSDoc parameter documentation"
-  - ❌ "Fix @returns type"  
-  - ✅ "Fix return type annotation"
-  - ❌ "Update @example usage"
-  - ✅ "Update example usage documentation"
+- 🔒 **Admin Enforcement**: Branch protection rules apply to all users including admins
 
 ### Key Principles
 
@@ -310,10 +296,10 @@ This project uses a local note system for personal thought organization and work
 - **Organization**: Structured approach to personal task management
 - **Quality**: Thoughtful preparation before creating Issues/PRs
 
-## JSDoc Documentation Guidelines
-
-@.claude/fragments/documentation/jsdoc-guidelines.md
-
 ## Text Styling Guidelines
 
 @.claude/fragments/documentation/text-styling-guidelines.md
+
+## JSDoc Documentation Guidelines
+
+@.claude/fragments/documentation/jsdoc-guidelines.md
