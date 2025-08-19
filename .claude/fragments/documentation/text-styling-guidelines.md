@@ -1,6 +1,18 @@
 # Cross-Platform Text Styling Guidelines
 
-This document establishes consistent text styling standards across all project documentation including README, Pull Requests, Issues, Wiki pages, and commit messages. These guidelines prioritize professionalism, readability, and GitHub platform optimization.
+This document establishes consistent text styling standards across **all project documentation** including README, Pull Requests, Issues, Wiki pages, and commit messages. These guidelines prioritize professionalism, readability, and GitHub platform optimization.
+
+## Document Purpose and Scope
+
+This document serves as the **universal text styling standard** for the project, covering:
+- Core principles for professional documentation across all platforms
+- Emoji usage limitations and text alternatives
+- @ symbol safety guidelines to prevent unintended mentions
+- Bold expression minimization and proper heading structure
+- GitHub Alert notation standards
+- Platform-specific application guidelines (overview level)
+
+For detailed Pull Request implementation guidance, see `@.claude/fragments/documentation/pull-request-guidelines.md`.
 
 ## Core Principles
 
@@ -265,46 +277,20 @@ When referencing official documentation that uses @ symbols in their standard no
 ```
 
 ### Pull Requests
-Follow comprehensive Pull Request guidelines for reviewer load reduction:
+Follow dedicated Pull Request guidelines optimized for reviewer load reduction:
 
 > [!IMPORTANT]
-> See `@.claude/fragments/documentation/pull-request-guidelines.md` for complete guidelines.
+> See `@.claude/fragments/documentation/pull-request-guidelines.md` for complete structure, templates, and implementation details.
 
-#### Key Principles for Text Styling
-- **Out-of-Scope Emphasis** - Explicitly state what reviewers should NOT examine
-- **Issue-First Motivation** - Link to GitHub Issues when available
-- **Reviewer Load Reduction** - Structure information to minimize cognitive overhead
-- **CodeRabbit Complement** - Focus on human decisions, not code analysis
+#### Text Styling Principles for PRs
+Apply cross-platform text styling standards to Pull Request documentation:
 
-#### Essential Structure
-```markdown
-## Summary
-Brief one-sentence description of change and motivation.
-
-## Motivation
-Resolves #123 - [Issue summary] OR [Development context when no issue exists]
-
-## Out of Scope
-- **Component X**: Specific reason why unchanged
-- **Feature Y**: Justification for deferral  
-- **System Z**: Explanation of intentional non-modification
-
-## Scope
-### Target
-- Specific changes made
-
-### Dependencies
-- Integration points affected
-
-### Boundaries
-- Clear limits of PR responsibility
-```
-
-#### Text Styling Applications
-- **Alert Notation**: Use GitHub alerts for critical review guidance
-- **Emoji Limitation**: Only ✅❌⚠️ for code example evaluation
-- **@ Symbol Safety**: Escape JSDoc references in code blocks
-- **Professional Structure**: Clear headings without bold emphasis
+- **Professional Documentation**: Maintain consistency with project-wide standards
+- **Emoji Limitation**: Restrict to ✅❌⚠️ for critical code safety examples only
+- **@ Symbol Safety**: Use code blocks for JSDoc references to prevent unintended mentions
+- **Alert Notation**: Leverage GitHub alerts for structured review guidance
+- **Bold Minimization**: Use proper heading levels instead of bold emphasis
+- **Platform Optimization**: Ensure GitHub markdown rendering compatibility
 
 ### Issues
 Structure issues for clear problem identification and resolution:

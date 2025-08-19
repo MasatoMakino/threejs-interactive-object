@@ -1,6 +1,16 @@
 # LLM-Collaborative Pull Request Guidelines
 
-This document establishes Pull Request title and message guidelines optimized for **reviewer load reduction** in LLM-collaborative development environments. These guidelines complement automated code analysis tools like CodeRabbit by focusing on human decision context and explicit scope boundaries.
+This document provides comprehensive Pull Request title and message guidelines optimized for **reviewer load reduction** in LLM-collaborative development environments. These guidelines complement automated code analysis tools like CodeRabbit by focusing on human decision context and explicit scope boundaries.
+
+## Document Purpose and Scope
+
+This document serves as the **complete implementation guide** for Pull Request creation, covering:
+- Detailed structure templates and examples
+- Text styling compliance specific to PRs
+- Integration strategies with automated tools (CodeRabbit, git hooks, GitHub Actions)
+- Quality verification checklists and best practices
+
+For cross-platform text styling principles that apply to all documentation types, see `@.claude/fragments/documentation/text-styling-guidelines.md`.
 
 ## Core Philosophy
 
@@ -259,11 +269,52 @@ Development analysis revealed authentication bottleneck during peak usage. Profi
 
 ## Text Styling Compliance
 
+Pull Request documentation follows project-wide text styling standards for professional consistency and platform optimization.
+
 > [!NOTE]
-> Text styling (emoji usage, @ symbol safety, bold minimization) is verified through LLM context-based checking. Human manual verification is not required during review.
+> Text styling compliance is verified through LLM context-based checking. Manual verification is not required during review.
+
+### Emoji Usage in Pull Requests
+Apply strict limitation policy aligned with text styling guidelines:
+
+#### Permitted Usage (Critical Safety Only)
+- ✅ **Good examples**: Secure implementations, recommended approaches
+- ❌ **Bad examples**: Vulnerable implementations, practices to avoid
+- ⚠️ **Conditional usage**: Requires caution, has risks, context-dependent
+
+#### Prohibited in PR Documentation
+- Decorative emojis (🎉, 🚀, 💡, etc.)
+- Status indicators (📝, 📋, ✨, etc.)  
+- Emotional expressions (😀, 👍, ❤️, etc.)
+
+#### Text Alternatives for Routine Cases
+```markdown
+#### Implementation Status
+- Completed: Authentication middleware
+- In Progress: Database migration
+- Not Implemented: Frontend integration
+
+#### Security Examples  
+**Recommended approach:** Use parameterized queries
+**Avoid:** String concatenation for SQL
+**Conditional:** Dynamic queries // Ensure input validation
+```
+
+### @ Symbol Safety
+Prevent unintended GitHub user mentions through proper escaping:
+
+#### Safe Usage Methods
+```markdown
+❌ Add @param documentation to functions
+✅ Add `@param` documentation to functions
+
+❌ Implement @Component decorator pattern  
+✅ Implement Component decorator pattern
+✅ Add JSDoc parameter tags to helper methods
+```
 
 ### GitHub Alert Notation
-Use GitHub alerts for important review information:
+Use GitHub alerts for structured review information:
 
 ```markdown
 > [!IMPORTANT]
@@ -277,6 +328,24 @@ Use GitHub alerts for important review information:
 
 > [!TIP]
 > Performance hints and optimization suggestions
+```
+
+### Bold Expression Guidelines
+Follow text styling minimization principles:
+
+#### Permitted Usage
+- Specific word emphasis within long sentences
+- Text labels for information classification (Note:, Important:, etc.)
+
+#### Use Proper Headings Instead
+```markdown
+❌ **Configuration Options**
+✅ #### Configuration Options
+
+❌ **Requirements:**
+   - Node.js: Version 16+
+✅ #### Requirements
+   - Node.js: Version 16+
 ```
 
 ## Quality Verification
@@ -382,12 +451,25 @@ These PR guidelines extend the JSDoc motivation and scope approach to Pull Reque
 - LLM-First Approach: Consistent focus on preserving human decision context
 - Quality Verification: Similar checklist-based validation approach
 
-### Alignment with Text Styling Guidelines
-- Professional Standards: Maintains consistent documentation quality across platforms
-- Alert Notation: GitHub alerts provide structured emphasis for review guidance
-- Platform Optimization: Optimized for GitHub's markdown rendering and review interface
+### Relationship to Cross-Platform Text Styling Guidelines
+These PR guidelines implement and extend the universal text styling standards from `@.claude/fragments/documentation/text-styling-guidelines.md`:
+
+- **Professional Standards**: Maintains consistent documentation quality across all platforms
+- **Emoji Limitation**: Applies strict usage restrictions specific to PR context
+- **@ Symbol Safety**: Implements escaping methods to prevent unintended mentions  
+- **Alert Notation**: Leverages GitHub alerts for structured review guidance
+- **Bold Minimization**: Uses proper heading hierarchy instead of bold emphasis
+- **Platform Optimization**: Optimized for GitHub's markdown rendering and review interface
 
 > [!NOTE]
-> Text styling compliance (emoji usage, @ symbol safety, bold minimization) is verified through LLM context-based checking and does not require manual verification during review.
+> Text styling compliance is verified through LLM context-based checking and does not require manual verification during review.
+
+## Document Integration Summary
+
+This document serves as the **complete PR implementation guide** while maintaining consistency with project-wide standards:
+- **Structure and Templates**: Detailed PR creation guidance
+- **Text Styling Application**: PR-specific implementation of universal standards
+- **Tool Integration**: CodeRabbit, git hooks, and GitHub Actions coordination
+- **Quality Assurance**: Comprehensive verification and checklist systems
 
 This comprehensive approach ensures Pull Request documentation effectively reduces reviewer cognitive load while preserving essential context for LLM-collaborative development workflows.
