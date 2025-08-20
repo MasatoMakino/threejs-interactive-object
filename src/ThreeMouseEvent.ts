@@ -118,7 +118,8 @@ export interface ThreeMouseEventMap<T = unknown> {
  * - `interactionHandler` may be undefined in some contexts
  * - `isSelected` is only meaningful for checkbox and radio button events
  * - `pointerId` defaults to 1 for single-pointer interactions
- * - The event object is created by ThreeMouseEventUtil.generate()
+ * - The event object is created by createThreeMouseEvent()
+ * - Treat pointerId as an opaque number (may be negative or large); do not assume ranges or sequencing
  * - Despite the "Mouse" naming, supports all pointer input types (mouse, touch, pen)
  *
  * @see {@link ThreeMouseEventMap} - Available event types
