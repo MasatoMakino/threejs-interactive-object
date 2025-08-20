@@ -34,26 +34,12 @@ import {
 } from "vitest";
 import { ClickableMesh, type ClickableState } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
-import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
+import {
+  MouseEventManagerScene,
+  createRaycastingTestEnvironment,
+  type RaycastingTestEnvironment,
+} from "./MouseEventManagerScene.js";
 import { createPointerEventWithId } from "./PointerEventTestUtil.js";
-
-/**
- * Test environment interface for raycasting tests
- *
- * @description
- * Defines the test environment structure for MouseEventManager raycasting tests,
- * including multi-face geometry and complex hierarchy setups.
- */
-interface RaycastingTestEnvironment {
-  /** MouseEventManager test scene with camera, canvas, and event dispatching */
-  managerScene: MouseEventManagerScene;
-  /** ClickableMesh with BoxGeometry for UUID filtering tests */
-  multiFaceMesh: ClickableMesh;
-  /** Canvas center X coordinate for consistent event positioning */
-  halfW: number;
-  /** Canvas center Y coordinate for consistent event positioning */
-  halfH: number;
-}
 
 /**
  * MouseEventManager raycasting and intersection processing tests
@@ -120,37 +106,10 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
   };
 
   /**
-   * Creates an isolated test environment for raycasting tests
-   *
-   * @returns Complete test environment with multi-face geometry and hierarchy
-   *
-   * @description
-   * Generates a test environment containing:
-   * - Multi-face BoxGeometry ClickableMesh for UUID filtering tests
-   * - Parent-child hierarchy for traversal tests
-   * - Canvas center coordinates for consistent positioning
+   * Creates test environment using shared factory function
    */
-  const createRaycastingTestEnvironment = (): RaycastingTestEnvironment => {
-    const managerScene = new MouseEventManagerScene();
-    testEnvironments.push(managerScene);
-
-    // Create multi-face geometry for UUID filtering tests
-    const multiFaceMesh = new ClickableMesh({
-      geo: new BoxGeometry(3, 3, 3),
-      material: getMeshMaterialSet(),
-    });
-    multiFaceMesh.position.set(0, 0, 0);
-    managerScene.scene.add(multiFaceMesh);
-
-    const halfW = MouseEventManagerScene.W / 2;
-    const halfH = MouseEventManagerScene.H / 2;
-
-    return {
-      managerScene,
-      multiFaceMesh,
-      halfW,
-      halfH,
-    };
+  const createTestEnvironment = (): RaycastingTestEnvironment => {
+    return createRaycastingTestEnvironment(undefined, testEnvironments);
   };
 
   /**
@@ -164,7 +123,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
   describe("getIntersects() UUID Filtering", () => {
     test("should filter duplicate intersections for multi-face geometry using UUID", () => {
       const { managerScene, multiFaceMesh, halfW, halfH } =
-        createRaycastingTestEnvironment();
+        createTestEnvironment();
 
       // Position pointer directly over the center of the box geometry
       // This should hit multiple faces but only return one intersection per object
@@ -180,7 +139,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
     });
 
     test("should handle empty intersections array gracefully", () => {
-      const { managerScene, multiFaceMesh } = createRaycastingTestEnvironment();
+      const { managerScene, multiFaceMesh } = createTestEnvironment();
 
       // Ensure clean initial state
       checkMeshMaterialState(multiFaceMesh, {
@@ -220,7 +179,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
   describe("checkIntersects() Z-order Processing", () => {
     test("should process intersections in distance order for proper Z-depth handling", () => {
       const { managerScene, halfW, halfH, multiFaceMesh } =
-        createRaycastingTestEnvironment();
+        createTestEnvironment();
 
       // Create two meshes at different Z positions
       const frontMesh = new ClickableMesh({
@@ -274,7 +233,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
   describe("checkTarget() Hierarchy Search", () => {
     test("should traverse object hierarchy upward until reaching Scene", () => {
       const { managerScene, multiFaceMesh, halfW, halfH } =
-        createRaycastingTestEnvironment();
+        createTestEnvironment();
 
       // Create a hierarchy by wrapping existing multiFaceMesh in groups
       // Scene -> Group -> Object3D -> multiFaceMesh
@@ -301,7 +260,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
 
     test("should handle null parent references without errors", () => {
       const { managerScene, multiFaceMesh, halfW, halfH } =
-        createRaycastingTestEnvironment();
+        createTestEnvironment();
 
       // Use existing multiFaceMesh which is directly added to Scene
       // This creates the scenario: Scene -> multiFaceMesh (parent will be Scene, then null)
@@ -338,7 +297,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
   describe("ViewPortUtil Integration", () => {
     test("should convert pointer coordinates using ViewPortUtil before raycasting", () => {
       const { managerScene, multiFaceMesh, halfW, halfH } =
-        createRaycastingTestEnvironment();
+        createTestEnvironment();
 
       // Test coordinate conversion by verifying interaction at canvas center
       // Canvas center should map to world coordinates correctly

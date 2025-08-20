@@ -1,26 +1,9 @@
 import { describe, it, expect, afterAll } from "vitest";
-import { BoxGeometry } from "three";
-import { ClickableMesh } from "../src/index.js";
-import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
-import { getMeshMaterialSet } from "./Materials.js";
-
-/**
- * Test environment interface for raycasting tests
- *
- * @description
- * Defines the test environment structure for MouseEventManager raycasting tests,
- * including multi-face geometry and complex hierarchy setups.
- */
-interface RaycastingTestEnvironment {
-  /** MouseEventManager test scene with camera, canvas, and event dispatching */
-  managerScene: MouseEventManagerScene;
-  /** ClickableMesh with BoxGeometry for UUID filtering tests */
-  multiFaceMesh: ClickableMesh;
-  /** Canvas center X coordinate for consistent event positioning */
-  halfW: number;
-  /** Canvas center Y coordinate for consistent event positioning */
-  halfH: number;
-}
+import {
+  MouseEventManagerScene,
+  createRaycastingTestEnvironment,
+  type RaycastingTestEnvironment,
+} from "./MouseEventManagerScene.js";
 
 describe("MouseEventManager Multi-touch Infrastructure", () => {
   const testEnvironments: MouseEventManagerScene[] = [];
@@ -34,46 +17,22 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
   });
 
   /**
-   * Creates an isolated test environment for raycasting tests
-   *
-   * @returns Complete test environment with multi-face geometry and hierarchy
-   *
-   * @description
-   * Generates a test environment containing:
-   * - Multi-face BoxGeometry ClickableMesh for UUID filtering tests
-   * - Parent-child hierarchy for traversal tests
-   * - Canvas center coordinates for consistent positioning
+   * Creates test environment using shared factory function
    */
-  const createRaycastingTestEnvironment = (): RaycastingTestEnvironment => {
-    const managerScene = new MouseEventManagerScene({
-      canvasWidth: 800,
-      canvasHeight: 600,
-      throttlingTime_ms: 0,
-    });
-    testEnvironments.push(managerScene);
-
-    // Create multi-face geometry for UUID filtering tests
-    const multiFaceMesh = new ClickableMesh({
-      geo: new BoxGeometry(3, 3, 3),
-      material: getMeshMaterialSet(),
-    });
-    multiFaceMesh.position.set(0, 0, 0);
-    managerScene.scene.add(multiFaceMesh);
-
-    const halfW = managerScene.canvas.width / 2;
-    const halfH = managerScene.canvas.height / 2;
-
-    return {
-      managerScene,
-      multiFaceMesh,
-      halfW,
-      halfH,
-    };
+  const createTestEnvironment = (): RaycastingTestEnvironment => {
+    return createRaycastingTestEnvironment(
+      {
+        canvasWidth: 800,
+        canvasHeight: 600,
+        throttlingTime_ms: 0,
+      },
+      testEnvironments,
+    );
   };
 
   describe("PointerID Infrastructure", () => {
     it("should handle different pointerId values", () => {
-      const { managerScene } = createRaycastingTestEnvironment();
+      const { managerScene } = createTestEnvironment();
       // 異なるpointerIdでイベント生成テスト
       const pointerIds = [1, 2, -560913604, -560913605]; // Chrome mouse + iPad touch風
 
@@ -91,13 +50,13 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
 
   describe("currentOver Map Infrastructure", () => {
     it("should have currentOver as Map property", () => {
-      const { managerScene } = createRaycastingTestEnvironment();
+      const { managerScene } = createTestEnvironment();
       // currentOverがMapであることを確認
       expect((managerScene.manager as any).currentOver).toBeInstanceOf(Map);
     });
 
     it("should initialize empty currentOver Map", () => {
-      const { managerScene } = createRaycastingTestEnvironment();
+      const { managerScene } = createTestEnvironment();
       // 初期状態でcurrentOverが空であることを確認
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
@@ -107,7 +66,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
     });
 
     it("should manage separate hover states per pointerId", () => {
-      const { managerScene, multiFaceMesh } = createRaycastingTestEnvironment();
+      const { managerScene, multiFaceMesh } = createTestEnvironment();
       // 異なるpointerIdで異なる状態管理をテスト
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
@@ -125,7 +84,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
     });
 
     it("should handle multiple pointers on same object", () => {
-      const { managerScene, multiFaceMesh } = createRaycastingTestEnvironment();
+      const { managerScene, multiFaceMesh } = createTestEnvironment();
       // 同一オブジェクトに複数pointerIdが hover している状態をテスト
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
@@ -146,7 +105,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
 
   describe("Multi-touch Event Processing", () => {
     it("should handle clearOver with specific pointerId", () => {
-      const { managerScene, multiFaceMesh } = createRaycastingTestEnvironment();
+      const { managerScene, multiFaceMesh } = createTestEnvironment();
 
       // 特定pointerIdのclearOver動作をテスト
       const currentOver = (managerScene.manager as any).currentOver as Map<
@@ -167,7 +126,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
     });
 
     it("should handle clearOver without pointerId (clear all)", () => {
-      const { managerScene, multiFaceMesh } = createRaycastingTestEnvironment();
+      const { managerScene, multiFaceMesh } = createTestEnvironment();
       // 全pointerIdクリアのテスト
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
@@ -187,7 +146,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
 
     it("should pass pointerId through event processing chain", () => {
       const { managerScene, multiFaceMesh, halfW, halfH } =
-        createRaycastingTestEnvironment();
+        createTestEnvironment();
 
       // pointerIdがイベント処理チェーンを通って伝播することをテスト
       const events: Array<{ type: string; pointerId: number }> = [];
@@ -218,7 +177,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
 
   describe("Backward Compatibility", () => {
     it("should maintain Map-based currentOver behavior", () => {
-      const { managerScene } = createRaycastingTestEnvironment();
+      const { managerScene } = createTestEnvironment();
 
       const currentOver = (managerScene.manager as any).currentOver;
       expect(currentOver).toBeInstanceOf(Map);
@@ -228,7 +187,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
 
     it("should process single pointer events as before", () => {
       const { managerScene, multiFaceMesh, halfW, halfH } =
-        createRaycastingTestEnvironment();
+        createTestEnvironment();
 
       // 単一ポインターイベントが従来通り処理されることを確認
       const events: string[] = [];
