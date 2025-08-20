@@ -120,7 +120,7 @@ export class MouseEventManager {
 
   protected currentOver: Map<number, IClickableObject3D<unknown>[]> = new Map();
 
-  protected hasThrottled: boolean = false;
+  protected hasThrottled: Map<number, boolean> = new Map();
   public throttlingTime_ms: number;
   protected throttlingDelta: number = 0;
   protected viewport?: Vector4;
@@ -259,14 +259,14 @@ export class MouseEventManager {
   private onTick = (e: RAFTickerEventContext) => {
     // When throttling is disabled, always reset throttling state immediately
     if (this.throttlingTime_ms <= 0) {
-      this.hasThrottled = false;
+      this.hasThrottled.clear();
       this.throttlingDelta = 0;
       return;
     }
 
     // Sanitize non-finite input deltas immediately
     if (!Number.isFinite(e.delta)) {
-      this.hasThrottled = false;
+      this.hasThrottled.clear();
       this.throttlingDelta = 0;
       return;
     }
@@ -277,7 +277,7 @@ export class MouseEventManager {
       return;
     }
 
-    this.hasThrottled = false;
+    this.hasThrottled.clear();
     this.throttlingDelta %= this.throttlingTime_ms;
   };
 
@@ -319,8 +319,8 @@ export class MouseEventManager {
 
     // Skip throttling checks when throttling is disabled
     if (this.throttlingTime_ms > 0) {
-      if (this.hasThrottled) return;
-      this.hasThrottled = true;
+      if (this.hasThrottled.get(pointerId)) return;
+      this.hasThrottled.set(pointerId, true);
     }
 
     event.preventDefault();
@@ -832,7 +832,7 @@ export class MouseEventManager {
     RAFTicker.off("tick", this.onTick);
 
     // Reset internal state
-    this.hasThrottled = false;
+    this.hasThrottled.clear();
     this.throttlingDelta = 0;
   }
 }

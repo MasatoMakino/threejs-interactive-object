@@ -36,7 +36,7 @@ import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
  */
 interface MouseEventManagerTestProps {
   throttlingDelta: number;
-  hasThrottled: boolean;
+  hasThrottled: Map<number, boolean>;
 }
 
 /**
@@ -127,26 +127,26 @@ describe("MouseEventManager Throttling", () => {
       test("should reset hasThrottled flag when throttling interval expires", () => {
         const typedManager = exposeMouseEventManagerForTest(manager);
 
-        // Set hasThrottled to true
-        typedManager.hasThrottled = true;
+        // Set hasThrottled to true for default pointer (pointerId=1)
+        typedManager.hasThrottled.set(1, true);
         expect(
-          typedManager.hasThrottled,
-          "Initial hasThrottled should be true",
+          typedManager.hasThrottled.get(1),
+          "Initial hasThrottled should be true for pointerId=1",
         ).toBe(true);
 
         // Advance time by less than throttling interval (33ms default)
         RAFTicker.emit("tick", { timestamp: 0, delta: 20 });
         expect(
-          typedManager.hasThrottled,
+          typedManager.hasThrottled.get(1),
           "hasThrottled should remain true before interval expires",
         ).toBe(true);
 
         // Advance time beyond throttling interval
         RAFTicker.emit("tick", { timestamp: 20, delta: 20 });
         expect(
-          typedManager.hasThrottled,
-          "hasThrottled should reset to false after throttling interval expires",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "hasThrottled Map should be cleared after throttling interval expires",
+        ).toBe(0);
       });
 
       test("should apply modulo operation to throttlingDelta after reset", () => {
@@ -154,7 +154,7 @@ describe("MouseEventManager Throttling", () => {
         const throttlingTime = manager.throttlingTime_ms; // Default 33ms
 
         // Set initial state
-        typedManager.hasThrottled = true;
+        typedManager.hasThrottled.set(1, true);
         typedManager.throttlingDelta = 0;
 
         // Emit tick with delta larger than throttling interval
@@ -173,14 +173,14 @@ describe("MouseEventManager Throttling", () => {
         const throttlingTime = manager.throttlingTime_ms;
 
         // Start from throttled state
-        typedManager.hasThrottled = true;
+        typedManager.hasThrottled.set(1, true);
         typedManager.throttlingDelta = 0;
 
         // Emit exact boundary delta
         RAFTicker.emit("tick", { timestamp: 0, delta: throttlingTime });
 
         // Expect reset and zero remainder
-        expect(typedManager.hasThrottled).toBe(false);
+        expect(typedManager.hasThrottled.size).toBe(0);
         expect(typedManager.throttlingDelta).toBe(0);
       });
     });
@@ -239,11 +239,11 @@ describe("MouseEventManager Throttling", () => {
         const largeDelta = 5000; // 5000ms browser freeze
         RAFTicker.emit("tick", { timestamp: 0, delta: largeDelta });
 
-        // After large delta: hasThrottled should be reset to false
+        // After large delta: hasThrottled Map should be cleared
         expect(
-          typedManager.hasThrottled,
-          "hasThrottled should be reset to false after large delta exceeds throttling interval",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "hasThrottled Map should be cleared after large delta exceeds throttling interval",
+        ).toBe(0);
 
         // Modulo calculation: 5000 % 33 = 17 remainder expected
         const expectedRemainder = largeDelta % throttlingTime; // 5000 % 33 = 17
@@ -262,9 +262,9 @@ describe("MouseEventManager Throttling", () => {
         RAFTicker.emit("tick", { timestamp: 0, delta: multiIntervalDelta });
 
         expect(
-          typedManager.hasThrottled,
-          "hasThrottled should be reset after multi-interval delta",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "hasThrottled Map should be cleared after multi-interval delta",
+        ).toBe(0);
 
         const expectedRemainder = multiIntervalDelta % throttlingTime; // 100 % 33 = 1
         expect(
@@ -321,7 +321,7 @@ describe("MouseEventManager Throttling", () => {
         ).toBe(0);
 
         // Set initial state for testing
-        typedManager.hasThrottled = true;
+        typedManager.hasThrottled.set(1, true);
         typedManager.throttlingDelta = 50;
 
         // Emit tick event with zero throttling time - should not cause modulo-by-zero (NaN)
@@ -337,9 +337,9 @@ describe("MouseEventManager Throttling", () => {
         ).toBe(0);
 
         expect(
-          typedManager.hasThrottled,
-          "hasThrottled should reset to false when delta >= throttlingTime (0)",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "hasThrottled Map should be cleared when delta >= throttlingTime (0)",
+        ).toBe(0);
 
         // Clean up
         testManager.dispose();
@@ -359,27 +359,27 @@ describe("MouseEventManager Throttling", () => {
         const typedManager = exposeMouseEventManagerForTest(testManager);
 
         // Initial state
-        expect(typedManager.hasThrottled).toBe(false);
+        expect(typedManager.hasThrottled.size).toBe(0);
         expect(typedManager.throttlingDelta).toBe(0);
 
         // Any delta time should immediately reset hasThrottled to false
-        typedManager.hasThrottled = true;
+        typedManager.hasThrottled.set(1, true);
         RAFTicker.emit("tick", { timestamp: 0, delta: 1 });
 
         expect(
-          typedManager.hasThrottled,
-          "Even 1ms delta should reset hasThrottled when throttling is disabled",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "Even 1ms delta should clear hasThrottled Map when throttling is disabled",
+        ).toBe(0);
 
         // Multiple rapid ticks should not cause accumulation issues
         for (let i = 0; i < 10; i++) {
-          typedManager.hasThrottled = true;
+          typedManager.hasThrottled.set(1, true);
           RAFTicker.emit("tick", { timestamp: i, delta: 16 });
 
           expect(
-            typedManager.hasThrottled,
-            `Tick ${i}: hasThrottled should reset immediately with zero throttling`,
-          ).toBe(false);
+            typedManager.hasThrottled.size,
+            `Tick ${i}: hasThrottled Map should be cleared immediately with zero throttling`,
+          ).toBe(0);
         }
 
         // Clean up
@@ -417,7 +417,7 @@ describe("MouseEventManager Throttling", () => {
 
         for (const { delta, description } of edgeCases) {
           // Reset state
-          typedManager.hasThrottled = true;
+          typedManager.hasThrottled.set(1, true);
           typedManager.throttlingDelta = 100;
 
           // Emit tick with edge case delta
@@ -430,9 +430,9 @@ describe("MouseEventManager Throttling", () => {
           ).toBe(false);
 
           expect(
-            typeof typedManager.hasThrottled,
-            `hasThrottled should remain boolean with ${description}`,
-          ).toBe("boolean");
+            typedManager.hasThrottled.constructor.name,
+            `hasThrottled should remain Map instance with ${description}`,
+          ).toBe("Map");
 
           // For zero throttling, delta should be reset regardless of input
           if (delta >= 0) {
@@ -478,7 +478,7 @@ describe("MouseEventManager Throttling", () => {
 
         for (const { delta, description } of nonFiniteEdgeCases) {
           // Set up throttled state
-          typedManager.hasThrottled = true;
+          typedManager.hasThrottled.set(1, true);
           typedManager.throttlingDelta = 100;
 
           // Emit non-finite delta
@@ -486,9 +486,9 @@ describe("MouseEventManager Throttling", () => {
 
           // Verify throttling state is reset for all non-finite values
           expect(
-            typedManager.hasThrottled,
-            `hasThrottled should be reset to false with ${description}`,
-          ).toBe(false);
+            typedManager.hasThrottled.size,
+            `hasThrottled Map should be cleared with ${description}`,
+          ).toBe(0);
 
           expect(
             typedManager.throttlingDelta,
@@ -557,9 +557,9 @@ describe("MouseEventManager Throttling", () => {
         // 17ms delta should trigger reset (> 16ms)
         RAFTicker.emit("tick", { timestamp: 15, delta: 17 });
         expect(
-          typedManager16.hasThrottled,
-          "32ms total (>16ms) should reset hasThrottled in 16ms throttling",
-        ).toBe(false);
+          typedManager16.hasThrottled.size,
+          "32ms total (>16ms) should clear hasThrottled Map in 16ms throttling",
+        ).toBe(0);
         expect(
           typedManager16.throttlingDelta,
           "32ms % 16ms should equal 0 remainder",
@@ -585,9 +585,9 @@ describe("MouseEventManager Throttling", () => {
         // 150ms delta should trigger reset (> 100ms)
         RAFTicker.emit("tick", { timestamp: 99, delta: 150 });
         expect(
-          typedManager100.hasThrottled,
-          "249ms total (>100ms) should reset hasThrottled in 100ms throttling",
-        ).toBe(false);
+          typedManager100.hasThrottled.size,
+          "249ms total (>100ms) should clear hasThrottled Map in 100ms throttling",
+        ).toBe(0);
         expect(
           typedManager100.throttlingDelta,
           "249ms % 100ms should equal 49 remainder",
@@ -613,7 +613,7 @@ describe("MouseEventManager Throttling", () => {
 
         // Verify no residual listener mutated state
         expect(typed.throttlingDelta).toBe(0);
-        expect(typed.hasThrottled).toBe(false);
+        expect(typed.hasThrottled.size).toBe(0);
       });
     });
   });
@@ -657,7 +657,7 @@ describe("MouseEventManager Throttling", () => {
         );
 
         // Set hasThrottled to true to simulate active throttling
-        typedManager.hasThrottled = true;
+        typedManager.hasThrottled.set(1, true);
 
         // Dispatch rapid pointer move events
         const centerX = managerScene.canvas.width / 2;
@@ -670,9 +670,9 @@ describe("MouseEventManager Throttling", () => {
 
         // Should remain throttled
         expect(
-          typedManager.hasThrottled,
-          "Multiple rapid events should maintain throttled state",
-        ).toBe(true);
+          typedManager.hasThrottled.size,
+          "Multiple rapid events should maintain throttled state in Map",
+        ).toBeGreaterThan(0);
       });
 
       test("should process events normally after throttling window expires", () => {
@@ -682,16 +682,16 @@ describe("MouseEventManager Throttling", () => {
         );
 
         // Set throttling state
-        typedManager.hasThrottled = true;
+        typedManager.hasThrottled.set(1, true);
 
         // Advance time beyond throttling interval
         managerScene.interval(); // Advances by 2.0 * throttlingTime_ms
 
         // Verify throttling reset
         expect(
-          typedManager.hasThrottled,
-          "Throttling should reset after time advancement",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "Throttling Map should be cleared after time advancement",
+        ).toBe(0);
 
         // Dispatch pointer move - should be processed
         const centerX = managerScene.canvas.width / 2;
@@ -700,9 +700,9 @@ describe("MouseEventManager Throttling", () => {
 
         // Should set throttling flag
         expect(
-          typedManager.hasThrottled,
-          "Event processing should set throttling flag",
-        ).toBe(true);
+          typedManager.hasThrottled.size,
+          "Event processing should set throttling entries",
+        ).toBeGreaterThan(0);
       });
     });
 
@@ -741,9 +741,9 @@ describe("MouseEventManager Throttling", () => {
 
         // Initial state verification
         expect(
-          typedManager.hasThrottled,
-          "Initial hasThrottled should be false",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "Initial hasThrottled Map should be empty",
+        ).toBe(0);
 
         const centerX = managerScene.canvas.width / 2;
         const centerY = managerScene.canvas.height / 2;
@@ -751,28 +751,28 @@ describe("MouseEventManager Throttling", () => {
         // Dispatch multiple rapid pointermove events without time advancement
         managerScene.dispatchMouseEvent("pointermove", centerX, centerY);
         expect(
-          typedManager.hasThrottled,
-          "hasThrottled should remain false after first pointermove with zero throttling",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "hasThrottled Map should remain empty after first pointermove with zero throttling",
+        ).toBe(0);
 
         managerScene.dispatchMouseEvent("pointermove", centerX + 10, centerY);
         expect(
-          typedManager.hasThrottled,
-          "hasThrottled should remain false after second pointermove with zero throttling",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "hasThrottled Map should remain empty after second pointermove with zero throttling",
+        ).toBe(0);
 
         managerScene.dispatchMouseEvent("pointermove", centerX + 20, centerY);
         expect(
-          typedManager.hasThrottled,
-          "hasThrottled should remain false after third pointermove with zero throttling",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "hasThrottled Map should remain empty after third pointermove with zero throttling",
+        ).toBe(0);
 
         // Verify consistent behavior with additional events
         managerScene.dispatchMouseEvent("pointermove", centerX + 30, centerY);
         expect(
-          typedManager.hasThrottled,
-          "hasThrottled should remain false for all pointermove events with zero throttling",
-        ).toBe(false);
+          typedManager.hasThrottled.size,
+          "hasThrottled Map should remain empty for all pointermove events with zero throttling",
+        ).toBe(0);
       });
 
       test("should emit interaction events immediately without throttling delay", () => {
@@ -866,7 +866,7 @@ describe("MouseEventManager Throttling", () => {
         nonThrottledScene.reset();
 
         // Additional cleanup for throttled environment if needed
-        if (throttledManager.hasThrottled) {
+        if (throttledManager.hasThrottled.size > 0) {
           throttledScene.interval(); // Additional time advancement to ensure reset
         }
 
@@ -876,13 +876,13 @@ describe("MouseEventManager Throttling", () => {
 
         // Key difference: throttled sets hasThrottled, non-throttled doesn't
         expect(
-          throttledManager.hasThrottled,
-          "Throttled environment should set hasThrottled flag on pointermove",
-        ).toBe(true);
+          throttledManager.hasThrottled.size,
+          "Throttled environment should set hasThrottled entries on pointermove",
+        ).toBeGreaterThan(0);
         expect(
-          nonThrottledManager.hasThrottled,
-          "Non-throttled environment should not set hasThrottled flag on pointermove",
-        ).toBe(false);
+          nonThrottledManager.hasThrottled.size,
+          "Non-throttled environment should not set hasThrottled entries on pointermove",
+        ).toBe(0);
 
         // Dispatch more events rapidly
         throttledScene.dispatchMouseEvent("pointermove", centerX + 5, centerY);
@@ -901,26 +901,26 @@ describe("MouseEventManager Throttling", () => {
 
         // Throttled should maintain hasThrottled true, non-throttled remains false
         expect(
-          throttledManager.hasThrottled,
-          "Throttled environment should maintain hasThrottled flag during rapid events",
-        ).toBe(true);
+          throttledManager.hasThrottled.size,
+          "Throttled environment should maintain hasThrottled entries during rapid events",
+        ).toBeGreaterThan(0);
         expect(
-          nonThrottledManager.hasThrottled,
-          "Non-throttled environment should never set hasThrottled flag",
-        ).toBe(false);
+          nonThrottledManager.hasThrottled.size,
+          "Non-throttled environment should never set hasThrottled entries",
+        ).toBe(0);
 
         // Reset throttled environment by advancing time
         throttledScene.interval(); // Advances by 2.0 * throttlingTime_ms
 
         // After time advancement, throttled should reset hasThrottled
         expect(
-          throttledManager.hasThrottled,
-          "Throttled environment should reset hasThrottled after time advancement",
-        ).toBe(false);
+          throttledManager.hasThrottled.size,
+          "Throttled environment should clear hasThrottled Map after time advancement",
+        ).toBe(0);
         expect(
-          nonThrottledManager.hasThrottled,
-          "Non-throttled environment should always remain false",
-        ).toBe(false);
+          nonThrottledManager.hasThrottled.size,
+          "Non-throttled environment should always remain empty",
+        ).toBe(0);
       });
     });
   });
