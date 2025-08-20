@@ -35,6 +35,7 @@ import {
 import { ClickableMesh, type ClickableState } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
+import { createPointerEventWithId } from "./PointerEventTestUtil.js";
 
 /**
  * Test environment interface for raycasting tests
@@ -407,7 +408,7 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
 
     test("should verify UUID filtering effectiveness by directly testing getIntersects", () => {
       // Create a mock PointerEvent for testing
-      const mockEvent = new PointerEvent("pointermove", {
+      const mockEvent = createPointerEventWithId("pointermove", {
         clientX: halfW,
         clientY: halfH,
         bubbles: true,

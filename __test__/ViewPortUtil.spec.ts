@@ -1,13 +1,23 @@
-import { getPointerEvent } from "@masatomakino/fake-mouse-event";
 import { Vector2, Vector4 } from "three";
 import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { ViewPortUtil } from "../src/index.js";
+import { createFakePointerEventWithId } from "./PointerEventTestUtil.js";
 
-function createPointerMoveEvent(coords: {
-  offsetX: number;
-  offsetY: number;
-}): PointerEvent {
-  return getPointerEvent("pointermove", coords) as unknown as PointerEvent;
+/**
+ * Creates a pointermove event for ViewPortUtil testing
+ *
+ * @param coords - Offset coordinates for the pointer event
+ * @param pointerId - Pointer identifier (defaults to 1)
+ * @returns PointerEvent with 'pointermove' type and specified coordinates
+ */
+function createPointerMoveEvent(
+  coords: {
+    offsetX: number;
+    offsetY: number;
+  },
+  pointerId: number = 1,
+): PointerEvent {
+  return createFakePointerEventWithId("pointermove", coords, pointerId);
 }
 
 describe("ViewPortUtil", () => {
