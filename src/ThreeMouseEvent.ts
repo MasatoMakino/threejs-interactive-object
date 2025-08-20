@@ -100,7 +100,7 @@ export interface ThreeMouseEventMap<T = unknown> {
  *   // Access to the interaction handler (if available)
  *   if (e.interactionHandler) {
  *     console.log(`Value: ${e.interactionHandler.value}`);
- *     console.log(`Enabled: ${e.interactionHandler.enable}`);
+ *     console.log(`Enabled: ${e.interactionHandler.enabled}`);
  *   }
  *
  *   // Selection state (for checkboxes and radio buttons)
