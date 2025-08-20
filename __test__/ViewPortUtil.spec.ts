@@ -3,6 +3,13 @@ import { afterEach, beforeEach, describe, expect, test } from "vitest";
 import { ViewPortUtil } from "../src/index.js";
 import { createFakePointerEventWithId } from "./PointerEventTestUtil.js";
 
+/**
+ * Creates a pointermove event for ViewPortUtil testing
+ *
+ * @param coords - Offset coordinates for the pointer event
+ * @param pointerId - Pointer identifier (defaults to 1)
+ * @returns PointerEvent with 'pointermove' type and specified coordinates
+ */
 function createPointerMoveEvent(
   coords: {
     offsetX: number;
