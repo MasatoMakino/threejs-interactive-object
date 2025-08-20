@@ -176,8 +176,9 @@ export function generate<Value>(
     | ButtonInteractionHandler<Value>
     | IClickableObject3D<Value>
     | undefined,
+  pointerId: number = 1,
 ): ThreeMouseEvent<Value> {
-  return createThreeMouseEvent(type, handlerOrView);
+  return createThreeMouseEvent(type, handlerOrView, pointerId);
 }
 
 /**
