@@ -162,13 +162,8 @@ export class MouseEventManagerScene {
    * @param pointerId - Pointer identifier (defaults to 1 for primary pointer)
    *
    * @description
-   * Creates a fake PointerEvent using `createFakePointerEventWithId` and dispatches it to the canvas element.
-   * Despite the "Mouse" in the method name (retained for backward compatibility), this method now
-   * creates PointerEvents to support multitouch scenarios with proper pointerId handling.
-   *
-   * @motivation Method name preserved for compatibility with existing test code that assumes
-   *             mouse-based event dispatch. The implementation migrated to PointerEvent
-   *             to support Phase 1 of multitouch preparation (#579).
+   * Creates a fake pointer event using `createFakePointerEventWithId` and dispatches it to the canvas element.
+   * Uses PointerEvent to support multitouch scenarios with proper pointerId handling.
    */
   public dispatchMouseEvent(
     type: string,

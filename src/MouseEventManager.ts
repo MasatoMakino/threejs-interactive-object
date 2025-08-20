@@ -118,7 +118,7 @@ export class MouseEventManager {
   protected raycaster: Raycaster = new Raycaster();
   protected mouse: Vector2 = new Vector2();
 
-  protected currentOver: IClickableObject3D<unknown>[] = [];
+  protected currentOver: Map<number, IClickableObject3D<unknown>[]> = new Map();
 
   protected hasThrottled: boolean = false;
   public throttlingTime_ms: number;
@@ -315,6 +315,8 @@ export class MouseEventManager {
    * @see {@link onTick} - RAF ticker callback that manages throttling state
    */
   protected onDocumentMouseMove = (event: PointerEvent) => {
+    const pointerId = event.pointerId;
+
     // Skip throttling checks when throttling is disabled
     if (this.throttlingTime_ms > 0) {
       if (this.hasThrottled) return;
@@ -324,43 +326,57 @@ export class MouseEventManager {
     event.preventDefault();
     const intersects = this.getIntersects(event);
     if (intersects.length === 0) {
-      this.clearOver();
+      this.clearOver(pointerId);
       return;
     }
 
-    const beforeOver = this.currentOver;
-    this.currentOver = [];
+    const beforeOver = this.currentOver.get(pointerId) || [];
+    this.currentOver.set(pointerId, []);
 
     for (const intersect of intersects) {
-      const checked = this.checkTarget(intersect.object, "over");
+      const checked = this.checkTarget(intersect.object, "over", pointerId);
       if (checked) break;
     }
 
-    beforeOver?.forEach((btn) => {
-      if (!this.currentOver.includes(btn)) {
-        MouseEventManager.onButtonHandler(btn, "out");
+    beforeOver.forEach((btn) => {
+      const currentPointerOver = this.currentOver.get(pointerId) || [];
+      if (!currentPointerOver.includes(btn)) {
+        MouseEventManager.onButtonHandler(btn, "out", pointerId);
       }
     });
   };
 
   /**
-   * Clears all currently hovered objects and emits "out" events.
+   * Clears hover states for specified pointerId or all pointers.
+   *
+   * @param pointerId - Optional pointer ID to clear; if undefined, clears all pointers
    *
    * @description
-   * Resets the hover state by emitting "out" events for all objects currently
-   * in the currentOver array, then clearing the array. This method is called
-   * when the pointer moves outside all interactive objects or when no intersections
-   * are detected during pointer movement.
+   * Resets hover state by emitting "out" events for objects currently tracked
+   * in the currentOver Map. When pointerId is specified, only that pointer's
+   * hover state is cleared. When undefined, all pointer states are cleared.
    *
    * @remarks
    * This method ensures proper cleanup of hover states to prevent objects
    * from remaining in an incorrect "over" state when they should return to "normal".
    */
-  protected clearOver(): void {
-    this.currentOver?.forEach((over) => {
-      MouseEventManager.onButtonHandler(over, "out");
-    });
-    this.currentOver = [];
+  protected clearOver(pointerId?: number): void {
+    if (pointerId !== undefined) {
+      // Clear specific pointerId only
+      const pointerOver = this.currentOver.get(pointerId) || [];
+      pointerOver.forEach((over) => {
+        MouseEventManager.onButtonHandler(over, "out", pointerId);
+      });
+      this.currentOver.delete(pointerId);
+    } else {
+      // Clear all pointers (backward compatibility)
+      this.currentOver.forEach((overArray, pId) => {
+        overArray.forEach((over) => {
+          MouseEventManager.onButtonHandler(over, "out", pId);
+        });
+      });
+      this.currentOver.clear();
+    }
   }
 
   /**
@@ -393,6 +409,8 @@ export class MouseEventManager {
    * @see {@link ViewPortUtil.isContain} - Viewport boundary validation
    */
   protected onDocumentMouseUpDown = (event: PointerEvent) => {
+    const pointerId = event.pointerId;
+
     let eventType: keyof ThreeMouseEventMap = "down";
     switch (event.type) {
       case "pointerdown":
@@ -412,7 +430,7 @@ export class MouseEventManager {
 
     event.preventDefault();
     const intersects = this.getIntersects(event);
-    this.checkIntersects(intersects, eventType);
+    this.checkIntersects(intersects, eventType, pointerId);
   };
 
   /**
@@ -441,12 +459,13 @@ export class MouseEventManager {
   private checkIntersects(
     intersects: Intersection<Object3D>[],
     type: keyof ThreeMouseEventMap,
+    pointerId: number = 1,
   ): void {
     const n: number = intersects.length;
     if (n === 0) return;
 
     for (let i = 0; i < n; i++) {
-      const checked = this.checkTarget(intersects[i].object, type);
+      const checked = this.checkTarget(intersects[i].object, type, pointerId);
       if (checked) {
         break;
       }
@@ -494,29 +513,30 @@ export class MouseEventManager {
   public static onButtonHandler(
     btn: IClickableObject3D<unknown>,
     type: keyof ThreeMouseEventMap,
+    pointerId: number = 1,
   ) {
     switch (type) {
       case "down":
         btn.interactionHandler.onMouseDownHandler(
-          ThreeMouseEventUtil.generate(type, btn),
+          ThreeMouseEventUtil.generate(type, btn, pointerId),
         );
         return;
       case "up":
         btn.interactionHandler.onMouseUpHandler(
-          ThreeMouseEventUtil.generate(type, btn),
+          ThreeMouseEventUtil.generate(type, btn, pointerId),
         );
         return;
       case "over":
         if (!btn.interactionHandler.isOver) {
           btn.interactionHandler.onMouseOverHandler(
-            ThreeMouseEventUtil.generate(type, btn),
+            ThreeMouseEventUtil.generate(type, btn, pointerId),
           );
         }
         return;
       case "out":
         if (btn.interactionHandler.isOver) {
           btn.interactionHandler.onMouseOutHandler(
-            ThreeMouseEventUtil.generate(type, btn),
+            ThreeMouseEventUtil.generate(type, btn, pointerId),
           );
         }
         return;
@@ -641,6 +661,7 @@ export class MouseEventManager {
   protected checkTarget(
     target: Object3D | undefined | null,
     type: keyof ThreeMouseEventMap,
+    pointerId: number = 1,
     hasTarget: boolean = false,
   ): boolean {
     if (MouseEventManager.implementsDepartedIClickableObject3D(target)) {
@@ -656,10 +677,12 @@ export class MouseEventManager {
       target.interactionHandler.mouseEnabled
     ) {
       if (type === "over") {
-        this.currentOver.push(target);
+        const currentPointerOver = this.currentOver.get(pointerId) || [];
+        currentPointerOver.push(target);
+        this.currentOver.set(pointerId, currentPointerOver);
       }
-      MouseEventManager.onButtonHandler(target, type);
-      return this.checkTarget(target.parent, type, true);
+      MouseEventManager.onButtonHandler(target, type, pointerId);
+      return this.checkTarget(target.parent, type, pointerId, true);
     }
 
     // If not implementing the interface, continue searching the parent.
@@ -669,7 +692,7 @@ export class MouseEventManager {
       target.parent != null &&
       target.parent.type !== "Scene"
     ) {
-      return this.checkTarget(target.parent, type, hasTarget);
+      return this.checkTarget(target.parent, type, pointerId, hasTarget);
     }
 
     // End search when parent is Scene.
