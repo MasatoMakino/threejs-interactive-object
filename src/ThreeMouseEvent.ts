@@ -94,6 +94,9 @@ export interface ThreeMouseEventMap<T = unknown> {
  *   // Event type is always available
  *   console.log(`Event: ${e.type}`); // 'click', 'over', 'select', etc.
  *
+ *   // Pointer ID for multitouch support
+ *   console.log(`Pointer ID: ${e.pointerId}`); // 1 (default), 2, 3, etc.
+ *
  *   // Access to the interaction handler (if available)
  *   if (e.interactionHandler) {
  *     console.log(`Value: ${e.interactionHandler.value}`);
@@ -114,6 +117,7 @@ export interface ThreeMouseEventMap<T = unknown> {
  * - All properties are readonly to prevent accidental modification
  * - `interactionHandler` may be undefined in some contexts
  * - `isSelected` is only meaningful for checkbox and radio button events
+ * - `pointerId` defaults to 1 for single-pointer interactions
  * - The event object is created by ThreeMouseEventUtil.generate()
  * - Despite the "Mouse" naming, supports all pointer input types (mouse, touch, pen)
  *
@@ -128,4 +132,6 @@ export interface ThreeMouseEvent<Value> {
   readonly interactionHandler?: ButtonInteractionHandler<Value>;
   /** Selection state for checkbox/radio button events (undefined for basic buttons) */
   readonly isSelected?: boolean;
+  /** Pointer identifier for multitouch support (defaults to 1 for primary pointer) */
+  readonly pointerId: number;
 }

@@ -84,23 +84,27 @@ function getSelection<Value>(
  * Primary factory function for creating ThreeMouseEvent objects. Automatically
  * populates the isSelected property for "select" events by querying handler
  * selection state. For other event types, isSelected remains undefined.
+ * The pointerId defaults to 1 for backward compatibility.
  *
  * @param type - Event type from ThreeMouseEventMap (click, down, up, over, out,
  *   select)
  * @param handlerOrView - Source handler or interactive view object for the
  *   event
+ * @param pointerId - Pointer identifier for multitouch support (defaults to 1)
  * @returns Fully populated ThreeMouseEvent object
  *
  * @example
  * ```typescript
- * // Create click event from button
+ * // Create click event from button (default pointerId = 1)
  * const clickEvent = createThreeMouseEvent("click", button.interactionHandler);
  * console.log(clickEvent.type); // "click"
+ * console.log(clickEvent.pointerId); // 1
  * console.log(clickEvent.isSelected); // undefined
  *
- * // Create select event from checkbox
- * const selectEvent = createThreeMouseEvent("select", checkbox);
+ * // Create select event from checkbox with custom pointerId
+ * const selectEvent = createThreeMouseEvent("select", checkbox, 2);
  * console.log(selectEvent.type); // "select"
+ * console.log(selectEvent.pointerId); // 2
  * console.log(selectEvent.isSelected); // true/false
  * ```
  *
@@ -113,6 +117,7 @@ export function createThreeMouseEvent<Value>(
     | ButtonInteractionHandler<Value>
     | IClickableObject3D<Value>
     | undefined,
+  pointerId: number = 1,
 ): ThreeMouseEvent<Value> {
   const interactionHandler = getInteractionHandler(handlerOrView);
   const getSelectionValue = () => {
@@ -126,6 +131,7 @@ export function createThreeMouseEvent<Value>(
     type,
     interactionHandler,
     isSelected: getSelectionValue(),
+    pointerId,
   };
 }
 
@@ -133,21 +139,22 @@ export function createThreeMouseEvent<Value>(
  * Creates a copy of an existing ThreeMouseEvent.
  *
  * @description
- * Clones a ThreeMouseEvent by regenerating it using the original event's type
- * and interaction handler. Selection state is recalculated from current
+ * Clones a ThreeMouseEvent by regenerating it using the original event's type,
+ * interaction handler, and pointerId. Selection state is recalculated from current
  * handler state, which may differ from the original if selection changed.
  *
  * @param e - The ThreeMouseEvent to clone
- * @returns New ThreeMouseEvent with the same type and handler reference
+ * @returns New ThreeMouseEvent with the same type, handler reference, and pointerId
  *
  * @example
  * ```typescript
- * const originalEvent = createThreeMouseEvent("select", checkbox);
+ * const originalEvent = createThreeMouseEvent("select", checkbox, 2);
  * const clonedEvent = cloneThreeMouseEvent(originalEvent);
  *
  * // Events have same structure but selection state reflects current handler
  * // state
  * console.log(originalEvent.type === clonedEvent.type); // true
+ * console.log(originalEvent.pointerId === clonedEvent.pointerId); // true
  * console.log(originalEvent.interactionHandler === clonedEvent.interactionHandler);
  * // true
  * ```
@@ -157,7 +164,7 @@ export function createThreeMouseEvent<Value>(
 export function cloneThreeMouseEvent<Value>(
   e: ThreeMouseEvent<Value>,
 ): ThreeMouseEvent<Value> {
-  return createThreeMouseEvent(e.type, e.interactionHandler);
+  return createThreeMouseEvent(e.type, e.interactionHandler, e.pointerId);
 }
 
 /**

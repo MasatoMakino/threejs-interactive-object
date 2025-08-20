@@ -40,6 +40,7 @@ import {
   MouseEventManagerScene,
   type MouseEventManagerSceneOptions,
 } from "./MouseEventManagerScene.js";
+import { createPointerEventWithId } from "./PointerEventTestUtil.js";
 
 /**
  * MouseEventManager edge cases and error handling test suite
@@ -191,7 +192,7 @@ describe("MouseEventManager Edge Cases & Error Handling", () => {
       const { managerScene } = createTestEnvironment();
 
       // Create PointerEvent with minimal properties
-      const incompleteEvent = new PointerEvent("pointermove", {
+      const incompleteEvent = createPointerEventWithId("pointermove", {
         // Intentionally omit clientX and clientY to test handling
         bubbles: true,
         cancelable: true,

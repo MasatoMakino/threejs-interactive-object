@@ -1,7 +1,7 @@
-import { getMouseEvent } from "@masatomakino/fake-mouse-event";
 import { RAFTicker } from "@masatomakino/raf-ticker";
 import { type Camera, PerspectiveCamera, Scene } from "three";
 import { MouseEventManager } from "../src/index.js";
+import { createFakePointerEventWithId } from "./PointerEventTestUtil.js";
 
 /**
  * Constructor options type for MouseEventManager
@@ -154,26 +154,33 @@ export class MouseEventManagerScene {
   }
 
   /**
-   * Dispatches a pointer/mouse event to the canvas element
+   * Dispatches a pointer event to the canvas element
    *
-   * @param type - Event type (supports both pointer events like 'pointermove', 'pointerdown', 'pointerup' and mouse events)
+   * @param type - Event type (pointer events like 'pointermove', 'pointerdown', 'pointerup')
    * @param x - X coordinate relative to canvas
    * @param y - Y coordinate relative to canvas
+   * @param pointerId - Pointer identifier (defaults to 1 for primary pointer)
    *
    * @description
-   * Creates a fake mouse event using `getMouseEvent` and dispatches it to the canvas element.
-   * Although the function creates a MouseEvent, it can handle pointer event types
-   * and includes clientX, clientY, offsetX, and offsetY properties set to the same values.
+   * Creates a fake pointer event using `createFakePointerEventWithId` and dispatches it to the canvas element.
+   * Uses PointerEvent to support multitouch scenarios with proper pointerId handling.
    */
-  public dispatchMouseEvent(type: string, x: number, y: number): void {
-    const e = getMouseEvent(type, {
-      x,
-      y,
-      clientX: x,
-      clientY: y,
-      offsetX: x,
-      offsetY: y,
-    });
+  public dispatchMouseEvent(
+    type: string,
+    x: number,
+    y: number,
+    pointerId: number = 1,
+  ): void {
+    const e = createFakePointerEventWithId(
+      type,
+      {
+        clientX: x,
+        clientY: y,
+        offsetX: x,
+        offsetY: y,
+      },
+      pointerId,
+    );
     this.canvas.dispatchEvent(e);
   }
 
