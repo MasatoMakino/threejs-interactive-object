@@ -109,7 +109,8 @@ describe("MouseEventManager Raycasting & Intersection Processing", () => {
    * Creates test environment using shared factory function
    */
   const createTestEnvironment = (): RaycastingTestEnvironment => {
-    return createRaycastingTestEnvironment(undefined, testEnvironments);
+    // Explicit empty options documents intent; relies on internal defaults.
+    return createRaycastingTestEnvironment({}, testEnvironments);
   };
 
   /**
