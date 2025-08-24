@@ -35,8 +35,8 @@ import {
 import { ClickableMesh, type ClickableState } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import {
-  MouseEventManagerScene,
   createRaycastingTestEnvironment,
+  MouseEventManagerScene,
   type RaycastingTestEnvironment,
 } from "./MouseEventManagerScene.js";
 import { createPointerEventWithId } from "./PointerEventTestUtil.js";

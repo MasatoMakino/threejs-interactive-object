@@ -1,8 +1,8 @@
 import { RAFTicker } from "@masatomakino/raf-ticker";
-import { type Camera, PerspectiveCamera, Scene, BoxGeometry } from "three";
-import { MouseEventManager, ClickableMesh } from "../src/index.js";
-import { createFakePointerEventWithId } from "./PointerEventTestUtil.js";
+import { BoxGeometry, type Camera, PerspectiveCamera, Scene } from "three";
+import { ClickableMesh, MouseEventManager } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
+import { createFakePointerEventWithId } from "./PointerEventTestUtil.js";
 
 /**
  * Constructor options type for MouseEventManager

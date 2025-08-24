@@ -1,7 +1,9 @@
-import { describe, it, expect, afterAll } from "vitest";
+import type { Object3D } from "three";
+import { afterAll, describe, expect, it } from "vitest";
+import type { IClickableObject3D, ThreeMouseEventMap } from "../src/index.js";
 import {
-  MouseEventManagerScene,
   createRaycastingTestEnvironment,
+  type MouseEventManagerScene,
   type RaycastingTestEnvironment,
 } from "./MouseEventManagerScene.js";
 
@@ -40,6 +42,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId);
       });
 
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map state requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver;
       expect(currentOver.size).toBe(pointerIds.length);
       pointerIds.forEach((pointerId) => {
@@ -52,14 +55,16 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
   describe("currentOver Map Infrastructure", () => {
     it("should have currentOver as Map property", () => {
       const { managerScene } = createTestEnvironment();
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map type requires accessing private property
       expect((managerScene.manager as any).currentOver).toBeInstanceOf(Map);
     });
 
     it("should initialize empty currentOver Map", () => {
       const { managerScene } = createTestEnvironment();
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
-        any
+        IClickableObject3D<unknown>[]
       >;
       expect(currentOver.size).toBe(0);
     });
@@ -70,9 +75,10 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const pointerId1 = 1;
       const pointerId2 = 2;
 
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
-        any[]
+        IClickableObject3D<unknown>[]
       >;
       // pointerId 1: hover target
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId1);
@@ -91,9 +97,10 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const touchPointerId = 2;
       const iPadPointerId = -560913604; // iPad-style pointer ID
 
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
-        any[]
+        IClickableObject3D<unknown>[]
       >;
 
       managerScene.dispatchMouseEvent(
@@ -129,14 +136,16 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const pointerId1 = 1;
       const pointerId2 = 2;
 
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
-        any[]
+        IClickableObject3D<unknown>[]
       >;
 
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId1);
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId2);
 
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal clearOver method behavior requires accessing private method
       (managerScene.manager as any).clearOver(pointerId1);
 
       expect(currentOver.has(pointerId1)).toBe(false);
@@ -150,9 +159,10 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const touchPointerId = 2;
       const iPadPointerId = -560913604;
 
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
-        any[]
+        IClickableObject3D<unknown>[]
       >;
 
       managerScene.dispatchMouseEvent(
@@ -174,6 +184,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         iPadPointerId,
       );
 
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal clearOver method behavior requires accessing private method
       (managerScene.manager as any).clearOver();
 
       expect(currentOver.size).toBe(0);
@@ -222,6 +233,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
     it("should maintain Map-based currentOver behavior", () => {
       const { managerScene } = createTestEnvironment();
 
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map state requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver;
       expect(currentOver).toBeInstanceOf(Map);
       expect(currentOver.size).toBe(0);
@@ -282,9 +294,10 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointer3);
 
       // Check currentOver state before throttling resolution
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
-        any[]
+        IClickableObject3D<unknown>[]
       >;
 
       // Expected behavior: all pointers should be processed or properly throttled
@@ -340,11 +353,13 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       });
 
       // Debug: Check initial state
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal hasThrottled Set requires accessing private property
       const hasThrottled = (managerScene.manager as any)
         .hasThrottled as Set<number>;
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
-        any[]
+        IClickableObject3D<unknown>[]
       >;
       // After reset(), pointerId=1 may be throttled due to reset events, so clear it first
       managerScene.interval();
@@ -402,15 +417,26 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       }> = [];
 
       // Monitor internal processing (if accessible)
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal checkTarget method requires accessing private method
       const originalCheckTarget = (managerScene.manager as any).checkTarget;
-      (managerScene.manager as any).checkTarget = function (...args: any[]) {
-        const pointerId = args[2] || 1; // Default pointerId is 1
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal checkTarget method requires accessing private method
+      (managerScene.manager as any).checkTarget = function (
+        target: Object3D | undefined | null,
+        type: keyof ThreeMouseEventMap,
+        pointerId: number = 1,
+        hasTarget: boolean = false,
+      ) {
         processingEvents.push({
           pointerId,
           timestamp: managerScene.currentTime,
           phase: "checkTarget",
         });
-        return originalCheckTarget.apply(this, args);
+        return originalCheckTarget.apply(this, [
+          target,
+          type,
+          pointerId,
+          hasTarget,
+        ]);
       };
 
       // Dispatch multiple pointers with time gaps
@@ -433,6 +459,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       expect(pointer2Events.length).toBeGreaterThan(0);
 
       // Restore original method
+      // biome-ignore lint/suspicious/noExplicitAny: Restoring internal checkTarget method requires accessing private property
       (managerScene.manager as any).checkTarget = originalCheckTarget;
     });
   });
