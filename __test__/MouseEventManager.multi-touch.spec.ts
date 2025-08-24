@@ -124,7 +124,8 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
 
   describe("Multi-touch Event Processing", () => {
     it("should handle clearOver with specific pointerId", () => {
-      const { managerScene, multiFaceMesh } = createTestEnvironment();
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
       const pointerId1 = 1;
       const pointerId2 = 2;
 
@@ -133,8 +134,8 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         any[]
       >;
 
-      currentOver.set(pointerId1, [multiFaceMesh]);
-      currentOver.set(pointerId2, [multiFaceMesh]);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId1);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId2);
 
       (managerScene.manager as any).clearOver(pointerId1);
 
@@ -144,7 +145,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
     });
 
     it("should handle clearOver without pointerId (clear all)", () => {
-      const { managerScene, multiFaceMesh } = createTestEnvironment();
+      const { managerScene, halfW, halfH } = createTestEnvironment();
       const mousePointerId = 1;
       const touchPointerId = 2;
       const iPadPointerId = -560913604;
@@ -154,9 +155,24 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         any[]
       >;
 
-      currentOver.set(mousePointerId, [multiFaceMesh]);
-      currentOver.set(touchPointerId, [multiFaceMesh]);
-      currentOver.set(iPadPointerId, [multiFaceMesh]);
+      managerScene.dispatchMouseEvent(
+        "pointermove",
+        halfW,
+        halfH,
+        mousePointerId,
+      );
+      managerScene.dispatchMouseEvent(
+        "pointermove",
+        halfW,
+        halfH,
+        touchPointerId,
+      );
+      managerScene.dispatchMouseEvent(
+        "pointermove",
+        halfW,
+        halfH,
+        iPadPointerId,
+      );
 
       (managerScene.manager as any).clearOver();
 
