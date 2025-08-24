@@ -1,6 +1,5 @@
-import type { Object3D } from "three";
-import { afterAll, describe, expect, it } from "vitest";
-import type { IClickableObject3D, ThreeMouseEventMap } from "../src/index.js";
+import { afterAll, describe, expect, it, vi } from "vitest";
+import type { IClickableObject3D } from "../src/index.js";
 import {
   createRaycastingTestEnvironment,
   type MouseEventManagerScene,
@@ -416,51 +415,53 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         phase: string;
       }> = [];
 
-      // Monitor internal processing (if accessible)
+      // Store original method before spying
       // biome-ignore lint/suspicious/noExplicitAny: Testing internal checkTarget method requires accessing private method
       const originalCheckTarget = (managerScene.manager as any).checkTarget;
-      // biome-ignore lint/suspicious/noExplicitAny: Testing internal checkTarget method requires accessing private method
-      (managerScene.manager as any).checkTarget = function (
-        target: Object3D | undefined | null,
-        type: keyof ThreeMouseEventMap,
-        pointerId: number = 1,
-        hasTarget: boolean = false,
-      ) {
-        processingEvents.push({
-          pointerId,
-          timestamp: managerScene.currentTime,
-          phase: "checkTarget",
+
+      // Monitor internal processing using vi.spyOn for guaranteed cleanup
+      const checkTargetSpy = vi
+        // biome-ignore lint/suspicious/noExplicitAny: Testing internal checkTarget method requires accessing private method
+        .spyOn(managerScene.manager as any, "checkTarget")
+        // biome-ignore lint/suspicious/noExplicitAny: Vitest mockImplementation requires any[] for internal method compatibility
+        .mockImplementation(function (...args: any[]): boolean {
+          const pointerId = args[2] || 1; // Default pointerId is 1
+          processingEvents.push({
+            pointerId,
+            timestamp: managerScene.currentTime,
+            phase: "checkTarget",
+          });
+          // Call original implementation
+          return originalCheckTarget.apply(this, args);
         });
-        return originalCheckTarget.apply(this, [
-          target,
-          type,
-          pointerId,
-          hasTarget,
-        ]);
-      };
 
-      // Dispatch multiple pointers with time gaps
-      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1);
-      managerScene.interval(); // Advance 66ms (2 * throttlingTime_ms)
+      try {
+        // Dispatch multiple pointers with time gaps
+        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1);
+        managerScene.interval(); // Advance 66ms (2 * throttlingTime_ms)
 
-      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 2);
-      managerScene.interval(); // Advance another 66ms
+        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 2);
+        managerScene.interval(); // Advance another 66ms
 
-      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1); // pointer 1 again
+        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1); // pointer 1 again
 
-      // Verify processing events occurred at expected times
-      expect(processingEvents.length).toBeGreaterThan(0);
+        // Verify processing events occurred at expected times
+        expect(processingEvents.length).toBeGreaterThan(0);
 
-      // Each pointerId should have independent processing timeline
-      const pointer1Events = processingEvents.filter((e) => e.pointerId === 1);
-      const pointer2Events = processingEvents.filter((e) => e.pointerId === 2);
+        // Each pointerId should have independent processing timeline
+        const pointer1Events = processingEvents.filter(
+          (e) => e.pointerId === 1,
+        );
+        const pointer2Events = processingEvents.filter(
+          (e) => e.pointerId === 2,
+        );
 
-      expect(pointer1Events.length).toBeGreaterThan(0);
-      expect(pointer2Events.length).toBeGreaterThan(0);
-
-      // Restore original method
-      // biome-ignore lint/suspicious/noExplicitAny: Restoring internal checkTarget method requires accessing private property
-      (managerScene.manager as any).checkTarget = originalCheckTarget;
+        expect(pointer1Events.length).toBeGreaterThan(0);
+        expect(pointer2Events.length).toBeGreaterThan(0);
+      } finally {
+        // Guaranteed cleanup even if assertions fail
+        checkTargetSpy.mockRestore();
+      }
     });
   });
 });
