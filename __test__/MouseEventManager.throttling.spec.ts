@@ -470,9 +470,9 @@ describe("MouseEventManager Throttling", () => {
           ).toBe(false);
 
           expect(
-            typedManager.hasThrottled.constructor.name,
+            typedManager.hasThrottled,
             `hasThrottled should remain Set instance with ${description}`,
-          ).toBe("Set");
+          ).toBeInstanceOf(Set);
 
           // For zero throttling, delta should be reset regardless of input
           if (delta >= 0) {
