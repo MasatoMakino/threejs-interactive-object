@@ -33,8 +33,7 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
   describe("PointerID Infrastructure", () => {
     it("should handle different pointerId values", () => {
       const { managerScene } = createTestEnvironment();
-      // 異なるpointerIdでイベント生成テスト
-      const pointerIds = [1, 2, -560913604, -560913605]; // Chrome mouse + iPad touch風
+      const pointerIds = [1, 2, -560913604, -560913605]; // Chrome mouse + iPad touch style IDs
 
       pointerIds.forEach((pointerId) => {
         managerScene.dispatchMouseEvent("pointermove", 400, 300, pointerId);
@@ -51,13 +50,11 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
   describe("currentOver Map Infrastructure", () => {
     it("should have currentOver as Map property", () => {
       const { managerScene } = createTestEnvironment();
-      // currentOverがMapであることを確認
       expect((managerScene.manager as any).currentOver).toBeInstanceOf(Map);
     });
 
     it("should initialize empty currentOver Map", () => {
       const { managerScene } = createTestEnvironment();
-      // 初期状態でcurrentOverが空であることを確認
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
         any
@@ -70,15 +67,12 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const pointerId1 = 1;
       const pointerId2 = 2;
 
-      // 異なるpointerIdで異なる状態管理をテスト
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
         any[]
       >;
 
-      // pointerId1の状態設定
       currentOver.set(pointerId1, [multiFaceMesh]);
-      // pointerId2の状態設定
       currentOver.set(pointerId2, []);
 
       expect(currentOver.get(pointerId1)).toHaveLength(1);
@@ -90,15 +84,13 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const { managerScene, multiFaceMesh } = createTestEnvironment();
       const mousePointerId = 1;
       const touchPointerId = 2;
-      const iPadPointerId = -560913604; // iPad風ID
+      const iPadPointerId = -560913604; // iPad-style pointer ID
 
-      // 同一オブジェクトに複数pointerIdが hover している状態をテスト
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
         any[]
       >;
 
-      // 複数のpointerIdで同じターゲットをhover
       currentOver.set(mousePointerId, [multiFaceMesh]);
       currentOver.set(touchPointerId, [multiFaceMesh]);
       currentOver.set(iPadPointerId, [multiFaceMesh]);
@@ -116,17 +108,14 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const pointerId1 = 1;
       const pointerId2 = 2;
 
-      // 特定pointerIdのclearOver動作をテスト
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
         any[]
       >;
 
-      // 複数pointerIdの状態を設定
       currentOver.set(pointerId1, [multiFaceMesh]);
       currentOver.set(pointerId2, [multiFaceMesh]);
 
-      // pointerId1のみクリア
       (managerScene.manager as any).clearOver(pointerId1);
 
       expect(currentOver.has(pointerId1)).toBe(false);
@@ -140,18 +129,15 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const touchPointerId = 2;
       const iPadPointerId = -560913604;
 
-      // 全pointerIdクリアのテスト
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
         any[]
       >;
 
-      // 複数pointerIdの状態を設定
       currentOver.set(mousePointerId, [multiFaceMesh]);
       currentOver.set(touchPointerId, [multiFaceMesh]);
       currentOver.set(iPadPointerId, [multiFaceMesh]);
 
-      // 全てクリア
       (managerScene.manager as any).clearOver();
 
       expect(currentOver.size).toBe(0);
@@ -162,7 +148,6 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         createTestEnvironment();
       const testPointerId = 123;
 
-      // pointerIdがイベント処理チェーンを通って伝播することをテスト
       const events: Array<{ type: string; pointerId: number }> = [];
       multiFaceMesh.interactionHandler.on("over", (e) => {
         events.push({ type: "over", pointerId: e.pointerId });
@@ -172,7 +157,6 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         events.push({ type: "down", pointerId: e.pointerId });
       });
 
-      // 固定座標を使用（レイキャスティングのためにcanvas中央付近）
       const centerX = halfW;
       const centerY = halfH;
 
@@ -189,7 +173,6 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         testPointerId,
       );
 
-      // pointerIdが正しく伝播していることを確認
       expect(
         events.some((e) => e.type === "over" && e.pointerId === testPointerId),
       ).toBe(true);
@@ -206,7 +189,6 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       const currentOver = (managerScene.manager as any).currentOver;
       expect(currentOver).toBeInstanceOf(Map);
       expect(currentOver.size).toBe(0);
-      // 現在のcurrentOverがMapであることを確認
     });
 
     it("should process single pointer events as before", () => {
@@ -214,7 +196,6 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         createTestEnvironment();
       const defaultPointerId = 1;
 
-      // 単一ポインターイベントが従来通り処理されることを確認
       const events: string[] = [];
       multiFaceMesh.interactionHandler.on("over", () => events.push("over"));
       multiFaceMesh.interactionHandler.on("out", () => events.push("out"));
@@ -226,7 +207,6 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         defaultPointerId,
       );
 
-      // over イベントが発生することを確認
       expect(events).toContain("over");
       expect(events).not.toContain("out");
     });
