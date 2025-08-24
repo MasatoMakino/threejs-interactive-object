@@ -47,6 +47,8 @@ const onDomContentsLoaded = () => {
   canvas.style.width = `${W}px`;
   canvas.style.height = `${H}px`;
 
+  document.body.style = "touch-action: none;";
+
   //平行光源オブジェクト(light)の設定
   const ambientLight = new AmbientLight(0xffffff, 1.0);
   scene.add(ambientLight);

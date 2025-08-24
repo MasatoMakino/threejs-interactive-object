@@ -1,6 +1,7 @@
 import { RAFTicker } from "@masatomakino/raf-ticker";
-import { type Camera, PerspectiveCamera, Scene } from "three";
-import { MouseEventManager } from "../src/index.js";
+import { BoxGeometry, type Camera, PerspectiveCamera, Scene } from "three";
+import { ClickableMesh, MouseEventManager } from "../src/index.js";
+import { getMeshMaterialSet } from "./Materials.js";
 import { createFakePointerEventWithId } from "./PointerEventTestUtil.js";
 
 /**
@@ -28,6 +29,26 @@ export interface MouseEventManagerSceneOptions
   canvasWidth?: number;
   /** Canvas height in pixels (default: 1080) */
   canvasHeight?: number;
+}
+
+/**
+ * Test environment interface for raycasting tests
+ *
+ * @description
+ * Defines the test environment structure for MouseEventManager raycasting tests,
+ * including multi-face geometry and complex hierarchy setups.
+ *
+ * @public
+ */
+export interface RaycastingTestEnvironment {
+  /** MouseEventManager test scene with camera, canvas, and event dispatching */
+  managerScene: MouseEventManagerScene;
+  /** ClickableMesh with BoxGeometry for UUID filtering tests */
+  multiFaceMesh: ClickableMesh;
+  /** Canvas center X coordinate for consistent event positioning */
+  halfW: number;
+  /** Canvas center Y coordinate for consistent event positioning */
+  halfH: number;
 }
 
 /**
@@ -162,13 +183,8 @@ export class MouseEventManagerScene {
    * @param pointerId - Pointer identifier (defaults to 1 for primary pointer)
    *
    * @description
-   * Creates a fake PointerEvent using `createFakePointerEventWithId` and dispatches it to the canvas element.
-   * Despite the "Mouse" in the method name (retained for backward compatibility), this method now
-   * creates PointerEvents to support multitouch scenarios with proper pointerId handling.
-   *
-   * @motivation Method name preserved for compatibility with existing test code that assumes
-   *             mouse-based event dispatch. The implementation migrated to PointerEvent
-   *             to support Phase 1 of multitouch preparation (#579).
+   * Creates a fake pointer event using `createFakePointerEventWithId` and dispatches it to the canvas element.
+   * Uses PointerEvent to support multitouch scenarios with proper pointerId handling.
    */
   public dispatchMouseEvent(
     type: string,
@@ -207,4 +223,59 @@ export class MouseEventManagerScene {
       this.canvas.parentNode?.removeChild(this.canvas);
     }
   }
+}
+
+/**
+ * Creates an isolated test environment for raycasting tests
+ *
+ * @param options - Optional scene configuration options
+ * @param testEnvironments - Array to track created environments for cleanup
+ * @returns Complete test environment with multi-face geometry and hierarchy
+ *
+ * @description
+ * Generates a test environment containing:
+ * - Multi-face BoxGeometry ClickableMesh for UUID filtering tests
+ * - Parent-child hierarchy for traversal tests
+ * - Canvas center coordinates for consistent positioning
+ *
+ * @example
+ * ```typescript
+ * const testEnvironments: MouseEventManagerScene[] = [];
+ * const { managerScene, multiFaceMesh, halfW, halfH } = createRaycastingTestEnvironment({
+ *   canvasWidth: 800,
+ *   canvasHeight: 600,
+ *   throttlingTime_ms: 0
+ * }, testEnvironments);
+ * ```
+ *
+ * @public
+ */
+export function createRaycastingTestEnvironment(
+  options?: MouseEventManagerSceneOptions,
+  testEnvironments?: MouseEventManagerScene[],
+): RaycastingTestEnvironment {
+  const managerScene = new MouseEventManagerScene(options);
+
+  // Track for cleanup if array provided
+  if (testEnvironments) {
+    testEnvironments.push(managerScene);
+  }
+
+  // Create multi-face geometry for UUID filtering tests
+  const multiFaceMesh = new ClickableMesh({
+    geo: new BoxGeometry(3, 3, 3),
+    material: getMeshMaterialSet(),
+  });
+  multiFaceMesh.position.set(0, 0, 0);
+  managerScene.scene.add(multiFaceMesh);
+
+  const halfW = managerScene.canvas.width / 2;
+  const halfH = managerScene.canvas.height / 2;
+
+  return {
+    managerScene,
+    multiFaceMesh,
+    halfW,
+    halfH,
+  };
 }
