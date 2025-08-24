@@ -48,6 +48,7 @@ const onDomContentsLoaded = () => {
 
   canvas.style.maxWidth = "100%";
   canvas.style.maxHeight = "100%";
+  canvas.style.touchAction = "none";
   const resizeCanvas = () => {
     resizeCanvasStyle(containerDiv, canvas, W, H);
   };

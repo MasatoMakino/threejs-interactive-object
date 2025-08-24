@@ -70,6 +70,7 @@ class SceneSet {
 const onDomContentsLoaded = () => {
   // シーンを作成
   const canvas = document.getElementById("webgl-canvas");
+  canvas.style.touchAction = "none";
   const renderOption = {
     canvas,
   };
