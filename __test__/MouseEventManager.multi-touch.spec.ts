@@ -32,17 +32,19 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
 
   describe("PointerID Infrastructure", () => {
     it("should handle different pointerId values", () => {
-      const { managerScene } = createTestEnvironment();
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
       const pointerIds = [1, 2, -560913604, -560913605]; // Chrome mouse + iPad touch style IDs
 
       pointerIds.forEach((pointerId) => {
-        managerScene.dispatchMouseEvent("pointermove", 400, 300, pointerId);
+        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId);
       });
 
       const currentOver = (managerScene.manager as any).currentOver;
       expect(currentOver.size).toBe(pointerIds.length);
       pointerIds.forEach((pointerId) => {
         expect(currentOver.has(pointerId)).toBe(true);
+        expect(currentOver.get(pointerId)).toContain(multiFaceMesh);
       });
     });
   });
