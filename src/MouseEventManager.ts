@@ -347,18 +347,22 @@ export class MouseEventManager {
   };
 
   /**
-   * Clears hover states for specified pointerId or all pointers.
+   * Clears hover states for a specific pointer or all pointers.
    *
-   * @param pointerId - Optional pointer ID to clear; if undefined, clears all pointers
+   * @param pointerId - The ID of the pointer to clear hover state for.
+   *                    If undefined, clears hover states for ALL pointers.
    *
    * @description
    * Resets hover state by emitting "out" events for objects currently tracked
    * in the currentOver Map. When pointerId is specified, only that pointer's
-   * hover state is cleared. When undefined, all pointer states are cleared.
+   * hover state is cleared. When undefined, ALL pointer states are cleared
+   * (useful for cleanup scenarios like dispose or scene changes).
    *
    * @remarks
    * This method ensures proper cleanup of hover states to prevent objects
    * from remaining in an incorrect "over" state when they should return to "normal".
+   * The all-pointers clearing mode (undefined pointerId) maintains backward
+   * compatibility with single-pointer implementations.
    */
   protected clearOver(pointerId?: number): void {
     if (pointerId !== undefined) {
