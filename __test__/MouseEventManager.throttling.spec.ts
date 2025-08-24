@@ -56,6 +56,11 @@ function exposeMouseEventManagerForTest(
 }
 
 /**
+ * Default pointer ID used in tests to avoid magic numbers
+ */
+const DEFAULT_POINTER_ID = 1;
+
+/**
  * MouseEventManager throttling and performance tests
  */
 describe("MouseEventManager Throttling", () => {
@@ -127,17 +132,17 @@ describe("MouseEventManager Throttling", () => {
       test("should reset hasThrottled flag when throttling interval expires", () => {
         const typedManager = exposeMouseEventManagerForTest(manager);
 
-        // Set hasThrottled to true for default pointer (pointerId=1)
-        typedManager.hasThrottled.add(1);
+        // Set hasThrottled to true for default pointer (pointerId=DEFAULT_POINTER_ID)
+        typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
         expect(
-          typedManager.hasThrottled.has(1),
-          "Initial hasThrottled should be true for pointerId=1",
+          typedManager.hasThrottled.has(DEFAULT_POINTER_ID),
+          "Initial hasThrottled should be true for pointerId=DEFAULT_POINTER_ID",
         ).toBe(true);
 
         // Advance time by less than throttling interval (33ms default)
         RAFTicker.emit("tick", { timestamp: 0, delta: 20 });
         expect(
-          typedManager.hasThrottled.has(1),
+          typedManager.hasThrottled.has(DEFAULT_POINTER_ID),
           "hasThrottled should remain true before interval expires",
         ).toBe(true);
 
@@ -149,12 +154,47 @@ describe("MouseEventManager Throttling", () => {
         ).toBe(0);
       });
 
+      test("should not clear other pointer entries when only one pointer was throttled (pre-expiry)", () => {
+        const typedManager = exposeMouseEventManagerForTest(manager);
+        const p1 = DEFAULT_POINTER_ID;
+        const p2 = 2;
+
+        // Set multiple pointers as throttled
+        typedManager.hasThrottled.add(p1);
+        typedManager.hasThrottled.add(p2);
+
+        // Verify both are initially throttled
+        expect(typedManager.hasThrottled.has(p1)).toBe(true);
+        expect(typedManager.hasThrottled.has(p2)).toBe(true);
+        expect(typedManager.hasThrottled.size).toBe(2);
+
+        // Advance less than throttling interval
+        RAFTicker.emit("tick", {
+          timestamp: 0,
+          delta: manager.throttlingTime_ms - 1,
+        });
+
+        // Both should remain throttled pre-expiry (independent states preserved)
+        expect(
+          typedManager.hasThrottled.has(p1),
+          "Pointer 1 should remain throttled before interval expires",
+        ).toBe(true);
+        expect(
+          typedManager.hasThrottled.has(p2),
+          "Pointer 2 should remain throttled before interval expires",
+        ).toBe(true);
+        expect(
+          typedManager.hasThrottled.size,
+          "Both pointers should remain in throttled Set pre-expiry",
+        ).toBe(2);
+      });
+
       test("should apply modulo operation to throttlingDelta after reset", () => {
         const typedManager = exposeMouseEventManagerForTest(manager);
         const throttlingTime = manager.throttlingTime_ms; // Default 33ms
 
         // Set initial state
-        typedManager.hasThrottled.add(1);
+        typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
         typedManager.throttlingDelta = 0;
 
         // Emit tick with delta larger than throttling interval
@@ -173,7 +213,7 @@ describe("MouseEventManager Throttling", () => {
         const throttlingTime = manager.throttlingTime_ms;
 
         // Start from throttled state
-        typedManager.hasThrottled.add(1);
+        typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
         typedManager.throttlingDelta = 0;
 
         // Emit exact boundary delta
@@ -321,7 +361,7 @@ describe("MouseEventManager Throttling", () => {
         ).toBe(0);
 
         // Set initial state for testing
-        typedManager.hasThrottled.add(1);
+        typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
         typedManager.throttlingDelta = 50;
 
         // Emit tick event with zero throttling time - should not cause modulo-by-zero (NaN)
@@ -363,7 +403,7 @@ describe("MouseEventManager Throttling", () => {
         expect(typedManager.throttlingDelta).toBe(0);
 
         // Any delta time should immediately reset hasThrottled to false
-        typedManager.hasThrottled.add(1);
+        typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
         RAFTicker.emit("tick", { timestamp: 0, delta: 1 });
 
         expect(
@@ -373,7 +413,7 @@ describe("MouseEventManager Throttling", () => {
 
         // Multiple rapid ticks should not cause accumulation issues
         for (let i = 0; i < 10; i++) {
-          typedManager.hasThrottled.add(1);
+          typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
           RAFTicker.emit("tick", { timestamp: i, delta: 16 });
 
           expect(
@@ -417,7 +457,7 @@ describe("MouseEventManager Throttling", () => {
 
         for (const { delta, description } of edgeCases) {
           // Reset state
-          typedManager.hasThrottled.add(1);
+          typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
           typedManager.throttlingDelta = 100;
 
           // Emit tick with edge case delta
@@ -478,7 +518,7 @@ describe("MouseEventManager Throttling", () => {
 
         for (const { delta, description } of nonFiniteEdgeCases) {
           // Set up throttled state
-          typedManager.hasThrottled.add(1);
+          typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
           typedManager.throttlingDelta = 100;
 
           // Emit non-finite delta
@@ -657,7 +697,7 @@ describe("MouseEventManager Throttling", () => {
         );
 
         // Set hasThrottled to true to simulate active throttling
-        typedManager.hasThrottled.add(1);
+        typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
 
         // Dispatch rapid pointer move events
         const centerX = managerScene.canvas.width / 2;
@@ -682,7 +722,7 @@ describe("MouseEventManager Throttling", () => {
         );
 
         // Set throttling state
-        typedManager.hasThrottled.add(1);
+        typedManager.hasThrottled.add(DEFAULT_POINTER_ID);
 
         // Advance time beyond throttling interval
         managerScene.interval(); // Advances by 2.0 * throttlingTime_ms
