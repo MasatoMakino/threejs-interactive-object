@@ -120,7 +120,7 @@ export class MouseEventManager {
 
   protected currentOver: Map<number, IClickableObject3D<unknown>[]> = new Map();
 
-  protected hasThrottled: Map<number, boolean> = new Map();
+  protected hasThrottled: Set<number> = new Set();
   public throttlingTime_ms: number;
   protected throttlingDelta: number = 0;
   protected viewport?: Vector4;
@@ -319,8 +319,8 @@ export class MouseEventManager {
 
     // Skip throttling checks when throttling is disabled
     if (this.throttlingTime_ms > 0) {
-      if (this.hasThrottled.get(pointerId)) return;
-      this.hasThrottled.set(pointerId, true);
+      if (this.hasThrottled.has(pointerId)) return;
+      this.hasThrottled.add(pointerId);
     }
 
     event.preventDefault();

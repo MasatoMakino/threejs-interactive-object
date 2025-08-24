@@ -291,10 +291,8 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       });
 
       // Debug: Check initial state
-      const hasThrottled = (managerScene.manager as any).hasThrottled as Map<
-        number,
-        boolean
-      >;
+      const hasThrottled = (managerScene.manager as any)
+        .hasThrottled as Set<number>;
       const currentOver = (managerScene.manager as any).currentOver as Map<
         number,
         any[]
@@ -307,15 +305,15 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1);
 
       // Debug: Check state after first event
-      expect(hasThrottled.get(1)).toBe(true); // Should be throttled now
+      expect(hasThrottled.has(1)).toBe(true); // Should be throttled now
       expect(currentOver.has(1)).toBe(true); // Should have currentOver entry
 
       // Immediately dispatch pointer 2 - should be processed independently
       managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 2);
 
       // Debug: Check state after second event - this verifies independent throttling
-      expect(hasThrottled.get(1)).toBe(true); // Should still be throttled
-      expect(hasThrottled.get(2)).toBe(true); // Should also be throttled now (independent processing)
+      expect(hasThrottled.has(1)).toBe(true); // Should still be throttled
+      expect(hasThrottled.has(2)).toBe(true); // Should also be throttled now (independent processing)
       expect(currentOver.has(2)).toBe(true); // Should have independent currentOver entry
 
       // Verify independent throttling behavior by checking Map states
