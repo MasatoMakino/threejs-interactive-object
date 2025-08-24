@@ -65,7 +65,8 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
     });
 
     it("should manage separate hover states per pointerId", () => {
-      const { managerScene, multiFaceMesh } = createTestEnvironment();
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
       const pointerId1 = 1;
       const pointerId2 = 2;
 
@@ -73,13 +74,14 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         number,
         any[]
       >;
+      // pointerId 1: hover target
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId1);
+      // pointerId 2: move outside target (near origin)
+      managerScene.dispatchMouseEvent("pointermove", 10, 10, pointerId2);
 
-      currentOver.set(pointerId1, [multiFaceMesh]);
-      currentOver.set(pointerId2, []);
-
-      expect(currentOver.get(pointerId1)).toHaveLength(1);
-      expect(currentOver.get(pointerId2)).toHaveLength(0);
-      expect(currentOver.size).toBe(2);
+      expect(currentOver.get(pointerId1)).toContain(multiFaceMesh);
+      // pointer 2 may either be absent or present with an empty list depending on impl
+      expect(currentOver.get(pointerId2)?.length ?? 0).toBe(0);
     });
 
     it("should handle multiple pointers on same object", () => {
