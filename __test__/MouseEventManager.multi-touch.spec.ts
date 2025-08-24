@@ -85,7 +85,8 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
     });
 
     it("should handle multiple pointers on same object", () => {
-      const { managerScene, multiFaceMesh } = createTestEnvironment();
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
       const mousePointerId = 1;
       const touchPointerId = 2;
       const iPadPointerId = -560913604; // iPad-style pointer ID
@@ -95,9 +96,24 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         any[]
       >;
 
-      currentOver.set(mousePointerId, [multiFaceMesh]);
-      currentOver.set(touchPointerId, [multiFaceMesh]);
-      currentOver.set(iPadPointerId, [multiFaceMesh]);
+      managerScene.dispatchMouseEvent(
+        "pointermove",
+        halfW,
+        halfH,
+        mousePointerId,
+      );
+      managerScene.dispatchMouseEvent(
+        "pointermove",
+        halfW,
+        halfH,
+        touchPointerId,
+      );
+      managerScene.dispatchMouseEvent(
+        "pointermove",
+        halfW,
+        halfH,
+        iPadPointerId,
+      );
 
       expect(currentOver.get(mousePointerId)).toContain(multiFaceMesh);
       expect(currentOver.get(touchPointerId)).toContain(multiFaceMesh);
