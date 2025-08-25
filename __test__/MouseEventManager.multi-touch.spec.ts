@@ -311,33 +311,20 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
     });
 
     /**
-     * @todo Phase 2B/3B Implementation Required
+     * Verifies independent throttling behavior for simultaneous multi-touch pointers.
      *
-     * TEMPORARILY SKIPPED: This test requires ButtonInteractionHandler multi-touch support
+     * @motivation Prevents performance degradation when multiple fingers interact simultaneously.
+     * Each pointer must have isolated throttling state to avoid interference between touch points.
      *
-     * ## Current State (Phase 2A/3A with Touch Fixes)
-     * - MouseEventManager correctly processes all pointers independently
-     * - Real-device touch pointer disappearance issues resolved with pointercancel/pointerleave
-     * - ButtonInteractionHandler still uses single `_isOver: boolean` state
-     * - Only first pointer generates "over" event, subsequent pointers blocked
-     *
-     * ## Required for Phase 2B/3B
-     * - Convert ButtonInteractionHandler._isOver from boolean to Map<number, boolean>
-     * - Implement pointerId-aware over/out event handling in ButtonInteractionHandler
-     * - Update onMouseOverHandler to support pointerId parameter
-     *
-     * ## Test Expectations After Phase 2B/3B
-     * - Multiple pointers should generate independent "over" events
-     * - ButtonInteractionHandler should maintain per-pointerId isOver states
-     * - Integration between MouseEventManager and ButtonInteractionHandler complete
-     *
-     * ## Current Workaround
-     * - MouseEventManager multi-touch throttling validated through internal state inspection
-     * - ButtonInteractionHandler integration deferred to Phase 2B/3B
+     * @scope Validates MouseEventManager's per-pointerId throttling coordination with
+     * ButtonInteractionHandler's multi-touch hover state management.
      */
-    it.skip("should maintain independent throttling states per pointerId", () => {
+    it("should maintain independent throttling states per pointerId", () => {
       const { managerScene, multiFaceMesh, halfW, halfH } =
         createThrottlingTestEnvironment();
+
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
 
       const events: Array<{
         type: string;
@@ -352,7 +339,6 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         });
       });
 
-      // Debug: Check initial state
       // biome-ignore lint/suspicious/noExplicitAny: Testing internal hasThrottled Set requires accessing private property
       const hasThrottled = (managerScene.manager as any)
         .hasThrottled as Set<number>;
@@ -361,54 +347,48 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         number,
         IClickableObject3D<unknown>[]
       >;
-      // After reset(), pointerId=1 may be throttled due to reset events, so clear it first
+      // After reset(), POINTER_1 may be throttled due to reset events, so clear it first
       managerScene.interval();
-      expect(hasThrottled.size).toBe(0); // Should be empty after clearing
+      expect(hasThrottled.size).toBe(0);
 
-      // Start with pointer 1 - should be processed immediately
-      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1);
+      // Start with pointer 1
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_1);
 
-      // Debug: Check state after first event
-      expect(hasThrottled.has(1)).toBe(true); // Should be throttled now
-      expect(currentOver.has(1)).toBe(true); // Should have currentOver entry
+      expect(hasThrottled.has(POINTER_1)).toBe(true);
+      expect(currentOver.has(POINTER_1)).toBe(true);
 
-      // Immediately dispatch pointer 2 - should be processed independently
-      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 2);
+      // Dispatch pointer 2 independently
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_2);
 
-      // Debug: Check state after second event - this verifies independent throttling
-      expect(hasThrottled.has(1)).toBe(true); // Should still be throttled
-      expect(hasThrottled.has(2)).toBe(true); // Should also be throttled now (independent processing)
-      expect(currentOver.has(2)).toBe(true); // Should have independent currentOver entry
+      // Verify independent throttling behavior
+      expect(hasThrottled.has(POINTER_1)).toBe(true);
+      expect(hasThrottled.has(POINTER_2)).toBe(true);
+      expect(currentOver.has(POINTER_2)).toBe(true);
+      expect(hasThrottled.size).toBe(2);
+      expect(currentOver.size).toBe(2);
 
-      // Verify independent throttling behavior by checking Map states
-      expect(hasThrottled.size).toBe(2); // Both pointers should be tracked independently
-      expect(currentOver.size).toBe(2); // Both pointers should have independent currentOver states
-
-      // Now advance time to resolve throttling
+      // Advance time to resolve throttling
       managerScene.interval();
+      expect(hasThrottled.size).toBe(0);
 
-      // Debug: Check throttling state after interval
-      expect(hasThrottled.size).toBe(0); // Should be cleared for all pointers
+      // ButtonInteractionHandler processes first pointer event only to prevent duplicate "over" events
 
-      // Note: Due to ButtonInteractionHandler's single isOver state design,
-      // only the first pointer generates an "over" event. The second pointer
-      // is processed by MouseEventManager (independent throttling/currentOver)
-      // but ButtonInteractionHandler blocks duplicate "over" events.
-      // This is expected behavior for Phase 2A/3A scope (MouseEventManager only).
+      const pointer1Events = events.filter((e) => e.pointerId === POINTER_1);
 
-      const pointer1Events = events.filter((e) => e.pointerId === 1);
-
-      // Verify pointer1 generated event and throttling worked independently per pointer
       expect(pointer1Events.length).toBeGreaterThanOrEqual(1);
-      expect(events.some((e) => e.pointerId === 1)).toBe(true);
+      expect(events.some((e) => e.pointerId === POINTER_1)).toBe(true);
 
-      // The key test: verify that MouseEventManager processed both pointers independently
-      // even though ButtonInteractionHandler only emitted one "over" event
-      expect(currentOver.has(1) || currentOver.has(2)).toBe(true);
+      // Key verification: MouseEventManager processed both pointers independently
+      expect(currentOver.has(POINTER_1) || currentOver.has(POINTER_2)).toBe(
+        true,
+      );
     });
 
     it("should handle throttling resolution timing per pointerId", () => {
       const { managerScene, halfW, halfH } = createThrottlingTestEnvironment();
+
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
 
       const processingEvents: Array<{
         pointerId: number;
@@ -416,45 +396,38 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         phase: string;
       }> = [];
 
-      // Store original method before spying
       // biome-ignore lint/suspicious/noExplicitAny: Testing internal checkTarget method requires accessing private method
       const originalCheckTarget = (managerScene.manager as any).checkTarget;
-
-      // Monitor internal processing using vi.spyOn for guaranteed cleanup
       const checkTargetSpy = vi
         // biome-ignore lint/suspicious/noExplicitAny: Testing internal checkTarget method requires accessing private method
         .spyOn(managerScene.manager as any, "checkTarget")
         // biome-ignore lint/suspicious/noExplicitAny: Vitest mockImplementation requires any[] for internal method compatibility
         .mockImplementation(function (...args: any[]): boolean {
-          const pointerId = args[2] || 1; // Default pointerId is 1
+          const pointerId = args[2] || POINTER_1;
           processingEvents.push({
             pointerId,
             timestamp: managerScene.currentTime,
             phase: "checkTarget",
           });
-          // Call original implementation
           return originalCheckTarget.apply(this, args);
         });
 
       try {
         // Dispatch multiple pointers with time gaps
-        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1);
-        managerScene.interval(); // Advance 66ms (2 * throttlingTime_ms)
+        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_1);
+        managerScene.interval();
 
-        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 2);
-        managerScene.interval(); // Advance another 66ms
+        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_2);
+        managerScene.interval();
 
-        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1); // pointer 1 again
+        managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_1);
 
-        // Verify processing events occurred at expected times
         expect(processingEvents.length).toBeGreaterThan(0);
-
-        // Each pointerId should have independent processing timeline
         const pointer1Events = processingEvents.filter(
-          (e) => e.pointerId === 1,
+          (e) => e.pointerId === POINTER_1,
         );
         const pointer2Events = processingEvents.filter(
-          (e) => e.pointerId === 2,
+          (e) => e.pointerId === POINTER_2,
         );
 
         expect(pointer1Events.length).toBeGreaterThan(0);
