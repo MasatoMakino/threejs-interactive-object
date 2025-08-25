@@ -488,13 +488,13 @@ export class MouseEventManager {
    *
    * **Browser Event Sequence**: pointercancel → pointerout → pointerleave
    * **Mutual Exclusivity**: pointercancel and pointerup never both occur
-   * **Timing**: preventDefault() called to maintain consistent behavior
+   * **Timing**: preventDefault() called when cancelable to maintain consistent behavior
    *
    * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/pointercancel_event
    * @see {@link cleanupPointerState} - Common cleanup implementation
    */
   protected onDocumentPointerCancel = (event: PointerEvent) => {
-    event.preventDefault();
+    if (event.cancelable) event.preventDefault();
     this.cleanupPointerState(event.pointerId);
   };
 
