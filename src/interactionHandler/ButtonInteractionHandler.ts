@@ -264,20 +264,6 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   protected hoverPointerIds: Set<number> = new Set();
 
   /**
-   * Internal state tracking pointer press status.
-   * @deprecated Internal property will be removed in next major version. Use pressPointerIds Set instead.
-   * @internal
-   */
-  protected _isPress: boolean = false;
-
-  /**
-   * Internal state tracking pointer hover status.
-   * @deprecated Internal property will be removed in next major version. Use hoverPointerIds Set instead.
-   * @internal
-   */
-  protected _isOver: boolean = false;
-
-  /**
    * Internal state tracking enabled/disabled status.
    * @internal
    */
@@ -320,9 +306,6 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
       // Clear all pointer interaction states when freezing
       this.pressPointerIds.clear();
       this.hoverPointerIds.clear();
-      // Update legacy state for backward compatibility
-      this._isPress = false;
-      this._isOver = false;
     }
   }
 
@@ -427,7 +410,6 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   public onMouseDownHandler(event: ThreeMouseEvent<Value>): void {
     if (!this.checkActivity()) return;
     this.pressPointerIds.add(event.pointerId);
-    this._isPress = true; // Keep for backward compatibility during transition
     this.updateState("down");
     this.emit(event.type, event);
   }
@@ -451,9 +433,6 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     // Check if this specific pointer was pressed before removing it
     const wasThisPointerPressed = this.pressPointerIds.has(event.pointerId);
     this.pressPointerIds.delete(event.pointerId);
-
-    // Update legacy state for backward compatibility
-    this._isPress = this.pressPointerIds.size > 0;
 
     if (!this.checkActivity()) return;
 
@@ -542,13 +521,9 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
       this.hoverPointerIds.delete(event.pointerId);
     }
 
-    // Update legacy state for backward compatibility
-    this._isOver = this.hoverPointerIds.size > 0;
-
     // Reset press state when pointer leaves object to prevent click on release outside
     if (event.type === "out") {
       this.pressPointerIds.delete(event.pointerId);
-      this._isPress = this.pressPointerIds.size > 0;
     }
 
     if (!this.checkActivity()) return;
@@ -691,9 +666,6 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
       // Clear all pointer interaction states when disabling
       this.pressPointerIds.clear();
       this.hoverPointerIds.clear();
-      // Update legacy state for backward compatibility
-      this._isPress = false;
-      this._isOver = false;
     }
     this.state = bool ? "normal" : "disable";
     this.updateMaterial();

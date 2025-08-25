@@ -259,8 +259,8 @@ export class RadioButtonInteractionHandler<
    */
   private calculateCurrentState(): ClickableState {
     if (!this._enable) return "disable";
-    if (this._isPress) return "down";
-    if (this._isOver) return "over";
+    if (this.isPress) return "down";
+    if (this.isOver) return "over";
     return "normal";
   }
 
