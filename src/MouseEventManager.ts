@@ -13,6 +13,7 @@
  * - Flexible target selection (scene-wide scanning vs. registered objects)
  * - Multi-viewport support compatible with WebGLRenderer.setViewport()
  * - Parent hierarchy traversal for nested interactive objects
+ * - Robust touch handling with pointercancel/pointerleave cleanup for real-device compatibility
  *
  * **Architecture:**
  * The MouseEventManager acts as a bridge between DOM pointer events and Three.js
@@ -216,6 +217,12 @@ export class MouseEventManager {
     canvas.addEventListener("pointermove", this.onDocumentMouseMove, false);
     canvas.addEventListener("pointerdown", this.onDocumentMouseUpDown, false);
     canvas.addEventListener("pointerup", this.onDocumentMouseUpDown, false);
+    canvas.addEventListener(
+      "pointercancel",
+      this.onDocumentPointerCancel,
+      false,
+    );
+    canvas.addEventListener("pointerleave", this.onDocumentPointerLeave, false);
 
     RAFTicker.on("tick", this.onTick);
   }
@@ -435,6 +442,78 @@ export class MouseEventManager {
     event.preventDefault();
     const intersects = this.getIntersects(event);
     this.checkIntersects(intersects, eventType, pointerId);
+  };
+
+  /**
+   * Cleans up pointer state by sending out events and removing internal tracking.
+   *
+   * @param pointerId - The pointer identifier to clean up
+   *
+   * @description
+   * Common cleanup logic for pointer interruption events (cancel/leave).
+   * Performs the following operations:
+   * 1. Retrieves all objects currently tracked as "over" for the specified pointer
+   * 2. Sends "out" events to each tracked object via ButtonInteractionHandler
+   * 3. Removes the pointer from internal state tracking (currentOver Map)
+   *
+   * This ensures visual states return to "normal" and prevents stuck hover states
+   * when pointers disappear without proper move/out event sequences.
+   *
+   * @motivation Real-device testing revealed touch pointers can disappear without
+   *             standard event sequences, causing stuck visual states. This method
+   *             provides reliable cleanup for browser-generated interruption events.
+   *
+   * @internal
+   */
+  private cleanupPointerState(pointerId: number): void {
+    const overObjects = this.currentOver.get(pointerId);
+    if (overObjects && overObjects.length > 0) {
+      overObjects.forEach((obj) => {
+        MouseEventManager.onButtonHandler(obj, "out", pointerId);
+      });
+    }
+    this.currentOver.delete(pointerId);
+  }
+
+  /**
+   * Handles pointer cancel events for interrupted touch interactions.
+   *
+   * @param event - The pointer cancel event containing the interrupted pointerId
+   *
+   * @description
+   * Processes pointercancel events by preventing default behavior and delegating
+   * cleanup to the common cleanup method.
+   *
+   * **Browser Event Sequence**: pointercancel → pointerout → pointerleave
+   * **Mutual Exclusivity**: pointercancel and pointerup never both occur
+   * **Timing**: preventDefault() called to maintain consistent behavior
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/pointercancel_event
+   * @see {@link cleanupPointerState} - Common cleanup implementation
+   */
+  protected onDocumentPointerCancel = (event: PointerEvent) => {
+    event.preventDefault();
+    this.cleanupPointerState(event.pointerId);
+  };
+
+  /**
+   * Handles browser-generated pointerleave events for reliable cleanup.
+   *
+   * @param event - The pointerleave event from browser
+   *
+   * @description
+   * Processes pointerleave events by delegating cleanup to the common cleanup method.
+   *
+   * **Why pointerleave is optimal**:
+   * - Always fires after UP events (no click interference)
+   * - Indicates complete departure from element hierarchy
+   * - Reliable browser-generated event with stable execution order
+   * - Handles edge case: outside → move into button → up inside button
+   *
+   * @see {@link cleanupPointerState} - Common cleanup implementation
+   */
+  protected onDocumentPointerLeave = (event: PointerEvent) => {
+    this.cleanupPointerState(event.pointerId);
   };
 
   /**
@@ -829,6 +908,16 @@ export class MouseEventManager {
     this.canvas.removeEventListener(
       "pointerup",
       this.onDocumentMouseUpDown,
+      false,
+    );
+    this.canvas.removeEventListener(
+      "pointercancel",
+      this.onDocumentPointerCancel,
+      false,
+    );
+    this.canvas.removeEventListener(
+      "pointerleave",
+      this.onDocumentPointerLeave,
       false,
     );
 
