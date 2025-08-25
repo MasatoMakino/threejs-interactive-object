@@ -576,5 +576,25 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       // Should only have one out event from the cancel
       expect(outEvents.filter((e) => e.pointerId === pointerId).length).toBe(1);
     });
+
+    it("should not emit click when a pressed pointer is canceled", () => {
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+      const pointerId = 7;
+
+      const clicks: number[] = [];
+      multiFaceMesh.interactionHandler.on("click", (e) =>
+        clicks.push(e.pointerId),
+      );
+
+      // Over + down on the object
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, pointerId);
+
+      // Cancel the pointer stream (no up)
+      managerScene.dispatchMouseEvent("pointercancel", halfW, halfH, pointerId);
+
+      expect(clicks.length).toBe(0);
+    });
   });
 });
