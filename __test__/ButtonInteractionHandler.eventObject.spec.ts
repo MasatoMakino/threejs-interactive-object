@@ -2,8 +2,8 @@ import { BoxGeometry } from "three";
 import { describe, expect, it, vi } from "vitest";
 import {
   ClickableMesh,
+  createThreeMouseEvent,
   type ThreeMouseEvent,
-  ThreeMouseEventUtil,
 } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 
@@ -25,8 +25,8 @@ describe("ButtonInteractionHandler Event Object Validation", () => {
     const clickSpy = vi.fn();
     handler.on("click", clickSpy);
 
-    handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-    handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+    handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+    handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
 
     expect(
       clickSpy,
@@ -58,8 +58,8 @@ describe("ButtonInteractionHandler Event Object Validation", () => {
     handler.on("up", upSpy);
     handler.on("click", clickSpy);
 
-    handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-    handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+    handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+    handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
 
     expect(
       upSpy,
@@ -97,8 +97,8 @@ describe("ButtonInteractionHandler Event Object Validation", () => {
     const clickSpy = vi.fn();
     handler.on("click", clickSpy);
 
-    handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-    handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+    handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+    handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
 
     const clickEvent = clickSpy.mock.calls[0][0] as ThreeMouseEvent<string>;
     expect(

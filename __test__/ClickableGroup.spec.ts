@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import {
   ClickableGroup,
   ClickableMesh,
-  ThreeMouseEventUtil,
+  createThreeMouseEvent,
 } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 import { MouseEventManagerScene } from "./MouseEventManagerScene.js";
@@ -49,13 +49,13 @@ describe("ClickableGroup", () => {
 
     // Simulate mouse over
     clickableGroup.interactionHandler.onMouseOverHandler(
-      ThreeMouseEventUtil.generate("over", clickableGroup),
+      createThreeMouseEvent("over", clickableGroup),
     );
     expect(spyOver).toHaveBeenCalledTimes(1);
 
     // Simulate mouse out
     clickableGroup.interactionHandler.onMouseOutHandler(
-      ThreeMouseEventUtil.generate("out", clickableGroup),
+      createThreeMouseEvent("out", clickableGroup),
     );
     expect(spyOut).toHaveBeenCalledTimes(1);
 
@@ -71,7 +71,7 @@ describe("ClickableGroup", () => {
     // Test disable() - should block all interaction events
     clickableGroup.interactionHandler.disable();
     clickableGroup.interactionHandler.onMouseOverHandler(
-      ThreeMouseEventUtil.generate("over", clickableGroup),
+      createThreeMouseEvent("over", clickableGroup),
     );
     expect(overEventSpy).not.toHaveBeenCalled(
       /* disable() should block all events */
@@ -80,7 +80,7 @@ describe("ClickableGroup", () => {
     // Test enable() - should restore interaction responsiveness
     clickableGroup.interactionHandler.enable();
     clickableGroup.interactionHandler.onMouseOverHandler(
-      ThreeMouseEventUtil.generate("over", clickableGroup),
+      createThreeMouseEvent("over", clickableGroup),
     );
     expect(overEventSpy).toHaveBeenCalledTimes(
       1 /* enable() should restore event processing */,
@@ -94,7 +94,7 @@ describe("ClickableGroup", () => {
     // Test frozen = true - should block all events while preserving handler state
     clickableGroup.interactionHandler.frozen = true;
     clickableGroup.interactionHandler.onMouseOverHandler(
-      ThreeMouseEventUtil.generate("over", clickableGroup),
+      createThreeMouseEvent("over", clickableGroup),
     );
     expect(frozenTestSpy).not.toHaveBeenCalled(
       /* frozen=true should block events */
@@ -103,7 +103,7 @@ describe("ClickableGroup", () => {
     // Test frozen = false - should restore event processing immediately
     clickableGroup.interactionHandler.frozen = false;
     clickableGroup.interactionHandler.onMouseOverHandler(
-      ThreeMouseEventUtil.generate("over", clickableGroup),
+      createThreeMouseEvent("over", clickableGroup),
     );
     expect(frozenTestSpy).toHaveBeenCalledTimes(
       1 /* frozen=false should restore events */,
@@ -118,7 +118,7 @@ describe("ClickableGroup", () => {
     clickableGroup.interactionHandler.switchEnable(false);
 
     clickableGroup.interactionHandler.onMouseOverHandler(
-      ThreeMouseEventUtil.generate("over", clickableGroup),
+      createThreeMouseEvent("over", clickableGroup),
     );
     expect(spyOver).not.toHaveBeenCalled();
 
@@ -126,7 +126,7 @@ describe("ClickableGroup", () => {
     clickableGroup.interactionHandler.switchEnable(true);
 
     clickableGroup.interactionHandler.onMouseOverHandler(
-      ThreeMouseEventUtil.generate("over", clickableGroup),
+      createThreeMouseEvent("over", clickableGroup),
     );
     expect(spyOver).toHaveBeenCalledTimes(1);
   });
@@ -138,7 +138,7 @@ describe("ClickableGroup", () => {
 
     // Simulate mouse up
     clickableGroup.interactionHandler.onMouseUpHandler(
-      ThreeMouseEventUtil.generate("up", clickableGroup),
+      createThreeMouseEvent("up", clickableGroup),
     );
 
     expect(spyUp).toHaveBeenCalledTimes(1);
@@ -153,16 +153,16 @@ describe("ClickableGroup", () => {
 
     // Simulate mouse down
     clickableGroup.interactionHandler.onMouseDownHandler(
-      ThreeMouseEventUtil.generate("down", clickableGroup),
+      createThreeMouseEvent("down", clickableGroup),
     );
     expect(spyDown).toHaveBeenCalledTimes(1);
 
     // Simulate full click sequence (down + up)
     clickableGroup.interactionHandler.onMouseDownHandler(
-      ThreeMouseEventUtil.generate("down", clickableGroup),
+      createThreeMouseEvent("down", clickableGroup),
     );
     clickableGroup.interactionHandler.onMouseUpHandler(
-      ThreeMouseEventUtil.generate("up", clickableGroup),
+      createThreeMouseEvent("up", clickableGroup),
     );
     expect(spyClick).toHaveBeenCalledTimes(1);
   });
@@ -223,10 +223,10 @@ describe("ClickableGroup", () => {
       clickableGroup.interactionHandler.on("click", spyClick);
 
       clickableGroup.interactionHandler.onMouseDownHandler(
-        ThreeMouseEventUtil.generate("down", clickableGroup),
+        createThreeMouseEvent("down", clickableGroup),
       );
       clickableGroup.interactionHandler.onMouseUpHandler(
-        ThreeMouseEventUtil.generate("up", clickableGroup),
+        createThreeMouseEvent("up", clickableGroup),
       );
 
       expect(spyClick).toHaveBeenCalledTimes(1);
@@ -243,7 +243,7 @@ describe("ClickableGroup", () => {
 
       // Trigger interaction on group
       clickableGroup.interactionHandler.onMouseOverHandler(
-        ThreeMouseEventUtil.generate("over", clickableGroup),
+        createThreeMouseEvent("over", clickableGroup),
       );
 
       // Child material should remain unchanged
@@ -297,7 +297,7 @@ describe("ClickableGroup", () => {
       clickableGroup.interactionHandler.on("over", spyOver);
 
       clickableGroup.interactionHandler.onMouseOverHandler(
-        ThreeMouseEventUtil.generate("over", clickableGroup),
+        createThreeMouseEvent("over", clickableGroup),
       );
       expect(spyOver).toHaveBeenCalledTimes(1);
     });

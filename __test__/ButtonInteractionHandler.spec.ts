@@ -3,7 +3,7 @@ import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   ClickableMesh,
   ClickableObject,
-  ThreeMouseEventUtil,
+  createThreeMouseEvent,
 } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 
@@ -40,7 +40,7 @@ describe("ButtonInteractionHandler", () => {
       const downSpy = vi.fn();
       handler.on("down", downSpy);
 
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
 
       expect(
         handler.isPress,
@@ -60,7 +60,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up initial press state
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(handler.isPress, "Press state should be true after setup").toBe(
         true,
       );
@@ -68,7 +68,7 @@ describe("ButtonInteractionHandler", () => {
       const upSpy = vi.fn();
       handler.on("up", upSpy);
 
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
 
       expect(
         handler.isPress,
@@ -91,7 +91,7 @@ describe("ButtonInteractionHandler", () => {
       const overSpy = vi.fn();
       handler.on("over", overSpy);
 
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
 
       expect(
         handler.isOver,
@@ -111,7 +111,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up initial hover state
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(handler.isOver, "Hover state should be true after setup").toBe(
         true,
       );
@@ -119,7 +119,7 @@ describe("ButtonInteractionHandler", () => {
       const outSpy = vi.fn();
       handler.on("out", outSpy);
 
-      handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
+      handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
 
       expect(
         handler.isOver,
@@ -141,15 +141,15 @@ describe("ButtonInteractionHandler", () => {
       handler.on("click", clickSpy);
 
       // Test: up without down should not emit click
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
       expect(
         clickSpy,
         "Click should not be emitted without preceding down",
       ).toHaveBeenCalledTimes(0);
 
       // Test: down followed by up should emit click
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
       expect(
         clickSpy,
         "Click should be emitted after down-up sequence",
@@ -164,9 +164,9 @@ describe("ButtonInteractionHandler", () => {
       // Test: down -> out -> up should NOT emit click (corrected behavior)
       // Note: MouseEventManager delivers up events regardless of press state,
       // but ButtonInteractionHandler now resets _isPress on out to prevent unintended clicks
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-      handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
 
       expect(
         clickSpy,
@@ -178,14 +178,14 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up hover and press states
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(
         handler.state,
         "State should be 'down' after mouse down while hovering",
       ).toBe("down");
 
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
 
       expect(
         handler.state,
@@ -201,7 +201,7 @@ describe("ButtonInteractionHandler", () => {
       const overSpy = vi.fn();
       handler.on("over", overSpy);
 
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
 
       expect(
         handler.isOver,
@@ -223,8 +223,8 @@ describe("ButtonInteractionHandler", () => {
       // Spy on the onMouseClick method
       const clickHookSpy = vi.spyOn(handler, "onMouseClick");
 
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
 
       expect(
         clickHookSpy,
@@ -315,8 +315,8 @@ describe("ButtonInteractionHandler", () => {
       handler.on("down", downSpy);
       handler.on("over", overSpy);
 
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
 
       expect(
         downSpy,
@@ -337,7 +337,7 @@ describe("ButtonInteractionHandler", () => {
       handler.on("click", clickSpy);
 
       // 1. Mouse down (press becomes true)
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(handler.isPress, "Press state should be true after down").toBe(
         true,
       );
@@ -346,7 +346,7 @@ describe("ButtonInteractionHandler", () => {
       handler.frozen = true;
 
       // 3. Mouse up (should clear press state but not emit click due to early return)
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
       expect(handler.isPress, "Press state should be cleared after up").toBe(
         false,
       );
@@ -359,7 +359,7 @@ describe("ButtonInteractionHandler", () => {
       handler.frozen = false;
 
       // 5. Another mouse up (should not emit click - no stale press state)
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
       expect(
         clickSpy,
         "Click should still not be emitted after unfreeze",
@@ -375,8 +375,8 @@ describe("ButtonInteractionHandler", () => {
       handler.on("down", downSpy);
       handler.on("over", overSpy);
 
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
 
       expect(
         downSpy,
@@ -398,7 +398,7 @@ describe("ButtonInteractionHandler", () => {
       handler.on("click", clickSpy);
 
       // 1. Mouse down (press becomes true)
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(handler.isPress, "Press state should be true after down").toBe(
         true,
       );
@@ -407,7 +407,7 @@ describe("ButtonInteractionHandler", () => {
       handler.disable();
 
       // 3. Mouse up (should clear press state but not emit click due to early return)
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
       expect(handler.isPress, "Press state should be cleared after up").toBe(
         false,
       );
@@ -420,7 +420,7 @@ describe("ButtonInteractionHandler", () => {
       handler.enable();
 
       // 5. Another mouse up (should not emit click - no stale press state)
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
       expect(
         clickSpy,
         "Click should still not be emitted after enable",
@@ -448,7 +448,7 @@ describe("ButtonInteractionHandler", () => {
       const downSpy = vi.fn();
       handler.on("down", downSpy);
 
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
 
       // Current implementation: mouseEnabled property doesn't control event processing
       // Event processing is controlled by enable/disable and frozen states only
@@ -462,17 +462,11 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       expect(() => {
-        handler.onMouseOverHandler(
-          ThreeMouseEventUtil.generate("over", handler),
-        );
-        handler.onMouseDownHandler(
-          ThreeMouseEventUtil.generate("down", handler),
-        );
-        handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
-        handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
-        handler.onMouseOverHandler(
-          ThreeMouseEventUtil.generate("over", handler),
-        );
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+        handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       }, "Handler should handle rapid state transitions without errors").not.toThrow();
     });
 
@@ -497,12 +491,12 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up some initial state
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(handler.state, "Initial state should be 'over'").toBe("over");
 
       // Freeze and try to change state
       handler.frozen = true;
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(handler.state, "State should not change when frozen").toBe("over");
 
       // Unfreeze and verify state is consistent
@@ -525,10 +519,10 @@ describe("ButtonInteractionHandler", () => {
       }
 
       // Execute complex interaction sequence
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
-      handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
 
       expect(
         events,
@@ -560,8 +554,8 @@ describe("ButtonInteractionHandler", () => {
       const clickSpy = vi.fn();
       handler.on("click", clickSpy);
 
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
 
       expect(
         clickSpy,
@@ -579,7 +573,7 @@ describe("ButtonInteractionHandler", () => {
       const newMatSet = getMeshMaterialSet();
 
       // Set up hover state
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(handler.state, "State should be 'over' before replacement").toBe(
         "over",
       );
@@ -611,21 +605,21 @@ describe("ButtonInteractionHandler", () => {
       ).toBe(matSet.normal.material);
 
       // Test over state
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(
         clickable.material,
         "Over state should apply over material to view object",
       ).toBe(matSet.over.material);
 
       // Test down state
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(
         clickable.material,
         "Down state should apply down material to view object",
       ).toBe(matSet.down.material);
 
       // Test back to over state (mouse still over)
-      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
       expect(
         clickable.material,
         "Should return to over material when releasing while hovering",
@@ -643,7 +637,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up hover state
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(handler.state, "Initial state should be 'over'").toBe("over");
       expect(handler.isOver, "Initial hover state should be true").toBe(true);
 
@@ -671,7 +665,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Start mouse interaction
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(handler.isPress, "Press state should be true after down").toBe(
         true,
       );
@@ -689,7 +683,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Start hover
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(handler.isOver, "Hover state should be true after over").toBe(
         true,
       );
@@ -708,7 +702,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Start mouse interaction
-      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(handler.isPress, "Press state should be true after down").toBe(
         true,
       );
@@ -727,7 +721,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Start hover
-      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(handler.isOver, "Hover state should be true after over").toBe(
         true,
       );
