@@ -77,7 +77,7 @@ describe("MouseEventManager Dispose Functionality", () => {
   };
 
   /**
-   * Helper function to verify that pointer event listeners have been removed
+   * Helper function to verify that all five pointer event listeners have been removed
    */
   const expectPointerEventListenersRemoved = (
     removeEventListenerSpy: MockInstance,
@@ -112,8 +112,24 @@ describe("MouseEventManager Dispose Functionality", () => {
     );
     expect(
       removeEventListenerSpy,
-      "Should call removeEventListener 3 times",
-    ).toHaveBeenCalledTimes(3);
+      "Should remove pointercancel listener",
+    ).toHaveBeenCalledWith(
+      "pointercancel",
+      typedManager.onDocumentPointerCancel,
+      false,
+    );
+    expect(
+      removeEventListenerSpy,
+      "Should remove pointerleave listener",
+    ).toHaveBeenCalledWith(
+      "pointerleave",
+      typedManager.onDocumentPointerLeave,
+      false,
+    );
+    expect(
+      removeEventListenerSpy,
+      "Should call removeEventListener 5 times",
+    ).toHaveBeenCalledTimes(5);
   };
 
   /**
@@ -140,7 +156,7 @@ describe("MouseEventManager Dispose Functionality", () => {
    * DOM Event Listener Management Tests
    */
   describe("DOM Event Listener Management", () => {
-    test("should remove all three pointer event listeners after dispose", () => {
+    test("should remove all five pointer event listeners after dispose", () => {
       const { managerScene } = createTestEnvironment();
 
       // Setup spies to monitor removeEventListener calls
@@ -467,7 +483,7 @@ describe("MouseEventManager Dispose Functionality", () => {
       expect(
         removeEventListenerSpy,
         "All event listeners should be removed",
-      ).toHaveBeenCalledTimes(3);
+      ).toHaveBeenCalledTimes(5);
       expect(
         rafTickerOffSpy,
         "RAF ticker subscription should be removed",

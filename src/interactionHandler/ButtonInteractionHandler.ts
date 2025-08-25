@@ -418,7 +418,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     if (wasPress) {
       this.onMouseClick();
 
-      const e = ThreeMouseEventUtil.generate("click", this);
+      const e = ThreeMouseEventUtil.generate("click", this, event.pointerId);
       this.emit(e.type, e);
     }
   }
@@ -497,7 +497,8 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
 
     if (!this.checkActivity()) return;
 
-    this.updateState(this._isOver ? "over" : "normal");
+    const newState = this._isOver ? "over" : "normal";
+    this.updateState(newState);
     this.emit(event.type, event);
   }
 

@@ -315,10 +315,11 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
      *
      * TEMPORARILY SKIPPED: This test requires ButtonInteractionHandler multi-touch support
      *
-     * ## Current Limitation (Phase 2A/3A Scope)
-     * - ButtonInteractionHandler uses single `_isOver: boolean` state
-     * - Only first pointer generates "over" event, subsequent pointers blocked
+     * ## Current State (Phase 2A/3A with Touch Fixes)
      * - MouseEventManager correctly processes all pointers independently
+     * - Real-device touch pointer disappearance issues resolved with pointercancel/pointerleave
+     * - ButtonInteractionHandler still uses single `_isOver: boolean` state
+     * - Only first pointer generates "over" event, subsequent pointers blocked
      *
      * ## Required for Phase 2B/3B
      * - Convert ButtonInteractionHandler._isOver from boolean to Map<number, boolean>
@@ -462,6 +463,138 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
         // Guaranteed cleanup even if assertions fail
         checkTargetSpy.mockRestore();
       }
+    });
+  });
+
+  describe("Pointer Cancel and Leave Event Handling", () => {
+    it("should handle pointercancel events and clean up internal state", () => {
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+      const pointerId1 = 1;
+      const pointerId2 = 2;
+
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
+      const currentOver = (managerScene.manager as any).currentOver as Map<
+        number,
+        IClickableObject3D<unknown>[]
+      >;
+
+      // Set up hover states for multiple pointers
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId1);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId2);
+
+      expect(currentOver.get(pointerId1)).toContain(multiFaceMesh);
+      expect(currentOver.get(pointerId2)).toContain(multiFaceMesh);
+
+      // Track out events
+      const outEvents: Array<{ pointerId: number }> = [];
+      multiFaceMesh.interactionHandler.on("out", (e) => {
+        outEvents.push({ pointerId: e.pointerId });
+      });
+
+      // Cancel pointer1 - should clean up state and emit out event
+      managerScene.dispatchMouseEvent(
+        "pointercancel",
+        halfW,
+        halfH,
+        pointerId1,
+      );
+
+      expect(currentOver.has(pointerId1)).toBe(false);
+      expect(currentOver.has(pointerId2)).toBe(true);
+      expect(outEvents.some((e) => e.pointerId === pointerId1)).toBe(true);
+    });
+
+    it("should handle pointerleave events and clean up internal state", () => {
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+      const pointerId1 = 1;
+      const pointerId2 = 2;
+
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
+      const currentOver = (managerScene.manager as any).currentOver as Map<
+        number,
+        IClickableObject3D<unknown>[]
+      >;
+
+      // Set up hover states for multiple pointers
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId1);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId2);
+
+      expect(currentOver.get(pointerId1)).toContain(multiFaceMesh);
+      expect(currentOver.get(pointerId2)).toContain(multiFaceMesh);
+
+      // Track out events
+      const outEvents: Array<{ pointerId: number }> = [];
+      multiFaceMesh.interactionHandler.on("out", (e) => {
+        outEvents.push({ pointerId: e.pointerId });
+      });
+
+      // Leave with pointer1 - should clean up state and emit out event
+      managerScene.dispatchMouseEvent("pointerleave", halfW, halfH, pointerId1);
+
+      expect(currentOver.has(pointerId1)).toBe(false);
+      expect(currentOver.has(pointerId2)).toBe(true);
+      expect(outEvents.some((e) => e.pointerId === pointerId1)).toBe(true);
+    });
+
+    it("should handle pointercancel followed by pointerleave gracefully", () => {
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+      const pointerId = 1;
+
+      // biome-ignore lint/suspicious/noExplicitAny: Testing internal currentOver Map requires accessing private property
+      const currentOver = (managerScene.manager as any).currentOver as Map<
+        number,
+        IClickableObject3D<unknown>[]
+      >;
+
+      // Set up hover state
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId);
+      expect(currentOver.get(pointerId)).toContain(multiFaceMesh);
+
+      // Track out events
+      const outEvents: Array<{ pointerId: number }> = [];
+      multiFaceMesh.interactionHandler.on("out", (e) => {
+        outEvents.push({ pointerId: e.pointerId });
+      });
+
+      // Cancel first, then leave - should handle both gracefully without errors
+      managerScene.dispatchMouseEvent("pointercancel", halfW, halfH, pointerId);
+      expect(currentOver.has(pointerId)).toBe(false);
+
+      // Leave should be safe even after cancel already cleaned up
+      expect(() => {
+        managerScene.dispatchMouseEvent(
+          "pointerleave",
+          halfW,
+          halfH,
+          pointerId,
+        );
+      }).not.toThrow();
+
+      // Should only have one out event from the cancel
+      expect(outEvents.filter((e) => e.pointerId === pointerId).length).toBe(1);
+    });
+
+    it("should not emit click when a pressed pointer is canceled", () => {
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+      const pointerId = 7;
+
+      const clicks: number[] = [];
+      multiFaceMesh.interactionHandler.on("click", (e) =>
+        clicks.push(e.pointerId),
+      );
+
+      // Over + down on the object
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, pointerId);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, pointerId);
+
+      // Cancel the pointer stream (no up)
+      managerScene.dispatchMouseEvent("pointercancel", halfW, halfH, pointerId);
+
+      expect(clicks.length).toBe(0);
     });
   });
 });
