@@ -11,6 +11,7 @@ import {
 import {
   type RadioButtonInteractionHandler,
   RadioButtonMesh,
+  ThreeMouseEventUtil,
 } from "../src/index.js";
 import { getMeshMaterialSet } from "./Materials.js";
 
@@ -69,9 +70,9 @@ describe("RadioButtonInteractionHandler", () => {
   const simulateCompleteClick = (
     handler: RadioButtonInteractionHandler<unknown>,
   ) => {
-    handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
-    handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
-    handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+    handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+    handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+    handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
   };
 
   /**
@@ -87,7 +88,7 @@ describe("RadioButtonInteractionHandler", () => {
   const simulateMouseOut = (
     handler: RadioButtonInteractionHandler<unknown>,
   ) => {
-    handler.onMouseOutHandler({ type: "out", interactionHandler: handler });
+    handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
   };
 
   describe("Internal Override API for RadioButtonManager", () => {
@@ -336,10 +337,7 @@ describe("RadioButtonInteractionHandler", () => {
       ).toBe(matSet.normalSelect.material);
 
       // Simulate hover state
-      handler.onMouseOverHandler({
-        type: "over",
-        interactionHandler: handler,
-      });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
 
       // Deselect - should restore hover state from internal flags
       handler._setSelectionOverride(false);
@@ -462,7 +460,7 @@ describe("RadioButtonInteractionHandler", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start in hover state
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(radioButton.material, "Should show hover material").toBe(
         matSet.over.material,
       );
@@ -484,7 +482,7 @@ describe("RadioButtonInteractionHandler", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start in hover state, then select
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(radioButton.material, "Should show hover material initially").toBe(
         matSet.over.material,
       );
@@ -516,7 +514,7 @@ describe("RadioButtonInteractionHandler", () => {
       const newMatSet = getMeshMaterialSet();
 
       // Set up state: hover, then select (which forces normal state)
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       handler._setSelectionOverride(true);
       expect(
         radioButton.material,
@@ -550,12 +548,12 @@ describe("RadioButtonInteractionHandler", () => {
         matSet.normal.material,
       );
 
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(radioButton.material, "Hover unselected").toBe(
         matSet.over.material,
       );
 
-      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
       expect(radioButton.material, "Down unselected").toBe(
         matSet.down.material,
       );
@@ -568,14 +566,14 @@ describe("RadioButtonInteractionHandler", () => {
       ).toBe(matSet.normalSelect.material);
 
       // Release triggers onMouseClick which toggles selection (true->false) and restores over state
-      handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
       expect(
         radioButton.material,
         "Should show over material after UP toggles selection (false, over)",
       ).toBe(matSet.over.material);
 
       // Move out should show unselected normal
-      handler.onMouseOutHandler({ type: "out", interactionHandler: handler });
+      handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
       expect(
         radioButton.material,
         "Should show normal material (false, normal)",
@@ -586,7 +584,7 @@ describe("RadioButtonInteractionHandler", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start with hover, then select (which forces normal state)
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       handler._setSelectionOverride(true);
       expect(
         radioButton.material,

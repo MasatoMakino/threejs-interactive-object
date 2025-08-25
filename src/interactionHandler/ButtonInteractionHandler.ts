@@ -176,25 +176,35 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   }
 
   /**
-   * Indicates whether the pointer is currently hovering over the object.
+   * Indicates whether any pointer is currently hovering over the object.
    *
-   * @returns True if pointer is over the object, false otherwise
+   * @returns True if one or more pointers are over the object, false otherwise
+   *
+   * @description
+   * Computed from the size of the hoverPointerIds Set. Returns true when any
+   * pointer is hovering over the interactive object, supporting both single
+   * and multitouch scenarios while maintaining backward compatibility.
    *
    * @readonly
    */
   get isOver(): boolean {
-    return this._isOver;
+    return this.hoverPointerIds.size > 0;
   }
 
   /**
-   * Indicates whether the pointer is currently pressed down on the object.
+   * Indicates whether any pointer is currently pressed down on the object.
    *
-   * @returns True if pointer is pressed down, false otherwise
+   * @returns True if one or more pointers are pressed down, false otherwise
+   *
+   * @description
+   * Computed from the size of the pressPointerIds Set. Returns true when any
+   * pointer is pressed down on the interactive object, supporting both single
+   * and multitouch scenarios while maintaining backward compatibility.
    *
    * @readonly
    */
   get isPress(): boolean {
-    return this._isPress;
+    return this.pressPointerIds.size > 0;
   }
 
   /**
@@ -229,13 +239,40 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   readonly view: ClickableView<Value>;
 
   /**
+   * Set of pointer IDs currently in pressed state.
+   *
+   * @description
+   * Tracks all pointer IDs that have triggered down events but not yet
+   * corresponding up events. Used for multitouch support and same-ID
+   * click detection. The Set automatically prevents duplicate pointer ID
+   * storage and provides O(1) add/delete/has operations.
+   *
+   * @internal
+   */
+  protected pressPointerIds: Set<number> = new Set();
+
+  /**
+   * Set of pointer IDs currently hovering over the object.
+   *
+   * @description
+   * Tracks all pointer IDs that have entered the object area but not yet
+   * left. Used for multitouch hover state management. Multiple pointers
+   * can simultaneously hover over the same interactive object.
+   *
+   * @internal
+   */
+  protected hoverPointerIds: Set<number> = new Set();
+
+  /**
    * Internal state tracking pointer press status.
+   * @deprecated Internal property will be removed in next major version. Use pressPointerIds Set instead.
    * @internal
    */
   protected _isPress: boolean = false;
 
   /**
    * Internal state tracking pointer hover status.
+   * @deprecated Internal property will be removed in next major version. Use hoverPointerIds Set instead.
    * @internal
    */
   protected _isOver: boolean = false;
@@ -280,7 +317,10 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   public set frozen(value: boolean) {
     this._frozen = value;
     if (value) {
-      // Clear transient interaction state when freezing
+      // Clear all pointer interaction states when freezing
+      this.pressPointerIds.clear();
+      this.hoverPointerIds.clear();
+      // Update legacy state for backward compatibility
       this._isPress = false;
       this._isOver = false;
     }
@@ -377,15 +417,17 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @param event - The pointer down event containing interaction details
    *
    * @description
-   * Processes pointer down events by checking activity status, updating internal
-   * press state, transitioning to "down" visual state, and emitting the down event.
-   * If the object is inactive (disabled or frozen), the event is ignored.
+   * Processes pointer down events by checking activity status, adding the pointer ID
+   * to the pressed set, transitioning to "down" visual state, and emitting the down event.
+   * Supports multiple simultaneous pointers. If the object is inactive (disabled or frozen),
+   * the event is ignored.
    *
    * @fires down - Emitted when the pointer is successfully pressed down
    */
   public onMouseDownHandler(event: ThreeMouseEvent<Value>): void {
     if (!this.checkActivity()) return;
-    this._isPress = true;
+    this.pressPointerIds.add(event.pointerId);
+    this._isPress = true; // Keep for backward compatibility during transition
     this.updateState("down");
     this.emit(event.type, event);
   }
@@ -396,26 +438,31 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @param event - The pointer up event containing interaction details
    *
    * @description
-   * Processes pointer up events by resetting press state, determining the next
-   * visual state based on hover status, and emitting the up event. If the pointer
-   * was previously pressed down, also triggers click event emission through
-   * the onMouseClick hook.
+   * Processes pointer up events by checking for same-pointer-ID press state,
+   * removing the pointer from the pressed set, determining the next visual state
+   * based on hover status, and emitting the up event. Click events are only
+   * triggered when the same pointer ID was previously pressed down (same-ID click detection).
+   * Supports multiple simultaneous pointers.
    *
    * @fires up - Emitted when the pointer is released
-   * @fires click - Emitted when a complete click interaction is detected
+   * @fires click - Emitted when a complete same-ID click interaction is detected
    */
   public onMouseUpHandler(event: ThreeMouseEvent<Value>): void {
-    // Always clear press first to avoid stale press across disable/freeze
-    const wasPress = this._isPress;
-    this._isPress = false;
+    // Check if this specific pointer was pressed before removing it
+    const wasThisPointerPressed = this.pressPointerIds.has(event.pointerId);
+    this.pressPointerIds.delete(event.pointerId);
+
+    // Update legacy state for backward compatibility
+    this._isPress = this.pressPointerIds.size > 0;
 
     if (!this.checkActivity()) return;
 
-    const nextState: ClickableState = this._isOver ? "over" : "normal";
+    const nextState: ClickableState = this.isOver ? "over" : "normal";
     this.updateState(nextState);
     this.emit(event.type, event);
 
-    if (wasPress) {
+    // Only emit click if THIS pointer was previously pressed (same-ID click detection)
+    if (wasThisPointerPressed) {
       this.onMouseClick();
 
       const e = ThreeMouseEventUtil.generate("click", this, event.pointerId);
@@ -472,13 +519,14 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    *
    * @description
    * Manages hover state tracking and visual state transitions for both over and out events.
+   * Supports multiple simultaneous pointers by managing a Set of hover pointer IDs.
    * Hover state tracking occurs unconditionally (even when disabled/frozen) to ensure
    * proper visual updates when the object transitions back to an active state while
-   * the pointer is still hovering over it.
+   * pointers are still hovering over it.
    *
    * @remarks
    * The hover state must be tracked before checking activity status because:
-   * - If the object becomes active while the pointer is already over it,
+   * - If the object becomes active while pointers are already over it,
    *   the visual state needs to immediately reflect the hover condition
    * - Without this tracking, the object would remain in "normal" state until
    *   the next pointer movement, causing visual inconsistency
@@ -488,16 +536,24 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   private onMouseOverOutHandler(event: ThreeMouseEvent<Value>): void {
     // Track hover state regardless of activity status to ensure proper visual updates
     // when transitioning from disabled/frozen to active state while pointer is over
-    this._isOver = event.type === "over";
+    if (event.type === "over") {
+      this.hoverPointerIds.add(event.pointerId);
+    } else {
+      this.hoverPointerIds.delete(event.pointerId);
+    }
+
+    // Update legacy state for backward compatibility
+    this._isOver = this.hoverPointerIds.size > 0;
 
     // Reset press state when pointer leaves object to prevent click on release outside
     if (event.type === "out") {
-      this._isPress = false;
+      this.pressPointerIds.delete(event.pointerId);
+      this._isPress = this.pressPointerIds.size > 0;
     }
 
     if (!this.checkActivity()) return;
 
-    const newState = this._isOver ? "over" : "normal";
+    const newState = this.isOver ? "over" : "normal";
     this.updateState(newState);
     this.emit(event.type, event);
   }
@@ -617,7 +673,8 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @description
    * Changes the enabled state of the interactive object and immediately updates
    * the interaction state and material. When enabled, the state becomes "normal";
-   * when disabled, the state becomes "disable".
+   * when disabled, the state becomes "disable". All pointer states are cleared
+   * when disabling to prevent stale multitouch interactions.
    *
    * @example
    * ```typescript
@@ -631,7 +688,10 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   public switchEnable(bool: boolean): void {
     this._enable = bool;
     if (!bool) {
-      // Clear transient interaction state when disabling
+      // Clear all pointer interaction states when disabling
+      this.pressPointerIds.clear();
+      this.hoverPointerIds.clear();
+      // Update legacy state for backward compatibility
       this._isPress = false;
       this._isOver = false;
     }

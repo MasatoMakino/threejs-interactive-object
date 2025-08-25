@@ -153,8 +153,9 @@ export class CheckBoxInteractionHandler<
     if (bool === this._isSelect) return;
     if (!this.checkActivity()) return;
     this._isSelect = bool;
-    // Clear press state to prevent unwanted click events after programmatic selection changes
-    this._isPress = false;
+    // Clear all pointer press states to prevent unwanted click events after programmatic selection changes
+    this.pressPointerIds.clear();
+    this._isPress = false; // Update legacy state for backward compatibility
     this.updateMaterial();
   }
 

@@ -8,7 +8,7 @@ import {
   it,
   vi,
 } from "vitest";
-import { CheckBoxMesh } from "../src/index.js";
+import { CheckBoxMesh, ThreeMouseEventUtil } from "../src/index.js";
 import { CheckBoxObject } from "../src/interactionHandler/CheckBoxInteractionHandler.js";
 import { getMeshMaterialSet } from "./Materials.js";
 
@@ -327,10 +327,10 @@ describe("CheckBoxInteractionHandler", () => {
       handler.on("select", selectEventSpy);
 
       // Simulate down → out → up sequence (interrupted click)
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
-      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
-      handler.onMouseOutHandler({ type: "out", interactionHandler: handler });
-      handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
 
       // Selection should remain unchanged (no click event)
       expect(handler.selection).toBe(false);
@@ -377,8 +377,8 @@ describe("CheckBoxInteractionHandler", () => {
       const { handler, matSet } = createTestSetup();
 
       // Start interaction sequence: over → down
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
-      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
       expect(handler.view.material).toBe(matSet.down.material);
 
       // Change selection programmatically during interaction
@@ -387,7 +387,7 @@ describe("CheckBoxInteractionHandler", () => {
       expect(handler.view.material).toBe(matSet.downSelect.material);
 
       // Complete interaction: up (programmatic selection cleared press state, no click occurs)
-      handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
       expect(
         handler.selection,
         "Selection should remain true as programmatic change cleared press state",
@@ -405,7 +405,7 @@ describe("CheckBoxInteractionHandler", () => {
       expect(handler.view.material).toBe(matSet.normalSelect.material);
 
       // Start hover interaction, then disable
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(handler.view.material).toBe(matSet.overSelect.material);
 
       handler.disable();
@@ -479,18 +479,18 @@ describe("CheckBoxInteractionHandler", () => {
         matSet.normal.material,
       );
 
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(handler.view.material, "Over state, unselected").toBe(
         matSet.over.material,
       );
 
-      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
       expect(handler.view.material, "Down state, unselected").toBe(
         matSet.down.material,
       );
 
       // Reset to normal for selection tests
-      handler.onMouseOutHandler({ type: "out", interactionHandler: handler });
+      handler.onMouseOutHandler(ThreeMouseEventUtil.generate("out", handler));
 
       // Test all state combinations with selection=true
       handler.selection = true;
@@ -498,12 +498,12 @@ describe("CheckBoxInteractionHandler", () => {
         matSet.normalSelect.material,
       );
 
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(handler.view.material, "Over state, selected").toBe(
         matSet.overSelect.material,
       );
 
-      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
       expect(handler.view.material, "Down state, selected").toBe(
         matSet.downSelect.material,
       );
@@ -525,7 +525,7 @@ describe("CheckBoxInteractionHandler", () => {
       expect(handler.selection, "Selection state should persist").toBe(true);
 
       // Verify continued functionality with new materialSet
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(handler.view.material).toBe(newMatSet.overSelect.material);
     });
 
@@ -535,7 +535,7 @@ describe("CheckBoxInteractionHandler", () => {
 
       // Start interaction with selection
       handler.selection = true;
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
       expect(handler.view.material).toBe(matSet.overSelect.material);
 
       // Change materialSet mid-interaction
@@ -546,7 +546,7 @@ describe("CheckBoxInteractionHandler", () => {
       ).toBe(newMatSet.overSelect.material);
 
       // Continue interaction
-      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
       expect(
         handler.view.material,
         "Should use new materialSet for state changes",
@@ -593,9 +593,9 @@ describe("CheckBoxInteractionHandler", () => {
       handler.on("select", () => eventLog.push("select"));
 
       // Simulate complete interaction sequence
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
-      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
-      handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+      handler.onMouseOverHandler(ThreeMouseEventUtil.generate("over", handler));
+      handler.onMouseDownHandler(ThreeMouseEventUtil.generate("down", handler));
+      handler.onMouseUpHandler(ThreeMouseEventUtil.generate("up", handler));
 
       expect(
         eventLog,
