@@ -454,10 +454,11 @@ export class MouseEventManager {
    * Performs the following operations:
    * 1. Retrieves all objects currently tracked as "over" for the specified pointer
    * 2. Sends "out" events to each tracked object via ButtonInteractionHandler
-   * 3. Removes the pointer from internal state tracking (currentOver Map)
+   * 3. Removes the pointer from internal state tracking (currentOver and hasThrottled Maps)
    *
    * This ensures visual states return to "normal" and prevents stuck hover states
-   * when pointers disappear without proper move/out event sequences.
+   * when pointers disappear without proper move/out event sequences. Also prevents
+   * stale throttling state that could affect future RAF tick processing.
    *
    * @motivation Real-device testing revealed touch pointers can disappear without
    *             standard event sequences, causing stuck visual states. This method
@@ -473,6 +474,7 @@ export class MouseEventManager {
       });
     }
     this.currentOver.delete(pointerId);
+    this.hasThrottled.delete(pointerId);
   }
 
   /**
