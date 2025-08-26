@@ -479,8 +479,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
 
     if (!this.checkActivity()) return;
 
-    const nextState: ClickableState = this.isOver ? "over" : "normal";
-    this.updateState(nextState);
+    this.updateState(this.calculateCurrentState());
     this.emit(event.type, event);
 
     // Only emit click if THIS pointer was previously pressed (same-ID click detection)
@@ -493,6 +492,9 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
       // Multi-touch click suppression: Clear all remaining press states
       // to prevent subsequent pointers from triggering click events
       this.pressPointerIds.clear();
+
+      // Update state again after clearing all press states to reflect the correct visual state
+      this.updateState(this.calculateCurrentState());
     }
   }
 
@@ -575,8 +577,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
 
     if (!this.checkActivity()) return;
 
-    const newState = this.isOver ? "over" : "normal";
-    this.updateState(newState);
+    this.updateState(this.calculateCurrentState());
     this.emit(event.type, event);
   }
 

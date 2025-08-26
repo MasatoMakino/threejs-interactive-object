@@ -945,5 +945,150 @@ describe("ButtonInteractionHandler", () => {
       handler.interactionScannable = true;
       expect(handler.mouseEnabled).toBe(true); // Should reflect the latest change
     });
+
+    describe("Multi-touch Material State Transitions", () => {
+      it("should maintain down material during multi-touch over/out transitions", () => {
+        const POINTER_1 = 1;
+        const POINTER_2 = 2;
+        const { handler, clickable, matSet } = createTestSetup();
+
+        // Initial normal state
+        expect(clickable.material).toBe(matSet.normal.material);
+
+        // First pointer down
+        handler.onMouseDownHandler(
+          createThreeMouseEvent("down", handler, POINTER_1),
+        );
+        expect(clickable.material).toBe(matSet.down.material);
+
+        // Second pointer down
+        handler.onMouseDownHandler(
+          createThreeMouseEvent("down", handler, POINTER_2),
+        );
+        expect(clickable.material).toBe(matSet.down.material);
+
+        // First pointer goes out (but still pressed) - should maintain down material
+        handler.onMouseOutHandler(
+          createThreeMouseEvent("out", handler, POINTER_1),
+        );
+        expect(
+          clickable.material,
+          "Should maintain down material when other pointers remain pressed",
+        ).toBe(matSet.down.material);
+
+        // First pointer comes back over - should still be down material
+        handler.onMouseOverHandler(
+          createThreeMouseEvent("over", handler, POINTER_1),
+        );
+        expect(
+          clickable.material,
+          "Should maintain down material during over/out transitions",
+        ).toBe(matSet.down.material);
+
+        // Release both pointers
+        handler.onMouseUpHandler(
+          createThreeMouseEvent("up", handler, POINTER_1),
+        );
+        handler.onMouseUpHandler(
+          createThreeMouseEvent("up", handler, POINTER_2),
+        );
+        expect(clickable.material).toBe(matSet.over.material); // Back to over state
+      });
+
+      it("should transition to correct material when last pointer is released", () => {
+        const POINTER_1 = 1;
+        const POINTER_2 = 2;
+        const POINTER_3 = 3;
+        const { handler, clickable, matSet } = createTestSetup();
+
+        // Three pointers down without initial hover
+        handler.onMouseDownHandler(
+          createThreeMouseEvent("down", handler, POINTER_1),
+        );
+        handler.onMouseDownHandler(
+          createThreeMouseEvent("down", handler, POINTER_2),
+        );
+        handler.onMouseDownHandler(
+          createThreeMouseEvent("down", handler, POINTER_3),
+        );
+        expect(clickable.material).toBe(matSet.down.material);
+        expect(handler.isPress).toBe(true);
+        expect(handler.isOver).toBe(false);
+
+        // Release first pointer (triggers click and clears all press states)
+        handler.onMouseUpHandler(
+          createThreeMouseEvent("up", handler, POINTER_1),
+        );
+
+        // Verify states after multi-touch click suppression
+        expect(handler.isPress, "All press states should be cleared").toBe(
+          false,
+        );
+        expect(
+          handler.isOver,
+          "Should not be hovering without explicit over events",
+        ).toBe(false);
+
+        // After the fix, material should be properly updated to normal
+        expect(
+          clickable.material,
+          "Should have normal material after click suppression and state update",
+        ).toBe(matSet.normal.material);
+
+        // Release remaining pointers (should have no effect as they're no longer pressed)
+        handler.onMouseUpHandler(
+          createThreeMouseEvent("up", handler, POINTER_2),
+        );
+        handler.onMouseUpHandler(
+          createThreeMouseEvent("up", handler, POINTER_3),
+        );
+        expect(handler.isPress, "Should remain unpressed").toBe(false);
+      });
+
+      it("should handle complete multi-touch state cycle", () => {
+        const POINTER_1 = 1;
+        const POINTER_2 = 2;
+        const { handler, clickable, matSet } = createTestSetup();
+
+        // Start: normal → down → all out → normal → over → down → over cycle
+
+        // Two pointers down
+        handler.onMouseDownHandler(
+          createThreeMouseEvent("down", handler, POINTER_1),
+        );
+        handler.onMouseDownHandler(
+          createThreeMouseEvent("down", handler, POINTER_2),
+        );
+        expect(clickable.material).toBe(matSet.down.material);
+
+        // Both pointers go out (all press states cleared by out events)
+        handler.onMouseOutHandler(
+          createThreeMouseEvent("out", handler, POINTER_1),
+        );
+        handler.onMouseOutHandler(
+          createThreeMouseEvent("out", handler, POINTER_2),
+        );
+        expect(
+          clickable.material,
+          "Should transition to normal when all pointers are out",
+        ).toBe(matSet.normal.material);
+
+        // Complete state cycle: normal → over → down → over
+        handler.onMouseOverHandler(
+          createThreeMouseEvent("over", handler, POINTER_1),
+        );
+        expect(clickable.material).toBe(matSet.over.material);
+
+        handler.onMouseDownHandler(
+          createThreeMouseEvent("down", handler, POINTER_1),
+        );
+        expect(clickable.material).toBe(matSet.down.material);
+
+        handler.onMouseUpHandler(
+          createThreeMouseEvent("up", handler, POINTER_1),
+        );
+        expect(clickable.material).toBe(matSet.over.material);
+      });
+    });
   });
 });
