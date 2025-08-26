@@ -145,7 +145,8 @@ export class RadioButtonInteractionHandler<
    * @see {@link RadioButtonManager.select} - External method that controls exclusive selection state
    */
   protected override checkActivity(): boolean {
-    return this._enable && !this._isExclusivelySelected;
+    // Preserve all base-class activity gates (enable, frozen, etc.) and add exclusivity.
+    return super.checkActivity() && !this._isExclusivelySelected;
   }
 
   /**
