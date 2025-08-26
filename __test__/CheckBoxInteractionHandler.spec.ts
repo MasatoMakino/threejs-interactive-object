@@ -690,4 +690,116 @@ describe("CheckBoxInteractionHandler", () => {
       warnSpy.mockRestore();
     });
   });
+
+  describe("Multi-touch Click Suppression and Selection State Synchronization", () => {
+    it("should handle comprehensive multi-touch selection cycles", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const { handler } = createTestSetup();
+
+      const selectEvents: Array<{ isSelected: boolean }> = [];
+      handler.on("select", (e) => {
+        selectEvents.push({ isSelected: e.isSelected ?? false });
+      });
+
+      // Initial: false
+      expect(handler.selection).toBe(false);
+
+      // First multi-touch cycle: false → true
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_1),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_2),
+      );
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_2));
+
+      expect(handler.selection).toBe(true);
+      expect(selectEvents.length).toBe(1);
+      expect(selectEvents[0].isSelected).toBe(true);
+
+      // Second multi-touch cycle: true → false
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_1),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_2),
+      );
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_2));
+
+      expect(handler.selection).toBe(false);
+      expect(selectEvents.length).toBe(2);
+      expect(selectEvents[1].isSelected).toBe(false);
+
+      // Third multi-touch cycle: false → true
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_1),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_2),
+      );
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_2));
+
+      expect(handler.selection).toBe(true);
+      expect(selectEvents.length).toBe(3);
+      expect(selectEvents[2].isSelected).toBe(true);
+
+      // Verify complete toggle sequence and click suppression integrity
+      expect(selectEvents[0].isSelected).toBe(true); // false → true
+      expect(selectEvents[1].isSelected).toBe(false); // true → false
+      expect(selectEvents[2].isSelected).toBe(true); // false → true
+    });
+
+    it("should synchronize select event content with actual selection state", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const POINTER_3 = 3;
+      const { handler } = createTestSetup();
+
+      const selectEvents: Array<{
+        isSelected: boolean;
+        actualStateAtEvent: boolean;
+        timestamp: number;
+      }> = [];
+
+      handler.on("select", (e) => {
+        selectEvents.push({
+          isSelected: e.isSelected ?? false,
+          actualStateAtEvent: handler.selection,
+          timestamp: Date.now(),
+        });
+      });
+
+      // Three-pointer multi-touch scenario
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_1),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_2),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_3),
+      );
+
+      // First pointer release - should trigger select event
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+
+      expect(selectEvents.length).toBe(1);
+      expect(selectEvents[0].isSelected).toBe(true);
+      expect(selectEvents[0].actualStateAtEvent).toBe(true);
+      expect(selectEvents[0].isSelected).toBe(
+        selectEvents[0].actualStateAtEvent,
+      );
+
+      // Subsequent pointer releases - no additional events
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_2));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_3));
+
+      expect(selectEvents.length).toBe(1); // Still only 1 event
+      expect(handler.selection).toBe(true); // State unchanged
+    });
+  });
 });
