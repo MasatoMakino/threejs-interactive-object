@@ -928,22 +928,27 @@ describe("ButtonInteractionHandler", () => {
       expect(clickEvents.length).toBe(1); // Still only 1 click
     });
 
-    it("should maintain backward compatibility with mouseEnabled property", () => {
+    it("should maintain backward compatibility with deprecated mouseEnabled property (scheduled for removal in next major version)", () => {
       const { handler } = createTestSetup();
 
-      // Test getter/setter compatibility
-      handler.mouseEnabled = false;
+      // Primary test using recommended interactionScannable property
+      handler.interactionScannable = false;
       expect(handler.interactionScannable).toBe(false);
-      expect(handler.mouseEnabled).toBe(false);
 
       handler.interactionScannable = true;
-      expect(handler.mouseEnabled).toBe(true);
       expect(handler.interactionScannable).toBe(true);
 
-      // Test that both properties refer to the same underlying value
+      // Backward compatibility verification - mouseEnabled is deprecated and will be removed
+      expect(handler.mouseEnabled).toBe(true); // Should mirror interactionScannable value
+
+      // Test deprecated property setter (minimal compatibility check)
       handler.mouseEnabled = false;
+      expect(handler.interactionScannable).toBe(false); // Should update underlying value
+      expect(handler.mouseEnabled).toBe(false); // Deprecated getter should work
+
+      // Verify both properties refer to the same underlying state
       handler.interactionScannable = true;
-      expect(handler.mouseEnabled).toBe(true); // Should reflect the latest change
+      expect(handler.mouseEnabled).toBe(true); // Deprecated getter reflects current state
     });
 
     describe("Multi-touch Material State Transitions", () => {
