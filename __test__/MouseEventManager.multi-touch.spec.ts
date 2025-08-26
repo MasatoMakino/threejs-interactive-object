@@ -739,5 +739,20 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       // Click should still be suppressed even when pointer releases outside target
       expect(clicks.length).toBe(1); // Still only one click from first pointer
     });
+
+    it("should ignore pointerup for a pointer with no prior pointerdown", () => {
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+      const clicks: number[] = [];
+      multiFaceMesh.interactionHandler.on("click", (e) =>
+        clicks.push(e.pointerId),
+      );
+
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, 1);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, 1);
+      // pointerId 2 never pressed
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, 2);
+      expect(clicks).toEqual([]);
+    });
   });
 });
