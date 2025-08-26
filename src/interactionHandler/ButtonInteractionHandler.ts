@@ -198,6 +198,22 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   }
 
   /**
+   * Checks whether a specific pointer is currently hovering over the object.
+   *
+   * @param pointerId - The pointer ID to check
+   * @returns True if the specified pointer is hovering over the object, false otherwise
+   *
+   * @description
+   * This method enables pointer-specific hover state checking, essential for proper
+   * multitouch duplicate event prevention in MouseEventManager. Unlike the general
+   * isOver property which indicates if ANY pointer is hovering, this method checks
+   * the hover state for a specific pointer ID.
+   */
+  public isPointerOver(pointerId: number): boolean {
+    return this.hoverPointerIds.has(pointerId);
+  }
+
+  /**
    * Indicates whether any pointer is currently pressed down on the object.
    *
    * @returns True if one or more pointers are pressed down, false otherwise

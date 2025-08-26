@@ -612,14 +612,14 @@ export class MouseEventManager {
         );
         return;
       case "over":
-        if (!btn.interactionHandler.isOver) {
+        if (!btn.interactionHandler.isPointerOver(pointerId)) {
           btn.interactionHandler.onMouseOverHandler(
             createThreeMouseEvent(type, btn, pointerId),
           );
         }
         return;
       case "out":
-        if (btn.interactionHandler.isOver) {
+        if (btn.interactionHandler.isPointerOver(pointerId)) {
           btn.interactionHandler.onMouseOutHandler(
             createThreeMouseEvent(type, btn, pointerId),
           );
