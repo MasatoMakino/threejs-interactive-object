@@ -46,8 +46,8 @@ import {
 } from "three";
 import {
   type ButtonInteractionHandler,
-  type ThreeMouseEventMap,
   createThreeMouseEvent,
+  type ThreeMouseEventMap,
   ViewPortUtil,
 } from "./index.js";
 
