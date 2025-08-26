@@ -17,14 +17,14 @@
  */
 
 import EventEmitter from "eventemitter3";
-import {
-  type ClickableGroup,
-  type ClickableMesh,
-  type ClickableSprite,
-  type ClickableState,
-  type StateMaterialSet,
-  type ThreeMouseEvent,
-  type ThreeMouseEventMap,
+import type {
+  ClickableGroup,
+  ClickableMesh,
+  ClickableSprite,
+  ClickableState,
+  StateMaterialSet,
+  ThreeMouseEvent,
+  ThreeMouseEventMap,
 } from "../index.js";
 import { createThreeMouseEvent } from "../ThreeMouseEventUtil.js";
 
