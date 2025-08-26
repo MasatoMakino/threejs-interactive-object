@@ -454,7 +454,7 @@ export class MouseEventManager {
    * Performs the following operations:
    * 1. Retrieves all objects currently tracked as "over" for the specified pointer
    * 2. Sends "out" events to each tracked object via ButtonInteractionHandler
-   * 3. Removes the pointer from internal state tracking (currentOver and hasThrottled Maps)
+   * 3. Removes the pointer from internal state tracking (currentOver Map and hasThrottled Set)
    *
    * This ensures visual states return to "normal" and prevents stuck hover states
    * when pointers disappear without proper move/out event sequences. Also prevents
