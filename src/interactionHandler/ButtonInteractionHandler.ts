@@ -25,8 +25,8 @@ import {
   type StateMaterialSet,
   type ThreeMouseEvent,
   type ThreeMouseEventMap,
-  ThreeMouseEventUtil,
 } from "../index.js";
+import { createThreeMouseEvent } from "../ThreeMouseEventUtil.js";
 
 /**
  * Union type representing all interactive display objects that can be managed by ButtonInteractionHandler.
@@ -459,7 +459,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     if (wasThisPointerPressed) {
       this.onMouseClick();
 
-      const e = ThreeMouseEventUtil.generate("click", this, event.pointerId);
+      const e = createThreeMouseEvent("click", this, event.pointerId);
       this.emit(e.type, e);
 
       // Multi-touch click suppression: Clear all remaining press states
