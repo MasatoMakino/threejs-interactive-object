@@ -782,13 +782,13 @@ describe("ButtonInteractionHandler", () => {
       // Verify all pointers are in press state
       expect(handler.isPress).toBe(true);
       // biome-ignore lint/suspicious/noExplicitAny: Accessing private property for testing
-      expect((handler as any).pressPointerIds.size).toBe(3);
+      const pressPointerIds = (handler as any).pressPointerIds as Set<number>;
+      expect(pressPointerIds.size).toBe(3);
 
       // Release first pointer - triggers click and clears all press states
       handler.onMouseUpHandler(createThreeMouseEvent("up", handler, 1));
 
-      // biome-ignore lint/suspicious/noExplicitAny: Accessing private property for testing
-      expect((handler as any).pressPointerIds.size).toBe(0);
+      expect(pressPointerIds.size).toBe(0);
       expect(handler.isPress).toBe(false);
     });
 
@@ -886,6 +886,46 @@ describe("ButtonInteractionHandler", () => {
       );
       handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_4));
       expect(clickEvents.length).toBe(3);
+    });
+
+    it("should allow click when one pointer moves out during multi-touch", () => {
+      const POINTER_A = 1;
+      const POINTER_B = 2;
+      const { handler } = createTestSetup();
+      const clickEvents: Array<{ pointerId: number }> = [];
+
+      handler.on("click", (event) => {
+        clickEvents.push({ pointerId: event.pointerId });
+      });
+
+      // Both pointers down
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_A),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_B),
+      );
+      expect(handler.isPress).toBe(true);
+      // biome-ignore lint/suspicious/noExplicitAny: Accessing private property for testing
+      const pressPointerIds = (handler as any).pressPointerIds as Set<number>;
+      expect(pressPointerIds.size).toBe(2);
+
+      // Pointer B moves out - should remove from press state
+      handler.onMouseOutHandler(
+        createThreeMouseEvent("out", handler, POINTER_B),
+      );
+      expect(pressPointerIds.size).toBe(1);
+      expect(pressPointerIds.has(POINTER_A)).toBe(true);
+      expect(pressPointerIds.has(POINTER_B)).toBe(false);
+
+      // Pointer A up - should trigger click (only remaining pressed pointer)
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_A));
+      expect(clickEvents.length).toBe(1);
+      expect(clickEvents[0].pointerId).toBe(POINTER_A);
+
+      // Pointer B up later - should NOT trigger click (not in press state)
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_B));
+      expect(clickEvents.length).toBe(1); // Still only 1 click
     });
   });
 });
