@@ -49,6 +49,16 @@ const onDomContentsLoaded = () => {
   canvas.style.maxWidth = "100%";
   canvas.style.maxHeight = "100%";
   canvas.style.touchAction = "none";
+  // ロングタップ時の選択フォーカス無効化
+  Object.assign(canvas.style, {
+    webkitUserSelect: "none",
+    mozUserSelect: "none",
+    msUserSelect: "none",
+    userSelect: "none",
+    webkitTapHighlightColor: "transparent",
+    outline: "none",
+    webkitTouchCallout: "none",
+  });
   const resizeCanvas = () => {
     resizeCanvasStyle(containerDiv, canvas, W, H);
   };

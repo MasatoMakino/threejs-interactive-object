@@ -47,6 +47,16 @@ const onDomContentsLoaded = () => {
   canvas.style.width = `${W}px`;
   canvas.style.height = `${H}px`;
   canvas.style.touchAction = "none";
+  // ロングタップ時の選択フォーカス無効化
+  Object.assign(canvas.style, {
+    webkitUserSelect: "none",
+    mozUserSelect: "none",
+    msUserSelect: "none",
+    userSelect: "none",
+    webkitTapHighlightColor: "transparent",
+    outline: "none",
+    webkitTouchCallout: "none",
+  });
 
   //平行光源オブジェクト(light)の設定
   const ambientLight = new AmbientLight(0xffffff, 1.0);

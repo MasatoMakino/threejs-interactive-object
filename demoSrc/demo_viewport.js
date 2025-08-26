@@ -71,6 +71,16 @@ const onDomContentsLoaded = () => {
   // シーンを作成
   const canvas = document.getElementById("webgl-canvas");
   canvas.style.touchAction = "none";
+  // ロングタップ時の選択フォーカス無効化
+  Object.assign(canvas.style, {
+    webkitUserSelect: "none",
+    mozUserSelect: "none",
+    msUserSelect: "none",
+    userSelect: "none",
+    webkitTapHighlightColor: "transparent",
+    outline: "none",
+    webkitTouchCallout: "none",
+  });
   const renderOption = {
     canvas,
   };
