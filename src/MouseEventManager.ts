@@ -47,7 +47,7 @@ import {
 import {
   type ButtonInteractionHandler,
   type ThreeMouseEventMap,
-  ThreeMouseEventUtil,
+  createThreeMouseEvent,
   ViewPortUtil,
 } from "./index.js";
 
@@ -580,7 +580,7 @@ export class MouseEventManager {
    * event would be fired multiple times in rapid succession.
    *
    * **Event Object Creation:**
-   * Uses ThreeMouseEventUtil.generate() to create properly formatted event
+   * Uses createThreeMouseEvent() to create properly formatted event
    * objects that include the event type, interaction handler reference, and
    * selection state (for checkbox/radio button objects).
    *
@@ -589,7 +589,7 @@ export class MouseEventManager {
    * - State checking for over/out events prevents unnecessary handler invocations
    * - The method serves as the bridge between intersection detection and interaction handling
    *
-   * @see {@link ThreeMouseEventUtil.generate} - Event object creation
+   * @see {@link createThreeMouseEvent} - Event object creation
    * @see {@link ButtonInteractionHandler} - Target interaction handler methods
    * @see {@link ThreeMouseEvent} - Event payload structure
    *
@@ -603,25 +603,25 @@ export class MouseEventManager {
     switch (type) {
       case "down":
         btn.interactionHandler.onMouseDownHandler(
-          ThreeMouseEventUtil.generate(type, btn, pointerId),
+          createThreeMouseEvent(type, btn, pointerId),
         );
         return;
       case "up":
         btn.interactionHandler.onMouseUpHandler(
-          ThreeMouseEventUtil.generate(type, btn, pointerId),
+          createThreeMouseEvent(type, btn, pointerId),
         );
         return;
       case "over":
         if (!btn.interactionHandler.isOver) {
           btn.interactionHandler.onMouseOverHandler(
-            ThreeMouseEventUtil.generate(type, btn, pointerId),
+            createThreeMouseEvent(type, btn, pointerId),
           );
         }
         return;
       case "out":
         if (btn.interactionHandler.isOver) {
           btn.interactionHandler.onMouseOutHandler(
-            ThreeMouseEventUtil.generate(type, btn, pointerId),
+            createThreeMouseEvent(type, btn, pointerId),
           );
         }
         return;
