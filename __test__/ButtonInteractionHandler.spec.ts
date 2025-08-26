@@ -1,6 +1,7 @@
 import { BoxGeometry } from "three";
 import { afterAll, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  type ButtonInteractionHandler,
   ClickableMesh,
   ClickableObject,
   createThreeMouseEvent,
@@ -30,6 +31,36 @@ describe("ButtonInteractionHandler", () => {
     return { clickable, handler, matSet };
   };
 
+  // Helper to reduce repetitive createThreeMouseEvent calls
+  const createEvent = (
+    type: "down" | "up" | "over" | "out",
+    handler: ButtonInteractionHandler<unknown>,
+    pointerId: number = 1,
+  ) => createThreeMouseEvent(type, handler, pointerId);
+
+  // Helper to simulate event emit
+  const handleEvent = (
+    type: "down" | "up" | "over" | "out",
+    handler: ButtonInteractionHandler<unknown>,
+    pointerId: number = 1,
+  ) => {
+    const event = createEvent(type, handler, pointerId);
+    switch (event.type) {
+      case "down":
+        handler.onMouseDownHandler(event);
+        break;
+      case "up":
+        handler.onMouseUpHandler(event);
+        break;
+      case "over":
+        handler.onMouseOverHandler(event);
+        break;
+      case "out":
+        handler.onMouseOutHandler(event);
+        break;
+    }
+  };
+
   describe("Basic Interaction", () => {
     it("should handle mouse down events and set press state to true", () => {
       const { handler } = createTestSetup();
@@ -40,7 +71,7 @@ describe("ButtonInteractionHandler", () => {
       const downSpy = vi.fn();
       handler.on("down", downSpy);
 
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
 
       expect(
         handler.isPress,
@@ -60,7 +91,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up initial press state
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
       expect(handler.isPress, "Press state should be true after setup").toBe(
         true,
       );
@@ -68,7 +99,7 @@ describe("ButtonInteractionHandler", () => {
       const upSpy = vi.fn();
       handler.on("up", upSpy);
 
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("up", handler);
 
       expect(
         handler.isPress,
@@ -91,7 +122,7 @@ describe("ButtonInteractionHandler", () => {
       const overSpy = vi.fn();
       handler.on("over", overSpy);
 
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
 
       expect(
         handler.isOver,
@@ -111,7 +142,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up initial hover state
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
       expect(handler.isOver, "Hover state should be true after setup").toBe(
         true,
       );
@@ -119,7 +150,7 @@ describe("ButtonInteractionHandler", () => {
       const outSpy = vi.fn();
       handler.on("out", outSpy);
 
-      handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+      handleEvent("out", handler);
 
       expect(
         handler.isOver,
@@ -141,15 +172,15 @@ describe("ButtonInteractionHandler", () => {
       handler.on("click", clickSpy);
 
       // Test: up without down should not emit click
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("up", handler);
       expect(
         clickSpy,
         "Click should not be emitted without preceding down",
       ).toHaveBeenCalledTimes(0);
 
       // Test: down followed by up should emit click
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("down", handler);
+      handleEvent("up", handler);
       expect(
         clickSpy,
         "Click should be emitted after down-up sequence",
@@ -164,9 +195,9 @@ describe("ButtonInteractionHandler", () => {
       // Test: down -> out -> up should NOT emit click (corrected behavior)
       // Note: MouseEventManager delivers up events regardless of press state,
       // but ButtonInteractionHandler now resets _isPress on out to prevent unintended clicks
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
-      handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("down", handler);
+      handleEvent("out", handler);
+      handleEvent("up", handler);
 
       expect(
         clickSpy,
@@ -178,14 +209,14 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up hover and press states
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("over", handler);
+      handleEvent("down", handler);
       expect(
         handler.state,
         "State should be 'down' after mouse down while hovering",
       ).toBe("down");
 
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("up", handler);
 
       expect(
         handler.state,
@@ -201,7 +232,7 @@ describe("ButtonInteractionHandler", () => {
       const overSpy = vi.fn();
       handler.on("over", overSpy);
 
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
 
       expect(
         handler.isOver,
@@ -223,8 +254,8 @@ describe("ButtonInteractionHandler", () => {
       // Spy on the onMouseClick method
       const clickHookSpy = vi.spyOn(handler, "onMouseClick");
 
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("down", handler);
+      handleEvent("up", handler);
 
       expect(
         clickHookSpy,
@@ -315,8 +346,8 @@ describe("ButtonInteractionHandler", () => {
       handler.on("down", downSpy);
       handler.on("over", overSpy);
 
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("down", handler);
+      handleEvent("over", handler);
 
       expect(
         downSpy,
@@ -337,7 +368,7 @@ describe("ButtonInteractionHandler", () => {
       handler.on("click", clickSpy);
 
       // 1. Mouse down (press becomes true)
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
       expect(handler.isPress, "Press state should be true after down").toBe(
         true,
       );
@@ -346,7 +377,7 @@ describe("ButtonInteractionHandler", () => {
       handler.frozen = true;
 
       // 3. Mouse up (should clear press state but not emit click due to early return)
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("up", handler);
       expect(handler.isPress, "Press state should be cleared after up").toBe(
         false,
       );
@@ -359,7 +390,7 @@ describe("ButtonInteractionHandler", () => {
       handler.frozen = false;
 
       // 5. Another mouse up (should not emit click - no stale press state)
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("up", handler);
       expect(
         clickSpy,
         "Click should still not be emitted after unfreeze",
@@ -375,8 +406,8 @@ describe("ButtonInteractionHandler", () => {
       handler.on("down", downSpy);
       handler.on("over", overSpy);
 
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("down", handler);
+      handleEvent("over", handler);
 
       expect(
         downSpy,
@@ -398,7 +429,7 @@ describe("ButtonInteractionHandler", () => {
       handler.on("click", clickSpy);
 
       // 1. Mouse down (press becomes true)
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
       expect(handler.isPress, "Press state should be true after down").toBe(
         true,
       );
@@ -407,7 +438,7 @@ describe("ButtonInteractionHandler", () => {
       handler.disable();
 
       // 3. Mouse up (should clear press state but not emit click due to early return)
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("up", handler);
       expect(handler.isPress, "Press state should be cleared after up").toBe(
         false,
       );
@@ -420,7 +451,7 @@ describe("ButtonInteractionHandler", () => {
       handler.enable();
 
       // 5. Another mouse up (should not emit click - no stale press state)
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("up", handler);
       expect(
         clickSpy,
         "Click should still not be emitted after enable",
@@ -448,7 +479,7 @@ describe("ButtonInteractionHandler", () => {
       const downSpy = vi.fn();
       handler.on("down", downSpy);
 
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
 
       // Handler-level processing: interactionScannable doesn't affect direct handler calls
       // Event processing is controlled by enable/disable and frozen states only
@@ -462,11 +493,11 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       expect(() => {
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
-        handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
-        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
-        handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        handleEvent("over", handler);
+        handleEvent("down", handler);
+        handleEvent("out", handler);
+        handleEvent("up", handler);
+        handleEvent("over", handler);
       }, "Handler should handle rapid state transitions without errors").not.toThrow();
     });
 
@@ -491,12 +522,12 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up some initial state
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
       expect(handler.state, "Initial state should be 'over'").toBe("over");
 
       // Freeze and try to change state
       handler.frozen = true;
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
       expect(handler.state, "State should not change when frozen").toBe("over");
 
       // Unfreeze and verify state is consistent
@@ -519,10 +550,10 @@ describe("ButtonInteractionHandler", () => {
       }
 
       // Execute complex interaction sequence
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
-      handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+      handleEvent("over", handler);
+      handleEvent("down", handler);
+      handleEvent("up", handler);
+      handleEvent("out", handler);
 
       expect(
         events,
@@ -554,8 +585,8 @@ describe("ButtonInteractionHandler", () => {
       const clickSpy = vi.fn();
       handler.on("click", clickSpy);
 
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("down", handler);
+      handleEvent("up", handler);
 
       expect(
         clickSpy,
@@ -573,7 +604,7 @@ describe("ButtonInteractionHandler", () => {
       const newMatSet = getMeshMaterialSet();
 
       // Set up hover state
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
       expect(handler.state, "State should be 'over' before replacement").toBe(
         "over",
       );
@@ -605,21 +636,21 @@ describe("ButtonInteractionHandler", () => {
       ).toBe(matSet.normal.material);
 
       // Test over state
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
       expect(
         clickable.material,
         "Over state should apply over material to view object",
       ).toBe(matSet.over.material);
 
       // Test down state
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
       expect(
         clickable.material,
         "Down state should apply down material to view object",
       ).toBe(matSet.down.material);
 
       // Test back to over state (mouse still over)
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
+      handleEvent("up", handler);
       expect(
         clickable.material,
         "Should return to over material when releasing while hovering",
@@ -637,7 +668,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Set up hover state
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
       expect(handler.state, "Initial state should be 'over'").toBe("over");
       expect(handler.isOver, "Initial hover state should be true").toBe(true);
 
@@ -665,7 +696,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Start mouse interaction
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
       expect(handler.isPress, "Press state should be true after down").toBe(
         true,
       );
@@ -683,7 +714,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Start hover
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
       expect(handler.isOver, "Hover state should be true after over").toBe(
         true,
       );
@@ -702,7 +733,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Start mouse interaction
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+      handleEvent("down", handler);
       expect(handler.isPress, "Press state should be true after down").toBe(
         true,
       );
@@ -721,7 +752,7 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Start hover
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      handleEvent("over", handler);
       expect(handler.isOver, "Hover state should be true after over").toBe(
         true,
       );
@@ -750,24 +781,20 @@ describe("ButtonInteractionHandler", () => {
       });
 
       // First pointer interaction
-      const pointer1Event = createThreeMouseEvent("down", handler, POINTER_1);
-      handler.onMouseDownHandler(pointer1Event);
+      handleEvent("down", handler, POINTER_1);
       expect(handler.isPress).toBe(true);
 
       // Second pointer interaction
-      const pointer2Event = createThreeMouseEvent("down", handler, POINTER_2);
-      handler.onMouseDownHandler(pointer2Event);
+      handleEvent("down", handler, POINTER_2);
       expect(handler.isPress).toBe(true);
 
       // Release first pointer - should trigger click
-      const pointer1UpEvent = createThreeMouseEvent("up", handler, POINTER_1);
-      handler.onMouseUpHandler(pointer1UpEvent);
+      handleEvent("up", handler, POINTER_1);
       expect(clickEvents.length).toBe(1);
       expect(clickEvents[0].pointerId).toBe(POINTER_1);
 
       // Release second pointer - should NOT trigger click
-      const pointer2UpEvent = createThreeMouseEvent("up", handler, POINTER_2);
-      handler.onMouseUpHandler(pointer2UpEvent);
+      handleEvent("up", handler, POINTER_2);
       expect(clickEvents.length).toBe(1); // Still only 1 click
     });
 
@@ -775,9 +802,9 @@ describe("ButtonInteractionHandler", () => {
       const { handler } = createTestSetup();
 
       // Multiple pointers down
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler, 1));
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler, 2));
-      handler.onMouseDownHandler(createThreeMouseEvent("down", handler, 3));
+      handleEvent("down", handler, 1);
+      handleEvent("down", handler, 2);
+      handleEvent("down", handler, 3);
 
       // Verify all pointers are in press state
       expect(handler.isPress).toBe(true);
@@ -786,7 +813,7 @@ describe("ButtonInteractionHandler", () => {
       expect(pressPointerIds.size).toBe(3);
 
       // Release first pointer - triggers click and clears all press states
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, 1));
+      handleEvent("up", handler, 1);
 
       expect(pressPointerIds.size).toBe(0);
       expect(handler.isPress).toBe(false);
@@ -804,24 +831,18 @@ describe("ButtonInteractionHandler", () => {
       });
 
       // Three pointers down
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_5),
-      );
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_3),
-      );
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_1),
-      );
+      handleEvent("down", handler, POINTER_5);
+      handleEvent("down", handler, POINTER_3);
+      handleEvent("down", handler, POINTER_1);
 
       // Release middle pointer first - should trigger click
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_3));
+      handleEvent("up", handler, POINTER_3);
       expect(clickEvents.length).toBe(1);
       expect(clickEvents[0].pointerId).toBe(POINTER_3);
 
       // Release other pointers - should not trigger clicks
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_5));
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      handleEvent("up", handler, POINTER_5);
+      handleEvent("up", handler, POINTER_1);
       expect(clickEvents.length).toBe(1); // Still only 1 click
     });
 
@@ -836,17 +857,13 @@ describe("ButtonInteractionHandler", () => {
       });
 
       // Single pointer interaction should work normally
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_1),
-      );
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      handleEvent("down", handler, POINTER_1);
+      handleEvent("up", handler, POINTER_1);
       expect(clickEvents.length).toBe(1);
 
       // Another single pointer interaction should work normally
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_2),
-      );
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_2));
+      handleEvent("down", handler, POINTER_2);
+      handleEvent("up", handler, POINTER_2);
       expect(clickEvents.length).toBe(2);
     });
 
@@ -863,28 +880,20 @@ describe("ButtonInteractionHandler", () => {
       });
 
       // Single touch first
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_1),
-      );
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      handleEvent("down", handler, POINTER_1);
+      handleEvent("up", handler, POINTER_1);
       expect(clickEvents.length).toBe(1);
 
       // Multi-touch scenario
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_2),
-      );
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_3),
-      );
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_2)); // First release triggers click
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_3)); // Second release suppressed
+      handleEvent("down", handler, POINTER_2);
+      handleEvent("down", handler, POINTER_3);
+      handleEvent("up", handler, POINTER_2); // First release triggers click
+      handleEvent("up", handler, POINTER_3); // Second release suppressed
       expect(clickEvents.length).toBe(2);
 
       // Single touch again
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_4),
-      );
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_4));
+      handleEvent("down", handler, POINTER_4);
+      handleEvent("up", handler, POINTER_4);
       expect(clickEvents.length).toBe(3);
     });
 
@@ -899,32 +908,26 @@ describe("ButtonInteractionHandler", () => {
       });
 
       // Both pointers down
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_A),
-      );
-      handler.onMouseDownHandler(
-        createThreeMouseEvent("down", handler, POINTER_B),
-      );
+      handleEvent("down", handler, POINTER_A);
+      handleEvent("down", handler, POINTER_B);
       expect(handler.isPress).toBe(true);
       // biome-ignore lint/suspicious/noExplicitAny: Accessing private property for testing
       const pressPointerIds = (handler as any).pressPointerIds as Set<number>;
       expect(pressPointerIds.size).toBe(2);
 
       // Pointer B moves out - should remove from press state
-      handler.onMouseOutHandler(
-        createThreeMouseEvent("out", handler, POINTER_B),
-      );
+      handleEvent("out", handler, POINTER_B);
       expect(pressPointerIds.size).toBe(1);
       expect(pressPointerIds.has(POINTER_A)).toBe(true);
       expect(pressPointerIds.has(POINTER_B)).toBe(false);
 
       // Pointer A up - should trigger click (only remaining pressed pointer)
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_A));
+      handleEvent("up", handler, POINTER_A);
       expect(clickEvents.length).toBe(1);
       expect(clickEvents[0].pointerId).toBe(POINTER_A);
 
       // Pointer B up later - should NOT trigger click (not in press state)
-      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_B));
+      handleEvent("up", handler, POINTER_B);
       expect(clickEvents.length).toBe(1); // Still only 1 click
     });
 
@@ -961,42 +964,30 @@ describe("ButtonInteractionHandler", () => {
         expect(clickable.material).toBe(matSet.normal.material);
 
         // First pointer down
-        handler.onMouseDownHandler(
-          createThreeMouseEvent("down", handler, POINTER_1),
-        );
+        handleEvent("down", handler, POINTER_1);
         expect(clickable.material).toBe(matSet.down.material);
 
         // Second pointer down
-        handler.onMouseDownHandler(
-          createThreeMouseEvent("down", handler, POINTER_2),
-        );
+        handleEvent("down", handler, POINTER_2);
         expect(clickable.material).toBe(matSet.down.material);
 
         // First pointer goes out (but still pressed) - should maintain down material
-        handler.onMouseOutHandler(
-          createThreeMouseEvent("out", handler, POINTER_1),
-        );
+        handleEvent("out", handler, POINTER_1);
         expect(
           clickable.material,
           "Should maintain down material when other pointers remain pressed",
         ).toBe(matSet.down.material);
 
         // First pointer comes back over - should still be down material
-        handler.onMouseOverHandler(
-          createThreeMouseEvent("over", handler, POINTER_1),
-        );
+        handleEvent("over", handler, POINTER_1);
         expect(
           clickable.material,
           "Should maintain down material during over/out transitions",
         ).toBe(matSet.down.material);
 
         // Release both pointers
-        handler.onMouseUpHandler(
-          createThreeMouseEvent("up", handler, POINTER_1),
-        );
-        handler.onMouseUpHandler(
-          createThreeMouseEvent("up", handler, POINTER_2),
-        );
+        handleEvent("up", handler, POINTER_1);
+        handleEvent("up", handler, POINTER_2);
         expect(clickable.material).toBe(matSet.over.material); // Back to over state
       });
 
@@ -1007,23 +998,15 @@ describe("ButtonInteractionHandler", () => {
         const { handler, clickable, matSet } = createTestSetup();
 
         // Three pointers down without initial hover
-        handler.onMouseDownHandler(
-          createThreeMouseEvent("down", handler, POINTER_1),
-        );
-        handler.onMouseDownHandler(
-          createThreeMouseEvent("down", handler, POINTER_2),
-        );
-        handler.onMouseDownHandler(
-          createThreeMouseEvent("down", handler, POINTER_3),
-        );
+        handleEvent("down", handler, POINTER_1);
+        handleEvent("down", handler, POINTER_2);
+        handleEvent("down", handler, POINTER_3);
         expect(clickable.material).toBe(matSet.down.material);
         expect(handler.isPress).toBe(true);
         expect(handler.isOver).toBe(false);
 
         // Release first pointer (triggers click and clears all press states)
-        handler.onMouseUpHandler(
-          createThreeMouseEvent("up", handler, POINTER_1),
-        );
+        handleEvent("up", handler, POINTER_1);
 
         // Verify states after multi-touch click suppression
         expect(handler.isPress, "All press states should be cleared").toBe(
@@ -1041,12 +1024,8 @@ describe("ButtonInteractionHandler", () => {
         ).toBe(matSet.normal.material);
 
         // Release remaining pointers (should have no effect as they're no longer pressed)
-        handler.onMouseUpHandler(
-          createThreeMouseEvent("up", handler, POINTER_2),
-        );
-        handler.onMouseUpHandler(
-          createThreeMouseEvent("up", handler, POINTER_3),
-        );
+        handleEvent("up", handler, POINTER_2);
+        handleEvent("up", handler, POINTER_3);
         expect(handler.isPress, "Should remain unpressed").toBe(false);
       });
 
@@ -1058,40 +1037,26 @@ describe("ButtonInteractionHandler", () => {
         // Start: normal → down → all out → normal → over → down → over cycle
 
         // Two pointers down
-        handler.onMouseDownHandler(
-          createThreeMouseEvent("down", handler, POINTER_1),
-        );
-        handler.onMouseDownHandler(
-          createThreeMouseEvent("down", handler, POINTER_2),
-        );
+        handleEvent("down", handler, POINTER_1);
+        handleEvent("down", handler, POINTER_2);
         expect(clickable.material).toBe(matSet.down.material);
 
         // Both pointers go out (all press states cleared by out events)
-        handler.onMouseOutHandler(
-          createThreeMouseEvent("out", handler, POINTER_1),
-        );
-        handler.onMouseOutHandler(
-          createThreeMouseEvent("out", handler, POINTER_2),
-        );
+        handleEvent("out", handler, POINTER_1);
+        handleEvent("out", handler, POINTER_2);
         expect(
           clickable.material,
           "Should transition to normal when all pointers are out",
         ).toBe(matSet.normal.material);
 
         // Complete state cycle: normal → over → down → over
-        handler.onMouseOverHandler(
-          createThreeMouseEvent("over", handler, POINTER_1),
-        );
+        handleEvent("over", handler, POINTER_1);
         expect(clickable.material).toBe(matSet.over.material);
 
-        handler.onMouseDownHandler(
-          createThreeMouseEvent("down", handler, POINTER_1),
-        );
+        handleEvent("down", handler, POINTER_1);
         expect(clickable.material).toBe(matSet.down.material);
 
-        handler.onMouseUpHandler(
-          createThreeMouseEvent("up", handler, POINTER_1),
-        );
+        handleEvent("up", handler, POINTER_1);
         expect(clickable.material).toBe(matSet.over.material);
       });
     });
