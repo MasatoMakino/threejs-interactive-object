@@ -713,9 +713,37 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
       // Clear all pointer interaction states when disabling
       this.pressPointerIds.clear();
       this.hoverPointerIds.clear();
+      this.updateState("disable");
+      return;
     }
-    this.state = bool ? "normal" : "disable";
-    this.updateMaterial();
+    // On enabling, immediately reflect any existing pointer conditions
+    this.updateState(this.calculateCurrentState());
+  }
+
+  /**
+   * Calculates the appropriate interaction state based on current conditions.
+   *
+   * @returns The calculated interaction state
+   *
+   * @description
+   * Determines the correct interaction state by evaluating enable status and pointer conditions
+   * in priority order: disabled → pressed → hovering → normal. This method provides consistent
+   * state calculation logic used by switchEnable and other state management operations.
+   *
+   * @remarks
+   * State priority:
+   * 1. If disabled, returns "disable"
+   * 2. If any pointer is pressed, returns "down"
+   * 3. If any pointer is hovering, returns "over"
+   * 4. Otherwise returns "normal"
+   *
+   * @protected
+   */
+  protected calculateCurrentState(): ClickableState {
+    if (!this._enable) return "disable";
+    if (this.isPress) return "down";
+    if (this.isOver) return "over";
+    return "normal";
   }
 }
 

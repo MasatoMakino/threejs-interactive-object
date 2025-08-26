@@ -15,11 +15,7 @@
  * @see {@link ButtonInteractionHandler} - Root base class for interaction handling
  */
 
-import type {
-  ClickableState,
-  RadioButtonMesh,
-  RadioButtonSprite,
-} from "../index.js";
+import type { RadioButtonMesh, RadioButtonSprite } from "../index.js";
 import {
   type ButtonInteractionHandlerParameters,
   CheckBoxInteractionHandler,
@@ -236,32 +232,6 @@ export class RadioButtonInteractionHandler<
    */
   set isFrozen(bool: boolean) {
     this._isExclusivelySelected = bool;
-  }
-  /**
-   * Calculates the current interaction state based on internal flags.
-   *
-   * @returns The appropriate ClickableState based on current flags
-   *
-   * @description
-   * Reconstructs the proper interaction state from internal flags when the state
-   * has been overridden by selection operations. This method follows the standard
-   * priority order for interaction states:
-   * 1. disable - when not enabled
-   * 2. down - when pressed
-   * 3. over - when hovering
-   * 4. normal - default state
-   *
-   * @remarks
-   * This method is used internally by `_setSelectionOverride()` to restore the
-   * correct visual state after deselection operations in RadioButtonManager workflows.
-   *
-   * @private
-   */
-  private calculateCurrentState(): ClickableState {
-    if (!this._enable) return "disable";
-    if (this.isPress) return "down";
-    if (this.isOver) return "over";
-    return "normal";
   }
 
   /**
