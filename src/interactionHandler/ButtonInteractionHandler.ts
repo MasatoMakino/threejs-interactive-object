@@ -479,22 +479,22 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
 
     if (!this.checkActivity()) return;
 
-    this.updateState(this.calculateCurrentState());
-    this.emit(event.type, event);
-
-    // Only emit click if THIS pointer was previously pressed (same-ID click detection)
+    // Phase 1: Complete state updates before emitting any events
     if (wasThisPointerPressed) {
-      this.onMouseClick();
-
-      const e = createThreeMouseEvent("click", this, event.pointerId);
-      this.emit(e.type, e);
-
       // Multi-touch click suppression: Clear all remaining press states
       // to prevent subsequent pointers from triggering click events
       this.pressPointerIds.clear();
+    }
+    // Update to final state (considers all cleared press states)
+    this.updateState(this.calculateCurrentState());
 
-      // Update state again after clearing all press states to reflect the correct visual state
-      this.updateState(this.calculateCurrentState());
+    // Phase 2: Emit events with complete, accurate state
+    this.emit(event.type, event);
+
+    if (wasThisPointerPressed) {
+      this.onMouseClick(); // Call just before click event emission
+      const clickEvent = createThreeMouseEvent("click", this, event.pointerId);
+      this.emit(clickEvent.type, clickEvent);
     }
   }
 
