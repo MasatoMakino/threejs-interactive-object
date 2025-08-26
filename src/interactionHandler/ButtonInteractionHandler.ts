@@ -310,6 +310,9 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     return this.interactionScannable;
   }
 
+  /**
+   * @deprecated Use interactionScannable instead. Will be removed in next major version.
+   */
   public set mouseEnabled(value: boolean) {
     this.interactionScannable = value;
   }
