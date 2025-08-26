@@ -282,7 +282,7 @@ export class RadioButtonInteractionHandler<
    * - Bypasses all activity checks (disabled/frozen states)
    * - Ensures exclusive selection groups have predictable visual appearance
    * - Selection: Forces normal state to guarantee normalSelect material display
-   * - Deselection: Reconstructs state from flags (_enable, _isPress, _isOver)
+   * - Deselection: Reconstructs state from flags (_enable) and aggregated getters (isPress, isOver)
    */
   public _setSelectionOverride(bool: boolean): void {
     this._isSelect = bool;
