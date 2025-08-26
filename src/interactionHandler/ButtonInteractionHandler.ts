@@ -587,16 +587,20 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   /**
    * Sets the opacity alpha multiplier for the material set.
    *
-   * @param value - Alpha value between 0.0 (transparent) and 1.0 (opaque)
+   * @param value - Alpha multiplier value (minimum 0.0 for transparency, no maximum limit)
    *
    * @description
    * Controls the overall opacity of the interactive object by setting an alpha
    * multiplier that is applied to all materials in the material set. This allows
    * for fade effects while preserving the relative opacity differences between
    * different interaction states.
+   *
+   * Values above 1.0 are permitted to allow compensation for materials with low
+   * base opacity (e.g., alpha=5.0 with material opacity=0.2 results in final opacity=1.0).
+   * Negative values are clamped to 0.0 to prevent invalid opacity states.
    */
   public set alpha(value: number) {
-    this._alpha = value;
+    this._alpha = Math.max(0, value);
     this.updateMaterial();
   }
 
