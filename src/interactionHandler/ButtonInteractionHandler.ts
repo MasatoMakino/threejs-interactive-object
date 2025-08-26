@@ -82,10 +82,16 @@ export interface ButtonInteractionHandlerParameters<Value> {
  *
  * The handler manages four primary interaction states (see {@link state} property for details).
  *
+ * **Multi-touch Click Suppression**: When multiple pointers interact with the same object,
+ * only the first pointer to complete a down-up sequence triggers a click event. Subsequent
+ * pointer releases are automatically suppressed to match native browser behavior where
+ * multi-touch gestures prevent synthetic click events.
+ *
  * @template Value - Type of arbitrary data associated with this interactive object.
  *                   Used for identifying specific buttons in multi-button scenarios.
  *
- * @fires click - Emitted when a complete click interaction occurs (down followed by up)
+ * @fires click - Emitted when a complete click interaction occurs (down followed by up).
+ *               In multi-touch scenarios, only the first completing pointer triggers this event.
  * @fires down - Emitted when pointer is pressed down on the object
  * @fires up - Emitted when pointer is released after being pressed
  * @fires over - Emitted when pointer enters the object area
@@ -415,7 +421,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   }
 
   /**
-   * Handles pointer up events and manages click detection logic.
+   * Handles pointer up events and manages click detection logic with multi-touch suppression.
    *
    * @param event - The pointer up event containing interaction details
    *
@@ -424,10 +430,19 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * removing the pointer from the pressed set, determining the next visual state
    * based on hover status, and emitting the up event. Click events are only
    * triggered when the same pointer ID was previously pressed down (same-ID click detection).
-   * Supports multiple simultaneous pointers.
+   *
+   * **Multi-touch Click Suppression**: When a click is triggered, all remaining pressed
+   * pointers are cleared to prevent subsequent click events. This matches native browser
+   * behavior where multi-touch gestures suppress synthetic click events.
+   *
+   * @motivation Browser behavior investigation on iPad revealed that multi-touch interactions
+   * naturally suppress click events. This implementation replicates that behavior by clearing
+   * the press map after the first successful click, preventing additional pointers from
+   * triggering subsequent clicks during the same multi-touch interaction.
    *
    * @fires up - Emitted when the pointer is released
-   * @fires click - Emitted when a complete same-ID click interaction is detected
+   * @fires click - Emitted when a complete same-ID click interaction is detected.
+   *               Only the first completing pointer in a multi-touch scenario triggers this event.
    */
   public onMouseUpHandler(event: ThreeMouseEvent<Value>): void {
     // Check if this specific pointer was pressed before removing it
@@ -446,6 +461,10 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
 
       const e = ThreeMouseEventUtil.generate("click", this, event.pointerId);
       this.emit(e.type, e);
+
+      // Multi-touch click suppression: Clear all remaining press states
+      // to prevent subsequent pointers from triggering click events
+      this.pressPointerIds.clear();
     }
   }
 

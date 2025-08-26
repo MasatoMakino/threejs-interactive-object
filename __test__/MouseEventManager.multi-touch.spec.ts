@@ -570,4 +570,174 @@ describe("MouseEventManager Multi-touch Infrastructure", () => {
       expect(clicks.length).toBe(0);
     });
   });
+
+  describe("Multi-touch Click Suppression", () => {
+    it("should trigger click for single pointer down/up sequence", () => {
+      const POINTER_ID = 1;
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+
+      const clicks: Array<{ pointerId: number }> = [];
+      multiFaceMesh.interactionHandler.on("click", (e) => {
+        clicks.push({ pointerId: e.pointerId });
+      });
+
+      // Single pointer interaction
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_ID);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_ID);
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_ID);
+
+      expect(clicks.length).toBe(1);
+      expect(clicks[0].pointerId).toBe(POINTER_ID);
+    });
+
+    it("should suppress click when first pointer releases while second is still pressed", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+
+      const clicks: Array<{ pointerId: number }> = [];
+      multiFaceMesh.interactionHandler.on("click", (e) => {
+        clicks.push({ pointerId: e.pointerId });
+      });
+
+      // Multi-touch scenario: both pointers down, first pointer releases
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_2);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_2);
+
+      // First pointer releases while second is still pressed
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_1);
+
+      expect(clicks.length).toBe(1);
+      expect(clicks[0].pointerId).toBe(POINTER_1);
+
+      // Second pointer releases - should be suppressed
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_2);
+
+      expect(clicks.length).toBe(1); // Still only one click from first pointer
+    });
+
+    it("should suppress click for all subsequent pointers after first click", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const POINTER_3 = 3;
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+
+      const clicks: Array<{ pointerId: number }> = [];
+      multiFaceMesh.interactionHandler.on("click", (e) => {
+        clicks.push({ pointerId: e.pointerId });
+      });
+
+      // Three-finger interaction scenario
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_2);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_3);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_2);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_3);
+
+      // Sequential release - only first should trigger click
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_1);
+      expect(clicks.length).toBe(1);
+      expect(clicks[0].pointerId).toBe(POINTER_1);
+
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_2);
+      expect(clicks.length).toBe(1); // Still only one click
+
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_3);
+      expect(clicks.length).toBe(1); // Still only one click
+    });
+
+    it("should handle pointer order variations in multi-touch scenarios", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+
+      const clicks: Array<{ pointerId: number }> = [];
+      multiFaceMesh.interactionHandler.on("click", (e) => {
+        clicks.push({ pointerId: e.pointerId });
+      });
+
+      // Reverse order release: second pointer down first
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_2);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_2);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_1);
+
+      // Second pointer (which went down first) releases first
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_2);
+      expect(clicks.length).toBe(1);
+      expect(clicks[0].pointerId).toBe(POINTER_2);
+
+      // First pointer releases - should be suppressed
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_1);
+      expect(clicks.length).toBe(1); // Still only one click from POINTER_2
+    });
+
+    it("should allow new click sequence after all pointers are released", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+
+      const clicks: Array<{ pointerId: number }> = [];
+      multiFaceMesh.interactionHandler.on("click", (e) => {
+        clicks.push({ pointerId: e.pointerId });
+      });
+
+      // First multi-touch sequence
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_2);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_2);
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_2);
+
+      expect(clicks.length).toBe(1);
+      expect(clicks[0].pointerId).toBe(POINTER_1);
+
+      // Second interaction sequence - should work normally
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_1);
+
+      expect(clicks.length).toBe(2);
+      expect(clicks[1].pointerId).toBe(POINTER_1);
+    });
+
+    it("should suppress clicks when pointer moves outside target during multi-touch", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const { managerScene, multiFaceMesh, halfW, halfH } =
+        createTestEnvironment();
+
+      const clicks: Array<{ pointerId: number }> = [];
+
+      multiFaceMesh.interactionHandler.on("click", (e) => {
+        clicks.push({ pointerId: e.pointerId });
+      });
+
+      // Both pointers target multiFaceMesh initially
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointermove", halfW, halfH, POINTER_2);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_1);
+      managerScene.dispatchMouseEvent("pointerdown", halfW, halfH, POINTER_2);
+
+      // First pointer releases on target
+      managerScene.dispatchMouseEvent("pointerup", halfW, halfH, POINTER_1);
+      expect(clicks.length).toBe(1);
+      expect(clicks[0].pointerId).toBe(POINTER_1);
+
+      // Second pointer moves outside target area and releases
+      managerScene.dispatchMouseEvent("pointermove", 10, 10, POINTER_2); // Move to top-left corner (outside target)
+      managerScene.dispatchMouseEvent("pointerup", 10, 10, POINTER_2);
+
+      // Click should still be suppressed even when pointer releases outside target
+      expect(clicks.length).toBe(1); // Still only one click from first pointer
+    });
+  });
 });

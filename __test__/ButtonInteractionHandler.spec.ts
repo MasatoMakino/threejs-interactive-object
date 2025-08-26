@@ -737,4 +737,155 @@ describe("ButtonInteractionHandler", () => {
       );
     });
   });
+
+  describe("Multi-touch Click Suppression", () => {
+    it("should suppress click events for subsequent pointers in multi-touch", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const { handler } = createTestSetup();
+      const clickEvents: Array<{ pointerId: number }> = [];
+
+      handler.on("click", (event) => {
+        clickEvents.push({ pointerId: event.pointerId });
+      });
+
+      // First pointer interaction
+      const pointer1Event = createThreeMouseEvent("down", handler, POINTER_1);
+      handler.onMouseDownHandler(pointer1Event);
+      expect(handler.isPress).toBe(true);
+
+      // Second pointer interaction
+      const pointer2Event = createThreeMouseEvent("down", handler, POINTER_2);
+      handler.onMouseDownHandler(pointer2Event);
+      expect(handler.isPress).toBe(true);
+
+      // Release first pointer - should trigger click
+      const pointer1UpEvent = createThreeMouseEvent("up", handler, POINTER_1);
+      handler.onMouseUpHandler(pointer1UpEvent);
+      expect(clickEvents.length).toBe(1);
+      expect(clickEvents[0].pointerId).toBe(POINTER_1);
+
+      // Release second pointer - should NOT trigger click
+      const pointer2UpEvent = createThreeMouseEvent("up", handler, POINTER_2);
+      handler.onMouseUpHandler(pointer2UpEvent);
+      expect(clickEvents.length).toBe(1); // Still only 1 click
+    });
+
+    it("should clear all press states after first click in multi-touch", () => {
+      const { handler } = createTestSetup();
+
+      // Multiple pointers down
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler, 1));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler, 2));
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler, 3));
+
+      // Verify all pointers are in press state
+      expect(handler.isPress).toBe(true);
+      // biome-ignore lint/suspicious/noExplicitAny: Accessing private property for testing
+      expect((handler as any).pressPointerIds.size).toBe(3);
+
+      // Release first pointer - triggers click and clears all press states
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, 1));
+
+      // biome-ignore lint/suspicious/noExplicitAny: Accessing private property for testing
+      expect((handler as any).pressPointerIds.size).toBe(0);
+      expect(handler.isPress).toBe(false);
+    });
+
+    it("should suppress clicks regardless of pointer release order", () => {
+      const POINTER_1 = 1;
+      const POINTER_3 = 3;
+      const POINTER_5 = 5;
+      const { handler } = createTestSetup();
+      const clickEvents: Array<{ pointerId: number }> = [];
+
+      handler.on("click", (event) => {
+        clickEvents.push({ pointerId: event.pointerId });
+      });
+
+      // Three pointers down
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_5),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_3),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_1),
+      );
+
+      // Release middle pointer first - should trigger click
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_3));
+      expect(clickEvents.length).toBe(1);
+      expect(clickEvents[0].pointerId).toBe(POINTER_3);
+
+      // Release other pointers - should not trigger clicks
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_5));
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      expect(clickEvents.length).toBe(1); // Still only 1 click
+    });
+
+    it("should maintain single-touch click behavior compatibility", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const { handler } = createTestSetup();
+      const clickEvents: Array<{ pointerId: number }> = [];
+
+      handler.on("click", (event) => {
+        clickEvents.push({ pointerId: event.pointerId });
+      });
+
+      // Single pointer interaction should work normally
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_1),
+      );
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      expect(clickEvents.length).toBe(1);
+
+      // Another single pointer interaction should work normally
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_2),
+      );
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_2));
+      expect(clickEvents.length).toBe(2);
+    });
+
+    it("should handle mixed single and multi-touch scenarios", () => {
+      const POINTER_1 = 1;
+      const POINTER_2 = 2;
+      const POINTER_3 = 3;
+      const POINTER_4 = 4;
+      const { handler } = createTestSetup();
+      const clickEvents: Array<{ pointerId: number }> = [];
+
+      handler.on("click", (event) => {
+        clickEvents.push({ pointerId: event.pointerId });
+      });
+
+      // Single touch first
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_1),
+      );
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_1));
+      expect(clickEvents.length).toBe(1);
+
+      // Multi-touch scenario
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_2),
+      );
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_3),
+      );
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_2)); // First release triggers click
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_3)); // Second release suppressed
+      expect(clickEvents.length).toBe(2);
+
+      // Single touch again
+      handler.onMouseDownHandler(
+        createThreeMouseEvent("down", handler, POINTER_4),
+      );
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_4));
+      expect(clickEvents.length).toBe(3);
+    });
+  });
 });
