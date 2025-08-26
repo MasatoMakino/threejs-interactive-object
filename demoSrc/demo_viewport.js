@@ -73,14 +73,14 @@ const onDomContentsLoaded = () => {
   canvas.style.touchAction = "none";
   // ロングタップ時の選択フォーカス無効化
   Object.assign(canvas.style, {
-    webkitUserSelect: "none",
-    mozUserSelect: "none",
-    msUserSelect: "none",
     userSelect: "none",
-    webkitTapHighlightColor: "transparent",
     outline: "none",
-    webkitTouchCallout: "none",
   });
+  canvas.style.setProperty("-webkit-user-select", "none");
+  canvas.style.setProperty("-moz-user-select", "none");
+  canvas.style.setProperty("-ms-user-select", "none");
+  canvas.style.setProperty("-webkit-tap-highlight-color", "transparent");
+  canvas.style.setProperty("-webkit-touch-callout", "none");
   const renderOption = {
     canvas,
   };
