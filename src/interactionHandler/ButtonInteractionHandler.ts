@@ -276,15 +276,27 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   protected _enable: boolean = true;
 
   /**
-   * Controls whether the object responds to pointer interactions.
+   * Controls whether this object is scannable by MouseEventManager during interaction detection.
    *
    * @description
-   * When set to false, the object will not respond to any pointer interactions.
-   * This differs from the `disable()` method which changes the visual state.
+   * When false, MouseEventManager will skip this object during checkTarget() processing,
+   * preventing it from receiving any pointer events. This is different from enable/disable
+   * which only affects handler-level processing.
    *
    * @default true
    */
-  public mouseEnabled: boolean = true;
+  public interactionScannable: boolean = true;
+
+  /**
+   * @deprecated Use interactionScannable instead. Will be removed in next major version.
+   */
+  public get mouseEnabled(): boolean {
+    return this.interactionScannable;
+  }
+
+  public set mouseEnabled(value: boolean) {
+    this.interactionScannable = value;
+  }
 
   /**
    * Internal storage for frozen state.

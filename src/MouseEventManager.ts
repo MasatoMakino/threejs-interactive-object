@@ -637,7 +637,7 @@ export class MouseEventManager {
    * @description
    * Performs runtime validation to determine if an object conforms to the IClickableObject3D
    * interface structure. Validates the presence and type of required properties including
-   * the interactionHandler and its mouseEnabled property.
+   * the interactionHandler and its interactionScannable property.
    *
    * @remarks
    * Used internally by checkTarget() during object hierarchy traversal to identify
@@ -658,9 +658,9 @@ export class MouseEventManager {
       "interactionHandler" in arg &&
       arg.interactionHandler !== null &&
       typeof arg.interactionHandler === "object" &&
-      "mouseEnabled" in arg.interactionHandler &&
-      arg.interactionHandler.mouseEnabled !== null &&
-      typeof arg.interactionHandler.mouseEnabled === "boolean"
+      "interactionScannable" in arg.interactionHandler &&
+      arg.interactionHandler.interactionScannable !== null &&
+      typeof arg.interactionHandler.interactionScannable === "boolean"
     );
   }
 
@@ -759,7 +759,7 @@ export class MouseEventManager {
     if (
       target != null &&
       MouseEventManager.implementsIClickableObject3D(target) &&
-      target.interactionHandler.mouseEnabled
+      target.interactionHandler.interactionScannable
     ) {
       if (type === "over") {
         const currentPointerOver = this.currentOver.get(pointerId) || [];

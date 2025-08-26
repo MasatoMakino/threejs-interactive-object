@@ -246,8 +246,8 @@ describe("ButtonInteractionHandler", () => {
         "Initial interaction state should be 'normal'",
       ).toBe("normal");
       expect(
-        handler.mouseEnabled,
-        "mouseEnabled should be true by default",
+        handler.interactionScannable,
+        "interactionScannable should be true by default",
       ).toBe(true);
       expect(handler.frozen, "frozen should be false by default").toBe(false);
       expect(handler.enabled, "enabled should be true by default").toBe(true);
@@ -439,22 +439,22 @@ describe("ButtonInteractionHandler", () => {
       }, "Handler should accept valid alpha range without errors").not.toThrow();
     });
 
-    it("should process events regardless of mouseEnabled property value", () => {
+    it("should process events regardless of interactionScannable property value", () => {
       const { handler } = createTestSetup();
-      // Note: mouseEnabled is a property that currently doesn't affect event processing
-      // This test documents current implementation behavior vs. property name expectation
-      handler.mouseEnabled = false;
+      // Note: interactionScannable controls MouseEventManager scanning, not handler-level event processing
+      // At handler level, events are processed regardless of interactionScannable value
+      handler.interactionScannable = false;
 
       const downSpy = vi.fn();
       handler.on("down", downSpy);
 
       handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
 
-      // Current implementation: mouseEnabled property doesn't control event processing
+      // Handler-level processing: interactionScannable doesn't affect direct handler calls
       // Event processing is controlled by enable/disable and frozen states only
       expect(
         downSpy,
-        "Events are processed regardless of mouseEnabled property value",
+        "Events are processed regardless of interactionScannable property value",
       ).toHaveBeenCalledTimes(1);
     });
 
@@ -926,6 +926,24 @@ describe("ButtonInteractionHandler", () => {
       // Pointer B up later - should NOT trigger click (not in press state)
       handler.onMouseUpHandler(createThreeMouseEvent("up", handler, POINTER_B));
       expect(clickEvents.length).toBe(1); // Still only 1 click
+    });
+
+    it("should maintain backward compatibility with mouseEnabled property", () => {
+      const { handler } = createTestSetup();
+
+      // Test getter/setter compatibility
+      handler.mouseEnabled = false;
+      expect(handler.interactionScannable).toBe(false);
+      expect(handler.mouseEnabled).toBe(false);
+
+      handler.interactionScannable = true;
+      expect(handler.mouseEnabled).toBe(true);
+      expect(handler.interactionScannable).toBe(true);
+
+      // Test that both properties refer to the same underlying value
+      handler.mouseEnabled = false;
+      handler.interactionScannable = true;
+      expect(handler.mouseEnabled).toBe(true); // Should reflect the latest change
     });
   });
 });

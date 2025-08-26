@@ -383,15 +383,15 @@ describe("ClickableGroup", () => {
         expect(spyParentOut).toHaveBeenCalledTimes(1);
       });
 
-      test("should respect mouseEnabled property in bubbling chain", () => {
+      test("should respect interactionScannable property in bubbling chain", () => {
         const spyChild = vi.fn();
         const spyParent = vi.fn();
 
         childMesh.interactionHandler.on("click", spyChild);
         parentGroup.interactionHandler.on("click", spyParent);
 
-        // Disable parent group mouseEnabled
-        parentGroup.interactionHandler.mouseEnabled = false;
+        // Disable parent group interaction scanning
+        parentGroup.interactionHandler.interactionScannable = false;
 
         managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
         managerScene.dispatchMouseEvent("pointerup", halfW, halfH);
@@ -401,7 +401,7 @@ describe("ClickableGroup", () => {
         expect(spyParent).not.toHaveBeenCalled();
 
         // Re-enable parent and test again
-        parentGroup.interactionHandler.mouseEnabled = true;
+        parentGroup.interactionHandler.interactionScannable = true;
         spyChild.mockClear();
 
         managerScene.dispatchMouseEvent("pointerdown", halfW, halfH);
