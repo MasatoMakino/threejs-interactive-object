@@ -11,7 +11,7 @@
 import {
   type CheckBoxMesh,
   type CheckBoxSprite,
-  ThreeMouseEventUtil,
+  createThreeMouseEvent,
 } from "../index.js";
 import {
   ButtonInteractionHandler,
@@ -99,7 +99,7 @@ export class CheckBoxInteractionHandler<
 
     this._isSelect = !this._isSelect;
 
-    const e = ThreeMouseEventUtil.generate("select", this);
+    const e = createThreeMouseEvent("select", this);
     this.emit(e.type, e);
     this.updateMaterial();
   }
@@ -142,7 +142,7 @@ export class CheckBoxInteractionHandler<
    * });
    *
    * // Manual event emission if needed
-   * const event = ThreeMouseEventUtil.generate("select", checkbox.interactionHandler);
+   * const event = createThreeMouseEvent("select", checkbox.interactionHandler);
    * checkbox.interactionHandler.emit(event.type, event);
    * ```
    *
