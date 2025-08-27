@@ -702,9 +702,14 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    *
    * @description
    * Changes the enabled state of the interactive object and immediately updates
-   * the interaction state and material. When enabled, the state becomes "normal";
-   * when disabled, the state becomes "disable". All pointer states are cleared
-   * when disabling to prevent stale multitouch interactions.
+   * the interaction state and material. When disabled, all pointer states are cleared
+   * to prevent stale multitouch interactions. When enabled, only press states are
+   * cleared while hover states are preserved to maintain visual feedback.
+   *
+   * @motivation Press state clearing on enable prevents unintended click events when
+   * a button is programmatically enabled while a pointer was previously pressed down.
+   * Hover state preservation maintains proper visual feedback for pointers that are
+   * still over the object when it becomes enabled.
    *
    * @example
    * ```typescript
@@ -724,7 +729,8 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
       this.updateState("disable");
       return;
     }
-    // On enabling, immediately reflect any existing pointer conditions
+    // On enabling, clear press states but preserve hover states for UX continuity
+    this.pressPointerIds.clear();
     this.updateState(this.calculateCurrentState());
   }
 
