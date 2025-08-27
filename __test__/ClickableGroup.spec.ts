@@ -78,6 +78,10 @@ describe("ClickableGroup", () => {
     );
 
     // Test enable() - should restore interaction responsiveness
+    // Note: Clean up hover state first with out event, then test enable
+    clickableGroup.interactionHandler.onMouseOutHandler(
+      createThreeMouseEvent("out", clickableGroup),
+    );
     clickableGroup.interactionHandler.enable();
     clickableGroup.interactionHandler.onMouseOverHandler(
       createThreeMouseEvent("over", clickableGroup),
@@ -101,6 +105,10 @@ describe("ClickableGroup", () => {
     );
 
     // Test frozen = false - should restore event processing immediately
+    // Note: Clean up hover state first with out event, then test unfreeze
+    clickableGroup.interactionHandler.onMouseOutHandler(
+      createThreeMouseEvent("out", clickableGroup),
+    );
     clickableGroup.interactionHandler.frozen = false;
     clickableGroup.interactionHandler.onMouseOverHandler(
       createThreeMouseEvent("over", clickableGroup),
@@ -116,15 +124,17 @@ describe("ClickableGroup", () => {
 
     // Disable and test that events don't fire
     clickableGroup.interactionHandler.switchEnable(false);
-
     clickableGroup.interactionHandler.onMouseOverHandler(
       createThreeMouseEvent("over", clickableGroup),
     );
     expect(spyOver).not.toHaveBeenCalled();
 
     // Re-enable and test that events fire
+    // Note: Clean up hover state first with out event, then test enable
+    clickableGroup.interactionHandler.onMouseOutHandler(
+      createThreeMouseEvent("out", clickableGroup),
+    );
     clickableGroup.interactionHandler.switchEnable(true);
-
     clickableGroup.interactionHandler.onMouseOverHandler(
       createThreeMouseEvent("over", clickableGroup),
     );

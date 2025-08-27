@@ -192,9 +192,8 @@ describe("ButtonInteractionHandler", () => {
       const clickSpy = vi.fn();
       handler.on("click", clickSpy);
 
-      // Test: down -> out -> up should NOT emit click (corrected behavior)
-      // Note: MouseEventManager delivers up events regardless of press state,
-      // but ButtonInteractionHandler now resets _isPress on out to prevent unintended clicks
+      // Sequence: down -> out -> up should NOT emit click
+      // Press state is cleared when pointer leaves to prevent unintended clicks
       handleEvent("down", handler);
       handleEvent("out", handler);
       handleEvent("up", handler);
