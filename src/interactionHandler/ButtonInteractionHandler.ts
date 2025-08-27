@@ -76,11 +76,15 @@ export interface ButtonInteractionHandlerParameters<Value> {
  *
  * @description
  * ButtonInteractionHandler provides comprehensive interaction management for Three.js display objects,
- * handling pointer events, state transitions, and material updates. This class was designed as a separate
- * handler rather than extending display objects directly due to EventEmitter3's type system limitations
- * that prevent proper event type extension in inheritance chains.
+ * handling pointer events, state transitions, material updates, and hover event duplicate management.
+ * This class was designed as a separate handler rather than extending display objects directly due to
+ * EventEmitter3's type system limitations that prevent proper event type extension in inheritance chains.
  *
  * The handler manages four primary interaction states (see {@link state} property for details).
+ *
+ * **Hover Event Duplicate Management**: Each handler instance manages its own over/out event
+ * duplicate suppression using asymmetric processing - over events are filtered for duplicates
+ * while out events are processed unconditionally for fail-safe cleanup.
  *
  * **Multi-touch Click Suppression**: When multiple pointers interact with the same object,
  * only the first pointer to complete a down-up sequence triggers a click event. Subsequent
@@ -528,14 +532,22 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   }
 
   /**
-   * Common handler for pointer over and out events.
+   * Common handler for pointer over and out events with asymmetric duplicate management.
    *
    * @param event - The pointer over or out event
    *
    * @description
    * Manages hover state tracking and visual state transitions for both over and out events.
-   * Supports multiple simultaneous pointers by managing a Set of hover pointer IDs.
-   * Hover state tracking occurs unconditionally (even when disabled/frozen) to ensure
+   * Each handler instance manages its own event duplicate suppression to ensure proper
+   * interaction behavior. Supports multiple simultaneous pointers by managing a Set of hover pointer IDs.
+   *
+   * **Duplicate Management Strategy:**
+   * - **Over events**: Filtered for duplicates to prevent redundant processing
+   * - **Out events**: Processed unconditionally for fail-safe cleanup (pressPointerIds.delete)
+   *   even in abnormal scenarios where state may be inconsistent
+   *
+   * **State Tracking Behavior:**
+   * Hover state tracking occurs before activity checks (even when disabled/frozen) to ensure
    * proper visual updates when the object transitions back to an active state while
    * pointers are still hovering over it.
    *
@@ -549,7 +561,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @internal
    */
   private onMouseOverOutHandler(event: ThreeMouseEvent<Value>): void {
-    // Duplicate event check - handle responsibility migrated from MouseEventManager
+    // Duplicate event check - each handler manages its own event suppression
     // Note: over events are filtered for duplicates, but out events are processed unconditionally
     // for fail-safe cleanup (pressPointerIds.delete) even in abnormal scenarios
     if (event.type === "over" && this.hoverPointerIds.has(event.pointerId))

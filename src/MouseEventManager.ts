@@ -571,13 +571,13 @@ export class MouseEventManager {
    * **Event Routing:**
    * - "down" events → onMouseDownHandler()
    * - "up" events → onMouseUpHandler()
-   * - "over" events → onMouseOverHandler() (with duplicate prevention)
-   * - "out" events → onMouseOutHandler() (with duplicate prevention)
+   * - "over" events → onMouseOverHandler()
+   * - "out" events → onMouseOutHandler()
    *
-   * **State-Aware Processing:**
-   * For "over" and "out" events, the method checks the current hover state
-   * (isOver property) to prevent duplicate event processing when the same
-   * event would be fired multiple times in rapid succession.
+   * **Direct Delegation:**
+   * This method performs direct event delegation without duplicate checking or state validation.
+   * Individual ButtonInteractionHandler instances manage their own event duplicate suppression
+   * and state validation as appropriate for their specific interaction patterns.
    *
    * **Event Object Creation:**
    * Uses createThreeMouseEvent() to create properly formatted event
@@ -586,7 +586,7 @@ export class MouseEventManager {
    *
    * @remarks
    * - This static method allows consistent event dispatching from multiple entry points
-   * - State checking for over/out events prevents unnecessary handler invocations
+   * - Handler instances manage their own duplicate suppression and state validation
    * - The method serves as the bridge between intersection detection and interaction handling
    *
    * @see {@link createThreeMouseEvent} - Event object creation
