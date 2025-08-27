@@ -564,7 +564,7 @@ describe("RadioButtonInteractionHandler", () => {
         matSet.normal.material,
       );
 
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      simulateMouseOver(handler);
       expect(radioButton.material, "Hover unselected").toBe(
         matSet.over.material,
       );
@@ -600,7 +600,7 @@ describe("RadioButtonInteractionHandler", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start with hover, then select (which forces normal state)
-      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+      simulateMouseOver(handler);
       handler._setSelectionOverride(true);
       expect(
         radioButton.material,
@@ -641,7 +641,7 @@ describe("RadioButtonInteractionHandler", () => {
       it("should respect frozen state", () => {
         // Test frozen state blocks interactions
         handler.frozen = true;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(eventSpy, "Should NOT emit when frozen").toHaveBeenCalledTimes(
           0,
         );
@@ -650,7 +650,7 @@ describe("RadioButtonInteractionHandler", () => {
         // Clean up hover state before unfreezing
         simulateMouseOut(handler);
         handler.frozen = false;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(eventSpy, "Should emit after unfreezing").toHaveBeenCalledTimes(
           1,
         );
@@ -659,7 +659,7 @@ describe("RadioButtonInteractionHandler", () => {
       it("should respect exclusively selected state", () => {
         // Test exclusively selected state blocks interactions
         handler.isExclusivelySelected = true;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(
           eventSpy,
           "Should NOT emit when exclusively selected",
@@ -669,7 +669,7 @@ describe("RadioButtonInteractionHandler", () => {
         // Clean up hover state before testing deselection
         simulateMouseOut(handler);
         handler.isExclusivelySelected = false;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(eventSpy, "Should emit after deselection").toHaveBeenCalledTimes(
           1,
         );
@@ -678,7 +678,7 @@ describe("RadioButtonInteractionHandler", () => {
       it("should respect disabled state from base class", () => {
         // Test disabled state blocks interactions
         handler.disable();
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(eventSpy, "Should NOT emit when disabled").toHaveBeenCalledTimes(
           0,
         );
@@ -687,7 +687,7 @@ describe("RadioButtonInteractionHandler", () => {
         // Clean up hover state before testing re-enable
         simulateMouseOut(handler);
         handler.enable();
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(eventSpy, "Should emit after re-enabling").toHaveBeenCalledTimes(
           1,
         );
@@ -699,7 +699,7 @@ describe("RadioButtonInteractionHandler", () => {
         // frozen + not exclusively selected = blocked
         handler.frozen = true;
         handler.isExclusivelySelected = false;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(
           eventSpy,
           "Should NOT emit when frozen (even if not exclusively selected)",
@@ -707,7 +707,7 @@ describe("RadioButtonInteractionHandler", () => {
 
         // frozen + exclusively selected = blocked
         handler.isExclusivelySelected = true;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(
           eventSpy,
           "Should NOT emit when both frozen and exclusively selected",
@@ -718,7 +718,7 @@ describe("RadioButtonInteractionHandler", () => {
         // not frozen + exclusively selected = blocked
         handler.frozen = false;
         handler.isExclusivelySelected = true;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(
           eventSpy,
           "Should NOT emit when exclusively selected (even if not frozen)",
@@ -729,7 +729,7 @@ describe("RadioButtonInteractionHandler", () => {
         // Set both conditions to blocking state first
         handler.frozen = true;
         handler.isExclusivelySelected = true;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(
           eventSpy,
           "Should NOT emit when both blocking conditions are active",
@@ -737,7 +737,7 @@ describe("RadioButtonInteractionHandler", () => {
 
         // Clear one condition - should still be blocked
         handler.frozen = false;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(
           eventSpy,
           "Should still be blocked by exclusively selected",
@@ -747,7 +747,7 @@ describe("RadioButtonInteractionHandler", () => {
         // Clean up hover state before testing final state
         simulateMouseOut(handler);
         handler.isExclusivelySelected = false;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        simulateMouseOver(handler);
         expect(
           eventSpy,
           "Should emit when both conditions are cleared",
