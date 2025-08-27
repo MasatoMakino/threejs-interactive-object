@@ -564,8 +564,9 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
     // Duplicate event check - each handler manages its own event suppression
     // Note: over events are filtered for duplicates, but out events are processed unconditionally
     // for fail-safe cleanup (pressPointerIds.delete) even in abnormal scenarios
-    if (event.type === "over" && this.hoverPointerIds.has(event.pointerId))
+    if (event.type === "over" && this.hoverPointerIds.has(event.pointerId)) {
       return;
+    }
 
     // Track hover state regardless of activity status to ensure proper visual updates
     // when transitioning from disabled/frozen to active state while pointer is over
