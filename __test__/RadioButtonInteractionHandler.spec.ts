@@ -9,6 +9,7 @@ import {
   vi,
 } from "vitest";
 import {
+  createThreeMouseEvent,
   type RadioButtonInteractionHandler,
   RadioButtonMesh,
 } from "../src/index.js";
@@ -69,9 +70,9 @@ describe("RadioButtonInteractionHandler", () => {
   const simulateCompleteClick = (
     handler: RadioButtonInteractionHandler<unknown>,
   ) => {
-    handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
-    handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
-    handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+    handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+    handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
+    handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
   };
 
   /**
@@ -87,7 +88,7 @@ describe("RadioButtonInteractionHandler", () => {
   const simulateMouseOut = (
     handler: RadioButtonInteractionHandler<unknown>,
   ) => {
-    handler.onMouseOutHandler({ type: "out", interactionHandler: handler });
+    handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
   };
 
   describe("Internal Override API for RadioButtonManager", () => {
@@ -336,10 +337,7 @@ describe("RadioButtonInteractionHandler", () => {
       ).toBe(matSet.normalSelect.material);
 
       // Simulate hover state
-      handler.onMouseOverHandler({
-        type: "over",
-        interactionHandler: handler,
-      });
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
 
       // Deselect - should restore hover state from internal flags
       handler._setSelectionOverride(false);
@@ -462,7 +460,7 @@ describe("RadioButtonInteractionHandler", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start in hover state
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(radioButton.material, "Should show hover material").toBe(
         matSet.over.material,
       );
@@ -484,7 +482,7 @@ describe("RadioButtonInteractionHandler", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start in hover state, then select
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(radioButton.material, "Should show hover material initially").toBe(
         matSet.over.material,
       );
@@ -516,7 +514,7 @@ describe("RadioButtonInteractionHandler", () => {
       const newMatSet = getMeshMaterialSet();
 
       // Set up state: hover, then select (which forces normal state)
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       handler._setSelectionOverride(true);
       expect(
         radioButton.material,
@@ -550,12 +548,12 @@ describe("RadioButtonInteractionHandler", () => {
         matSet.normal.material,
       );
 
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       expect(radioButton.material, "Hover unselected").toBe(
         matSet.over.material,
       );
 
-      handler.onMouseDownHandler({ type: "down", interactionHandler: handler });
+      handler.onMouseDownHandler(createThreeMouseEvent("down", handler));
       expect(radioButton.material, "Down unselected").toBe(
         matSet.down.material,
       );
@@ -568,14 +566,14 @@ describe("RadioButtonInteractionHandler", () => {
       ).toBe(matSet.normalSelect.material);
 
       // Release triggers onMouseClick which toggles selection (true->false) and restores over state
-      handler.onMouseUpHandler({ type: "up", interactionHandler: handler });
+      handler.onMouseUpHandler(createThreeMouseEvent("up", handler));
       expect(
         radioButton.material,
         "Should show over material after UP toggles selection (false, over)",
       ).toBe(matSet.over.material);
 
       // Move out should show unselected normal
-      handler.onMouseOutHandler({ type: "out", interactionHandler: handler });
+      handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
       expect(
         radioButton.material,
         "Should show normal material (false, normal)",
@@ -586,7 +584,7 @@ describe("RadioButtonInteractionHandler", () => {
       const { handler, radioButton, matSet } = createTestSetup();
 
       // Start with hover, then select (which forces normal state)
-      handler.onMouseOverHandler({ type: "over", interactionHandler: handler });
+      handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
       handler._setSelectionOverride(true);
       expect(
         radioButton.material,
@@ -610,6 +608,127 @@ describe("RadioButtonInteractionHandler", () => {
         radioButton.material,
         "Should restore normalSelect after re-enable",
       ).toBe(matSet.normalSelect.material);
+    });
+  });
+
+  describe("checkActivity() Base Class Invariant Preservation", () => {
+    let handler: RadioButtonInteractionHandler<unknown>;
+    let eventSpy: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      ({ handler } = createTestSetup());
+      eventSpy = vi.fn();
+      handler.on("over", eventSpy);
+    });
+
+    describe("Individual State Controls", () => {
+      it("should respect frozen state", () => {
+        // Test frozen state blocks interactions
+        handler.frozen = true;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(eventSpy, "Should NOT emit when frozen").toHaveBeenCalledTimes(
+          0,
+        );
+
+        // Test that unfreezing restores interaction
+        handler.frozen = false;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(eventSpy, "Should emit after unfreezing").toHaveBeenCalledTimes(
+          1,
+        );
+      });
+
+      it("should respect exclusively selected state", () => {
+        // Test exclusively selected state blocks interactions
+        handler.isExclusivelySelected = true;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(
+          eventSpy,
+          "Should NOT emit when exclusively selected",
+        ).toHaveBeenCalledTimes(0);
+
+        // Test that deselection restores interaction
+        handler.isExclusivelySelected = false;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(eventSpy, "Should emit after deselection").toHaveBeenCalledTimes(
+          1,
+        );
+      });
+
+      it("should respect disabled state from base class", () => {
+        // Test disabled state blocks interactions
+        handler.disable();
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(eventSpy, "Should NOT emit when disabled").toHaveBeenCalledTimes(
+          0,
+        );
+
+        // Test that re-enabling restores interaction
+        handler.enable();
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(eventSpy, "Should emit after re-enabling").toHaveBeenCalledTimes(
+          1,
+        );
+      });
+    });
+
+    describe("State Combination Logic", () => {
+      it("should block interactions when frozen regardless of exclusive selection state", () => {
+        // frozen + not exclusively selected = blocked
+        handler.frozen = true;
+        handler.isExclusivelySelected = false;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(
+          eventSpy,
+          "Should NOT emit when frozen (even if not exclusively selected)",
+        ).toHaveBeenCalledTimes(0);
+
+        // frozen + exclusively selected = blocked
+        handler.isExclusivelySelected = true;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(
+          eventSpy,
+          "Should NOT emit when both frozen and exclusively selected",
+        ).toHaveBeenCalledTimes(0);
+      });
+
+      it("should block interactions when exclusively selected regardless of frozen state", () => {
+        // not frozen + exclusively selected = blocked
+        handler.frozen = false;
+        handler.isExclusivelySelected = true;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(
+          eventSpy,
+          "Should NOT emit when exclusively selected (even if not frozen)",
+        ).toHaveBeenCalledTimes(0);
+      });
+
+      it("should allow interactions only when both frozen=false and exclusively selected=false", () => {
+        // Set both conditions to blocking state first
+        handler.frozen = true;
+        handler.isExclusivelySelected = true;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(
+          eventSpy,
+          "Should NOT emit when both blocking conditions are active",
+        ).toHaveBeenCalledTimes(0);
+
+        // Clear one condition - should still be blocked
+        handler.frozen = false;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(
+          eventSpy,
+          "Should still be blocked by exclusively selected",
+        ).toHaveBeenCalledTimes(0);
+
+        // Clear the other condition - should now work
+        handler.isExclusivelySelected = false;
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(
+          eventSpy,
+          "Should emit when both conditions are cleared",
+        ).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

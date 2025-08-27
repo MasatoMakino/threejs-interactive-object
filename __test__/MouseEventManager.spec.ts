@@ -243,7 +243,7 @@ describe("MouseEventManager", () => {
       createTestEnvironment();
 
     btn.button.interactionHandler.disable();
-    btn.button.interactionHandler.mouseEnabled = true;
+    btn.button.interactionHandler.interactionScannable = true;
 
     btn.checkMaterial("disable");
     btnBackground.checkMaterial("normal");
@@ -278,34 +278,34 @@ describe("MouseEventManager", () => {
   });
 
   /**
-   * Tests event pass-through behavior when mouseEnabled is false
+   * Tests event pass-through behavior when interactionScannable is false
    *
    * @description
-   * Verifies that objects with mouseEnabled=false become transparent to pointer events,
+   * Verifies that objects with interactionScannable=false become transparent to pointer events,
    * allowing events to pass through to objects behind them. This is different from
    * disabled objects which block events but don't respond.
    *
-   * **mouseEnabled vs disabled**:
+   * **interactionScannable vs disabled**:
    * - `disabled`: Objects block events but don't respond (events consumed)
-   * - `mouseEnabled=false`: Objects don't participate in raycasting (events pass through)
+   * - `interactionScannable=false`: Objects don't participate in raycasting (events pass through)
    *
    * **Test Setup**:
-   * - Both btn.button and wrapper have mouseEnabled=false
+   * - Both btn.button and wrapper have interactionScannable=false
    * - btnBackground.button at Z=-10 becomes the primary interactive target
    * - Events pass through foreground objects to reach background
    *
    * **Expected Behavior**:
    * - Foreground objects remain visually unchanged
    * - Background objects receive and respond to all pointer events
-   * - Wrapper objects don't register hover/press when mouseEnabled=false
+   * - Wrapper objects don't register hover/press when interactionScannable=false
    */
-  test("should pass through pointer events to background when mouseEnabled is false", () => {
+  test("should pass through pointer events to background when interactionScannable is false", () => {
     const { managerScene, wrapper, btn, btnBackground, halfW, halfH } =
       createTestEnvironment();
 
     btn.button.interactionHandler.enable();
-    btn.button.interactionHandler.mouseEnabled = false;
-    wrapper.interactionHandler.mouseEnabled = false;
+    btn.button.interactionHandler.interactionScannable = false;
+    wrapper.interactionHandler.interactionScannable = false;
     btn.checkMaterial("normal");
     btnBackground.checkMaterial("normal");
 

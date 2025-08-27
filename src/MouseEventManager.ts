@@ -46,8 +46,8 @@ import {
 } from "three";
 import {
   type ButtonInteractionHandler,
+  createThreeMouseEvent,
   type ThreeMouseEventMap,
-  ThreeMouseEventUtil,
   ViewPortUtil,
 } from "./index.js";
 
@@ -454,7 +454,7 @@ export class MouseEventManager {
    * Performs the following operations:
    * 1. Retrieves all objects currently tracked as "over" for the specified pointer
    * 2. Sends "out" events to each tracked object via ButtonInteractionHandler
-   * 3. Removes the pointer from internal state tracking (currentOver and hasThrottled Maps)
+   * 3. Removes the pointer from internal state tracking (currentOver Map and hasThrottled Set)
    *
    * This ensures visual states return to "normal" and prevents stuck hover states
    * when pointers disappear without proper move/out event sequences. Also prevents
@@ -580,7 +580,7 @@ export class MouseEventManager {
    * event would be fired multiple times in rapid succession.
    *
    * **Event Object Creation:**
-   * Uses ThreeMouseEventUtil.generate() to create properly formatted event
+   * Uses createThreeMouseEvent() to create properly formatted event
    * objects that include the event type, interaction handler reference, and
    * selection state (for checkbox/radio button objects).
    *
@@ -589,7 +589,7 @@ export class MouseEventManager {
    * - State checking for over/out events prevents unnecessary handler invocations
    * - The method serves as the bridge between intersection detection and interaction handling
    *
-   * @see {@link ThreeMouseEventUtil.generate} - Event object creation
+   * @see {@link createThreeMouseEvent} - Event object creation
    * @see {@link ButtonInteractionHandler} - Target interaction handler methods
    * @see {@link ThreeMouseEvent} - Event payload structure
    *
@@ -603,25 +603,25 @@ export class MouseEventManager {
     switch (type) {
       case "down":
         btn.interactionHandler.onMouseDownHandler(
-          ThreeMouseEventUtil.generate(type, btn, pointerId),
+          createThreeMouseEvent(type, btn, pointerId),
         );
         return;
       case "up":
         btn.interactionHandler.onMouseUpHandler(
-          ThreeMouseEventUtil.generate(type, btn, pointerId),
+          createThreeMouseEvent(type, btn, pointerId),
         );
         return;
       case "over":
-        if (!btn.interactionHandler.isOver) {
+        if (!btn.interactionHandler.isPointerOver(pointerId)) {
           btn.interactionHandler.onMouseOverHandler(
-            ThreeMouseEventUtil.generate(type, btn, pointerId),
+            createThreeMouseEvent(type, btn, pointerId),
           );
         }
         return;
       case "out":
-        if (btn.interactionHandler.isOver) {
+        if (btn.interactionHandler.isPointerOver(pointerId)) {
           btn.interactionHandler.onMouseOutHandler(
-            ThreeMouseEventUtil.generate(type, btn, pointerId),
+            createThreeMouseEvent(type, btn, pointerId),
           );
         }
         return;
@@ -637,7 +637,7 @@ export class MouseEventManager {
    * @description
    * Performs runtime validation to determine if an object conforms to the IClickableObject3D
    * interface structure. Validates the presence and type of required properties including
-   * the interactionHandler and its mouseEnabled property.
+   * the interactionHandler and its interactionScannable property.
    *
    * @remarks
    * Used internally by checkTarget() during object hierarchy traversal to identify
@@ -658,9 +658,9 @@ export class MouseEventManager {
       "interactionHandler" in arg &&
       arg.interactionHandler !== null &&
       typeof arg.interactionHandler === "object" &&
-      "mouseEnabled" in arg.interactionHandler &&
-      arg.interactionHandler.mouseEnabled !== null &&
-      typeof arg.interactionHandler.mouseEnabled === "boolean"
+      "interactionScannable" in arg.interactionHandler &&
+      arg.interactionHandler.interactionScannable !== null &&
+      typeof arg.interactionHandler.interactionScannable === "boolean"
     );
   }
 
@@ -759,7 +759,7 @@ export class MouseEventManager {
     if (
       target != null &&
       MouseEventManager.implementsIClickableObject3D(target) &&
-      target.interactionHandler.mouseEnabled
+      target.interactionHandler.interactionScannable
     ) {
       if (type === "over") {
         const currentPointerOver = this.currentOver.get(pointerId) || [];

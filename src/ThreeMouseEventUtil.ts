@@ -37,7 +37,7 @@ function getInteractionHandler<Value>(
   if (handlerOrView != null && "interactionHandler" in handlerOrView) {
     return handlerOrView.interactionHandler;
   }
-  return handlerOrView;
+  return handlerOrView as ButtonInteractionHandler<Value> | undefined;
 }
 
 /**

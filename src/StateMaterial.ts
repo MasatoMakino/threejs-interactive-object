@@ -265,13 +265,13 @@ export class StateMaterialSet {
    * Gets the appropriate StateMaterial for the given interaction state and conditions.
    *
    * @param state - The current interaction state (normal, over, down)
-   * @param mouseEnabled - Whether mouse interaction is enabled for the object
+   * @param enabled - Whether the interaction handler is enabled
    * @param isSelected - Whether the object is in selected state (default: false)
    * @returns The StateMaterial instance for the specified conditions
    *
    * @remarks
    * State selection priority:
-   * 1. If mouseEnabled is false, always returns disable material
+   * 1. If enabled is false, always returns disable material
    * 2. Otherwise, returns the appropriate material based on state and selection:
    *    - normal + selected = normalSelect
    *    - over + selected = overSelect
@@ -300,10 +300,10 @@ export class StateMaterialSet {
    */
   public getMaterial(
     state: ClickableState,
-    mouseEnabled: boolean,
+    enabled: boolean,
     isSelected: boolean = false,
   ): StateMaterial {
-    if (!mouseEnabled) {
+    if (!enabled) {
       return this.disable;
     }
 

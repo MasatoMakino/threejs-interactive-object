@@ -15,11 +15,7 @@
  * @see {@link ButtonInteractionHandler} - Root base class for interaction handling
  */
 
-import type {
-  ClickableState,
-  RadioButtonMesh,
-  RadioButtonSprite,
-} from "../index.js";
+import type { RadioButtonMesh, RadioButtonSprite } from "../index.js";
 import {
   type ButtonInteractionHandlerParameters,
   CheckBoxInteractionHandler,
@@ -149,7 +145,8 @@ export class RadioButtonInteractionHandler<
    * @see {@link RadioButtonManager.select} - External method that controls exclusive selection state
    */
   protected override checkActivity(): boolean {
-    return this._enable && !this._isExclusivelySelected;
+    // Preserve all base-class activity gates (enable, frozen, etc.) and add exclusivity.
+    return super.checkActivity() && !this._isExclusivelySelected;
   }
 
   /**
@@ -237,32 +234,6 @@ export class RadioButtonInteractionHandler<
   set isFrozen(bool: boolean) {
     this._isExclusivelySelected = bool;
   }
-  /**
-   * Calculates the current interaction state based on internal flags.
-   *
-   * @returns The appropriate ClickableState based on current flags
-   *
-   * @description
-   * Reconstructs the proper interaction state from internal flags when the state
-   * has been overridden by selection operations. This method follows the standard
-   * priority order for interaction states:
-   * 1. disable - when not enabled
-   * 2. down - when pressed
-   * 3. over - when hovering
-   * 4. normal - default state
-   *
-   * @remarks
-   * This method is used internally by `_setSelectionOverride()` to restore the
-   * correct visual state after deselection operations in RadioButtonManager workflows.
-   *
-   * @private
-   */
-  private calculateCurrentState(): ClickableState {
-    if (!this._enable) return "disable";
-    if (this._isPress) return "down";
-    if (this._isOver) return "over";
-    return "normal";
-  }
 
   /**
    * Forces selection state change for exclusive radio button group management.
@@ -282,7 +253,7 @@ export class RadioButtonInteractionHandler<
    * - Bypasses all activity checks (disabled/frozen states)
    * - Ensures exclusive selection groups have predictable visual appearance
    * - Selection: Forces normal state to guarantee normalSelect material display
-   * - Deselection: Reconstructs state from flags (_enable, _isPress, _isOver)
+   * - Deselection: Reconstructs state from flags (_enable) and aggregated getters (isPress, isOver)
    */
   public _setSelectionOverride(bool: boolean): void {
     this._isSelect = bool;

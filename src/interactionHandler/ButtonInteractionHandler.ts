@@ -17,16 +17,16 @@
  */
 
 import EventEmitter from "eventemitter3";
-import {
-  type ClickableGroup,
-  type ClickableMesh,
-  type ClickableSprite,
-  type ClickableState,
-  type StateMaterialSet,
-  type ThreeMouseEvent,
-  type ThreeMouseEventMap,
-  ThreeMouseEventUtil,
+import type {
+  ClickableGroup,
+  ClickableMesh,
+  ClickableSprite,
+  ClickableState,
+  StateMaterialSet,
+  ThreeMouseEvent,
+  ThreeMouseEventMap,
 } from "../index.js";
+import { createThreeMouseEvent } from "../ThreeMouseEventUtil.js";
 
 /**
  * Union type representing all interactive display objects that can be managed by ButtonInteractionHandler.
@@ -82,10 +82,16 @@ export interface ButtonInteractionHandlerParameters<Value> {
  *
  * The handler manages four primary interaction states (see {@link state} property for details).
  *
+ * **Multi-touch Click Suppression**: When multiple pointers interact with the same object,
+ * only the first pointer to complete a down-up sequence triggers a click event. Subsequent
+ * pointer releases are automatically suppressed to match native browser behavior where
+ * multi-touch gestures prevent synthetic click events.
+ *
  * @template Value - Type of arbitrary data associated with this interactive object.
  *                   Used for identifying specific buttons in multi-button scenarios.
  *
- * @fires click - Emitted when a complete click interaction occurs (down followed by up)
+ * @fires click - Emitted when a complete click interaction occurs (down followed by up).
+ *               In multi-touch scenarios, only the first completing pointer triggers this event.
  * @fires down - Emitted when pointer is pressed down on the object
  * @fires up - Emitted when pointer is released after being pressed
  * @fires over - Emitted when pointer enters the object area
@@ -176,25 +182,51 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   }
 
   /**
-   * Indicates whether the pointer is currently hovering over the object.
+   * Indicates whether any pointer is currently hovering over the object.
    *
-   * @returns True if pointer is over the object, false otherwise
+   * @returns True if one or more pointers are over the object, false otherwise
+   *
+   * @description
+   * Computed from the size of the hoverPointerIds Set. Returns true when any
+   * pointer is hovering over the interactive object, supporting both single
+   * and multitouch scenarios while maintaining backward compatibility.
    *
    * @readonly
    */
   get isOver(): boolean {
-    return this._isOver;
+    return this.hoverPointerIds.size > 0;
   }
 
   /**
-   * Indicates whether the pointer is currently pressed down on the object.
+   * Checks whether a specific pointer is currently hovering over the object.
    *
-   * @returns True if pointer is pressed down, false otherwise
+   * @param pointerId - The pointer ID to check
+   * @returns True if the specified pointer is hovering over the object, false otherwise
+   *
+   * @description
+   * This method enables pointer-specific hover state checking, essential for proper
+   * multitouch duplicate event prevention in MouseEventManager. Unlike the general
+   * isOver property which indicates if ANY pointer is hovering, this method checks
+   * the hover state for a specific pointer ID.
+   */
+  public isPointerOver(pointerId: number): boolean {
+    return this.hoverPointerIds.has(pointerId);
+  }
+
+  /**
+   * Indicates whether any pointer is currently pressed down on the object.
+   *
+   * @returns True if one or more pointers are pressed down, false otherwise
+   *
+   * @description
+   * Computed from the size of the pressPointerIds Set. Returns true when any
+   * pointer is pressed down on the interactive object, supporting both single
+   * and multitouch scenarios while maintaining backward compatibility.
    *
    * @readonly
    */
   get isPress(): boolean {
-    return this._isPress;
+    return this.pressPointerIds.size > 0;
   }
 
   /**
@@ -229,16 +261,29 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   readonly view: ClickableView<Value>;
 
   /**
-   * Internal state tracking pointer press status.
+   * Set of pointer IDs currently in pressed state.
+   *
+   * @description
+   * Tracks all pointer IDs that have triggered down events but not yet
+   * corresponding up events. Used for multitouch support and same-ID
+   * click detection. The Set automatically prevents duplicate pointer ID
+   * storage and provides O(1) add/delete/has operations.
+   *
    * @internal
    */
-  protected _isPress: boolean = false;
+  protected pressPointerIds: Set<number> = new Set();
 
   /**
-   * Internal state tracking pointer hover status.
+   * Set of pointer IDs currently hovering over the object.
+   *
+   * @description
+   * Tracks all pointer IDs that have entered the object area but not yet
+   * left. Used for multitouch hover state management. Multiple pointers
+   * can simultaneously hover over the same interactive object.
+   *
    * @internal
    */
-  protected _isOver: boolean = false;
+  protected hoverPointerIds: Set<number> = new Set();
 
   /**
    * Internal state tracking enabled/disabled status.
@@ -247,15 +292,30 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   protected _enable: boolean = true;
 
   /**
-   * Controls whether the object responds to pointer interactions.
+   * Controls whether this object is scannable by MouseEventManager during interaction detection.
    *
    * @description
-   * When set to false, the object will not respond to any pointer interactions.
-   * This differs from the `disable()` method which changes the visual state.
+   * When false, MouseEventManager will skip this object during checkTarget() processing,
+   * preventing it from receiving any pointer events. This is different from enable/disable
+   * which only affects handler-level processing.
    *
    * @default true
    */
-  public mouseEnabled: boolean = true;
+  public interactionScannable: boolean = true;
+
+  /**
+   * @deprecated Use interactionScannable instead. Will be removed in next major version.
+   */
+  public get mouseEnabled(): boolean {
+    return this.interactionScannable;
+  }
+
+  /**
+   * @deprecated Use interactionScannable instead. Will be removed in next major version.
+   */
+  public set mouseEnabled(value: boolean) {
+    this.interactionScannable = value;
+  }
 
   /**
    * Internal storage for frozen state.
@@ -280,9 +340,9 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   public set frozen(value: boolean) {
     this._frozen = value;
     if (value) {
-      // Clear transient interaction state when freezing
-      this._isPress = false;
-      this._isOver = false;
+      // Clear all pointer interaction states when freezing
+      this.pressPointerIds.clear();
+      this.hoverPointerIds.clear();
     }
   }
 
@@ -377,49 +437,67 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @param event - The pointer down event containing interaction details
    *
    * @description
-   * Processes pointer down events by checking activity status, updating internal
-   * press state, transitioning to "down" visual state, and emitting the down event.
-   * If the object is inactive (disabled or frozen), the event is ignored.
+   * Processes pointer down events by checking activity status, adding the pointer ID
+   * to the pressed set, transitioning to "down" visual state, and emitting the down event.
+   * Supports multiple simultaneous pointers. If the object is inactive (disabled or frozen),
+   * the event is ignored.
    *
    * @fires down - Emitted when the pointer is successfully pressed down
    */
   public onMouseDownHandler(event: ThreeMouseEvent<Value>): void {
     if (!this.checkActivity()) return;
-    this._isPress = true;
-    this.updateState("down");
+    this.pressPointerIds.add(event.pointerId);
+    this.updateState(this.calculateCurrentState());
     this.emit(event.type, event);
   }
 
   /**
-   * Handles pointer up events and manages click detection logic.
+   * Handles pointer up events and manages click detection logic with multi-touch suppression.
    *
    * @param event - The pointer up event containing interaction details
    *
    * @description
-   * Processes pointer up events by resetting press state, determining the next
-   * visual state based on hover status, and emitting the up event. If the pointer
-   * was previously pressed down, also triggers click event emission through
-   * the onMouseClick hook.
+   * Processes pointer up events by checking for same-pointer-ID press state,
+   * removing the pointer from the pressed set, determining the next visual state
+   * based on hover status, and emitting the up event. Click events are only
+   * triggered when the same pointer ID was previously pressed down (same-ID click detection).
+   *
+   * **Multi-touch Click Suppression**: When a click is triggered, all remaining pressed
+   * pointers are cleared to prevent subsequent click events. This matches native browser
+   * behavior where multi-touch gestures suppress synthetic click events.
+   *
+   * @motivation Browser behavior investigation on iPad revealed that multi-touch interactions
+   * naturally suppress click events. This implementation replicates that behavior by clearing
+   * the press map after the first successful click, preventing additional pointers from
+   * triggering subsequent clicks during the same multi-touch interaction.
    *
    * @fires up - Emitted when the pointer is released
-   * @fires click - Emitted when a complete click interaction is detected
+   * @fires click - Emitted when a complete same-ID click interaction is detected.
+   *               Only the first completing pointer in a multi-touch scenario triggers this event.
    */
   public onMouseUpHandler(event: ThreeMouseEvent<Value>): void {
-    // Always clear press first to avoid stale press across disable/freeze
-    const wasPress = this._isPress;
-    this._isPress = false;
+    // Check if this specific pointer was pressed before removing it
+    const wasThisPointerPressed = this.pressPointerIds.has(event.pointerId);
+    this.pressPointerIds.delete(event.pointerId);
 
     if (!this.checkActivity()) return;
 
-    const nextState: ClickableState = this._isOver ? "over" : "normal";
-    this.updateState(nextState);
+    // Phase 1: Complete state updates before emitting any events
+    if (wasThisPointerPressed) {
+      // Multi-touch click suppression: Clear all remaining press states
+      // to prevent subsequent pointers from triggering click events
+      this.pressPointerIds.clear();
+    }
+    // Update to final state (considers all cleared press states)
+    this.updateState(this.calculateCurrentState());
+
+    // Phase 2: Emit events with complete, accurate state
     this.emit(event.type, event);
 
-    if (wasPress) {
-      this.onMouseClick();
-
-      const e = ThreeMouseEventUtil.generate("click", this, event.pointerId);
-      this.emit(e.type, e);
+    if (wasThisPointerPressed) {
+      this.onMouseClick(); // Call just before click event emission
+      const clickEvent = createThreeMouseEvent("click", this, event.pointerId);
+      this.emit(clickEvent.type, clickEvent);
     }
   }
 
@@ -472,13 +550,14 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    *
    * @description
    * Manages hover state tracking and visual state transitions for both over and out events.
+   * Supports multiple simultaneous pointers by managing a Set of hover pointer IDs.
    * Hover state tracking occurs unconditionally (even when disabled/frozen) to ensure
    * proper visual updates when the object transitions back to an active state while
-   * the pointer is still hovering over it.
+   * pointers are still hovering over it.
    *
    * @remarks
    * The hover state must be tracked before checking activity status because:
-   * - If the object becomes active while the pointer is already over it,
+   * - If the object becomes active while pointers are already over it,
    *   the visual state needs to immediately reflect the hover condition
    * - Without this tracking, the object would remain in "normal" state until
    *   the next pointer movement, causing visual inconsistency
@@ -488,33 +567,40 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   private onMouseOverOutHandler(event: ThreeMouseEvent<Value>): void {
     // Track hover state regardless of activity status to ensure proper visual updates
     // when transitioning from disabled/frozen to active state while pointer is over
-    this._isOver = event.type === "over";
+    if (event.type === "over") {
+      this.hoverPointerIds.add(event.pointerId);
+    } else {
+      this.hoverPointerIds.delete(event.pointerId);
+    }
 
     // Reset press state when pointer leaves object to prevent click on release outside
     if (event.type === "out") {
-      this._isPress = false;
+      this.pressPointerIds.delete(event.pointerId);
     }
 
     if (!this.checkActivity()) return;
 
-    const newState = this._isOver ? "over" : "normal";
-    this.updateState(newState);
+    this.updateState(this.calculateCurrentState());
     this.emit(event.type, event);
   }
 
   /**
    * Sets the opacity alpha multiplier for the material set.
    *
-   * @param value - Alpha value between 0.0 (transparent) and 1.0 (opaque)
+   * @param value - Alpha multiplier value (minimum 0.0 for transparency, no maximum limit)
    *
    * @description
    * Controls the overall opacity of the interactive object by setting an alpha
    * multiplier that is applied to all materials in the material set. This allows
    * for fade effects while preserving the relative opacity differences between
    * different interaction states.
+   *
+   * Values above 1.0 are permitted to allow compensation for materials with low
+   * base opacity (e.g., alpha=5.0 with material opacity=0.2 results in final opacity=1.0).
+   * Negative values are clamped to 0.0 to prevent invalid opacity states.
    */
   public set alpha(value: number) {
-    this._alpha = value;
+    this._alpha = Math.max(0, value);
     this.updateMaterial();
   }
 
@@ -617,7 +703,8 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @description
    * Changes the enabled state of the interactive object and immediately updates
    * the interaction state and material. When enabled, the state becomes "normal";
-   * when disabled, the state becomes "disable".
+   * when disabled, the state becomes "disable". All pointer states are cleared
+   * when disabling to prevent stale multitouch interactions.
    *
    * @example
    * ```typescript
@@ -631,12 +718,40 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   public switchEnable(bool: boolean): void {
     this._enable = bool;
     if (!bool) {
-      // Clear transient interaction state when disabling
-      this._isPress = false;
-      this._isOver = false;
+      // Clear all pointer interaction states when disabling
+      this.pressPointerIds.clear();
+      this.hoverPointerIds.clear();
+      this.updateState("disable");
+      return;
     }
-    this.state = bool ? "normal" : "disable";
-    this.updateMaterial();
+    // On enabling, immediately reflect any existing pointer conditions
+    this.updateState(this.calculateCurrentState());
+  }
+
+  /**
+   * Calculates the appropriate interaction state based on current conditions.
+   *
+   * @returns The calculated interaction state
+   *
+   * @description
+   * Determines the correct interaction state by evaluating enable status and pointer conditions
+   * in priority order: disabled → pressed → hovering → normal. This method provides consistent
+   * state calculation logic used by switchEnable and other state management operations.
+   *
+   * @remarks
+   * State priority:
+   * 1. If disabled, returns "disable"
+   * 2. If any pointer is pressed, returns "down"
+   * 3. If any pointer is hovering, returns "over"
+   * 4. Otherwise returns "normal"
+   *
+   * @protected
+   */
+  protected calculateCurrentState(): ClickableState {
+    if (!this._enable) return "disable";
+    if (this.isPress) return "down";
+    if (this.isOver) return "over";
+    return "normal";
   }
 }
 
