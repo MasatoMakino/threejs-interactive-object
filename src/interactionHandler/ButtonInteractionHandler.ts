@@ -550,9 +550,9 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    */
   private onMouseOverOutHandler(event: ThreeMouseEvent<Value>): void {
     // Duplicate event check - handle responsibility migrated from MouseEventManager
+    // Note: over events are filtered for duplicates, but out events are processed unconditionally
+    // for fail-safe cleanup (pressPointerIds.delete) even in abnormal scenarios
     if (event.type === "over" && this.hoverPointerIds.has(event.pointerId))
-      return;
-    if (event.type === "out" && !this.hoverPointerIds.has(event.pointerId))
       return;
 
     // Track hover state regardless of activity status to ensure proper visual updates

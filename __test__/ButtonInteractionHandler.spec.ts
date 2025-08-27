@@ -187,15 +187,14 @@ describe("ButtonInteractionHandler", () => {
       ).toHaveBeenCalledTimes(1);
     });
 
-    it("should NOT emit click when pointer leaves before release (over -> down -> out -> up)", () => {
+    it("should NOT emit click when pointer leaves before release (down -> out -> up)", () => {
       const { handler } = createTestSetup();
       const clickSpy = vi.fn();
       handler.on("click", clickSpy);
 
-      // Test: over -> down -> out -> up should NOT emit click (realistic behavior)
-      // Note: In real environments, over always precedes down events
-      // ButtonInteractionHandler resets press state on out to prevent unintended clicks
-      handleEvent("over", handler);
+      // Test: down -> out -> up should NOT emit click (corrected behavior)
+      // Note: MouseEventManager delivers up events regardless of press state,
+      // but ButtonInteractionHandler now resets _isPress on out to prevent unintended clicks
       handleEvent("down", handler);
       handleEvent("out", handler);
       handleEvent("up", handler);
@@ -1015,9 +1014,7 @@ describe("ButtonInteractionHandler", () => {
         clickEvents.push({ pointerId: event.pointerId });
       });
 
-      // Both pointers over then down (realistic multi-touch sequence)
-      handleEvent("over", handler, POINTER_A);
-      handleEvent("over", handler, POINTER_B);
+      // Both pointers down
       handleEvent("down", handler, POINTER_A);
       handleEvent("down", handler, POINTER_B);
       expect(handler.isPress).toBe(true);
@@ -1146,9 +1143,7 @@ describe("ButtonInteractionHandler", () => {
 
         // Start: normal → down → all out → normal → over → down → over cycle
 
-        // Two pointers over then down (realistic multi-touch sequence)
-        handleEvent("over", handler, POINTER_1);
-        handleEvent("over", handler, POINTER_2);
+        // Two pointers down
         handleEvent("down", handler, POINTER_1);
         handleEvent("down", handler, POINTER_2);
         expect(clickable.material).toBe(matSet.down.material);
