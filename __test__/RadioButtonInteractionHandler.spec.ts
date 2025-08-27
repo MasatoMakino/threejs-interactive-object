@@ -573,7 +573,7 @@ describe("RadioButtonInteractionHandler", () => {
       ).toBe(matSet.over.material);
 
       // Move out should show unselected normal
-      handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+      simulateMouseOut(handler);
       expect(
         radioButton.material,
         "Should show normal material (false, normal)",
@@ -650,8 +650,8 @@ describe("RadioButtonInteractionHandler", () => {
         ).toHaveBeenCalledTimes(0);
 
         // Test that deselection restores interaction
-        // Note: Clean up hover state first with out event, then test deselection
-        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+        // Clean up hover state before testing deselection
+        simulateMouseOut(handler);
         handler.isExclusivelySelected = false;
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(eventSpy, "Should emit after deselection").toHaveBeenCalledTimes(
@@ -668,8 +668,8 @@ describe("RadioButtonInteractionHandler", () => {
         );
 
         // Test that re-enabling restores interaction
-        // Note: Clean up hover state first with out event, then test enable
-        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+        // Clean up hover state before testing re-enable
+        simulateMouseOut(handler);
         handler.enable();
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(eventSpy, "Should emit after re-enabling").toHaveBeenCalledTimes(
@@ -728,8 +728,8 @@ describe("RadioButtonInteractionHandler", () => {
         ).toHaveBeenCalledTimes(0);
 
         // Clear the other condition - should now work
-        // Note: Clean up hover state first with out event, then test final state
-        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+        // Clean up hover state before testing final state
+        simulateMouseOut(handler);
         handler.isExclusivelySelected = false;
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(
