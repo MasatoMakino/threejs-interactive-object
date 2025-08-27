@@ -556,8 +556,8 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    *
    * **Re-activation Behavior:**
    * When re-enabling a handler while a pointer hovers over it, hover events
-   * are not re-emitted, but visual state returns to hover. This prevents
-   * spurious clicks from programmatic disable/enable interruptions.
+   * are not re-emitted, but visual state returns to hover. No "over" event is emitted on
+   * re-enable. This prevents spurious clicks from programmatic disable/enable interruptions.
    *
    * @remarks
    * The hover state must be tracked before checking activity status because:
