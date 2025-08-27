@@ -447,7 +447,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   public onMouseDownHandler(event: ThreeMouseEvent<Value>): void {
     if (!this.checkActivity()) return;
     this.pressPointerIds.add(event.pointerId);
-    this.updateState("down");
+    this.updateState(this.calculateCurrentState());
     this.emit(event.type, event);
   }
 
