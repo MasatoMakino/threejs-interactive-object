@@ -631,8 +631,8 @@ describe("RadioButtonInteractionHandler", () => {
         );
 
         // Test that unfreezing restores interaction
-        // Note: Clean up hover state first with out event, then test unfreeze
-        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+        // Clean up hover state before unfreezing
+        simulateMouseOut(handler);
         handler.frozen = false;
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(eventSpy, "Should emit after unfreezing").toHaveBeenCalledTimes(
