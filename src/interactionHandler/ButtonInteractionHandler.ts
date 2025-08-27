@@ -198,22 +198,6 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   }
 
   /**
-   * Checks whether a specific pointer is currently hovering over the object.
-   *
-   * @param pointerId - The pointer ID to check
-   * @returns True if the specified pointer is hovering over the object, false otherwise
-   *
-   * @description
-   * This method enables pointer-specific hover state checking, essential for proper
-   * multitouch duplicate event prevention in MouseEventManager. Unlike the general
-   * isOver property which indicates if ANY pointer is hovering, this method checks
-   * the hover state for a specific pointer ID.
-   */
-  public isPointerOver(pointerId: number): boolean {
-    return this.hoverPointerIds.has(pointerId);
-  }
-
-  /**
    * Indicates whether any pointer is currently pressed down on the object.
    *
    * @returns True if one or more pointers are pressed down, false otherwise
@@ -565,6 +549,12 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @internal
    */
   private onMouseOverOutHandler(event: ThreeMouseEvent<Value>): void {
+    // Duplicate event check - handle responsibility migrated from MouseEventManager
+    if (event.type === "over" && this.hoverPointerIds.has(event.pointerId))
+      return;
+    if (event.type === "out" && !this.hoverPointerIds.has(event.pointerId))
+      return;
+
     // Track hover state regardless of activity status to ensure proper visual updates
     // when transitioning from disabled/frozen to active state while pointer is over
     if (event.type === "over") {

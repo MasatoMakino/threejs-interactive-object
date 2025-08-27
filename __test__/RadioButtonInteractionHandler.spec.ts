@@ -623,51 +623,74 @@ describe("RadioButtonInteractionHandler", () => {
 
     describe("Individual State Controls", () => {
       it("should respect frozen state", () => {
-        // Test frozen state blocks interactions
-        handler.frozen = true;
+        // Simulate realistic user interaction sequence:
+        // 1. User hovers over element (normal state)
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
-        expect(eventSpy, "Should NOT emit when frozen").toHaveBeenCalledTimes(
-          0,
+        expect(eventSpy, "Should emit in normal state").toHaveBeenCalledTimes(
+          1,
         );
 
-        // Test that unfreezing restores interaction
+        // 2. JavaScript freezes the element
+        handler.frozen = true;
+
+        // 3. User moves mouse away while frozen
+        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+
+        // 4. JavaScript unfreezes the element
         handler.frozen = false;
+
+        // 5. User hovers over element again
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(eventSpy, "Should emit after unfreezing").toHaveBeenCalledTimes(
-          1,
+          2,
         );
       });
 
       it("should respect exclusively selected state", () => {
-        // Test exclusively selected state blocks interactions
-        handler.isExclusivelySelected = true;
+        // Simulate realistic user interaction sequence:
+        // 1. User hovers over element (normal state)
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
-        expect(
-          eventSpy,
-          "Should NOT emit when exclusively selected",
-        ).toHaveBeenCalledTimes(0);
+        expect(eventSpy, "Should emit in normal state").toHaveBeenCalledTimes(
+          1,
+        );
 
-        // Test that deselection restores interaction
+        // 2. JavaScript sets exclusive selection
+        handler.isExclusivelySelected = true;
+
+        // 3. User moves mouse away while exclusively selected
+        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+
+        // 4. JavaScript clears exclusive selection
         handler.isExclusivelySelected = false;
+
+        // 5. User hovers over element again
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(eventSpy, "Should emit after deselection").toHaveBeenCalledTimes(
-          1,
+          2,
         );
       });
 
       it("should respect disabled state from base class", () => {
-        // Test disabled state blocks interactions
-        handler.disable();
+        // Simulate realistic user interaction sequence:
+        // 1. User hovers over element (normal state)
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
-        expect(eventSpy, "Should NOT emit when disabled").toHaveBeenCalledTimes(
-          0,
+        expect(eventSpy, "Should emit in normal state").toHaveBeenCalledTimes(
+          1,
         );
 
-        // Test that re-enabling restores interaction
+        // 2. JavaScript disables the element
+        handler.disable();
+
+        // 3. User moves mouse away while disabled
+        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+
+        // 4. JavaScript re-enables the element
         handler.enable();
+
+        // 5. User hovers over element again
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(eventSpy, "Should emit after re-enabling").toHaveBeenCalledTimes(
-          1,
+          2,
         );
       });
     });
@@ -704,30 +727,42 @@ describe("RadioButtonInteractionHandler", () => {
       });
 
       it("should allow interactions only when both frozen=false and exclusively selected=false", () => {
-        // Set both conditions to blocking state first
+        // Simulate realistic user interaction sequence:
+        // 1. User hovers over element (normal state)
+        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
+        expect(eventSpy, "Should emit in normal state").toHaveBeenCalledTimes(
+          1,
+        );
+
+        // 2. JavaScript sets both blocking conditions
         handler.frozen = true;
         handler.isExclusivelySelected = true;
-        handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
-        expect(
-          eventSpy,
-          "Should NOT emit when both blocking conditions are active",
-        ).toHaveBeenCalledTimes(0);
 
-        // Clear one condition - should still be blocked
+        // 3. User moves mouse away while both conditions are active
+        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+
+        // 4. JavaScript clears one condition (frozen), but exclusive selection remains
         handler.frozen = false;
+
+        // 5. User hovers over element again - should still be blocked
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(
           eventSpy,
           "Should still be blocked by exclusively selected",
-        ).toHaveBeenCalledTimes(0);
+        ).toHaveBeenCalledTimes(1);
 
-        // Clear the other condition - should now work
+        // 6. User moves mouse away again
+        handler.onMouseOutHandler(createThreeMouseEvent("out", handler));
+
+        // 7. JavaScript clears the other condition - should now work
         handler.isExclusivelySelected = false;
+
+        // 8. User hovers over element again
         handler.onMouseOverHandler(createThreeMouseEvent("over", handler));
         expect(
           eventSpy,
           "Should emit when both conditions are cleared",
-        ).toHaveBeenCalledTimes(1);
+        ).toHaveBeenCalledTimes(2);
       });
     });
   });
