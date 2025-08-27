@@ -415,7 +415,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
   constructor(parameters: ButtonInteractionHandlerParameters<Value>) {
     super();
     this.view = parameters.view;
-    this._materialSet ??= parameters.material;
+    this._materialSet = parameters.material;
     this.updateMaterial();
   }
 
