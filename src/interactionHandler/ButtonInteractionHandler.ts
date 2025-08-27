@@ -642,8 +642,9 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    *
    * @description
    * Sets the object to an enabled state, making it responsive to pointer interactions
-   * and updating the interaction state to "normal". This is equivalent to calling
-   * `switchEnable(true)`.
+   * and updating the interaction state based on current pointer conditions ("over" or "normal").
+   * This is equivalent to calling `switchEnable(true)` and, on enable, clears pressed-pointer
+   * state while preserving hover state.
    */
   public enable(): void {
     this.switchEnable(true);
@@ -655,7 +656,7 @@ export class ButtonInteractionHandler<Value> extends EventEmitter<
    * @description
    * Sets the object to a disabled state, making it unresponsive to pointer interactions
    * and updating the interaction state to "disable". This is equivalent to calling
-   * `switchEnable(false)`.
+   * `switchEnable(false)` and clears both pressed-pointer and hover-pointer states.
    */
   public disable(): void {
     this.switchEnable(false);
