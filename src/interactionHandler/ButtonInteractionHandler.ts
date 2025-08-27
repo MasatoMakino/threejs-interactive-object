@@ -86,6 +86,9 @@ export interface ButtonInteractionHandlerParameters<Value> {
  * duplicate suppression using asymmetric processing - over events are filtered for duplicates
  * while out events are processed unconditionally for fail-safe cleanup.
  *
+ * Note: When the handler is inactive (disabled or frozen), "out" events still perform internal
+ * cleanup (e.g., clearing hover/press sets) but are not emitted.
+ *
  * **Multi-touch Click Suppression**: When multiple pointers interact with the same object,
  * only the first pointer to complete a down-up sequence triggers a click event. Subsequent
  * pointer releases are automatically suppressed to match native browser behavior where
