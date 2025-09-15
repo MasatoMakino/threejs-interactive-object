@@ -5,11 +5,14 @@ on:
       - main
       
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 jobs:
   dependabot:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
@@ -19,7 +22,23 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Enable auto-merge for Dependabot PRs
-        if: steps.metadata.outputs.dependency-type == 'direct:development' && steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        if: |
+          (
+            (
+              steps.metadata.outputs.dependency-type == 'direct:development' &&
+              steps.metadata.outputs.update-type == 'version-update:semver-patch'
+            ) || (
+              steps.metadata.outputs.dependency-type == 'direct:production' &&
+              steps.metadata.outputs.update-type == 'version-update:semver-patch'
+            ) || (
+              steps.metadata.outputs.dependency-type == 'indirect' &&
+              steps.metadata.outputs.update-type == 'version-update:semver-patch'
+            ) || (
+              steps.metadata.outputs.dependency-type == 'direct:development' &&
+              steps.metadata.outputs.update-type == 'version-update:semver-minor' &&
+              startsWith(steps.metadata.outputs.previous-version, '0.') == false
+            )
+          ) && !contains(steps.metadata.outputs.new-version, '-')
         run: gh pr merge --auto --rebase "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
