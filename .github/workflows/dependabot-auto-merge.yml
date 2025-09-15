@@ -5,11 +5,14 @@ on:
       - main
       
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+  pull-requests: read
 
 jobs:
   dependabot:
+    permissions:
+      contents: write
+      pull-requests: write
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
