@@ -7,8 +7,15 @@ import {
 import { StateMaterialSet } from "../src/index.js";
 
 /**
- * Mesh用のマテリアルセットを新規に取得する。
- * @returns {StateMaterialSet}
+ * Creates a new StateMaterialSet configured for Mesh testing
+ *
+ * @returns StateMaterialSet with MeshBasicMaterial instances for all interaction states
+ *
+ * @description
+ * Generates a complete material set for mesh-based interactive objects including:
+ * - Normal states: normal (0.6 opacity), over (0.8), down (1.0), disable (0.1)
+ * - Selected states: normalSelect, overSelect, downSelect (same opacities with yellow color)
+ * All materials use MeshBasicMaterial with transparency enabled.
  */
 export function getMeshMaterialSet(): StateMaterialSet {
   return new StateMaterialSet({
@@ -22,6 +29,13 @@ export function getMeshMaterialSet(): StateMaterialSet {
   });
 }
 
+/**
+ * Creates a MeshBasicMaterial with specified opacity and color
+ *
+ * @param opacity - Material opacity (0.0 to 1.0)
+ * @param color - Optional color value (default: 0xffffff white)
+ * @returns MeshBasicMaterial configured for interactive object testing
+ */
 const getMeshMaterial = (opacity: number, color?: number) => {
   if (color == null) color = 0xffffff;
   return new MeshBasicMaterial({
@@ -32,7 +46,15 @@ const getMeshMaterial = (opacity: number, color?: number) => {
 };
 
 /**
- * スプライト用のマテリアルセットを新規に生成する。
+ * Creates a new StateMaterialSet configured for Sprite testing
+ *
+ * @returns StateMaterialSet with SpriteMaterial instances for all interaction states
+ *
+ * @description
+ * Generates a complete material set for sprite-based interactive objects including:
+ * - Normal states: normal (0.6 opacity), over (0.8), down (1.0), disable (0.1)
+ * - Selected states: normalSelect (0.65), overSelect (0.85), downSelect (0.95)
+ * All materials use SpriteMaterial with transparency enabled.
  */
 export function getSpriteMaterialSet(): StateMaterialSet {
   return new StateMaterialSet({
@@ -47,11 +69,16 @@ export function getSpriteMaterialSet(): StateMaterialSet {
 }
 
 /**
- * スプライト用マテリアルを生成する
- * @param {number} opacity
- * @param {string} imgURL
- * @param {number} color
- * @returns {SpriteMaterial}
+ * Creates a SpriteMaterial with specified properties
+ *
+ * @param opacity - Material opacity (0.0 to 1.0)
+ * @param imgURL - Optional image URL for texture mapping
+ * @param color - Optional color value (default: 0xffffff white)
+ * @returns SpriteMaterial configured for interactive sprite testing
+ *
+ * @description
+ * Creates a SpriteMaterial with transparency enabled. If imgURL is provided,
+ * loads the texture using TextureLoader and applies it as the material's map.
  */
 const getSpriteMaterial = (
   opacity: number,

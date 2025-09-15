@@ -70,6 +70,17 @@ class SceneSet {
 const onDomContentsLoaded = () => {
   // シーンを作成
   const canvas = document.getElementById("webgl-canvas");
+  canvas.style.touchAction = "none";
+  // ロングタップ時の選択フォーカス無効化
+  Object.assign(canvas.style, {
+    userSelect: "none",
+    outline: "none",
+  });
+  canvas.style.setProperty("-webkit-user-select", "none");
+  canvas.style.setProperty("-moz-user-select", "none");
+  canvas.style.setProperty("-ms-user-select", "none");
+  canvas.style.setProperty("-webkit-tap-highlight-color", "transparent");
+  canvas.style.setProperty("-webkit-touch-callout", "none");
   const renderOption = {
     canvas,
   };

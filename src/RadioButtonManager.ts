@@ -199,14 +199,18 @@ export class RadioButtonManager<Value = unknown> extends EventEmitter<
       return;
     }
 
-    // Ignore if the same button is already selected and frozen
-    if (interactionHandler === this._selected && interactionHandler.isFrozen) {
+    // Ignore if the same button is already selected and exclusively selected
+    if (
+      interactionHandler === this._selected &&
+      interactionHandler.isExclusivelySelected
+    ) {
       return;
     }
 
     this._selected = interactionHandler;
     for (const mdl of this._interactionHandlers) {
-      mdl.selection = mdl.isFrozen = mdl === interactionHandler;
+      mdl.isExclusivelySelected = mdl === interactionHandler;
+      mdl._setSelectionOverride(mdl === interactionHandler);
     }
 
     const evt = ThreeMouseEventUtil.generate("select", interactionHandler);
@@ -239,15 +243,17 @@ export class RadioButtonManager<Value = unknown> extends EventEmitter<
   }
 
   /**
-   * Gets all radio button interaction handlers under management.
+   * Gets a snapshot of all radio button interaction handlers under management.
    *
    * @description
-   * Returns a reference to the internal array containing all
-   * RadioButtonInteractionHandler instances managed by this instance.
+   * Returns a shallow copy of the internal array of
+   * RadioButtonInteractionHandler instances. Mutate the managed set only via
+   * addButton/removeButton/removeInteractionHandler. External mutations to the
+   * returned array will not affect internal state.
    *
-   * @returns Array of managed RadioButtonInteractionHandler instances
+   * @returns A new array of managed RadioButtonInteractionHandler instances
    */
   get interactionHandlers(): RadioButtonInteractionHandler<Value>[] {
-    return this._interactionHandlers;
+    return [...this._interactionHandlers];
   }
 }

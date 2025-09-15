@@ -13,6 +13,7 @@
  * - Flexible target selection (scene-wide scanning vs. registered objects)
  * - Multi-viewport support compatible with WebGLRenderer.setViewport()
  * - Parent hierarchy traversal for nested interactive objects
+ * - Robust touch handling with pointercancel/pointerleave cleanup for real-device compatibility
  *
  * **Architecture:**
  * The MouseEventManager acts as a bridge between DOM pointer events and Three.js
@@ -45,8 +46,8 @@ import {
 } from "three";
 import {
   type ButtonInteractionHandler,
+  createThreeMouseEvent,
   type ThreeMouseEventMap,
-  ThreeMouseEventUtil,
   ViewPortUtil,
 } from "./index.js";
 
@@ -118,14 +119,15 @@ export class MouseEventManager {
   protected raycaster: Raycaster = new Raycaster();
   protected mouse: Vector2 = new Vector2();
 
-  protected currentOver: IClickableObject3D<unknown>[] = [];
+  protected currentOver: Map<number, IClickableObject3D<unknown>[]> = new Map();
 
-  protected hasThrottled: boolean = false;
+  protected hasThrottled: Set<number> = new Set();
   public throttlingTime_ms: number;
   protected throttlingDelta: number = 0;
   protected viewport?: Vector4;
   protected recursive: boolean;
   protected targets: Object3D[];
+  private _disposed: boolean = false;
 
   /**
    * Creates a new MouseEventManager instance.
@@ -215,6 +217,12 @@ export class MouseEventManager {
     canvas.addEventListener("pointermove", this.onDocumentMouseMove, false);
     canvas.addEventListener("pointerdown", this.onDocumentMouseUpDown, false);
     canvas.addEventListener("pointerup", this.onDocumentMouseUpDown, false);
+    canvas.addEventListener(
+      "pointercancel",
+      this.onDocumentPointerCancel,
+      false,
+    );
+    canvas.addEventListener("pointerleave", this.onDocumentPointerLeave, false);
 
     RAFTicker.on("tick", this.onTick);
   }
@@ -226,21 +234,28 @@ export class MouseEventManager {
    *
    * @description
    * This method is called on every animation frame to manage the throttling mechanism
-   * that prevents excessive raycasting during rapid pointer movements. It accumulates
+   * that prevents excessive raycasting during rapid pointer movements. It implements
+   * early-exit rules for disabled throttling and abnormal delta values, then accumulates
    * frame delta time and resets the throttling flag when enough time has passed.
    *
    * **Throttling Logic:**
-   * 1. Accumulate delta time from animation frames
-   * 2. Reset hasThrottled flag when throttling interval expires
-   * 3. Use modulo operation to maintain accurate timing across intervals
+   * 1. **Throttling disabled**: When throttlingTime_ms <= 0, hasThrottled is reset each frame and throttlingDelta cleared
+   * 2. **Non-finite delta**: If delta is NaN/±Infinity, throttle state is reset and the frame is ignored
+   * 3. Accumulate delta time from animation frames using Math.max protection
+   * 4. Reset hasThrottled flag when throttling interval expires
+   * 5. Use modulo operation to maintain accurate timing across intervals
    *
    * **Delta Time Safety:**
-   * The method ensures delta time is never negative by using Math.max(e.delta, 0),
-   * protecting against edge cases where timing calculations might produce invalid values.
+   * The method implements multi-layered protection against invalid delta values:
+   * - Non-finite values (NaN, ±Infinity) trigger immediate state reset and early return
+   * - Finite negative values are clamped to 0 using Math.max(e.delta, 0)
+   * - This ensures robust operation even with abnormal timing data from RAF ticker
    *
    * @remarks
    * - This callback is registered with RAFTicker during constructor initialization
    * - The throttling interval is configurable via throttlingTime_ms (default: 33ms)
+   * - Early-exit optimizations improve performance when throttling is disabled
+   * - Non-finite value sanitization prevents NaN propagation and state corruption
    * - Modulo operation prevents accumulated timing drift over long sessions
    *
    * @see {@link throttlingTime_ms} - Configurable throttling interval
@@ -249,11 +264,27 @@ export class MouseEventManager {
    * @private
    */
   private onTick = (e: RAFTickerEventContext) => {
+    // When throttling is disabled, always reset throttling state immediately
+    if (this.throttlingTime_ms <= 0) {
+      this.hasThrottled.clear();
+      this.throttlingDelta = 0;
+      return;
+    }
+
+    // Sanitize non-finite input deltas immediately
+    if (!Number.isFinite(e.delta)) {
+      this.hasThrottled.clear();
+      this.throttlingDelta = 0;
+      return;
+    }
+
     this.throttlingDelta += Math.max(e.delta, 0); // Ensure delta time is never negative by setting 0 for values below 0
+
     if (this.throttlingDelta < this.throttlingTime_ms) {
       return;
     }
-    this.hasThrottled = false;
+
+    this.hasThrottled.clear();
     this.throttlingDelta %= this.throttlingTime_ms;
   };
 
@@ -264,18 +295,23 @@ export class MouseEventManager {
    *
    * @description
    * Processes pointer movement by performing raycasting to detect object intersections
-   * and managing hover state transitions. The method implements throttling to prevent
-   * excessive raycasting during rapid pointer movements, which significantly improves
-   * performance in complex scenes.
+   * and managing hover state transitions. The method implements conditional throttling
+   * to prevent excessive raycasting during rapid pointer movements, which significantly
+   * improves performance in complex scenes.
    *
-   * The method checks throttling status, performs raycasting, processes intersections
-   * in Z-order, updates hover targets, and emits "out"/"over" events as needed.
+   * **Throttling Behavior:**
+   * - When throttlingTime_ms > 0: Applies throttling with hasThrottled flag management
+   * - When throttlingTime_ms <= 0: Bypasses throttling entirely for immediate processing
+   *
+   * The method checks throttling status (if enabled), performs raycasting, processes
+   * intersections in Z-order, updates hover targets, and emits "out"/"over" events as needed.
    *
    * The method maintains a currentOver array to track hovered objects and compares
    * new intersection results with the previous state to determine event needs.
    *
    * @remarks
    * - Throttling is controlled by the throttlingTime_ms constructor parameter
+   * - When throttling is disabled (throttlingTime_ms <= 0), events are processed immediately
    * - Early termination occurs when the first interactive object is found in Z-order
    * - The method calls preventDefault() to ensure consistent behavior across browsers
    * - Empty intersection results trigger clearOver() to reset all hover states
@@ -283,51 +319,75 @@ export class MouseEventManager {
    * @see {@link getIntersects} - Raycasting and intersection detection
    * @see {@link checkTarget} - Object interactivity validation and event dispatch
    * @see {@link clearOver} - Hover state cleanup
+   * @see {@link onTick} - RAF ticker callback that manages throttling state
    */
   protected onDocumentMouseMove = (event: PointerEvent) => {
-    if (this.hasThrottled) return;
-    this.hasThrottled = true;
+    const pointerId = event.pointerId;
+
+    // Skip throttling checks when throttling is disabled
+    if (this.throttlingTime_ms > 0) {
+      if (this.hasThrottled.has(pointerId)) return;
+      this.hasThrottled.add(pointerId);
+    }
 
     event.preventDefault();
     const intersects = this.getIntersects(event);
     if (intersects.length === 0) {
-      this.clearOver();
+      this.clearOver(pointerId);
       return;
     }
 
-    const beforeOver = this.currentOver;
-    this.currentOver = [];
+    const beforeOver = this.currentOver.get(pointerId) || [];
+    this.currentOver.set(pointerId, []);
 
     for (const intersect of intersects) {
-      const checked = this.checkTarget(intersect.object, "over");
+      const checked = this.checkTarget(intersect.object, "over", pointerId);
       if (checked) break;
     }
 
-    beforeOver?.forEach((btn) => {
-      if (!this.currentOver.includes(btn)) {
-        MouseEventManager.onButtonHandler(btn, "out");
+    beforeOver.forEach((btn) => {
+      const currentPointerOver = this.currentOver.get(pointerId) || [];
+      if (!currentPointerOver.includes(btn)) {
+        MouseEventManager.onButtonHandler(btn, "out", pointerId);
       }
     });
   };
 
   /**
-   * Clears all currently hovered objects and emits "out" events.
+   * Clears hover states for a specific pointer or all pointers.
+   *
+   * @param pointerId - The ID of the pointer to clear hover state for.
+   *                    If undefined, clears hover states for ALL pointers.
    *
    * @description
-   * Resets the hover state by emitting "out" events for all objects currently
-   * in the currentOver array, then clearing the array. This method is called
-   * when the pointer moves outside all interactive objects or when no intersections
-   * are detected during pointer movement.
+   * Resets hover state by emitting "out" events for objects currently tracked
+   * in the currentOver Map. When pointerId is specified, only that pointer's
+   * hover state is cleared. When undefined, ALL pointer states are cleared
+   * (useful for cleanup scenarios like dispose or scene changes).
    *
    * @remarks
    * This method ensures proper cleanup of hover states to prevent objects
    * from remaining in an incorrect "over" state when they should return to "normal".
+   * The all-pointers clearing mode (undefined pointerId) maintains backward
+   * compatibility with single-pointer implementations.
    */
-  protected clearOver(): void {
-    this.currentOver?.forEach((over) => {
-      MouseEventManager.onButtonHandler(over, "out");
-    });
-    this.currentOver = [];
+  protected clearOver(pointerId?: number): void {
+    if (pointerId !== undefined) {
+      // Clear specific pointerId only
+      const pointerOver = this.currentOver.get(pointerId) || [];
+      pointerOver.forEach((over) => {
+        MouseEventManager.onButtonHandler(over, "out", pointerId);
+      });
+      this.currentOver.delete(pointerId);
+    } else {
+      // Clear all pointers (backward compatibility)
+      this.currentOver.forEach((overArray, pId) => {
+        overArray.forEach((over) => {
+          MouseEventManager.onButtonHandler(over, "out", pId);
+        });
+      });
+      this.currentOver.clear();
+    }
   }
 
   /**
@@ -360,6 +420,8 @@ export class MouseEventManager {
    * @see {@link ViewPortUtil.isContain} - Viewport boundary validation
    */
   protected onDocumentMouseUpDown = (event: PointerEvent) => {
+    const pointerId = event.pointerId;
+
     let eventType: keyof ThreeMouseEventMap = "down";
     switch (event.type) {
       case "pointerdown":
@@ -379,7 +441,81 @@ export class MouseEventManager {
 
     event.preventDefault();
     const intersects = this.getIntersects(event);
-    this.checkIntersects(intersects, eventType);
+    this.checkIntersects(intersects, eventType, pointerId);
+  };
+
+  /**
+   * Cleans up pointer state by sending out events and removing internal tracking.
+   *
+   * @param pointerId - The pointer identifier to clean up
+   *
+   * @description
+   * Common cleanup logic for pointer interruption events (cancel/leave).
+   * Performs the following operations:
+   * 1. Retrieves all objects currently tracked as "over" for the specified pointer
+   * 2. Sends "out" events to each tracked object via ButtonInteractionHandler
+   * 3. Removes the pointer from internal state tracking (currentOver Map and hasThrottled Set)
+   *
+   * This ensures visual states return to "normal" and prevents stuck hover states
+   * when pointers disappear without proper move/out event sequences. Also prevents
+   * stale throttling state that could affect future RAF tick processing.
+   *
+   * @motivation Real-device testing revealed touch pointers can disappear without
+   *             standard event sequences, causing stuck visual states. This method
+   *             provides reliable cleanup for browser-generated interruption events.
+   *
+   * @internal
+   */
+  private cleanupPointerState(pointerId: number): void {
+    const overObjects = this.currentOver.get(pointerId);
+    if (overObjects && overObjects.length > 0) {
+      overObjects.forEach((obj) => {
+        MouseEventManager.onButtonHandler(obj, "out", pointerId);
+      });
+    }
+    this.currentOver.delete(pointerId);
+    this.hasThrottled.delete(pointerId);
+  }
+
+  /**
+   * Handles pointer cancel events for interrupted touch interactions.
+   *
+   * @param event - The pointer cancel event containing the interrupted pointerId
+   *
+   * @description
+   * Processes pointercancel events by preventing default behavior and delegating
+   * cleanup to the common cleanup method.
+   *
+   * **Browser Event Sequence**: pointercancel → pointerout → pointerleave
+   * **Mutual Exclusivity**: pointercancel and pointerup never both occur
+   * **Timing**: preventDefault() called when cancelable to maintain consistent behavior
+   *
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/pointercancel_event
+   * @see {@link cleanupPointerState} - Common cleanup implementation
+   */
+  protected onDocumentPointerCancel = (event: PointerEvent) => {
+    if (event.cancelable) event.preventDefault();
+    this.cleanupPointerState(event.pointerId);
+  };
+
+  /**
+   * Handles browser-generated pointerleave events for reliable cleanup.
+   *
+   * @param event - The pointerleave event from browser
+   *
+   * @description
+   * Processes pointerleave events by delegating cleanup to the common cleanup method.
+   *
+   * **Why pointerleave is optimal**:
+   * - Always fires after UP events (no click interference)
+   * - Indicates complete departure from element hierarchy
+   * - Reliable browser-generated event with stable execution order
+   * - Handles edge case: outside → move into button → up inside button
+   *
+   * @see {@link cleanupPointerState} - Common cleanup implementation
+   */
+  protected onDocumentPointerLeave = (event: PointerEvent) => {
+    this.cleanupPointerState(event.pointerId);
   };
 
   /**
@@ -408,12 +544,13 @@ export class MouseEventManager {
   private checkIntersects(
     intersects: Intersection<Object3D>[],
     type: keyof ThreeMouseEventMap,
+    pointerId: number = 1,
   ): void {
     const n: number = intersects.length;
     if (n === 0) return;
 
     for (let i = 0; i < n; i++) {
-      const checked = this.checkTarget(intersects[i].object, type);
+      const checked = this.checkTarget(intersects[i].object, type, pointerId);
       if (checked) {
         break;
       }
@@ -434,25 +571,25 @@ export class MouseEventManager {
    * **Event Routing:**
    * - "down" events → onMouseDownHandler()
    * - "up" events → onMouseUpHandler()
-   * - "over" events → onMouseOverHandler() (with duplicate prevention)
-   * - "out" events → onMouseOutHandler() (with duplicate prevention)
+   * - "over" events → onMouseOverHandler()
+   * - "out" events → onMouseOutHandler()
    *
-   * **State-Aware Processing:**
-   * For "over" and "out" events, the method checks the current hover state
-   * (isOver property) to prevent duplicate event processing when the same
-   * event would be fired multiple times in rapid succession.
+   * **Direct Delegation:**
+   * This method performs direct event delegation without duplicate checking or state validation.
+   * Individual ButtonInteractionHandler instances manage their own event duplicate suppression
+   * and state validation as appropriate for their specific interaction patterns.
    *
    * **Event Object Creation:**
-   * Uses ThreeMouseEventUtil.generate() to create properly formatted event
+   * Uses createThreeMouseEvent() to create properly formatted event
    * objects that include the event type, interaction handler reference, and
    * selection state (for checkbox/radio button objects).
    *
    * @remarks
    * - This static method allows consistent event dispatching from multiple entry points
-   * - State checking for over/out events prevents unnecessary handler invocations
+   * - Handler instances manage their own duplicate suppression and state validation
    * - The method serves as the bridge between intersection detection and interaction handling
    *
-   * @see {@link ThreeMouseEventUtil.generate} - Event object creation
+   * @see {@link createThreeMouseEvent} - Event object creation
    * @see {@link ButtonInteractionHandler} - Target interaction handler methods
    * @see {@link ThreeMouseEvent} - Event payload structure
    *
@@ -461,31 +598,28 @@ export class MouseEventManager {
   public static onButtonHandler(
     btn: IClickableObject3D<unknown>,
     type: keyof ThreeMouseEventMap,
+    pointerId: number = 1,
   ) {
     switch (type) {
       case "down":
         btn.interactionHandler.onMouseDownHandler(
-          ThreeMouseEventUtil.generate(type, btn),
+          createThreeMouseEvent(type, btn, pointerId),
         );
         return;
       case "up":
         btn.interactionHandler.onMouseUpHandler(
-          ThreeMouseEventUtil.generate(type, btn),
+          createThreeMouseEvent(type, btn, pointerId),
         );
         return;
       case "over":
-        if (!btn.interactionHandler.isOver) {
-          btn.interactionHandler.onMouseOverHandler(
-            ThreeMouseEventUtil.generate(type, btn),
-          );
-        }
+        btn.interactionHandler.onMouseOverHandler(
+          createThreeMouseEvent(type, btn, pointerId),
+        );
         return;
       case "out":
-        if (btn.interactionHandler.isOver) {
-          btn.interactionHandler.onMouseOutHandler(
-            ThreeMouseEventUtil.generate(type, btn),
-          );
-        }
+        btn.interactionHandler.onMouseOutHandler(
+          createThreeMouseEvent(type, btn, pointerId),
+        );
         return;
     }
   }
@@ -499,7 +633,7 @@ export class MouseEventManager {
    * @description
    * Performs runtime validation to determine if an object conforms to the IClickableObject3D
    * interface structure. Validates the presence and type of required properties including
-   * the interactionHandler and its mouseEnabled property.
+   * the interactionHandler and its interactionScannable property.
    *
    * @remarks
    * Used internally by checkTarget() during object hierarchy traversal to identify
@@ -520,9 +654,9 @@ export class MouseEventManager {
       "interactionHandler" in arg &&
       arg.interactionHandler !== null &&
       typeof arg.interactionHandler === "object" &&
-      "mouseEnabled" in arg.interactionHandler &&
-      arg.interactionHandler.mouseEnabled !== null &&
-      typeof arg.interactionHandler.mouseEnabled === "boolean"
+      "interactionScannable" in arg.interactionHandler &&
+      arg.interactionHandler.interactionScannable !== null &&
+      typeof arg.interactionHandler.interactionScannable === "boolean"
     );
   }
 
@@ -608,6 +742,7 @@ export class MouseEventManager {
   protected checkTarget(
     target: Object3D | undefined | null,
     type: keyof ThreeMouseEventMap,
+    pointerId: number = 1,
     hasTarget: boolean = false,
   ): boolean {
     if (MouseEventManager.implementsDepartedIClickableObject3D(target)) {
@@ -620,13 +755,15 @@ export class MouseEventManager {
     if (
       target != null &&
       MouseEventManager.implementsIClickableObject3D(target) &&
-      target.interactionHandler.mouseEnabled
+      target.interactionHandler.interactionScannable
     ) {
       if (type === "over") {
-        this.currentOver.push(target);
+        const currentPointerOver = this.currentOver.get(pointerId) || [];
+        currentPointerOver.push(target);
+        this.currentOver.set(pointerId, currentPointerOver);
       }
-      MouseEventManager.onButtonHandler(target, type);
-      return this.checkTarget(target.parent, type, true);
+      MouseEventManager.onButtonHandler(target, type, pointerId);
+      return this.checkTarget(target.parent, type, pointerId, true);
     }
 
     // If not implementing the interface, continue searching the parent.
@@ -636,7 +773,7 @@ export class MouseEventManager {
       target.parent != null &&
       target.parent.type !== "Scene"
     ) {
-      return this.checkTarget(target.parent, type, hasTarget);
+      return this.checkTarget(target.parent, type, pointerId, hasTarget);
     }
 
     // End search when parent is Scene.
@@ -748,6 +885,10 @@ export class MouseEventManager {
    * @public
    */
   public dispose(): void {
+    // Idempotent behavior: prevent multiple cleanup operations
+    if (this._disposed) return;
+    this._disposed = true;
+
     // Clear current hover state to emit proper "out" events
     this.clearOver();
 
@@ -767,12 +908,22 @@ export class MouseEventManager {
       this.onDocumentMouseUpDown,
       false,
     );
+    this.canvas.removeEventListener(
+      "pointercancel",
+      this.onDocumentPointerCancel,
+      false,
+    );
+    this.canvas.removeEventListener(
+      "pointerleave",
+      this.onDocumentPointerLeave,
+      false,
+    );
 
     // Unsubscribe from RAF ticker
     RAFTicker.off("tick", this.onTick);
 
     // Reset internal state
-    this.hasThrottled = false;
+    this.hasThrottled.clear();
     this.throttlingDelta = 0;
   }
 }

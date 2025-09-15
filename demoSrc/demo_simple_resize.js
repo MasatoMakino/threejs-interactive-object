@@ -48,6 +48,17 @@ const onDomContentsLoaded = () => {
 
   canvas.style.maxWidth = "100%";
   canvas.style.maxHeight = "100%";
+  canvas.style.touchAction = "none";
+  // ロングタップ時の選択フォーカス無効化
+  Object.assign(canvas.style, {
+    userSelect: "none",
+    outline: "none",
+  });
+  canvas.style.setProperty("-webkit-user-select", "none");
+  canvas.style.setProperty("-moz-user-select", "none");
+  canvas.style.setProperty("-ms-user-select", "none");
+  canvas.style.setProperty("-webkit-tap-highlight-color", "transparent");
+  canvas.style.setProperty("-webkit-touch-callout", "none");
   const resizeCanvas = () => {
     resizeCanvasStyle(containerDiv, canvas, W, H);
   };

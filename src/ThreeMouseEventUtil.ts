@@ -7,8 +7,8 @@
  * handle event object construction and selection state management.
  */
 
-import type { IClickableObject3D } from "./index.js";
 import type { ButtonInteractionHandler } from "./interactionHandler";
+import type { IClickableObject3D } from "./MouseEventManager.js";
 import type { ThreeMouseEvent, ThreeMouseEventMap } from "./ThreeMouseEvent.js";
 
 /**
@@ -26,8 +26,6 @@ import type { ThreeMouseEvent, ThreeMouseEventMap } from "./ThreeMouseEvent.js";
  * @returns The ButtonInteractionHandler instance or undefined if input is
  *   null/undefined
  *
- * @deprecated This function was not intended for public export and may be made
- *   private in future versions.
  * @internal
  */
 function getInteractionHandler<Value>(
@@ -39,7 +37,7 @@ function getInteractionHandler<Value>(
   if (handlerOrView != null && "interactionHandler" in handlerOrView) {
     return handlerOrView.interactionHandler;
   }
-  return handlerOrView;
+  return handlerOrView as ButtonInteractionHandler<Value> | undefined;
 }
 
 /**
@@ -65,10 +63,9 @@ function getInteractionHandler<Value>(
  * const isSelected = getSelection(checkbox.interactionHandler); // true/false
  * ```
  *
- * @deprecated This function was not intended for public export and may be made
- *   private in future versions.
+ * @internal
  */
-export function getSelection<Value>(
+function getSelection<Value>(
   interactionHandler: ButtonInteractionHandler<Value> | undefined,
 ): boolean {
   if (interactionHandler != null && "selection" in interactionHandler) {
@@ -87,35 +84,40 @@ export function getSelection<Value>(
  * Primary factory function for creating ThreeMouseEvent objects. Automatically
  * populates the isSelected property for "select" events by querying handler
  * selection state. For other event types, isSelected remains undefined.
+ * The pointerId defaults to 1 for backward compatibility.
  *
  * @param type - Event type from ThreeMouseEventMap (click, down, up, over, out,
  *   select)
  * @param handlerOrView - Source handler or interactive view object for the
  *   event
+ * @param pointerId - Pointer identifier for multitouch support (defaults to 1)
  * @returns Fully populated ThreeMouseEvent object
  *
  * @example
  * ```typescript
- * // Generate click event from button
- * const clickEvent = generate("click", button.interactionHandler);
+ * // Create click event from button (default pointerId = 1)
+ * const clickEvent = createThreeMouseEvent("click", button.interactionHandler);
  * console.log(clickEvent.type); // "click"
+ * console.log(clickEvent.pointerId); // 1
  * console.log(clickEvent.isSelected); // undefined
  *
- * // Generate select event from checkbox
- * const selectEvent = generate("select", checkbox);
+ * // Create select event from checkbox with custom pointerId
+ * const selectEvent = createThreeMouseEvent("select", checkbox, 2);
  * console.log(selectEvent.type); // "select"
+ * console.log(selectEvent.pointerId); // 2
  * console.log(selectEvent.isSelected); // true/false
  * ```
  *
  * @see {@link ThreeMouseEvent} - Event object structure
  * @see {@link ButtonInteractionHandler} - Handler base class
  */
-export function generate<Value>(
+export function createThreeMouseEvent<Value>(
   type: keyof ThreeMouseEventMap<Value>,
   handlerOrView:
     | ButtonInteractionHandler<Value>
     | IClickableObject3D<Value>
     | undefined,
+  pointerId: number = 1,
 ): ThreeMouseEvent<Value> {
   const interactionHandler = getInteractionHandler(handlerOrView);
   const getSelectionValue = () => {
@@ -129,6 +131,7 @@ export function generate<Value>(
     type,
     interactionHandler,
     isSelected: getSelectionValue(),
+    pointerId,
   };
 }
 
@@ -136,29 +139,65 @@ export function generate<Value>(
  * Creates a copy of an existing ThreeMouseEvent.
  *
  * @description
- * Clones a ThreeMouseEvent by regenerating it using the original event's type
- * and interaction handler. Selection state is recalculated from current
+ * Clones a ThreeMouseEvent by regenerating it using the original event's type,
+ * interaction handler, and pointerId. Selection state is recalculated from current
  * handler state, which may differ from the original if selection changed.
  *
  * @param e - The ThreeMouseEvent to clone
- * @returns New ThreeMouseEvent with the same type and handler reference
+ * @returns New ThreeMouseEvent with the same type, handler reference, and pointerId
  *
  * @example
  * ```typescript
- * const originalEvent = generate("select", checkbox);
- * const clonedEvent = clone(originalEvent);
+ * const originalEvent = createThreeMouseEvent("select", checkbox, 2);
+ * const clonedEvent = cloneThreeMouseEvent(originalEvent);
  *
  * // Events have same structure but selection state reflects current handler
  * // state
  * console.log(originalEvent.type === clonedEvent.type); // true
+ * console.log(originalEvent.pointerId === clonedEvent.pointerId); // true
  * console.log(originalEvent.interactionHandler === clonedEvent.interactionHandler);
  * // true
  * ```
  *
- * @see {@link generate} - Primary event creation function
+ * @see {@link createThreeMouseEvent} - Primary event creation function
+ */
+export function cloneThreeMouseEvent<Value>(
+  e: ThreeMouseEvent<Value>,
+): ThreeMouseEvent<Value> {
+  return createThreeMouseEvent(e.type, e.interactionHandler, e.pointerId);
+}
+
+/**
+ * @deprecated Use createThreeMouseEvent instead.
+ */
+export function generate<Value>(
+  type: keyof ThreeMouseEventMap<Value>,
+  handlerOrView:
+    | ButtonInteractionHandler<Value>
+    | IClickableObject3D<Value>
+    | undefined,
+  pointerId: number = 1,
+): ThreeMouseEvent<Value> {
+  return createThreeMouseEvent(type, handlerOrView, pointerId);
+}
+
+/**
+ * @deprecated Use cloneThreeMouseEvent instead.
  */
 export function clone<Value>(
   e: ThreeMouseEvent<Value>,
 ): ThreeMouseEvent<Value> {
-  return generate(e.type, e.interactionHandler);
+  return cloneThreeMouseEvent(e);
 }
+
+/**
+ * @deprecated Use named exports directly from "@masatomakino/threejs-interactive-object" instead.
+ */
+export const ThreeMouseEventUtil = {
+  /** @deprecated Not intended for external use. Use createThreeMouseEvent with interactive objects directly. */
+  getInteractionHandler,
+  /** @deprecated Not intended for external use. Use handler.selection property directly. */
+  getSelection,
+  generate: createThreeMouseEvent,
+  clone: cloneThreeMouseEvent,
+};
