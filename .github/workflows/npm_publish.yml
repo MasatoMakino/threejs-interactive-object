@@ -2,7 +2,11 @@ name: Publish to NPM
 on:
   release:
     types: [published]
-    
+
+permissions:
+  id-token: write  # Required for OIDC authentication
+  contents: read   # Required for repository access
+  
 jobs:
   npm-publish:
     runs-on: ubuntu-22.04
@@ -15,10 +19,10 @@ jobs:
           node-version: "20"
           cache: "npm"
           registry-url: "https://registry.npmjs.org"
+      - name: Upgrade npm to latest
+        run: npm install -g npm@latest
       - run: npm ci
       - name: build binary
         run: npm run buildTS
       - name: Publish package on NPM 📦
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
