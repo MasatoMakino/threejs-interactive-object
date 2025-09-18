@@ -1,9 +1,10 @@
 name: Dependabot auto-merge
-on: 
+on:
   pull_request:
+    types: [opened]
     branches:
       - main
-      
+
 permissions:
   contents: read
   pull-requests: read
@@ -14,11 +15,11 @@ jobs:
       contents: write
       pull-requests: write
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'MasatoMakino/threejs-interactive-object'
     steps:
       - name: Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@08eff52bf64351f401fb50d4972fa95b9f2c2d1b # v2.4.0
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
       - name: Enable auto-merge for Dependabot PRs
@@ -39,7 +40,7 @@ jobs:
               startsWith(steps.metadata.outputs.previous-version, '0.') == false
             )
           ) && !contains(steps.metadata.outputs.new-version, '-')
-        run: gh pr merge --auto --rebase "$PR_URL"
+        run: gh pr comment "$PR_URL" --body "@dependabot squash and merge"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GH_TOKEN: ${{secrets.GITHUB_TOKEN}}

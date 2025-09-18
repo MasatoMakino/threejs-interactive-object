@@ -11,6 +11,9 @@ updates:
       interval: "daily"
     cooldown:
       default-days: 5
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
 
   - package-ecosystem: "npm"
     directory: "/"
@@ -18,5 +21,8 @@ updates:
       interval: "daily"
     cooldown:
       default-days: 5
+      semver-major-days: 30
+      semver-minor-days: 7
+      semver-patch-days: 3
     ignore:
       - dependency-name: "@vitest/browser"
