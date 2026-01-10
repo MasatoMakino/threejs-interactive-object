@@ -1,0 +1,37 @@
+#!/bin/bash
+exec 1>&2
+
+echo "[pre-commit] Running code quality checks in DevContainer..."
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+CONTAINER_NAME="$(basename "$REPO_ROOT")-npm-runner"
+
+if ! docker ps --format '{{.Names}}' | grep -qx "$CONTAINER_NAME"; then
+  echo "[pre-commit] DevContainer not running. Starting..."
+  devcontainer up --workspace-folder "$REPO_ROOT" || exit 1
+fi
+
+STAGED_FILES_ARRAY=()
+while IFS= read -r file; do
+  STAGED_FILES_ARRAY+=("$file")
+done < <(git diff --cached --name-only --diff-filter=ACM)
+
+if [ ${#STAGED_FILES_ARRAY[@]} -eq 0 ]; then
+  echo "[pre-commit] No staged files to check"
+  exit 0
+fi
+
+if ! devcontainer exec --workspace-folder "$REPO_ROOT" npm run pre-commit -- "${STAGED_FILES_ARRAY[@]}"; then
+  echo "[pre-commit] ERROR: Code quality checks failed"
+  exit 1
+fi
+
+echo "[pre-commit] Re-staging formatted files..."
+for file in "${STAGED_FILES_ARRAY[@]}"; do
+  if [ -n "$file" ] && [ -f "$file" ]; then
+    git add "$file" || exit 1
+  fi
+done
+
+echo "[pre-commit] All checks passed"
+exit 0
