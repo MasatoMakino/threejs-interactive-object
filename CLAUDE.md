@@ -11,8 +11,28 @@ This project uses DevContainer for isolated npm execution to prevent supply chai
 - DevContainer CLI installed (`npm install -g @devcontainers/cli`)
 
 ### Container Management
+
+#### Starting Container
 - `devcontainer up --workspace-folder .` - Start the development container
+
+#### Executing Commands
 - `devcontainer exec --workspace-folder . <command>` - Execute command in container
+
+#### Restarting Container
+**Important**: Always use this procedure to restart the container. Using `docker start` alone will not apply DevContainer configuration (e.g., `--shm-size=2g`).
+
+```bash
+# 1. Stop the container
+docker stop threejs-interactive-object-npm-runner
+
+# 2. Start with DevContainer configuration
+devcontainer up --workspace-folder .
+```
+
+**When to restart**:
+- After KillShell forcefully terminates a hung test process (orphaned Chrome processes remain)
+- After extended development sessions with watch mode
+- When "Port 63315 is in use" messages appear
 
 ### Important Policy
 - **Host OS npm/npx execution is prohibited** for security isolation
