@@ -2,28 +2,52 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## DevContainer Environment
+
+This project uses DevContainer for isolated npm execution to prevent supply chain attacks.
+
+### Required Setup
+- Docker Desktop installed and running
+- DevContainer CLI installed (`npm install -g @devcontainers/cli`)
+
+### Container Management
+- `devcontainer up --workspace-folder .` - Start the development container
+- `devcontainer exec --workspace-folder . <command>` - Execute command in container
+
+### Important Policy
+- **Host OS npm/npx execution is prohibited** for security isolation
+- All npm/npx commands must be executed through `devcontainer exec`
+- Git hooks automatically use devcontainer for code quality checks
+
+### Container Details
+- **Image**: Node 22 (bookworm-slim) with Chrome and xvfb
+- **Container Name**: `threejs-interactive-object-npm-runner`
+- **Ports**: 3000 (Dev Server), 3001 (Dev Server UI)
+
 ## Development Commands
 
 ### Build and Development
-- `npm run build` - Full build: TypeScript compilation, demo generation, and API docs
-- `npm run buildTS` - TypeScript compilation only
-- `npm run start:dev` - Start comprehensive development environment (runs server, TypeScript watch, and demo watch in parallel)
-- `npm run server` - Start browser-sync server for demo pages with live reload
-- `npm run watch:tsc` - TypeScript compilation in watch mode with incremental builds
-- `npm run watch:demo` - Demo page generation in watch mode
+- `devcontainer exec --workspace-folder . npm run build` - Full build: TypeScript compilation, demo generation, and API docs
+- `devcontainer exec --workspace-folder . npm run buildTS` - TypeScript compilation only
+- `devcontainer exec --workspace-folder . npm run start:dev` - Start comprehensive development environment (runs server, TypeScript watch, and demo watch in parallel)
+- `devcontainer exec --workspace-folder . npm run server` - Start browser-sync server for demo pages with live reload
+- `devcontainer exec --workspace-folder . npm run watch:tsc` - TypeScript compilation in watch mode with incremental builds
+- `devcontainer exec --workspace-folder . npm run watch:demo` - Demo page generation in watch mode
 
 ### Testing
-- `npm test` - Run all tests using Vitest with Chrome browser
-- `npm run test:watch` - Run tests in watch mode
-- `npm run coverage` - Generate comprehensive test coverage report using Istanbul provider (text, lcov, json formats)
+- `devcontainer exec --workspace-folder . npm run test:ci` - Run all tests with virtual display (for DevContainer/CI)
+- `devcontainer exec --workspace-folder . npm run test:watch:ci` - Run tests in watch mode with virtual display
+- `devcontainer exec --workspace-folder . npm run coverage:ci` - Generate comprehensive test coverage report with virtual display
+
+> **Important**: Always use commands with `:ci` suffix in DevContainer (`test:ci`, `test:watch:ci`, `coverage:ci`). Commands without `:ci` suffix are kept only for backward compatibility and should not be used.
 
 ### Code Quality
-- `npx biome check` - Run linter and formatter
-- `npx biome check --write` - Run linter and formatter with auto-fix
+- `devcontainer exec --workspace-folder . npx biome check` - Run linter and formatter
+- `devcontainer exec --workspace-folder . npx biome check --write` - Run linter and formatter with auto-fix
 
 ### Documentation
-- `npm run typedocs` - Generate TypeDoc API documentation
-- `npm run demo` - Generate demo pages with custom canvas element and ES2020 compilation target
+- `devcontainer exec --workspace-folder . npm run typedocs` - Generate TypeDoc API documentation
+- `devcontainer exec --workspace-folder . npm run demo` - Generate demo pages with custom canvas element and ES2020 compilation target
 
 ## Architecture Overview
 
@@ -202,7 +226,7 @@ This project operates within TypeScript's type safety guarantees and standard br
 - Biome for linting/formatting (replaces ESLint/Prettier)
 - Vitest for testing with browser automation
 - TypeDoc for API documentation generation
-- Husky + lint-staged for pre-commit hooks
+- Custom git hooks with DevContainer integration for pre-commit/pre-push checks
 
 ## Git Branch Strategy
 
@@ -252,7 +276,7 @@ This project enforces strict branch protection on the `main` branch:
 - Status checks required: CI workflows must pass before merging:
   - `TypeScript compilation` - Validates code compiles without errors (`npx tsc --noEmit`)
   - `Code quality checks` - Ensures code style and quality standards (`npx biome ci .`)
-  - `Test suite execution` - Verifies all tests pass (`npm test`)
+  - `Test suite execution` - Verifies all tests pass (`npm run test:ci`)
 - Admin enforcement: Branch protection rules apply to all users including admins
 
 ### Key Principles

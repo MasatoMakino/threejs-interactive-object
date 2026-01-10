@@ -47,8 +47,10 @@
   "scripts": {
     "test": "vitest --run",
     "test:ci": "xvfb-run --auto-servernum vitest --run",
-    "coverage": "vitest --coverage --run",
     "test:watch": "vitest --watch",
+    "test:watch:ci": "xvfb-run --auto-servernum vitest --watch",
+    "coverage": "vitest --coverage --run",
+    "coverage:ci": "xvfb-run --auto-servernum vitest --coverage --run",
     "pre-commit": "biome format --write --no-errors-on-unmatched --files-ignore-unknown=true",
     "pre-push": "biome ci . && npm run test:ci",
     "start:dev": "npm run server & npm run watch:tsc & npm run watch:demo",

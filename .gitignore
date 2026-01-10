@@ -73,3 +73,6 @@ esm/
 
 # Vitest debug screenshots (environment-dependent temporary files)
 __test__/__screenshots__/
+
+# 1Password plugin configuration (temporary, directory scope only)
+.op/
