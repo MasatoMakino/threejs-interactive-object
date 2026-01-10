@@ -8,6 +8,7 @@
   "remoteUser": "node",
   "runArgs": [
     "--cap-add=SYS_ADMIN",
+    "--shm-size=2g",
     "--name=${localWorkspaceFolderBasename}-npm-runner",
     "-p",
     "3000:3000",

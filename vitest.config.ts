@@ -1,27 +1,12 @@
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
-  optimizeDeps: {
-    esbuildOptions: {
-      target: "esnext",
-    },
-  },
   test: {
     browser: {
       enabled: true,
       provider: "webdriverio",
       headless: true,
-      isolate: false,
-      instances: [
-        {
-          browser: "chrome",
-        },
-      ],
-    },
-    poolOptions: {
-      threads: {
-        singleThread: true,
-      },
+      instances: [{ browser: "chrome" }],
     },
     coverage: {
       provider: "istanbul",
