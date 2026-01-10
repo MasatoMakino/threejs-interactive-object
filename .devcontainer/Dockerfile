@@ -15,7 +15,6 @@ RUN set -eux; \
         > /etc/apt/sources.list.d/google-chrome.list; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        git \
         google-chrome-stable \
         xauth \
         xvfb \
