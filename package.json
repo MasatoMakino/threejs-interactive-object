@@ -37,7 +37,7 @@
     "@masatomakino/gulptask-demo-page": "^0.10.0",
     "@types/three": "^0.182.0",
     "@vitest/browser": "*",
-    "@vitest/coverage-istanbul": "^3.0.2",
+    "@vitest/coverage-istanbul": "^4.0.15",
     "browser-sync": "^3.0.2",
     "three": "^0.182.0",
     "typedoc": "^0.28.0",
