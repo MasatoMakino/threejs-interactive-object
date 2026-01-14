@@ -35,11 +35,11 @@
     "@biomejs/biome": "2.2.4",
     "@masatomakino/fake-mouse-event": "^0.2.0",
     "@masatomakino/gulptask-demo-page": "^0.10.0",
-    "@types/three": "^0.180.0",
+    "@types/three": "^0.182.0",
     "@vitest/browser": "*",
     "@vitest/coverage-istanbul": "^3.0.2",
     "browser-sync": "^3.0.2",
-    "three": "^0.180.0",
+    "three": "^0.182.0",
     "typedoc": "^0.28.0",
     "typescript": "^5.3.3",
     "webdriverio": "^9.0.1"
