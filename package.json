@@ -32,7 +32,7 @@
     "three": ">=0.126.0 <1.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.2.4",
+    "@biomejs/biome": "2.3.11",
     "@masatomakino/fake-mouse-event": "^0.2.0",
     "@masatomakino/gulptask-demo-page": "^0.10.0",
     "@types/three": "^0.182.0",
